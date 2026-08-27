@@ -54,8 +54,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "overdue",
       "startDate": "2025-10-04",
-      "nextPaymentDate": "2026-08-10",
-      "nextPaymentAmount": 78,
+      "nextPaymentDate": "2026-08-14",
+      "nextPaymentAmount": 265.3,
       "notes": "$78 due 08/10. Reminder sent 08/10. No payment made 08/26.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -75,8 +75,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "overdue",
       "startDate": "2025-10-04",
-      "nextPaymentDate": "2026-08-10",
-      "nextPaymentAmount": 78,
+      "nextPaymentDate": "2026-08-14",
+      "nextPaymentAmount": 156.0,
       "notes": "$78 due 08/10. Reminder sent 08/10. No payment made 08/26.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -118,7 +118,7 @@
       "enrollmentStatus": "overdue",
       "startDate": "2026-07-08",
       "nextPaymentDate": "2026-08-21",
-      "nextPaymentAmount": 104,
+      "nextPaymentAmount": 1242.0,
       "notes": "$104 due 08/21. No payment made 08/26.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -139,7 +139,7 @@
       "enrollmentStatus": "pending",
       "startDate": "2026-09-05",
       "nextPaymentDate": "2026-09-05",
-      "nextPaymentAmount": 300,
+      "nextPaymentAmount": 1236.0,
       "notes": "Deposit $300 due 09/05. Then $104 due 09/18.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -159,8 +159,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "pending",
       "startDate": "2026-07-29",
-      "nextPaymentDate": "2026-09-11",
-      "nextPaymentAmount": 300,
+      "nextPaymentDate": "2026-09-15",
+      "nextPaymentAmount": 1236.0,
       "notes": "Deposit $300 due 09/11. Then $104 due 09/25.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -181,7 +181,7 @@
       "enrollmentStatus": "pending",
       "startDate": "2026-09-12",
       "nextPaymentDate": "2026-09-05",
-      "nextPaymentAmount": 300,
+      "nextPaymentAmount": 1236.0,
       "notes": "Deposit $300 due 09/05. Then $104 due 09/18.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -201,8 +201,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "paused",
       "startDate": "2026-02-14",
-      "nextPaymentDate": "2026-10-02",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-11-13",
+      "nextPaymentAmount": 416.0,
       "notes": "Paused until $104 due 10/02.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -222,8 +222,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "paused",
       "startDate": "2026-05-23",
-      "nextPaymentDate": "2026-09-04",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-10-30",
+      "nextPaymentAmount": 524.0,
       "notes": "Paused until $104 due 09/04.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -285,8 +285,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "current",
       "startDate": "2026-07-11",
-      "nextPaymentDate": "2026-08-28",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-12-18",
+      "nextPaymentAmount": 936.0,
       "notes": "Checked in as Subscriber on 08/26.",
       "subscriptionStatus": "interested",
       "photoshootStatus": "none",
@@ -304,10 +304,10 @@
       "age": 23,
       "program": "academy",
       "paymentPlan": "pp",
-      "enrollmentStatus": "current",
+      "enrollmentStatus": "overdue",
       "startDate": "2026-08-22",
-      "nextPaymentDate": "2026-09-04",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-08-22",
+      "nextPaymentAmount": 1236.0,
       "notes": "",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -348,8 +348,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "current",
       "startDate": "2026-08-15",
-      "nextPaymentDate": "2026-08-28",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-12-18",
+      "nextPaymentAmount": 936.0,
       "notes": "Checked in 08/26 for Modeling. Phone on check-in form: (623) 341-0249.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -432,8 +432,8 @@
       "paymentPlan": "pp",
       "enrollmentStatus": "current",
       "startDate": "2026-08-12",
-      "nextPaymentDate": "2026-08-28",
-      "nextPaymentAmount": 104,
+      "nextPaymentDate": "2026-12-04",
+      "nextPaymentAmount": 832.0,
       "notes": "",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -874,7 +874,7 @@
       "enrollmentStatus": "pending",
       "startDate": "2026-08-29",
       "nextPaymentDate": "2026-09-05",
-      "nextPaymentAmount": 927,
+      "nextPaymentAmount": 927.0,
       "notes": "Deposit $927 due 09/05.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -895,7 +895,7 @@
       "enrollmentStatus": "pending",
       "startDate": "2026-08-29",
       "nextPaymentDate": "2026-09-05",
-      "nextPaymentAmount": 927,
+      "nextPaymentAmount": 927.0,
       "notes": "Deposit $927 due 09/05.",
       "subscriptionStatus": "none",
       "photoshootStatus": "none",
@@ -1693,7 +1693,7 @@
       "enrollmentStatus": "current",
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 51.49,
       "notes": "",
       "subscriptionStatus": "active",
       "photoshootStatus": "none",
@@ -1736,8 +1736,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Keep at 5.",
-      "subscriptionStatus": "active",
+      "notes": "Keep at 5. Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -1778,8 +1778,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -1820,8 +1820,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -1903,7 +1903,7 @@
       "enrollmentStatus": "current",
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 51.49,
       "notes": "",
       "subscriptionStatus": "active",
       "photoshootStatus": "none",
@@ -1945,7 +1945,7 @@
       "enrollmentStatus": "current",
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 51.49,
       "notes": "",
       "subscriptionStatus": "active",
       "photoshootStatus": "full",
@@ -2072,8 +2072,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2262,7 +2262,7 @@
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
       "notes": "",
-      "subscriptionStatus": "active",
+      "subscriptionStatus": "cancelled",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2576,8 +2576,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2701,7 +2701,7 @@
       "enrollmentStatus": "current",
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 51.49,
       "notes": "",
       "subscriptionStatus": "active",
       "photoshootStatus": "full",
@@ -2723,8 +2723,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2745,7 +2745,7 @@
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
       "notes": "",
-      "subscriptionStatus": "active",
+      "subscriptionStatus": "cancelled",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2786,8 +2786,8 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "",
-      "subscriptionStatus": "active",
+      "notes": "Square subscription cancelling 2026-09-01.",
+      "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
       "classTime": "",
@@ -2827,7 +2827,7 @@
       "enrollmentStatus": "current",
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 51.49,
       "notes": "",
       "subscriptionStatus": "active",
       "photoshootStatus": "full",
@@ -3289,7 +3289,7 @@
       "enrollmentStatus": "pending",
       "startDate": "",
       "nextPaymentDate": "2026-10-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 5.14,
       "notes": "",
       "subscriptionStatus": "interested",
       "photoshootStatus": "none",
@@ -3310,7 +3310,7 @@
       "enrollmentStatus": "pending",
       "startDate": "",
       "nextPaymentDate": "2026-10-01",
-      "nextPaymentAmount": null,
+      "nextPaymentAmount": 5.14,
       "notes": "",
       "subscriptionStatus": "interested",
       "photoshootStatus": "none",
@@ -4767,7 +4767,13 @@
       "status": "declined",
       "method": "square",
       "squareInvoiceId": "sqinv_0924_20260724",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 125.0
     },
     {
       "id": "pay-0002",
@@ -4778,29 +4784,47 @@
       "status": "declined",
       "method": "square",
       "squareInvoiceId": "sqinv_0579_20260807",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0003",
       "studentId": "0202",
-      "amount": 78,
-      "dueDate": "2026-08-10",
+      "amount": 625.3,
+      "dueDate": "2026-08-14",
       "paidDate": "",
       "status": "overdue",
       "method": "square",
-      "squareInvoiceId": "sqinv_0202_20260810",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "00309",
+      "notes": "Square invoice 00309 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 360.0,
+      "balance": 265.3
     },
     {
       "id": "pay-0004",
       "studentId": "0206",
-      "amount": 78,
-      "dueDate": "2026-08-10",
+      "amount": 1236.0,
+      "dueDate": "2026-08-14",
       "paidDate": "",
       "status": "overdue",
       "method": "square",
-      "squareInvoiceId": "sqinv_0206_20260810",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "00D206",
+      "notes": "Square invoice 00D206 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1080.0,
+      "balance": 156.0
     },
     {
       "id": "pay-0005",
@@ -4811,73 +4835,115 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0749_20260814",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 50.0
     },
     {
       "id": "pay-0006",
       "studentId": "0938",
-      "amount": 104,
+      "amount": 1442.0,
       "dueDate": "2026-08-21",
       "paidDate": "",
       "status": "overdue",
       "method": "square",
-      "squareInvoiceId": "sqinv_0938_20260821",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "00938",
+      "notes": "Square invoice 00938 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 200.0,
+      "balance": 1242.0
     },
     {
       "id": "pay-0007",
       "studentId": "1095",
-      "amount": 300,
+      "amount": 1236.0,
       "dueDate": "2026-09-05",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1095_20260905",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1095",
+      "notes": "Square invoice 1095 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 1236.0
     },
     {
       "id": "pay-0008",
       "studentId": "1017",
-      "amount": 300,
-      "dueDate": "2026-09-11",
+      "amount": 1236.0,
+      "dueDate": "2026-09-15",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1017_20260911",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1017",
+      "notes": "Square invoice 1017 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 1236.0
     },
     {
       "id": "pay-0009",
       "studentId": "1096",
-      "amount": 300,
+      "amount": 1236.0,
       "dueDate": "2026-09-05",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1096_20260905",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1096",
+      "notes": "Square invoice 1096 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 1236.0
     },
     {
       "id": "pay-0010",
       "studentId": "0471",
-      "amount": 104,
-      "dueDate": "2026-10-02",
+      "amount": 1236.0,
+      "dueDate": "2026-11-13",
       "paidDate": "",
-      "status": "scheduled",
+      "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0471_20261002",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "00471",
+      "notes": "Square invoice 00471 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 820.0,
+      "balance": 416.0
     },
     {
       "id": "pay-0011",
       "studentId": "0842",
-      "amount": 104,
-      "dueDate": "2026-09-04",
+      "amount": 1236.0,
+      "dueDate": "2026-10-30",
       "paidDate": "",
-      "status": "scheduled",
+      "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0842_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "0842",
+      "notes": "Square invoice 0842 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 712.0,
+      "balance": 524.0
     },
     {
       "id": "pay-0012",
@@ -4888,7 +4954,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0521_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0013",
@@ -4899,18 +4971,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0521_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0014",
       "studentId": "0935",
-      "amount": 104,
-      "dueDate": "2026-08-28",
+      "amount": 1236.0,
+      "dueDate": "2026-12-18",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0935_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "0935",
+      "notes": "Square invoice 0935 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 300.0,
+      "balance": 936.0
     },
     {
       "id": "pay-0015",
@@ -4921,18 +5005,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0935_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0016",
       "studentId": "1078",
-      "amount": 104,
-      "dueDate": "2026-09-04",
+      "amount": 1236.0,
+      "dueDate": "2026-08-22",
       "paidDate": "",
-      "status": "due",
+      "status": "overdue",
       "method": "square",
-      "squareInvoiceId": "sqinv_1078_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1078",
+      "notes": "Square invoice 1078 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 1236.0
     },
     {
       "id": "pay-0017",
@@ -4943,7 +5039,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1078_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0018",
@@ -4954,7 +5056,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0917_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0019",
@@ -4965,18 +5073,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0917_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0020",
       "studentId": "1079",
-      "amount": 104,
-      "dueDate": "2026-08-28",
+      "amount": 1236.0,
+      "dueDate": "2026-12-18",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1079_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1079",
+      "notes": "Square invoice 1079 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 300.0,
+      "balance": 936.0
     },
     {
       "id": "pay-0021",
@@ -4987,7 +5107,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1079_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0022",
@@ -4998,7 +5124,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0921_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 103.0
     },
     {
       "id": "pay-0023",
@@ -5009,7 +5141,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0921_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 103.0,
+      "balance": 0
     },
     {
       "id": "pay-0024",
@@ -5020,7 +5158,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1003_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 103.0
     },
     {
       "id": "pay-0025",
@@ -5031,7 +5175,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1003_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 103.0,
+      "balance": 0
     },
     {
       "id": "pay-0026",
@@ -5042,7 +5192,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1007_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0027",
@@ -5053,18 +5209,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1007_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0028",
       "studentId": "1080",
-      "amount": 104,
-      "dueDate": "2026-08-28",
+      "amount": 1236.0,
+      "dueDate": "2026-12-04",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1080_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1080",
+      "notes": "Square invoice 1080 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 404.0,
+      "balance": 832.0
     },
     {
       "id": "pay-0029",
@@ -5075,7 +5243,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1080_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0030",
@@ -5086,7 +5260,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1006_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 103.0
     },
     {
       "id": "pay-0031",
@@ -5097,7 +5277,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1006_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 103.0,
+      "balance": 0
     },
     {
       "id": "pay-0032",
@@ -5108,7 +5294,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0918_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 100.0
     },
     {
       "id": "pay-0033",
@@ -5119,7 +5311,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0918_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 100.0,
+      "balance": 0
     },
     {
       "id": "pay-0034",
@@ -5130,7 +5328,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1004_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0035",
@@ -5141,7 +5345,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1004_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0036",
@@ -5152,7 +5362,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0929_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 60.0
     },
     {
       "id": "pay-0037",
@@ -5163,7 +5379,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0929_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 60.0,
+      "balance": 0
     },
     {
       "id": "pay-0038",
@@ -5174,7 +5396,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0936_20260911",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0039",
@@ -5185,7 +5413,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0936_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0040",
@@ -5196,7 +5430,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0730_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0041",
@@ -5207,7 +5447,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0730_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0042",
@@ -5218,7 +5464,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0627_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 50.0
     },
     {
       "id": "pay-0043",
@@ -5229,7 +5481,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0627_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 50.0,
+      "balance": 0
     },
     {
       "id": "pay-0044",
@@ -5240,7 +5498,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1005_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0045",
@@ -5251,7 +5515,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1005_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0046",
@@ -5262,7 +5532,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_1008_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0047",
@@ -5273,7 +5549,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1008_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0048",
@@ -5284,7 +5566,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0911_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0049",
@@ -5295,7 +5583,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0911_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0050",
@@ -5306,7 +5600,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0555_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0051",
@@ -5317,7 +5617,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0555_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0052",
@@ -5328,7 +5634,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0556_20260914",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0053",
@@ -5339,7 +5651,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0556_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0054",
@@ -5350,7 +5668,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0625_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 78.0
     },
     {
       "id": "pay-0055",
@@ -5361,7 +5685,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0625_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 78.0,
+      "balance": 0
     },
     {
       "id": "pay-0056",
@@ -5372,7 +5702,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0522_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0057",
@@ -5383,7 +5719,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0522_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0058",
@@ -5394,7 +5736,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0845_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0059",
@@ -5405,7 +5753,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0845_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0060",
@@ -5416,7 +5770,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0830_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0061",
@@ -5427,7 +5787,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0830_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0062",
@@ -5438,7 +5804,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0735_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 60.0
     },
     {
       "id": "pay-0063",
@@ -5449,7 +5821,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0735_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 60.0,
+      "balance": 0
     },
     {
       "id": "pay-0064",
@@ -5460,7 +5838,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0916_20260904",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0065",
@@ -5471,7 +5855,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0916_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0066",
@@ -5482,7 +5872,13 @@
       "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0729_20260828",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0067",
@@ -5493,7 +5889,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0729_prev",
-      "notes": "Prior Square payment"
+      "notes": "Prior Square payment",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 104.0,
+      "balance": 0
     },
     {
       "id": "pay-0068",
@@ -5504,29 +5906,47 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0731_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0069",
       "studentId": "1093",
-      "amount": 927,
+      "amount": 927.0,
       "dueDate": "2026-09-05",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1093_20260905",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1093",
+      "notes": "Square invoice 1093 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 927.0
     },
     {
       "id": "pay-0070",
       "studentId": "1094",
-      "amount": 927,
+      "amount": 927.0,
       "dueDate": "2026-09-05",
       "paidDate": "",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_1094_20260905",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1094",
+      "notes": "Square invoice 1094 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0.0,
+      "balance": 927.0
     },
     {
       "id": "pay-0071",
@@ -5537,40 +5957,64 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_VA-4401_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0072",
       "studentId": "1091",
-      "amount": 1850,
-      "dueDate": "2026-08-19",
-      "paidDate": "2026-08-19",
+      "amount": 927.0,
+      "dueDate": "2026-08-12",
+      "paidDate": "2026-08-12",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_1091_pif",
-      "notes": "Paid in full \u2014 Square"
+      "squareInvoiceId": "1091",
+      "notes": "Square invoice 1091 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 927.0,
+      "balance": 0.0
     },
     {
       "id": "pay-0073",
       "studentId": "1076",
-      "amount": 1850,
-      "dueDate": "2026-08-15",
-      "paidDate": "2026-08-15",
+      "amount": 927.0,
+      "dueDate": "2026-08-10",
+      "paidDate": "2026-08-10",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_1076_pif",
-      "notes": "Paid in full \u2014 Square"
+      "squareInvoiceId": "1076",
+      "notes": "Square invoice 1076 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 927.0,
+      "balance": 0.0
     },
     {
       "id": "pay-0074",
       "studentId": "1090",
-      "amount": 1850,
-      "dueDate": "2026-08-15",
-      "paidDate": "2026-08-15",
+      "amount": 927.0,
+      "dueDate": "2026-08-07",
+      "paidDate": "2026-08-07",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_1090_pif",
-      "notes": "Paid in full \u2014 Square"
+      "squareInvoiceId": "1090",
+      "notes": "Square invoice 1090 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 927.0,
+      "balance": 0.0
     },
     {
       "id": "pay-0075",
@@ -5581,7 +6025,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1016_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0076",
@@ -5592,18 +6042,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1020_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0077",
       "studentId": "1077",
-      "amount": 1850,
-      "dueDate": "2026-08-22",
-      "paidDate": "2026-08-22",
+      "amount": 927.0,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_1077_pif",
-      "notes": "Paid in full \u2014 Square"
+      "squareInvoiceId": "1077",
+      "notes": "Square invoice 1077 \u00b7 VA101 Modelling & Acting Training",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 927.0,
+      "balance": 0.0
     },
     {
       "id": "pay-0078",
@@ -5614,7 +6076,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0724_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0079",
@@ -5625,7 +6093,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0412_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0080",
@@ -5636,7 +6110,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0621_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0081",
@@ -5647,7 +6127,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0923_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0082",
@@ -5658,7 +6144,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0907_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0083",
@@ -5669,7 +6161,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0557_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0084",
@@ -5680,7 +6178,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0733_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0085",
@@ -5691,7 +6195,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0501_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0086",
@@ -5702,7 +6212,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0719_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0087",
@@ -5713,7 +6229,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0720_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0088",
@@ -5724,7 +6246,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0523_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0089",
@@ -5735,7 +6263,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0620_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0090",
@@ -5746,7 +6280,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_VA-4402_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0091",
@@ -5757,7 +6297,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0624_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0092",
@@ -5768,7 +6314,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0844_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0093",
@@ -5779,7 +6331,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0516_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0094",
@@ -5790,7 +6348,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0517_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0095",
@@ -5801,7 +6365,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0520_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0096",
@@ -5812,7 +6382,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0617_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0097",
@@ -5823,7 +6399,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0910_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0098",
@@ -5834,7 +6416,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0912_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0099",
@@ -5845,7 +6433,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0914_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0100",
@@ -5856,7 +6450,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0583_pif",
-      "notes": "Paid in full \u2014 Square"
+      "notes": "Paid in full \u2014 Square",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 1850.0,
+      "balance": 0
     },
     {
       "id": "pay-0101",
@@ -5867,7 +6467,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0475_20260605",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0102",
@@ -5878,7 +6484,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0582_20260605",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0103",
@@ -5889,7 +6501,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0609_20260607",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0104",
@@ -5900,7 +6518,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0610_20260612",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 50.0
     },
     {
       "id": "pay-0105",
@@ -5911,7 +6535,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0365_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 100.0
     },
     {
       "id": "pay-0106",
@@ -5922,7 +6552,13 @@
       "status": "overdue",
       "method": "cash",
       "squareInvoiceId": "sqinv_0931_20260711",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 750.0
     },
     {
       "id": "pay-0107",
@@ -5933,18 +6569,30 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0722_20260807",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va101",
+      "itemName": "VA101 Modelling & Acting Training",
+      "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+      "itemKind": "academy",
+      "paidAmount": 0,
+      "balance": 104.0
     },
     {
       "id": "pay-0108",
       "studentId": "0650",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
+      "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0650_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0109",
@@ -5955,18 +6603,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0695_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0110",
       "studentId": "0647",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
       "method": "square",
       "squareInvoiceId": "sqinv_0647_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0111",
@@ -5977,29 +6637,47 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0709_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0112",
       "studentId": "0634",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
       "method": "square",
       "squareInvoiceId": "sqinv_0634_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0113",
       "studentId": "0714",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
+      "amount": 5.14,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_0714_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1089",
+      "notes": "Square invoice 1089 \u00b7 Viya Talent Subscription OG",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 5.14,
+      "balance": 0.0
     },
     {
       "id": "pay-0114",
@@ -6010,7 +6688,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0645_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0115",
@@ -6021,7 +6705,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0678_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0116",
@@ -6032,7 +6722,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0666_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0117",
@@ -6043,18 +6739,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0702_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0118",
       "studentId": "0654",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
+      "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0654_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0119",
@@ -6065,18 +6773,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0682_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0120",
       "studentId": "0636",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
+      "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0636_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0121",
@@ -6087,7 +6807,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0746_20260501",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0122",
@@ -6098,7 +6824,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0675_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0123",
@@ -6109,7 +6841,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0713_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0124",
@@ -6120,7 +6858,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0694_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0125",
@@ -6131,18 +6875,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0704_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0126",
       "studentId": "0633",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
       "method": "square",
       "squareInvoiceId": "sqinv_0633_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0127",
@@ -6153,7 +6909,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0664_20260501",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0128",
@@ -6164,7 +6926,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0710_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0129",
@@ -6175,7 +6943,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0680_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0130",
@@ -6186,7 +6960,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0718_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0131",
@@ -6197,7 +6977,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0665_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0132",
@@ -6208,7 +6994,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0673_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0133",
@@ -6219,7 +7011,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0690_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0134",
@@ -6230,7 +7028,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0742_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0135",
@@ -6241,7 +7045,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0658_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0136",
@@ -6252,7 +7062,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0685_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0137",
@@ -6263,7 +7079,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0699_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0138",
@@ -6274,18 +7096,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0684_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0139",
       "studentId": "0668",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
+      "amount": 5.14,
+      "dueDate": "2026-08-19",
+      "paidDate": "2026-08-19",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_0668_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1100",
+      "notes": "Square invoice 1100 \u00b7 Viya Talent Subscription OG",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 5.14,
+      "balance": 0.0
     },
     {
       "id": "pay-0140",
@@ -6296,7 +7130,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0670_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0141",
@@ -6307,7 +7147,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0717_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0142",
@@ -6318,7 +7164,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0711_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0143",
@@ -6329,7 +7181,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0687_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0144",
@@ -6340,7 +7198,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0530_20260601",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0145",
@@ -6351,7 +7215,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0548_20260601",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0146",
@@ -6362,7 +7232,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0672_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0147",
@@ -6373,7 +7249,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0662_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0148",
@@ -6384,7 +7266,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0700_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0149",
@@ -6395,18 +7283,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0705_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0150",
       "studentId": "0646",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
       "method": "square",
       "squareInvoiceId": "sqinv_0646_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0151",
@@ -6417,7 +7317,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0655_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0152",
@@ -6428,7 +7334,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0659_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0153",
@@ -6439,7 +7351,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0686_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0154",
@@ -6450,7 +7368,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0693_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0155",
@@ -6461,29 +7385,47 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0667_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0156",
       "studentId": "0656",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
+      "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0656_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0157",
       "studentId": "0649",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
+      "amount": 4.99,
+      "dueDate": "2026-08-18",
+      "paidDate": "2026-08-18",
       "status": "paid",
       "method": "square",
-      "squareInvoiceId": "sqinv_0649_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "squareInvoiceId": "1098",
+      "notes": "Square invoice 1098 \u00b7 Viya Talent Subscription OG",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 4.99,
+      "balance": 0.0
     },
     {
       "id": "pay-0158",
@@ -6494,7 +7436,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0637_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0159",
@@ -6505,18 +7453,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0779_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0160",
       "studentId": "0641",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
       "method": "square",
       "squareInvoiceId": "sqinv_0641_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0161",
@@ -6527,18 +7487,30 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0752_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0162",
       "studentId": "0631",
-      "amount": 49,
-      "dueDate": "2026-04-01",
-      "paidDate": "2026-04-01",
-      "status": "paid",
+      "amount": 51.49,
+      "dueDate": "2026-08-01",
+      "paidDate": "2026-08-01",
+      "status": "due",
       "method": "square",
       "squareInvoiceId": "sqinv_0631_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square subscription \u00b7 Viya Talent Subscription",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 51.49
     },
     {
       "id": "pay-0163",
@@ -6549,7 +7521,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0661_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0164",
@@ -6560,7 +7538,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0674_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0165",
@@ -6571,7 +7555,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0751_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0166",
@@ -6582,7 +7572,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0697_20260401",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0167",
@@ -6593,7 +7589,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0920_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0168",
@@ -6604,7 +7606,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0926_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0169",
@@ -6615,7 +7623,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0913_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0170",
@@ -6626,7 +7640,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0925_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0171",
@@ -6637,7 +7657,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0927_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0172",
@@ -6648,7 +7674,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0932_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0173",
@@ -6659,7 +7691,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0934_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0174",
@@ -6670,7 +7708,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0939_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0175",
@@ -6681,7 +7725,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0940_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0176",
@@ -6692,7 +7742,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0584_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0177",
@@ -6703,7 +7759,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_1010_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0178",
@@ -6714,7 +7776,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0628_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0179",
@@ -6725,7 +7793,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_0500_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0180",
@@ -6736,7 +7810,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_1009_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 49.0
     },
     {
       "id": "pay-0181",
@@ -6747,7 +7827,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_1011_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 49.0
     },
     {
       "id": "pay-0182",
@@ -6758,7 +7844,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0484_20260801",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 49.0
     },
     {
       "id": "pay-0183",
@@ -6769,7 +7861,13 @@
       "status": "overdue",
       "method": "square",
       "squareInvoiceId": "sqinv_0933_20260701",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 0,
+      "balance": 49.0
     },
     {
       "id": "pay-0184",
@@ -6780,7 +7878,13 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_PS-10_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
     },
     {
       "id": "pay-0185",
@@ -6791,7 +7895,115 @@
       "status": "paid",
       "method": "square",
       "squareInvoiceId": "sqinv_PS-23_20260901",
-      "notes": "Square invoice synced from enrollment workbook"
+      "notes": "Square invoice synced from enrollment workbook",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber",
+      "paidAmount": 49.0,
+      "balance": 0
+    },
+    {
+      "id": "pay-0186",
+      "studentId": "0930",
+      "method": "square",
+      "notes": "Square invoice 1082 \u00b7 Viya Talent Subscription OG",
+      "amount": 5.14,
+      "paidAmount": 0.0,
+      "balance": 5.14,
+      "dueDate": "2026-10-01",
+      "paidDate": "",
+      "status": "due",
+      "squareInvoiceId": "1082",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
+    },
+    {
+      "id": "pay-0187",
+      "studentId": "0915",
+      "method": "square",
+      "notes": "Square invoice 1081 \u00b7 Viya Talent Subscription OG",
+      "amount": 5.14,
+      "paidAmount": 0.0,
+      "balance": 5.14,
+      "dueDate": "2026-10-01",
+      "paidDate": "",
+      "status": "due",
+      "squareInvoiceId": "1081",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
+    },
+    {
+      "id": "pay-0188",
+      "studentId": "0645",
+      "method": "square",
+      "notes": "Square subscription \u00b7 Viya Talent Subscription OG \u00b7 cancels 2026-09-01",
+      "amount": 5.14,
+      "paidAmount": 0,
+      "balance": 5.14,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
+      "squareInvoiceId": "sqsub_0645",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
+    },
+    {
+      "id": "pay-0189",
+      "studentId": "0649",
+      "method": "square",
+      "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
+      "amount": 51.49,
+      "paidAmount": 0,
+      "balance": 51.49,
+      "dueDate": "2026-09-01",
+      "paidDate": "2026-08-01",
+      "status": "scheduled",
+      "squareInvoiceId": "sqsub_0649",
+      "itemId": "va-subscription",
+      "itemName": "Viya Talent Subscription",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
+    },
+    {
+      "id": "pay-0190",
+      "studentId": "0637",
+      "method": "square",
+      "notes": "Square subscription \u00b7 Viya Talent Subscription OG \u00b7 cancels 2026-07-01",
+      "amount": 5.14,
+      "paidAmount": 5.14,
+      "balance": 0,
+      "dueDate": "2026-07-01",
+      "paidDate": "2026-06-01",
+      "status": "paid",
+      "squareInvoiceId": "sqsub_0637",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
+    },
+    {
+      "id": "pay-0191",
+      "studentId": "0658",
+      "method": "square",
+      "notes": "Square subscription \u00b7 Viya Talent Subscription OG \u00b7 cancels 2026-08-01",
+      "amount": 5.14,
+      "paidAmount": 5.14,
+      "balance": 0,
+      "dueDate": "2026-08-01",
+      "paidDate": "",
+      "status": "paid",
+      "squareInvoiceId": "sqsub_0658",
+      "itemId": "va-subscription-og",
+      "itemName": "Viya Talent Subscription OG",
+      "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
+      "itemKind": "subscriber"
     }
   ],
   "notifications": [
@@ -6821,5 +8033,6 @@
       "sentAt": "2026-08-26T12:05:00",
       "status": "demo"
     }
-  ]
+  ],
+  "groups": []
 }

@@ -1,0 +1,113 @@
+{
+  "syncedAt": "2026-08-27",
+  "source": "Square Dashboard",
+  "locationNote": "LC790E490Z6B9",
+  "items": [
+    {
+      "id": "va-subscription",
+      "name": "Viya Talent Subscription",
+      "price": 49.99,
+      "kind": "subscriber",
+      "description": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
+    },
+    {
+      "id": "va-subscription-og",
+      "name": "Viya Talent Subscription OG",
+      "price": 4.99,
+      "kind": "subscriber",
+      "description": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
+    },
+    {
+      "id": "va101",
+      "name": "VA101 Modelling & Acting Training",
+      "price": null,
+      "kind": "academy",
+      "description": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans."
+    },
+    {
+      "id": "va102",
+      "name": "VA102 Modelling & Acting Training",
+      "price": null,
+      "kind": "academy",
+      "description": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans."
+    },
+    {
+      "id": "model-source-pif",
+      "name": "Model Source LA JUL26",
+      "price": 1499,
+      "kind": "event",
+      "description": "Model Source is a premier industry event where new faces are discovered and MODEL OR ACTING careers begin. This is a highly sought after experience—it's an introduction to the world of professional representation, and opportunity on a global scale."
+    },
+    {
+      "id": "model-source-pp",
+      "name": "Model Source LA JUL26 Payment Plan",
+      "price": 1049,
+      "kind": "event",
+      "description": "Model Source is a premier industry event where new faces are discovered and MODEL OR ACTING careers begin. This is a highly sought after experience—it's an introduction to the world of professional representation, and opportunity on a global scale."
+    },
+    {
+      "id": "model-source-nov",
+      "name": "Model Source LA NOV26",
+      "price": 1499,
+      "kind": "event",
+      "description": "Model Source is a premier industry event where new faces are discovered and MODEL OR ACTING careers begin. This is a highly sought after experience—it's an introduction to the world of professional representation, and opportunity on a global scale."
+    },
+    {
+      "id": "cancellation",
+      "name": "Cancellation Fee",
+      "price": null,
+      "kind": "fee",
+      "description": "Cancellation fee applied after the 3-day cancellation window ($400, or the remaining balance if less)."
+    }
+  ],
+  "invoices": [
+    {"name": "Christian Barr", "invoiceId": "00938", "itemId": "va101", "amount": 1442, "paid": 200, "status": "overdue", "dueDate": "2026-08-21"},
+    {"name": "Alajanae Walker", "invoiceId": "00D206", "itemId": "va101", "amount": 1236, "paid": 1080, "status": "overdue", "dueDate": "2026-08-14"},
+    {"name": "Darrell Smith", "invoiceId": "00309", "itemId": "va101", "amount": 625.3, "paid": 360, "status": "overdue", "dueDate": "2026-08-14"},
+    {"name": "Fernando Gutierrez", "invoiceId": "1078", "itemId": "va101", "amount": 1236, "paid": 0, "status": "overdue", "dueDate": "2026-08-22"},
+    {"name": "Liam St Spell", "invoiceId": "1017", "itemId": "va101", "amount": 1236, "paid": 0, "status": "due", "dueDate": "2026-09-15"},
+    {"name": "Mikayla Evans", "invoiceId": "1082", "itemId": "va-subscription-og", "amount": 5.14, "paid": 0, "status": "due", "dueDate": "2026-10-01"},
+    {"name": "Johnny Dang", "invoiceId": "1081", "itemId": "va-subscription-og", "amount": 5.14, "paid": 0, "status": "due", "dueDate": "2026-10-01"},
+    {"name": "Almaz Lee", "invoiceId": "1096", "itemId": "va101", "amount": 1236, "paid": 0, "status": "due", "dueDate": "2026-09-05"},
+    {"name": "Alexa Cruz Rosas", "invoiceId": "1095", "itemId": "va101", "amount": 1236, "paid": 0, "status": "due", "dueDate": "2026-09-05"},
+    {"name": "Hailee Bui", "invoiceId": "1094", "itemId": "va101", "amount": 927, "paid": 0, "status": "due", "dueDate": "2026-09-05"},
+    {"name": "Brian Neves", "invoiceId": "1093", "itemId": "va101", "amount": 927, "paid": 0, "status": "due", "dueDate": "2026-09-05"},
+    {"name": "Nyagach Thuok", "invoiceId": "0842", "itemId": "va101", "amount": 1236, "paid": 712, "status": "due", "dueDate": "2026-10-30"},
+    {"name": "Randall Jubilee", "invoiceId": "00471", "itemId": "va101", "amount": 1236, "paid": 820, "status": "due", "dueDate": "2026-11-13"},
+    {"name": "James Strysko", "invoiceId": "0935", "itemId": "va101", "amount": 1236, "paid": 300, "status": "due", "dueDate": "2026-12-18"},
+    {"name": "Jamison Floyd", "invoiceId": "1080", "itemId": "va101", "amount": 1236, "paid": 404, "status": "due", "dueDate": "2026-12-04"},
+    {"name": "Lilliana Fernandez", "invoiceId": "1079", "itemId": "va101", "amount": 1236, "paid": 300, "status": "due", "dueDate": "2026-12-18"},
+    {"name": "Karissa Sendlak", "invoiceId": "1100", "itemId": "va-subscription-og", "amount": 5.14, "paid": 5.14, "status": "paid", "dueDate": "2026-08-19"},
+    {"name": "Sadie Aschebrock", "invoiceId": "1098", "itemId": "va-subscription-og", "amount": 4.99, "paid": 4.99, "status": "paid", "dueDate": "2026-08-18"},
+    {"name": "Endy Dixon", "invoiceId": "1091", "itemId": "va101", "amount": 927, "paid": 927, "status": "paid", "dueDate": "2026-08-12"},
+    {"name": "Starr Hardin", "invoiceId": "1090", "itemId": "va101", "amount": 927, "paid": 927, "status": "paid", "dueDate": "2026-08-07"},
+    {"name": "Brieanna Scott", "invoiceId": "1089", "itemId": "va-subscription-og", "amount": 5.14, "paid": 5.14, "status": "paid", "dueDate": "2026-08-01"},
+    {"name": "Ixchel Harguess", "invoiceId": "1077", "itemId": "va101", "amount": 927, "paid": 927, "status": "paid", "dueDate": "2026-08-01"},
+    {"name": "Ailiyah Mercado", "invoiceId": "1076", "itemId": "va101", "amount": 927, "paid": 927, "status": "paid", "dueDate": "2026-08-10"}
+  ],
+  "skipped": [
+    {"name": "Tanya Papuga", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Sydnee Falkner", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Amanda Kelsey", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Sally Schackart", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Julie Gallegos", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Delex Taghap", "reason": "On Square, not on the 2026 enrollment workbook"},
+    {"name": "Justin Chambers", "reason": "Guest / instructor on Square, not an enrolled student"}
+  ],
+  "subscriptions": [
+    {"name": "Stacey Boucher", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
+    {"name": "Dianica Vargas", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
+    {"name": "Adam Montoya", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
+    {"name": "Cheylo Rallis", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
+    {"name": "Patrick Montgomery", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
+    {"name": "Fynlie Lienhart", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Avarie Lienhart", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Skyler Weaver", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Bristol Hughes", "amount": 5.14, "itemId": "va-subscription-og", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Lucas Sanders", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Ailen Gallegos", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Sadie Aschebrock", "amount": 51.49, "itemId": "va-subscription", "status": "cancelling", "since": "2026-01-01", "lastPaid": "2026-08-01", "cancelOn": "2026-09-01"},
+    {"name": "Sara Bodeke", "amount": 5.14, "itemId": "va-subscription-og", "status": "cancelled", "lastPaid": "2026-06-01", "cancelOn": "2026-07-01"},
+    {"name": "Joselyne Woosley", "amount": 5.14, "itemId": "va-subscription-og", "status": "cancelled", "cancelOn": "2026-08-01"}
+  ]
+}

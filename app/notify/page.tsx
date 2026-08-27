@@ -1,90 +1,93 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { NotifyComposer } from "@/components/notify-composer"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
 import { formatDateTime, fullName } from "@/lib/format"
+import { SYSTEM_GROUP_DEFS } from "@/lib/groups"
+import { cn } from "@/lib/utils"
 
 export default function NotifyPage() {
-  const { notifications, students } = useStore()
-  const [preset, setPreset] = useState<"none" | "overdue" | "pending" | "due" | "academy" | "subscriber">(
-    "none",
-  )
+  const { notifications, students, groups } = useStore()
+  const [activeGroup, setActiveGroup] = useState<string>("")
 
   const presetStudents = useMemo(() => {
-    if (preset === "overdue") {
-      return students.filter((s) => ["overdue", "declined", "collections"].includes(s.enrollmentStatus))
-    }
-    if (preset === "pending") {
-      return students.filter((s) => s.enrollmentStatus === "pending")
-    }
-    if (preset === "due") {
-      return students.filter(
-        (s) => s.nextPaymentDate && s.nextPaymentDate <= "2026-09-05" && s.enrollmentStatus === "current",
-      )
-    }
-    if (preset === "academy") {
-      return students.filter((s) => s.program === "academy" && s.enrollmentStatus === "current")
-    }
-    if (preset === "subscriber") {
-      return students.filter((s) => s.program === "subscriber" && s.enrollmentStatus === "current")
-    }
-    return []
-  }, [preset, students])
+    if (!activeGroup) return []
+    const group = groups.find((g) => g.id === activeGroup)
+    if (!group) return []
+    return students.filter((s) => group.studentIds.includes(s.id))
+  }, [activeGroup, groups, students])
 
-  const templateForPreset =
-    preset === "overdue"
-      ? "overdue-sms"
-      : preset === "academy"
-        ? "weekly-academy"
-        : preset === "subscriber"
-          ? "weekly-subscriber"
-          : undefined
+  const templateForGroup = useMemo(() => {
+    const group = groups.find((g) => g.id === activeGroup)
+    if (group?.systemKey === "overdue") return "overdue-sms"
+    if (group?.systemKey === "current") return "weekly-academy"
+    if (group?.systemKey === "subscribers") return "weekly-subscriber"
+    return undefined
+  }, [activeGroup, groups])
+
+  const systemGroups = groups.filter((g) => g.kind === "system")
+  const customGroups = groups.filter((g) => g.kind === "custom")
 
   return (
     <div>
       <PageHeader
         eyebrow="Outreach"
         title="Text & Gmail"
-        description="Send a payment nudge, class reminder, or photoshoot note. One student opens your phone or Gmail. Groups stay in the outbox until Textla or Gmail is connected."
+        description="Current students, overdue students, and subscribers each have their own notification group. Add several people and save them as a custom group for a group message."
       />
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Button size="sm" variant={preset === "none" ? "default" : "outline"} onClick={() => setPreset("none")}>
-          Pick people
-        </Button>
-        <Button size="sm" variant={preset === "overdue" ? "default" : "outline"} onClick={() => setPreset("overdue")}>
-          Overdue / declined
-        </Button>
-        <Button size="sm" variant={preset === "pending" ? "default" : "outline"} onClick={() => setPreset("pending")}>
-          Pending starts
-        </Button>
-        <Button size="sm" variant={preset === "due" ? "default" : "outline"} onClick={() => setPreset("due")}>
-          Due by Sep 5
-        </Button>
-        <Button
-          size="sm"
-          variant={preset === "academy" ? "default" : "outline"}
-          onClick={() => setPreset("academy")}
-        >
-          Weekly academy class
-        </Button>
-        <Button
-          size="sm"
-          variant={preset === "subscriber" ? "default" : "outline"}
-          onClick={() => setPreset("subscriber")}
-        >
-          Weekly subscriber class
-        </Button>
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        {systemGroups.map((g) => {
+          const def = SYSTEM_GROUP_DEFS.find((d) => d.systemKey === g.systemKey)
+          const on = activeGroup === g.id
+          return (
+            <button
+              key={g.id}
+              type="button"
+              onClick={() => setActiveGroup(on ? "" : g.id)}
+              className={cn(
+                "rounded-2xl border p-4 text-left",
+                on
+                  ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.12)]"
+                  : "border-border hover:bg-muted/40",
+              )}
+            >
+              <p className="font-heading text-2xl">{g.name}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{g.studentIds.length} people</p>
+              <p className="mt-2 text-xs text-muted-foreground">{def?.description}</p>
+            </button>
+          )
+        })}
       </div>
+
+      {customGroups.length > 0 ? (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {customGroups.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              onClick={() => setActiveGroup(g.id === activeGroup ? "" : g.id)}
+              className={cn(
+                "rounded-full border px-3 py-1 text-xs font-medium",
+                activeGroup === g.id
+                  ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                  : "border-border text-muted-foreground",
+              )}
+            >
+              {g.name} · {g.studentIds.length}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <Panel className="mb-8">
         <NotifyComposer
-          key={preset + presetStudents.map((s) => s.id).join(",")}
+          key={activeGroup + presetStudents.map((s) => s.id).join(",")}
           presetStudents={presetStudents}
-          initialTemplateId={templateForPreset}
+          initialGroupId={activeGroup || undefined}
+          initialTemplateId={templateForGroup}
         />
       </Panel>
 
@@ -102,7 +105,9 @@ export default function NotifyPage() {
                 <span>
                   {n.channel === "sms" ? "Text" : "Email"} · {n.status} · {formatDateTime(n.sentAt)}
                 </span>
-                <span>{n.studentIds.length} recipient{n.studentIds.length === 1 ? "" : "s"}</span>
+                <span>
+                  {n.studentIds.length} recipient{n.studentIds.length === 1 ? "" : "s"}
+                </span>
               </div>
               {n.subject ? <p className="mt-2 font-medium">{n.subject}</p> : null}
               <p className="mt-1 text-sm whitespace-pre-wrap text-muted-foreground">{n.body}</p>

@@ -19,8 +19,11 @@ export type PhotoshootStatus =
   | "received"
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
+export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
 export type NotifyChannel = "sms" | "email"
 export type NotifyStatus = "sent" | "queued" | "failed" | "demo"
+export type NotifyGroupKind = "system" | "custom"
+export type SystemGroupKey = "current" | "overdue" | "subscribers"
 
 export interface Student {
   id: string
@@ -61,16 +64,39 @@ export interface FeedbackNote {
   body: string
 }
 
+export interface SquareCatalogItem {
+  id: string
+  name: string
+  price: number | null
+  kind: SquareItemKind
+  description: string
+}
+
 export interface PaymentRecord {
   id: string
   studentId: string
   amount: number
+  paidAmount: number
+  balance: number
   dueDate: string
   paidDate: string
   status: PaymentStatus
   method: "square" | "cash" | "other"
   squareInvoiceId: string
   notes: string
+  itemId: string
+  itemName: string
+  itemDescription: string
+  itemKind: SquareItemKind
+}
+
+export interface NotifyGroup {
+  id: string
+  name: string
+  kind: NotifyGroupKind
+  systemKey?: SystemGroupKey
+  studentIds: string[]
+  createdAt: string
 }
 
 export interface NotificationRecord {
@@ -89,4 +115,5 @@ export interface AppData {
   feedback: FeedbackNote[]
   payments: PaymentRecord[]
   notifications: NotificationRecord[]
+  groups: NotifyGroup[]
 }

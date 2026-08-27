@@ -12,6 +12,7 @@ import { countsFor, useStore } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import { isFinishingSoon, isOverdueStudent } from "@/lib/alerts"
+import { openBalance } from "@/lib/square"
 import { cn } from "@/lib/utils"
 
 export default function HomePage() {
@@ -30,8 +31,7 @@ export default function HomePage() {
     })
     const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
-    const openPay = payments.filter((p) => ["due", "overdue", "declined"].includes(p.status))
-    const openTotal = openPay.reduce((sum, p) => sum + p.amount, 0)
+    const openTotal = openBalance(payments)
     return { academy, attention, pending, finishing, dueSoon, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
 

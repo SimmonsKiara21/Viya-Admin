@@ -16,17 +16,57 @@ import type {
   ClassType,
   FeedbackNote,
   NotificationRecord,
+  NotifyGroup,
   PaymentRecord,
+  SquareItemKind,
   Student,
 } from "./types"
 import { newId } from "./format"
+import { allNotifyGroups } from "./groups"
+import { defaultItemForStudent } from "./square"
 
-const STORAGE_KEY = "viya-academy-store-v2"
+const STORAGE_KEY = "viya-academy-store-v3"
 
-const seedData = seed as AppData
+function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amount: number }): PaymentRecord {
+  const paid = p.paidAmount ?? (p.status === "paid" ? p.amount : 0)
+  const balance = p.balance ?? (p.status === "paid" ? 0 : Math.max(p.amount - paid, 0))
+  return {
+    id: p.id || newId("pay"),
+    studentId: p.studentId,
+    amount: p.amount,
+    paidAmount: paid,
+    balance,
+    dueDate: p.dueDate || "",
+    paidDate: p.paidDate || "",
+    status: p.status || "due",
+    method: p.method || "square",
+    squareInvoiceId: p.squareInvoiceId || "",
+    notes: p.notes || "",
+    itemId: p.itemId || "",
+    itemName: p.itemName || "",
+    itemDescription: p.itemDescription || "",
+    itemKind: (p.itemKind || "academy") as SquareItemKind,
+  }
+}
+
+function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {
+  if (!raw?.students?.length) return null
+  return {
+    students: raw.students,
+    attendance: raw.attendance ?? [],
+    feedback: raw.feedback ?? [],
+    payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
+    notifications: raw.notifications ?? [],
+    groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
+  }
+}
+
+const seedData = normalizeData(seed as AppData) ?? (seed as AppData)
 
 type StoreContextValue = AppData & {
   ready: boolean
+  groups: NotifyGroup[]
+  customGroups: NotifyGroup[]
   updateStudent: (id: string, patch: Partial<Student>) => void
   addStudent: (student: Student) => void
   checkIn: (studentId: string, classType: ClassType, notes?: string) => AttendanceRecord
@@ -35,6 +75,9 @@ type StoreContextValue = AppData & {
   addPayment: (payment: Omit<PaymentRecord, "id">) => void
   updatePayment: (id: string, patch: Partial<PaymentRecord>) => void
   addNotification: (note: Omit<NotificationRecord, "id" | "sentAt"> & { sentAt?: string }) => void
+  addGroup: (name: string, studentIds: string[]) => NotifyGroup
+  updateGroup: (id: string, patch: Partial<Pick<NotifyGroup, "name" | "studentIds">>) => void
+  deleteGroup: (id: string) => void
   resetRoster: () => void
 }
 
@@ -53,8 +96,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       try {
         const raw = localStorage.getItem(STORAGE_KEY)
         if (raw) {
-          const parsed = JSON.parse(raw) as AppData
-          if (parsed?.students?.length) setData(parsed)
+          const parsed = normalizeData(JSON.parse(raw) as AppData)
+          if (parsed) setData(parsed)
         }
       } catch {
         /* keep seed */
@@ -77,9 +120,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setData((prev) => fn(prev))
   }, [])
 
+  const customGroups = useMemo(() => data.groups ?? [], [data.groups])
+  const groups = useMemo(
+    () => allNotifyGroups(data.students, data.payments, customGroups),
+    [data.students, data.payments, customGroups],
+  )
+
   const value = useMemo<StoreContextValue>(() => {
     return {
       ...data,
+      groups,
+      customGroups,
       ready,
       updateStudent: (id, patch) =>
         mutate((prev) => ({
@@ -120,14 +171,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ],
         })),
       addPayment: (payment) =>
-        mutate((prev) => ({
-          ...prev,
-          payments: [{ ...payment, id: newId("pay") }, ...prev.payments],
-        })),
+        mutate((prev) => {
+          const student = prev.students.find((s) => s.id === payment.studentId)
+          const item = student ? defaultItemForStudent(student) : undefined
+          return {
+            ...prev,
+            payments: [
+              normalizePayment({
+                ...payment,
+                itemId: payment.itemId || item?.id,
+                itemName: payment.itemName || item?.name,
+                itemDescription: payment.itemDescription || item?.description,
+                itemKind: payment.itemKind || item?.kind,
+              }),
+              ...prev.payments,
+            ],
+          }
+        }),
       updatePayment: (id, patch) =>
         mutate((prev) => ({
           ...prev,
-          payments: prev.payments.map((p) => (p.id === id ? { ...p, ...patch } : p)),
+          payments: prev.payments.map((p) => (p.id === id ? normalizePayment({ ...p, ...patch }) : p)),
         })),
       addNotification: (note) =>
         mutate((prev) => ({
@@ -145,13 +209,34 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ...prev.notifications,
           ],
         })),
+      addGroup: (name, studentIds) => {
+        const group: NotifyGroup = {
+          id: newId("grp"),
+          name: name.trim(),
+          kind: "custom",
+          studentIds: [...new Set(studentIds)],
+          createdAt: new Date().toISOString(),
+        }
+        mutate((prev) => ({ ...prev, groups: [group, ...(prev.groups ?? [])] }))
+        return group
+      },
+      updateGroup: (id, patch) =>
+        mutate((prev) => ({
+          ...prev,
+          groups: (prev.groups ?? []).map((g) => (g.id === id && g.kind === "custom" ? { ...g, ...patch } : g)),
+        })),
+      deleteGroup: (id) =>
+        mutate((prev) => ({
+          ...prev,
+          groups: (prev.groups ?? []).filter((g) => g.id !== id),
+        })),
       resetRoster: () => {
         const next = cloneSeed()
         setData(next)
         localStorage.removeItem(STORAGE_KEY)
       },
     }
-  }, [data, mutate, ready])
+  }, [data, mutate, ready, groups, customGroups])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

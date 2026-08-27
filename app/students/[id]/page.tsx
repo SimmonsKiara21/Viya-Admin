@@ -49,12 +49,15 @@ import {
   PROGRAM_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
+import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
 import type {
   ClassType,
   EnrollmentStatus,
   PaymentPlan,
+  PaymentRecord,
   PhotoshootStatus,
   Program,
+  Student,
   SubscriptionStatus,
 } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -397,14 +400,23 @@ export default function StudentProfilePage() {
             ) : (
               <ul className="divide-y divide-border">
                 {bills.map((bill) => (
-                  <li key={bill.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                    <div>
-                      <p className="font-medium">
-                        {formatMoney(bill.amount)} · {formatDate(bill.dueDate)}
+                  <li key={bill.id} className="flex flex-wrap items-start justify-between gap-2 py-3">
+                    <div className="min-w-0 max-w-xl">
+                      <p className="font-medium">{bill.itemName || "Square invoice"}</p>
+                      <p className="mt-0.5 text-sm">
+                        {formatMoney(bill.amount)}
+                        {bill.paidAmount ? ` · paid ${formatMoney(bill.paidAmount)}` : ""}
+                        {bill.balance ? ` · balance ${formatMoney(bill.balance)}` : ""} ·{" "}
+                        {formatDate(bill.dueDate)}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {bill.method === "square" ? "Square" : bill.method} · {bill.squareInvoiceId}
                       </p>
+                      {bill.itemDescription ? (
+                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                          {bill.itemDescription}
+                        </p>
+                      ) : null}
                     </div>
                     <PaymentBadge status={bill.status} />
                   </li>
@@ -478,6 +490,7 @@ export default function StudentProfilePage() {
                 ))}
               </NativeSelect>
             </Field>
+            <SquareSubscriptionCopy student={student} payments={payments} />
             <p className="text-sm text-muted-foreground">
               Use Interested when someone on a payment plan wants the subscriber track — several
               academy students already have that flag from the workbook.
@@ -519,6 +532,27 @@ export default function StudentProfilePage() {
           </Panel>
         </TabsContent>
       </Tabs>
+    </div>
+  )
+}
+
+function SquareSubscriptionCopy({
+  student,
+  payments,
+}: {
+  student: Student
+  payments: PaymentRecord[]
+}) {
+  const billed = catalogItemForStudent(student, payments)
+  const item =
+    billed.kind === "subscriber" ? billed : SUBSCRIPTION_ITEM
+  return (
+    <div className="rounded-xl border border-border bg-muted/30 p-4">
+      <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+        Square · {item.name}
+        {item.price != null ? ` · ${formatMoney(item.price)}` : ""}
+      </p>
+      <p className="mt-2 text-sm leading-relaxed">{item.description}</p>
     </div>
   )
 }

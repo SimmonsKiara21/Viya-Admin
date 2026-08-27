@@ -23,9 +23,9 @@ npm start
 - **Look up a student** from the search bar on every page (name, ID, phone, or email). Their profile has a photo, contact buttons, enrollment status, notes, and class feedback.
 - **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
 - **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting.
-- **Payments** lists Square-style invoices with Current / Pending / Declined / PIF plus Overdue, Paused, and Collections from the workbook.
-- **Subscriptions** and **Photoshoots** are their own tabs.
-- **Notify** sends a text or Gmail. For one student, your phone or mail app opens with the message filled in. Group sends are stored in the outbox.
+- **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
+- **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
+- **Notify** has separate groups for **Current students**, **Overdue students**, and **Subscribers**. Search and check several people, then save them as a custom group for a group message.
 
 ## Overdue and wrapping-up alerts
 
@@ -44,6 +44,8 @@ Send the weekly reminder from **Classes** or **Notify**. Subscriber class times 
 Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Full**, plus Overdue, Paused, and Collections so the desk matches how the academy already works.
 
 ## Square, Gmail, and texts
+
+Payments use Square invoices pulled from the logged-in dashboard and kept in `data/square.json`. Live API keys are optional.
 
 The desk works without API keys. Copy `.env.example` to `.env.local` and add credentials when you want live send/sync:
 

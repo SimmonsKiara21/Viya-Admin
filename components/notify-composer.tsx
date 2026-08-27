@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { MESSAGE_TEMPLATES } from "@/lib/constants"
 import { fillTemplate, formatMoney, formatPhone, fullName, matchesQuery, smsHref } from "@/lib/format"
+import { SYSTEM_GROUP_DEFS } from "@/lib/groups"
 import { useStore } from "@/lib/store"
 import type { NotifyChannel, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -17,13 +18,15 @@ export function NotifyComposer({
   compact = false,
   initialTemplateId,
   initialBody,
+  initialGroupId,
 }: {
   presetStudents?: Student[]
   compact?: boolean
   initialTemplateId?: string
   initialBody?: string
+  initialGroupId?: string
 }) {
-  const { students, addNotification } = useStore()
+  const { students, groups, addNotification, addGroup, deleteGroup } = useStore()
   const starter = MESSAGE_TEMPLATES.find((t) => t.id === initialTemplateId) ?? MESSAGE_TEMPLATES[0]
   const [channel, setChannel] = useState<NotifyChannel>(starter.channel)
   const [templateId, setTemplateId] = useState(starter.id)
@@ -31,12 +34,14 @@ export function NotifyComposer({
   const [body, setBody] = useState(initialBody ?? starter.body)
   const [query, setQuery] = useState("")
   const [selected, setSelected] = useState<string[]>(presetStudents.map((s) => s.id))
+  const [groupId, setGroupId] = useState(initialGroupId ?? "")
+  const [newGroupName, setNewGroupName] = useState("")
 
   const picked = students.filter((s) => selected.includes(s.id))
-  const searchHits = useMemo(
-    () => (query.trim() ? students.filter((s) => matchesQuery(s, query)).slice(0, 6) : []),
-    [query, students],
-  )
+  const searchHits = useMemo(() => {
+    if (!query.trim()) return []
+    return students.filter((s) => matchesQuery(s, query)).slice(0, 24)
+  }, [query, students])
 
   function applyTemplate(id: string) {
     const t = MESSAGE_TEMPLATES.find((x) => x.id === id)
@@ -45,6 +50,39 @@ export function NotifyComposer({
     setChannel(t.channel)
     setSubject(t.subject)
     setBody(t.body)
+  }
+
+  function applyGroup(id: string) {
+    setGroupId(id)
+    if (!id) return
+    const group = groups.find((g) => g.id === id)
+    if (group) setSelected(group.studentIds)
+  }
+
+  function toggle(id: string) {
+    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+    setGroupId("")
+  }
+
+  function addAllHits() {
+    setSelected((prev) => [...new Set([...prev, ...searchHits.map((s) => s.id)])])
+    setQuery("")
+    setGroupId("")
+  }
+
+  function saveGroup() {
+    if (picked.length < 2) {
+      toast.error("Add at least two students to save a group.")
+      return
+    }
+    if (!newGroupName.trim()) {
+      toast.error("Name the group first.")
+      return
+    }
+    const group = addGroup(newGroupName.trim(), picked.map((s) => s.id))
+    setGroupId(group.id)
+    setNewGroupName("")
+    toast.success(`Saved “${group.name}” with ${group.studentIds.length} people.`)
   }
 
   async function send() {
@@ -87,14 +125,24 @@ export function NotifyComposer({
           `mailto:${student.email}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(text)}`,
         )
       }
+    } else if (channel === "email") {
+      const emails = picked.map((s) => s.email).filter(Boolean)
+      if (emails.length) {
+        window.open(
+          `mailto:?bcc=${encodeURIComponent(emails.join(","))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll("{{firstName}}", "everyone"))}`,
+        )
+      }
     }
 
     toast.success(info.message)
-    if (presetStudents.length === 0) setSelected([])
+    if (presetStudents.length === 0 && !initialGroupId) setSelected([])
   }
 
+  const systemGroups = groups.filter((g) => g.kind === "system")
+  const customGroups = groups.filter((g) => g.kind === "custom")
+
   return (
-    <div className={cn("grid gap-4", compact ? "" : "lg:grid-cols-[1fr_280px]")}>
+    <div className={cn("grid gap-4", compact ? "" : "lg:grid-cols-[1fr_320px]")}>
       <div className="grid gap-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Channel">
@@ -130,7 +178,8 @@ export function NotifyComposer({
           />
         </Field>
         <p className="text-xs text-muted-foreground">
-          Use {"{{firstName}}"}, {"{{amount}}"}, and {"{{due}}"} — they fill in per student.
+          Use {"{{firstName}}"}, {"{{amount}}"}, and {"{{due}}"} — they fill in per student. Group emails open
+          Gmail with everyone on BCC.
         </p>
         <Button onClick={send} className="w-full sm:w-auto">
           Send {channel === "sms" ? "texts" : "emails"} to {picked.length || 0}
@@ -138,36 +187,99 @@ export function NotifyComposer({
       </div>
 
       <div className="grid gap-3">
-        <Field label="Recipients">
+        <Field label="Notification group">
+          <NativeSelect value={groupId} onChange={(e) => applyGroup(e.target.value)}>
+            <option value="">Pick people, or a saved group</option>
+            <optgroup label="Desk groups">
+              {systemGroups.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name} ({g.studentIds.length})
+                </option>
+              ))}
+            </optgroup>
+            {customGroups.length ? (
+              <optgroup label="Custom groups">
+                {customGroups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name} ({g.studentIds.length})
+                  </option>
+                ))}
+              </optgroup>
+            ) : null}
+          </NativeSelect>
+        </Field>
+        <div className="flex flex-wrap gap-1.5">
+          {systemGroups.map((g) => {
+            const def = SYSTEM_GROUP_DEFS.find((d) => d.systemKey === g.systemKey)
+            return (
+              <button
+                key={g.id}
+                type="button"
+                title={def?.description}
+                onClick={() => applyGroup(g.id === groupId ? "" : g.id)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs font-medium",
+                  groupId === g.id
+                    ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                    : "border-border text-muted-foreground",
+                )}
+              >
+                {g.name} · {g.studentIds.length}
+              </button>
+            )
+          })}
+        </div>
+        <Field label="Add students">
           <Input
-            placeholder="Add by name or ID"
+            placeholder="Search name, ID, phone, or email"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </Field>
         {searchHits.length > 0 ? (
-          <ul className="overflow-hidden rounded-xl border border-border">
-            {searchHits.map((s) => (
-              <li key={s.id}>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-muted"
-                  onClick={() => {
-                    setSelected((prev) => (prev.includes(s.id) ? prev : [...prev, s.id]))
-                    setQuery("")
-                  }}
-                >
-                  <span>{fullName(s)}</span>
-                  <span className="text-xs text-muted-foreground">#{s.id}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-hidden rounded-xl border border-border">
+            <div className="flex items-center justify-between border-b border-border px-3 py-1.5">
+              <p className="text-xs text-muted-foreground">{searchHits.length} matches</p>
+              <button type="button" className="text-xs underline" onClick={addAllHits}>
+                Add all matching
+              </button>
+            </div>
+            <ul className="max-h-48 overflow-y-auto">
+              {searchHits.map((s) => {
+                const on = selected.includes(s.id)
+                return (
+                  <li key={s.id}>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                      onClick={() => toggle(s.id)}
+                    >
+                      <span
+                        className={cn(
+                          "flex size-4 shrink-0 items-center justify-center rounded border text-[10px]",
+                          on
+                            ? "border-[oklch(0.78_0.08_85)] bg-[oklch(0.78_0.08_85)] text-black"
+                            : "border-border",
+                        )}
+                      >
+                        {on ? "✓" : ""}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate">{fullName(s)}</span>
+                      <span className="text-xs text-muted-foreground">#{s.id}</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         ) : null}
         {picked.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No one selected yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No one selected yet. Use Current students, Overdue students, or Subscribers — or search and
+            check several people for a group message.
+          </p>
         ) : (
-          <ul className="grid gap-1.5">
+          <ul className="grid max-h-56 gap-1.5 overflow-y-auto">
             {picked.map((s) => (
               <li
                 key={s.id}
@@ -183,7 +295,7 @@ export function NotifyComposer({
                 <button
                   type="button"
                   className="text-xs text-muted-foreground hover:text-foreground"
-                  onClick={() => setSelected((prev) => prev.filter((id) => id !== s.id))}
+                  onClick={() => toggle(s.id)}
                 >
                   Remove
                 </button>
@@ -191,6 +303,48 @@ export function NotifyComposer({
             ))}
           </ul>
         )}
+        {picked.length >= 2 ? (
+          <div className="grid gap-2 rounded-xl border border-border p-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Save as a group for later
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                placeholder="Group name — Saturday acting, photoshoot day…"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+              />
+              <Button type="button" variant="outline" onClick={saveGroup}>
+                Save group
+              </Button>
+            </div>
+          </div>
+        ) : null}
+        {customGroups.length > 0 ? (
+          <ul className="grid gap-1.5">
+            {customGroups.map((g) => (
+              <li key={g.id} className="flex items-center justify-between text-xs text-muted-foreground">
+                <button type="button" className="hover:text-foreground" onClick={() => applyGroup(g.id)}>
+                  {g.name} · {g.studentIds.length}
+                </button>
+                <button
+                  type="button"
+                  className="hover:text-foreground"
+                  onClick={() => {
+                    deleteGroup(g.id)
+                    if (groupId === g.id) {
+                      setGroupId("")
+                      setSelected([])
+                    }
+                    toast.message(`Removed ${g.name}.`)
+                  }}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </div>
   )

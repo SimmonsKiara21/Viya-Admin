@@ -41,10 +41,12 @@ export function smsHref(phone: string, body?: string) {
 
 export function formatMoney(amount: number | null | undefined) {
   if (amount == null || Number.isNaN(amount)) return "—"
+  const cents = Math.round(amount * 100) % 100 !== 0
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: cents ? 2 : 0,
+    maximumFractionDigits: 2,
   }).format(amount)
 }
 

@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 OUT = ROOT / "data" / "seed.json"
 
 # Enrollment status: current | pending | declined | pif | overdue | paused | collections
@@ -408,6 +410,12 @@ for st in students:
             "method": "square",
             "squareInvoiceId": f"sqinv_{st['id']}_pif",
             "notes": "Paid in full — Square",
+            "paidAmount": 1850,
+            "balance": 0,
+            "itemId": "va101",
+            "itemName": "VA101 Modelling & Acting Training",
+            "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+            "itemKind": "academy",
         })
         n += 1
         continue
@@ -430,6 +438,16 @@ for st in students:
         "method": method,
         "squareInvoiceId": square_id,
         "notes": "Square invoice synced from enrollment workbook",
+        "paidAmount": amount if status == "paid" else 0,
+        "balance": 0 if status == "paid" else amount,
+        "itemId": "va-subscription" if st["program"] == "subscriber" else "va101",
+        "itemName": "Viya Talent Subscription" if st["program"] == "subscriber" else "VA101 Modelling & Acting Training",
+        "itemDescription": (
+            "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
+            if st["program"] == "subscriber"
+            else "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans."
+        ),
+        "itemKind": "subscriber" if st["program"] == "subscriber" else "academy",
     }
     n += 1
     payments.append(rec)
@@ -452,6 +470,12 @@ for st in students:
             "method": "square",
             "squareInvoiceId": f"sqinv_{st['id']}_prev",
             "notes": "Prior Square payment",
+            "paidAmount": amount,
+            "balance": 0,
+            "itemId": "va101",
+            "itemName": "VA101 Modelling & Acting Training",
+            "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
+            "itemKind": "academy",
         })
         n += 1
 
@@ -483,6 +507,21 @@ payload = {
     "feedback": feedback,
     "payments": payments,
     "notifications": notifications,
+    "groups": [],
 }
-OUT.write_text(json.dumps(payload, indent=2))
-print(f"Wrote {len(students)} students, {len(attendance)} check-ins, {len(payments)} payments -> {OUT}")
+
+square_path = ROOT / "data" / "square.json"
+if square_path.exists():
+    from merge_square import merge_into
+
+    square = json.loads(square_path.read_text())
+    payload = merge_into(payload, square)
+    report = payload.pop("_squareMerge", {})
+    print(
+        f"Square merge: {len(report.get('matchedInvoices', []))} invoices, "
+        f"{len(report.get('matchedSubscriptions', []))} subscriptions matched; "
+        f"skipped {report.get('skippedInvoices', []) + report.get('skippedSubscriptions', [])}"
+    )
+
+OUT.write_text(json.dumps(payload, indent=2) + "\n")
+print(f"Wrote {len(students)} students, {len(attendance)} check-ins, {len(payload['payments'])} payments -> {OUT}")

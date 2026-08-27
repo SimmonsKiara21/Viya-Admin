@@ -1,0 +1,116 @@
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import {
+  Camera,
+  ClipboardCheck,
+  CreditCard,
+  LayoutDashboard,
+  Menu,
+  MessageSquare,
+  Sparkles,
+  Users,
+  CalendarDays,
+} from "lucide-react"
+import { buttonVariants } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { StudentSearch } from "@/components/student-search"
+import { cn } from "@/lib/utils"
+
+const NAV = [
+  { href: "/", label: "Home", icon: LayoutDashboard },
+  { href: "/students", label: "Students", icon: Users },
+  { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
+  { href: "/attendance", label: "Attendance", icon: CalendarDays },
+  { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
+  { href: "/photoshoots", label: "Photoshoots", icon: Camera },
+  { href: "/notify", label: "Notify", icon: MessageSquare },
+]
+
+function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const pathname = usePathname()
+  return (
+    <nav className="flex flex-col gap-1">
+      {NAV.map((item) => {
+        const active =
+          item.href === "/"
+            ? pathname === "/"
+            : pathname === item.href || pathname.startsWith(`${item.href}/`)
+        const Icon = item.icon
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+              active
+                ? "bg-[oklch(0.78_0.08_85/0.16)] text-[oklch(0.9_0.06_85)]"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
+          >
+            <Icon className="size-4" />
+            {item.label}
+          </Link>
+        )
+      })}
+    </nav>
+  )
+}
+
+function Brand() {
+  return (
+    <Link href="/" className="block px-2 py-1">
+      <p className="font-heading text-3xl leading-none tracking-[0.22em] text-[oklch(0.86_0.07_85)]">
+        VIYA
+      </p>
+      <p className="mt-1 text-[10px] font-medium tracking-[0.28em] text-muted-foreground uppercase">
+        Academy desk
+      </p>
+    </Link>
+  )
+}
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-full">
+      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-border bg-[oklch(0.12_0.015_75)] px-4 py-6 md:flex">
+        <Brand />
+        <div className="mt-8 flex-1">
+          <NavLinks />
+        </div>
+        <p className="px-2 text-[11px] leading-relaxed text-muted-foreground">
+          Staff only · Phoenix
+        </p>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-40 flex items-center gap-3 border-b border-border bg-background/85 px-4 py-3 backdrop-blur-md">
+          <Sheet>
+            <SheetTrigger className="inline-flex size-9 items-center justify-center rounded-lg md:hidden">
+              <Menu className="size-5" />
+              <span className="sr-only">Open menu</span>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 bg-[oklch(0.12_0.015_75)] px-4 pt-8">
+              <SheetTitle className="sr-only">Menu</SheetTitle>
+              <Brand />
+              <div className="mt-8">
+                <NavLinks />
+              </div>
+            </SheetContent>
+          </Sheet>
+          <StudentSearch className="max-w-xl flex-1" />
+          <Link
+            href="/check-in"
+            className={cn(buttonVariants(), "hidden sm:inline-flex")}
+          >
+            Check in
+          </Link>
+        </header>
+        <div className="flex-1 px-4 py-6 md:px-8">{children}</div>
+      </div>
+    </div>
+  )
+}

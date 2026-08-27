@@ -1,0 +1,221 @@
+"use client"
+
+import Link from "next/link"
+import { useMemo } from "react"
+import { AlertTriangle, CalendarCheck, CreditCard, Users } from "lucide-react"
+import { toast } from "sonner"
+import { PageHeader, Panel } from "@/components/ui-helpers"
+import { StudentRow } from "@/components/student-row"
+import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
+import { buttonVariants } from "@/components/ui/button"
+import { countsFor, useStore } from "@/lib/store"
+import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/format"
+import { cn } from "@/lib/utils"
+
+export default function HomePage() {
+  const { students, attendance, payments, ready, resetRoster } = useStore()
+  const today = todayISO()
+
+  const stats = useMemo(() => {
+    const academy = students.filter((s) => s.program === "academy")
+    const attention = students.filter((s) =>
+      ["overdue", "declined", "collections"].includes(s.enrollmentStatus),
+    )
+    const pending = students.filter((s) => s.enrollmentStatus === "pending")
+    const dueSoon = students.filter((s) => {
+      if (!s.nextPaymentDate || !s.nextPaymentAmount) return false
+      if (["pif", "paused"].includes(s.enrollmentStatus)) return false
+      return s.nextPaymentDate <= "2026-09-05" && s.enrollmentStatus !== "pif"
+    })
+    const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
+    const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
+    const openPay = payments.filter((p) => ["due", "overdue", "declined"].includes(p.status))
+    const openTotal = openPay.reduce((sum, p) => sum + p.amount, 0)
+    return { academy, attention, pending, dueSoon, todayCheckins, recent, openTotal }
+  }, [students, attendance, payments, today])
+
+  if (!ready) {
+    return <p className="text-sm text-muted-foreground">Loading the desk…</p>
+  }
+
+  return (
+    <div>
+      <PageHeader
+        eyebrow="Viya Academy + Agency"
+        title="Front desk"
+        description="Look up talent, take check-in, track Square balances, and send a text or Gmail without leaving the floor."
+        actions={
+          <>
+            <Link href="/check-in" className={cn(buttonVariants())}>
+              Open check-in
+            </Link>
+            <Link href="/notify" className={cn(buttonVariants({ variant: "outline" }))}>
+              Send a reminder
+            </Link>
+          </>
+        }
+      />
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          icon={Users}
+          label="Academy roster"
+          value={String(stats.academy.length)}
+          href="/students"
+        />
+        <StatCard
+          icon={AlertTriangle}
+          label="Needs attention"
+          value={String(stats.attention.length)}
+          hint="Overdue, declined, collections"
+          href="/payments"
+        />
+        <StatCard
+          icon={CreditCard}
+          label="Open Square"
+          value={formatMoney(stats.openTotal)}
+          hint="Due, overdue, and declined"
+          href="/payments"
+        />
+        <StatCard
+          icon={CalendarCheck}
+          label="Checked in today"
+          value={String(stats.todayCheckins.length)}
+          href="/check-in"
+        />
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Panel>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-heading text-2xl">Needs a follow-up</h2>
+            <Link href="/payments" className="text-xs text-muted-foreground hover:text-foreground">
+              Payments
+            </Link>
+          </div>
+          {stats.attention.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No overdue or declined accounts.</p>
+          ) : (
+            <div className="divide-y divide-border">
+              {stats.attention.slice(0, 8).map((s) => (
+                <div key={s.id} className="flex items-center justify-between gap-2 py-1">
+                  <div className="min-w-0 flex-1">
+                    <StudentRow student={s} />
+                  </div>
+                  <span className="hidden text-xs text-muted-foreground sm:block">
+                    {formatMoney(s.nextPaymentAmount)} · {formatDate(s.nextPaymentDate)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Panel>
+
+        <Panel>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-heading text-2xl">Latest check-ins</h2>
+            <Link href="/attendance" className="text-xs text-muted-foreground hover:text-foreground">
+              Attendance
+            </Link>
+          </div>
+          {stats.recent.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No check-ins yet. Open Check-in to start class.</p>
+          ) : (
+            <ul className="grid gap-2">
+              {stats.recent.slice(0, 8).map((row) => {
+                const student = students.find((s) => s.id === row.studentId)
+                if (!student) return null
+                return (
+                  <li key={row.id} className="flex items-center justify-between gap-3 text-sm">
+                    <Link href={`/students/${student.id}`} className="min-w-0 font-medium hover:underline">
+                      {fullName(student)}
+                    </Link>
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      <ClassBadge type={row.classType} />
+                      <span className="tabular-nums">{formatTime(row.checkedInAt)}</span>
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </Panel>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Panel>
+          <h2 className="mb-3 font-heading text-2xl">Pending starts</h2>
+          {stats.pending.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No pending enrollments.</p>
+          ) : (
+            <div className="divide-y divide-border">
+              {stats.pending.slice(0, 8).map((s) => (
+                <div key={s.id} className="flex items-center justify-between gap-2 py-1">
+                  <div className="min-w-0 flex-1">
+                    <StudentRow student={s} />
+                  </div>
+                  <EnrollmentBadge status={s.enrollmentStatus} />
+                </div>
+              ))}
+            </div>
+          )}
+        </Panel>
+        <Panel>
+          <h2 className="mb-3 font-heading text-2xl">Tonight&apos;s class mix</h2>
+          {stats.todayCheckins.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nobody has checked in today. The Aug 26 roster is under Attendance if you need last class.
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Modeling {countsFor(stats.todayCheckins).modeling} · Acting{" "}
+              {countsFor(stats.todayCheckins).acting} · Subscriber{" "}
+              {countsFor(stats.todayCheckins).subscriber}
+            </p>
+          )}
+        </Panel>
+      </div>
+
+      <p className="mt-10 text-center text-xs text-muted-foreground">
+        Roster is saved in this browser.{" "}
+        <button
+          type="button"
+          className="underline hover:text-foreground"
+          onClick={() => {
+            resetRoster()
+            toast.message("Workbook roster restored.")
+          }}
+        >
+          Restore the original workbook
+        </button>
+      </p>
+    </div>
+  )
+}
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  hint,
+  href,
+}: {
+  icon: typeof Users
+  label: string
+  value: string
+  hint?: string
+  href: string
+}) {
+  return (
+    <Link href={href} className="block">
+      <Panel className="h-full transition-colors hover:border-[oklch(0.78_0.08_85/0.4)]">
+        <div className="flex items-start justify-between">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+          <Icon className="size-4 text-[oklch(0.78_0.08_85)]" />
+        </div>
+        <p className="mt-3 font-heading text-4xl">{value}</p>
+        {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+      </Panel>
+    </Link>
+  )
+}

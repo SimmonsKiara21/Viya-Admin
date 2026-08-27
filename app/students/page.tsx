@@ -1,0 +1,127 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { EmptyState, PageHeader } from "@/components/ui-helpers"
+import { StudentRow } from "@/components/student-row"
+import { StudentFormDialog } from "@/components/student-form-dialog"
+import { useStore } from "@/lib/store"
+import { matchesQuery } from "@/lib/format"
+import { ENROLLMENT_LABELS, PROGRAM_LABELS } from "@/lib/constants"
+import type { EnrollmentStatus, Program } from "@/lib/types"
+import { cn } from "@/lib/utils"
+
+const STATUSES: Array<EnrollmentStatus | "all"> = [
+  "all",
+  "current",
+  "pending",
+  "declined",
+  "pif",
+  "overdue",
+  "paused",
+  "collections",
+]
+
+const PROGRAMS: Array<Program | "all"> = ["all", "academy", "subscriber", "prospect"]
+
+export default function StudentsPage() {
+  const { students } = useStore()
+  const [query, setQuery] = useState("")
+  const [status, setStatus] = useState<EnrollmentStatus | "all">("all")
+  const [program, setProgram] = useState<Program | "all">("all")
+  const [open, setOpen] = useState(false)
+
+  const filtered = useMemo(() => {
+    return students
+      .filter((s) => matchesQuery(s, query))
+      .filter((s) => (status === "all" ? true : s.enrollmentStatus === status))
+      .filter((s) => (program === "all" ? true : s.program === program))
+      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+  }, [students, query, status, program])
+
+  return (
+    <div>
+      <PageHeader
+        eyebrow="Roster"
+        title="Students"
+        description="Search anyone on the 2026 enrollment list, subscribers, and photoshoot prospects. Tap a row for photo, notes, attendance, and payments."
+        actions={
+          <Button onClick={() => setOpen(true)}>
+            <Plus className="size-4" />
+            Add student
+          </Button>
+        }
+      />
+
+      <div className="mb-4 flex flex-col gap-3">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Filter this list by name, ID, phone, or email"
+          className="h-11 max-w-xl rounded-full px-4"
+        />
+        <div className="flex flex-wrap gap-2">
+          {PROGRAMS.map((p) => (
+            <Chip key={p} active={program === p} onClick={() => setProgram(p)}>
+              {p === "all" ? "All programs" : PROGRAM_LABELS[p]}
+            </Chip>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {STATUSES.map((s) => (
+            <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
+              {s === "all" ? "All statuses" : ENROLLMENT_LABELS[s]}
+            </Chip>
+          ))}
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          title="No one matches those filters"
+          description="Clear the search or switch status. You can also add a student who is not on the workbook yet."
+        />
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
+          <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
+            {filtered.length} student{filtered.length === 1 ? "" : "s"}
+          </div>
+          <div className="divide-y divide-border px-2 py-1">
+            {filtered.map((student) => (
+              <StudentRow key={student.id} student={student} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <StudentFormDialog open={open} onOpenChange={setOpen} />
+    </div>
+  )
+}
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+        active
+          ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)] text-[oklch(0.92_0.05_85)]"
+          : "border-border text-muted-foreground hover:text-foreground",
+      )}
+    >
+      {children}
+    </button>
+  )
+}

@@ -13,7 +13,7 @@ import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/f
 import { cn } from "@/lib/utils"
 
 export default function HomePage() {
-  const { students, attendance, payments, ready, resetRoster } = useStore()
+  const { students, attendance, payments, resetRoster } = useStore()
   const today = todayISO()
 
   const stats = useMemo(() => {
@@ -33,10 +33,6 @@ export default function HomePage() {
     const openTotal = openPay.reduce((sum, p) => sum + p.amount, 0)
     return { academy, attention, pending, dueSoon, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
-
-  if (!ready) {
-    return <p className="text-sm text-muted-foreground">Loading the desk…</p>
-  }
 
   return (
     <div>

@@ -9,7 +9,9 @@ import { formatDateTime, fullName } from "@/lib/format"
 
 export default function NotifyPage() {
   const { notifications, students } = useStore()
-  const [preset, setPreset] = useState<"none" | "overdue" | "pending" | "due">("none")
+  const [preset, setPreset] = useState<"none" | "overdue" | "pending" | "due" | "academy" | "subscriber">(
+    "none",
+  )
 
   const presetStudents = useMemo(() => {
     if (preset === "overdue") {
@@ -23,8 +25,23 @@ export default function NotifyPage() {
         (s) => s.nextPaymentDate && s.nextPaymentDate <= "2026-09-05" && s.enrollmentStatus === "current",
       )
     }
+    if (preset === "academy") {
+      return students.filter((s) => s.program === "academy" && s.enrollmentStatus === "current")
+    }
+    if (preset === "subscriber") {
+      return students.filter((s) => s.program === "subscriber" && s.enrollmentStatus === "current")
+    }
     return []
   }, [preset, students])
+
+  const templateForPreset =
+    preset === "overdue"
+      ? "overdue-sms"
+      : preset === "academy"
+        ? "weekly-academy"
+        : preset === "subscriber"
+          ? "weekly-subscriber"
+          : undefined
 
   return (
     <div>
@@ -47,10 +64,28 @@ export default function NotifyPage() {
         <Button size="sm" variant={preset === "due" ? "default" : "outline"} onClick={() => setPreset("due")}>
           Due by Sep 5
         </Button>
+        <Button
+          size="sm"
+          variant={preset === "academy" ? "default" : "outline"}
+          onClick={() => setPreset("academy")}
+        >
+          Weekly academy class
+        </Button>
+        <Button
+          size="sm"
+          variant={preset === "subscriber" ? "default" : "outline"}
+          onClick={() => setPreset("subscriber")}
+        >
+          Weekly subscriber class
+        </Button>
       </div>
 
       <Panel className="mb-8">
-        <NotifyComposer key={preset + presetStudents.map((s) => s.id).join(",")} presetStudents={presetStudents} />
+        <NotifyComposer
+          key={preset + presetStudents.map((s) => s.id).join(",")}
+          presetStudents={presetStudents}
+          initialTemplateId={templateForPreset}
+        />
       </Panel>
 
       <h2 className="mb-3 font-heading text-3xl">Outbox</h2>

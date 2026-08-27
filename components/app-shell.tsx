@@ -12,17 +12,22 @@ import {
   Sparkles,
   Users,
   CalendarDays,
+  Bell,
+  Clock,
 } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { StudentSearch } from "@/components/student-search"
+import { StaffAlertBanner } from "@/components/staff-alert-banner"
 import { cn } from "@/lib/utils"
 
 const NAV = [
   { href: "/", label: "Home", icon: LayoutDashboard },
+  { href: "/alerts", label: "Alerts", icon: Bell },
   { href: "/students", label: "Students", icon: Users },
   { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
+  { href: "/classes", label: "Classes", icon: Clock },
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
   { href: "/photoshoots", label: "Photoshoots", icon: Camera },
@@ -109,6 +114,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Check in
           </Link>
         </header>
+        <StaffAlertBanner />
         <div className="flex-1 px-4 py-6 md:px-8">{children}</div>
       </div>
     </div>

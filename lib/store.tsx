@@ -21,7 +21,7 @@ import type {
 } from "./types"
 import { newId } from "./format"
 
-const STORAGE_KEY = "viya-academy-store-v1"
+const STORAGE_KEY = "viya-academy-store-v2"
 
 const seedData = seed as AppData
 

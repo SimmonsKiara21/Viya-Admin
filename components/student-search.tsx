@@ -71,9 +71,20 @@ export function StudentSearch({
                   >
                     <StudentPhoto student={student} size="sm" />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{fullName(student)}</p>
+                      <p
+                        className={cn(
+                          "truncate font-medium",
+                          ["overdue", "declined", "collections"].includes(student.enrollmentStatus) &&
+                            "text-rose-200",
+                        )}
+                      >
+                        {fullName(student)}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">
-                        #{student.id} · {student.email || "no email"} · {student.phone || "no phone"}
+                        #{student.id}
+                        {["overdue", "declined", "collections"].includes(student.enrollmentStatus)
+                          ? ` · due ${student.nextPaymentDate || "—"}`
+                          : ` · ${student.email || "no email"} · ${student.phone || "no phone"}`}
                       </p>
                     </div>
                     <EnrollmentBadge status={student.enrollmentStatus} />

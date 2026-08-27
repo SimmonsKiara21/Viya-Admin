@@ -4145,6 +4145,566 @@
       "checkedInAt": "2026-08-12T19:24:00",
       "classType": "modeling",
       "notes": ""
+    },
+    {
+      "id": "att-0035",
+      "studentId": "0579",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0036",
+      "studentId": "0579",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0037",
+      "studentId": "0579",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0038",
+      "studentId": "0579",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0039",
+      "studentId": "0202",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0040",
+      "studentId": "0202",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0041",
+      "studentId": "0202",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0042",
+      "studentId": "0202",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0043",
+      "studentId": "0206",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0044",
+      "studentId": "0206",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0045",
+      "studentId": "0206",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0046",
+      "studentId": "0206",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0047",
+      "studentId": "0471",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0048",
+      "studentId": "0471",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0049",
+      "studentId": "0471",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0050",
+      "studentId": "0471",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0051",
+      "studentId": "0842",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0052",
+      "studentId": "0842",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0053",
+      "studentId": "0842",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0054",
+      "studentId": "0842",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0055",
+      "studentId": "0392",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0056",
+      "studentId": "0392",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0057",
+      "studentId": "0392",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0058",
+      "studentId": "0392",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0059",
+      "studentId": "0521",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0060",
+      "studentId": "0521",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0061",
+      "studentId": "0521",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0062",
+      "studentId": "0521",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0063",
+      "studentId": "0730",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0064",
+      "studentId": "0730",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0065",
+      "studentId": "0730",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0066",
+      "studentId": "0730",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0067",
+      "studentId": "0627",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0068",
+      "studentId": "0627",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0069",
+      "studentId": "0627",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0070",
+      "studentId": "0627",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0071",
+      "studentId": "0625",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0072",
+      "studentId": "0625",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0073",
+      "studentId": "0625",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0074",
+      "studentId": "0625",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0075",
+      "studentId": "0522",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0076",
+      "studentId": "0522",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0077",
+      "studentId": "0522",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0078",
+      "studentId": "0522",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0079",
+      "studentId": "0830",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0080",
+      "studentId": "0830",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0081",
+      "studentId": "0830",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0082",
+      "studentId": "0830",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0083",
+      "studentId": "0735",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0084",
+      "studentId": "0735",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0085",
+      "studentId": "0735",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0086",
+      "studentId": "0735",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0087",
+      "studentId": "0729",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0088",
+      "studentId": "0729",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0089",
+      "studentId": "0729",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0090",
+      "studentId": "0729",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0091",
+      "studentId": "0475",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0092",
+      "studentId": "0475",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0093",
+      "studentId": "0475",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0094",
+      "studentId": "0475",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0095",
+      "studentId": "0582",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0096",
+      "studentId": "0582",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0097",
+      "studentId": "0582",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0098",
+      "studentId": "0582",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0099",
+      "studentId": "0609",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0100",
+      "studentId": "0609",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0101",
+      "studentId": "0609",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0102",
+      "studentId": "0609",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0103",
+      "studentId": "0610",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0104",
+      "studentId": "0610",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0105",
+      "studentId": "0610",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0106",
+      "studentId": "0610",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0107",
+      "studentId": "0365",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0108",
+      "studentId": "0365",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0109",
+      "studentId": "0365",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0110",
+      "studentId": "0365",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
+    },
+    {
+      "id": "att-0111",
+      "studentId": "0722",
+      "checkedInAt": "2026-06-11T19:35:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0112",
+      "studentId": "0722",
+      "checkedInAt": "2026-06-14T16:08:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0113",
+      "studentId": "0722",
+      "checkedInAt": "2026-07-08T19:32:00",
+      "classType": "modeling",
+      "notes": ""
+    },
+    {
+      "id": "att-0114",
+      "studentId": "0722",
+      "checkedInAt": "2026-07-11T16:05:00",
+      "classType": "acting",
+      "notes": ""
     }
   ],
   "feedback": [

@@ -325,6 +325,44 @@ for i, (sid, when, ctype, note) in enumerate(checkins, start=1):
         "notes": note,
     })
 
+# Wednesday 7:30pm and Saturday 4pm history so "2 months of check-ins" is real
+# for payment-plan students who started by early June.
+history_nights = [
+    ("2026-06-11T19:35:00", "modeling"),
+    ("2026-06-14T16:08:00", "modeling"),
+    ("2026-07-08T19:32:00", "modeling"),
+    ("2026-07-11T16:05:00", "acting"),
+    ("2026-08-05T19:31:00", "modeling"),
+    ("2026-08-08T16:04:00", "modeling"),
+]
+seen_att = {(a["studentId"], a["checkedInAt"][:10]) for a in attendance}
+hist_i = len(attendance) + 1
+for st in students:
+    if st["program"] != "academy" or st["paymentPlan"] != "pp":
+        continue
+    start = st.get("startDate") or ""
+    if not start or start > "2026-06-01":
+        continue
+    added = 0
+    for when, ctype in history_nights:
+        if when[:10] < start:
+            continue
+        key = (st["id"], when[:10])
+        if key in seen_att:
+            continue
+        attendance.append({
+            "id": uid("att", hist_i),
+            "studentId": st["id"],
+            "checkedInAt": when,
+            "classType": ctype,
+            "notes": "",
+        })
+        seen_att.add(key)
+        hist_i += 1
+        added += 1
+        if added >= 4:
+            break
+
 feedback = [
     {"id": "fb-0001", "studentId": "1079", "createdAt": "2026-08-26T21:10:00", "author": "Staff", "classType": "modeling", "body": "First month — on time, took direction well on posture and eyeline. Keep working on a slower close."},
     {"id": "fb-0002", "studentId": "0918", "createdAt": "2026-08-26T21:15:00", "author": "Staff", "classType": "acting", "body": "Committed to the scene work. Voice is landing; next class push for stillness between lines."},

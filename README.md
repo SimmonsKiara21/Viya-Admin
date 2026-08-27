@@ -27,7 +27,19 @@ npm start
 - **Subscriptions** and **Photoshoots** are their own tabs.
 - **Notify** sends a text or Gmail. For one student, your phone or mail app opens with the message filled in. Group sends are stored in the outbox.
 
-## Statuses
+## Overdue and wrapping-up alerts
+
+- Overdue, declined, and collections students are highlighted in **red** with the payment due date. Staff see a banner on every page. **Alert overdue students** texts each of them with amount and due date.
+- Current payment-plan students with **3 or fewer payments left** who have checked in across **at least two months** are highlighted in **teal**.
+
+## Class reminders
+
+Academy classes are always:
+
+- Wednesday 7:30–8:30pm
+- Saturday 4:00–5:00pm (Phoenix)
+
+Send the weekly reminder from **Classes** or **Notify**. Subscriber class times are pulled from [Talent Resources](https://www.viyatalent.com/talentresources) when that page is reachable.
 
 Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Full**, plus Overdue, Paused, and Collections so the desk matches how the academy already works.
 

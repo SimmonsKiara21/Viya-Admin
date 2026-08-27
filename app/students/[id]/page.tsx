@@ -36,6 +36,13 @@ import {
   telHref,
 } from "@/lib/format"
 import {
+  attendanceMonthCount,
+  isFinishingSoon,
+  isOverdueStudent,
+  remainingPayments,
+} from "@/lib/alerts"
+import { sendDeskNotice } from "@/lib/send-notice"
+import {
   ENROLLMENT_LABELS,
   PHOTO_LABELS,
   PLAN_LABELS,
@@ -63,6 +70,7 @@ export default function StudentProfilePage() {
     updateStudent,
     addFeedback,
     removeAttendance,
+    addNotification,
   } = useStore()
   const student = students.find((s) => s.id === id)
   const [note, setNote] = useState("")
@@ -114,6 +122,41 @@ export default function StudentProfilePage() {
         Back
       </button>
 
+      {isOverdueStudent(student) ? (
+        <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-950/50 p-4">
+          <p className="font-heading text-2xl text-rose-100">Overdue — student alert</p>
+          <p className="mt-1 text-sm text-rose-50/90">
+            Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
+            {formatDate(student.nextPaymentDate)}. Their name is highlighted in red on every list.
+          </p>
+          <Button
+            className="mt-3"
+            onClick={() =>
+              sendDeskNotice({
+                students: [student],
+                channel: "sms",
+                templateId: "overdue-sms",
+                addNotification,
+              })
+            }
+          >
+            Send student alert
+          </Button>
+        </div>
+      ) : null}
+
+      {isFinishingSoon(student, attendance) ? (
+        <div className="mb-4 rounded-2xl border border-teal-400/40 bg-teal-950/40 p-4">
+          <p className="font-heading text-2xl text-teal-100">Wrapping up</p>
+          <p className="mt-1 text-sm text-teal-50/90">
+            {remainingPayments(student)} payment
+            {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan, and{" "}
+            {attendanceMonthCount(attendance, student.id)} months of class check-ins. Highlighted in
+            teal on the roster — a good time to talk subscription.
+          </p>
+        </div>
+      ) : null}
+
       <Panel className="mb-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
           <StudentPhoto
@@ -129,7 +172,11 @@ export default function StudentProfilePage() {
             <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
               #{student.id}
             </p>
-            <h1 className="font-heading text-4xl md:text-5xl">{fullName(student)}</h1>
+            <h1
+              className={`font-heading text-4xl md:text-5xl ${isOverdueStudent(student) ? "text-rose-200" : isFinishingSoon(student, attendance) ? "text-teal-200" : ""}`}
+            >
+              {fullName(student)}
+            </h1>
             <div className="mt-3 flex flex-wrap gap-2">
               <ProgramBadge program={student.program} />
               <EnrollmentBadge status={student.enrollmentStatus} />
@@ -154,6 +201,18 @@ export default function StudentProfilePage() {
               <div>
                 <dt className="text-xs text-muted-foreground uppercase">Start date</dt>
                 <dd>{formatDate(student.startDate)}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground uppercase">Payments left</dt>
+                <dd>
+                  {remainingPayments(student) == null ? "—" : remainingPayments(student)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground uppercase">Next payment</dt>
+                <dd>
+                  {formatMoney(student.nextPaymentAmount)} · {formatDate(student.nextPaymentDate)}
+                </dd>
               </div>
             </dl>
             <div className="mt-4 flex flex-wrap gap-2">

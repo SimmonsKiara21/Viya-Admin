@@ -15,15 +15,18 @@ import { cn } from "@/lib/utils"
 export function NotifyComposer({
   presetStudents = [],
   compact = false,
+  initialTemplateId,
 }: {
   presetStudents?: Student[]
   compact?: boolean
+  initialTemplateId?: string
 }) {
   const { students, addNotification } = useStore()
-  const [channel, setChannel] = useState<NotifyChannel>("sms")
-  const [templateId, setTemplateId] = useState(MESSAGE_TEMPLATES[0].id)
-  const [subject, setSubject] = useState(MESSAGE_TEMPLATES[0].subject)
-  const [body, setBody] = useState(MESSAGE_TEMPLATES[0].body)
+  const starter = MESSAGE_TEMPLATES.find((t) => t.id === initialTemplateId) ?? MESSAGE_TEMPLATES[0]
+  const [channel, setChannel] = useState<NotifyChannel>(starter.channel)
+  const [templateId, setTemplateId] = useState(starter.id)
+  const [subject, setSubject] = useState(starter.subject)
+  const [body, setBody] = useState(starter.body)
   const [query, setQuery] = useState("")
   const [selected, setSelected] = useState<string[]>(presetStudents.map((s) => s.id))
 

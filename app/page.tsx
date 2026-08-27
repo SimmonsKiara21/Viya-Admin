@@ -10,18 +10,19 @@ import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
 import { buttonVariants } from "@/components/ui/button"
 import { countsFor, useStore } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/format"
+import { sendDeskNotice } from "@/lib/send-notice"
+import { isFinishingSoon, isOverdueStudent } from "@/lib/alerts"
 import { cn } from "@/lib/utils"
 
 export default function HomePage() {
-  const { students, attendance, payments, resetRoster } = useStore()
+  const { students, attendance, payments, resetRoster, addNotification } = useStore()
   const today = todayISO()
 
   const stats = useMemo(() => {
     const academy = students.filter((s) => s.program === "academy")
-    const attention = students.filter((s) =>
-      ["overdue", "declined", "collections"].includes(s.enrollmentStatus),
-    )
+    const attention = students.filter(isOverdueStudent)
     const pending = students.filter((s) => s.enrollmentStatus === "pending")
+    const finishing = students.filter((s) => isFinishingSoon(s, attendance))
     const dueSoon = students.filter((s) => {
       if (!s.nextPaymentDate || !s.nextPaymentAmount) return false
       if (["pif", "paused"].includes(s.enrollmentStatus)) return false
@@ -31,7 +32,7 @@ export default function HomePage() {
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
     const openPay = payments.filter((p) => ["due", "overdue", "declined"].includes(p.status))
     const openTotal = openPay.reduce((sum, p) => sum + p.amount, 0)
-    return { academy, attention, pending, dueSoon, todayCheckins, recent, openTotal }
+    return { academy, attention, pending, finishing, dueSoon, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
 
   return (
@@ -45,9 +46,20 @@ export default function HomePage() {
             <Link href="/check-in" className={cn(buttonVariants())}>
               Open check-in
             </Link>
-            <Link href="/notify" className={cn(buttonVariants({ variant: "outline" }))}>
-              Send a reminder
-            </Link>
+            <button
+              type="button"
+              className={cn(buttonVariants({ variant: "outline" }))}
+              onClick={() =>
+                sendDeskNotice({
+                  students: stats.attention,
+                  channel: "sms",
+                  templateId: "overdue-sms",
+                  addNotification,
+                })
+              }
+            >
+              Alert overdue students
+            </button>
           </>
         }
       />
@@ -63,8 +75,8 @@ export default function HomePage() {
           icon={AlertTriangle}
           label="Needs attention"
           value={String(stats.attention.length)}
-          hint="Overdue, declined, collections"
-          href="/payments"
+          hint="Overdue — due dates on the name"
+          href="/alerts"
         />
         <StatCard
           icon={CreditCard}
@@ -84,9 +96,9 @@ export default function HomePage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl">Needs a follow-up</h2>
-            <Link href="/payments" className="text-xs text-muted-foreground hover:text-foreground">
-              Payments
+            <h2 className="font-heading text-2xl text-rose-100">Overdue — staff + student</h2>
+            <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
+              Alerts
             </Link>
           </div>
           {stats.attention.length === 0 ? (
@@ -94,13 +106,12 @@ export default function HomePage() {
           ) : (
             <div className="divide-y divide-border">
               {stats.attention.slice(0, 8).map((s) => (
-                <div key={s.id} className="flex items-center justify-between gap-2 py-1">
-                  <div className="min-w-0 flex-1">
-                    <StudentRow student={s} />
-                  </div>
-                  <span className="hidden text-xs text-muted-foreground sm:block">
-                    {formatMoney(s.nextPaymentAmount)} · {formatDate(s.nextPaymentDate)}
-                  </span>
+                <div key={s.id} className="py-1">
+                  <StudentRow student={s} />
+                  <p className="px-2 pb-2 text-xs text-rose-200/90">
+                    Student alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
+                    {formatMoney(s.nextPaymentAmount)}
+                  </p>
                 </div>
               ))}
             </div>
@@ -152,6 +163,20 @@ export default function HomePage() {
                   </div>
                   <EnrollmentBadge status={s.enrollmentStatus} />
                 </div>
+              ))}
+            </div>
+          )}
+        </Panel>
+        <Panel>
+          <h2 className="mb-3 font-heading text-2xl text-teal-100">Wrapping up (≤3 payments)</h2>
+          {stats.finishing.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No current students with 3 or fewer payments left and two months of check-ins.
+            </p>
+          ) : (
+            <div className="divide-y divide-border">
+              {stats.finishing.slice(0, 8).map((s) => (
+                <StudentRow key={s.id} student={s} />
               ))}
             </div>
           )}

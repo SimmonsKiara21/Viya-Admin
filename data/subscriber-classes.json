@@ -1,10 +1,61 @@
 {
   "source": "https://www.viyatalent.com/talentresources",
-  "updatedAt": "",
-  "unlocked": false,
-  "headline": "Subscriber classes — Talent Resources",
-  "sessions": [],
+  "updatedAt": "2026-08-27",
+  "unlocked": true,
+  "headline": "Talent Resources",
+  "banner": "Auditions happening this week — text (602) 342-2902 to apply.",
+  "academy": {
+    "saturday": {
+      "time": "4:00–5:00pm",
+      "anchorDate": "2026-08-01",
+      "anchorFocus": "acting",
+      "august": [
+        { "date": "2026-08-01", "focus": "acting" },
+        { "date": "2026-08-08", "focus": "modeling" },
+        { "date": "2026-08-15", "focus": "acting" },
+        { "date": "2026-08-22", "focus": "modeling" },
+        { "date": "2026-08-29", "focus": "acting" }
+      ]
+    },
+    "wednesday": {
+      "time": "7:30–8:30pm",
+      "anchorDate": "2026-08-05",
+      "anchorFocus": "acting",
+      "august": [
+        { "date": "2026-08-05", "focus": "acting" },
+        { "date": "2026-08-12", "focus": "modeling" },
+        { "date": "2026-08-19", "focus": "acting" },
+        { "date": "2026-08-26", "focus": "modeling" }
+      ]
+    }
+  },
+  "sessions": [
+    {
+      "title": "Mastering the Actor Self-Tape",
+      "kind": "acting",
+      "day": "Saturday",
+      "date": "2026-08-15",
+      "start": "13:30",
+      "end": "15:30",
+      "display": "Saturday Aug 15 · 1:30–3:30pm",
+      "notes": "Framing, lighting, sound, slates, eyelines, and bold choices for a camera-ready self-tape."
+    },
+    {
+      "title": "Agency placement — Justin Chambers with Laura Scheele",
+      "kind": "modeling",
+      "day": "Saturday",
+      "date": "2026-08-29",
+      "start": "13:30",
+      "end": "15:30",
+      "display": "Saturday Aug 29 · 1:30–3:30pm",
+      "notes": "Justin Chambers is in town. Agency-placement focused modeling class."
+    }
+  ],
   "notes": [
-    "This list fills in from the password-protected Talent Resources page on viyatalent.com."
+    "Dress code: all black. Runway — women in heels/pumps (no clogs or wedges); men in dress shoes.",
+    "Arrive camera-ready.",
+    "Payments are due on the scheduled date. 5-day grace period, then a $25 late fee.",
+    "Coaching is typically every other week from the start date.",
+    "Training stays ongoing on the subscription model after the academy program."
   ]
 }

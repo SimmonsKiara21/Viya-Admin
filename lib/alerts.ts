@@ -123,17 +123,37 @@ export function nextClassOccurrence(
 export function upcomingAcademyClasses(from = new Date()) {
   return ACADEMY_SESSIONS.map((session) => {
     const next = nextClassOccurrence(session.weekday, session.start, from)
-    return { ...session, ...next }
+    const focus = classFocus(session.id === "saturday" ? "saturday" : "wednesday", next.dateISO)
+    return { ...session, ...next, focus }
   }).sort((a, b) => a.dateISO.localeCompare(b.dateISO))
 }
 
-export function academyReminderBody() {
-  return `Hi {{firstName}}, this week at Viya Academy:
+const ROTATION = {
+  saturday: { anchor: "2026-08-01", start: "acting" as const },
+  wednesday: { anchor: "2026-08-05", start: "acting" as const },
+}
 
-• Wednesday 7:30–8:30pm
-• Saturday 4:00–5:00pm
+export function classFocus(slot: "saturday" | "wednesday", dateISO: string) {
+  const { anchor, start } = ROTATION[slot]
+  const a = Date.parse(`${anchor}T12:00:00Z`)
+  const b = Date.parse(`${dateISO}T12:00:00Z`)
+  const weeks = Math.round((b - a) / (7 * 24 * 60 * 60 * 1000))
+  const even = Math.abs(weeks) % 2 === 0
+  const focus = even ? start : start === "acting" ? "modeling" : "acting"
+  return focus
+}
 
-Check in at the front desk when you arrive. See you on the floor.`
+export function academyReminderBody(from = new Date()) {
+  const upcoming = upcomingAcademyClasses(from)
+  const lines = upcoming.map((session) => {
+    const focus = session.focus === "acting" ? "Acting" : "Modeling"
+    return `• ${session.display} — ${focus} (${session.label})`
+  })
+  return `Hi {{firstName}}, this week at Viya Academy:\n\n${lines.join("\n")}\n\nAll black, camera-ready. Check in at the front desk. See you on the floor.`
+}
+
+export function subscriberReminderBody() {
+  return `Hi {{firstName}}, Viya subscriber workshop this cycle:\n\n• Saturday 1:30–3:30pm (before the 4pm academy class)\n• Aug 15 — Acting: Mastering the Actor Self-Tape\n• Aug 29 — Modeling: Justin Chambers with Laura Scheele, agency placement\n\nAll black, camera-ready. Text (602) 342-2902 if you have a question.`
 }
 
 export function overdueStudentBody(student: Student) {

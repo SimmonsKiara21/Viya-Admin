@@ -41,8 +41,12 @@ import {
 import { buildPaymentSchedule } from "@/lib/schedule"
 import {
   attendanceMonthCount,
+  highlightTone,
+  isCollectionsStudent,
   isFinishingSoon,
   isOverdueStudent,
+  isPausedStudent,
+  isPendingStudent,
   remainingPayments,
 } from "@/lib/alerts"
 import { sendDeskNotice } from "@/lib/send-notice"
@@ -100,6 +104,7 @@ export default function StudentProfilePage() {
     [student, payments],
   )
   const counts = countsFor(records)
+  const tone = student ? highlightTone(student, attendance) : "none"
 
   if (!student) {
     return (
@@ -158,6 +163,45 @@ export default function StudentProfilePage() {
         </div>
       ) : null}
 
+      {isCollectionsStudent(student) ? (
+        <div className="mb-4 rounded-2xl border border-amber-400/40 bg-amber-100/80 p-4 dark:bg-amber-950/40 sepia:bg-amber-950/35">
+          <p className="font-heading text-2xl text-amber-900 dark:text-amber-100 sepia:text-amber-100">
+            Collections
+          </p>
+          <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-50/90">
+            This account is in collections
+            {student.nextPaymentAmount
+              ? ` · ${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}`
+              : ""}
+            . Highlighted in amber on every list so it is not mixed in with a regular overdue follow-up.
+          </p>
+        </div>
+      ) : null}
+
+      {isPausedStudent(student) ? (
+        <div className="mb-4 rounded-2xl border border-violet-400/40 bg-violet-100/80 p-4 dark:bg-violet-950/40 sepia:bg-violet-950/35">
+          <p className="font-heading text-2xl text-violet-900 dark:text-violet-100 sepia:text-violet-100">
+            Paused
+          </p>
+          <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-50/90">
+            Enrollment is on hold. Highlighted in violet so the desk does not check them in by accident.
+          </p>
+        </div>
+      ) : null}
+
+      {isPendingStudent(student) ? (
+        <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-950/35">
+          <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-100">
+            Pending start
+          </p>
+          <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-50/90">
+            Not on the floor yet
+            {student.startDate ? ` · first class ${formatDate(student.startDate)}` : ""}. Highlighted
+            in blue so DocuSign, deposit, and first class stay on the radar.
+          </p>
+        </div>
+      ) : null}
+
       {isFinishingSoon(student, attendance) ? (
         <div className="mb-4 rounded-2xl border border-teal-400/40 bg-teal-100/80 p-4 dark:bg-teal-950/40 sepia:bg-teal-950/35">
           <p className="font-heading text-2xl text-teal-900 dark:text-teal-100 sepia:text-teal-100">
@@ -188,7 +232,19 @@ export default function StudentProfilePage() {
               #{student.id}
             </p>
             <h1
-              className={`font-heading text-4xl md:text-5xl ${isOverdueStudent(student) ? "text-rose-200" : isFinishingSoon(student, attendance) ? "text-teal-200" : ""}`}
+              className={`font-heading text-4xl md:text-5xl ${
+                tone === "overdue"
+                  ? "text-rose-800 dark:text-rose-200"
+                  : tone === "collections"
+                    ? "text-amber-900 dark:text-amber-200"
+                    : tone === "paused"
+                      ? "text-violet-900 dark:text-violet-200"
+                      : tone === "pending"
+                        ? "text-sky-900 dark:text-sky-200"
+                        : tone === "finishing"
+                          ? "text-teal-800 dark:text-teal-200"
+                          : ""
+              }`}
             >
               {fullName(student)}
             </h1>

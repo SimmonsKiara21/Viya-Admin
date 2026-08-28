@@ -20,14 +20,13 @@ import type {
 } from "@/lib/types"
 
 const enrollmentClass: Record<EnrollmentStatus, string> = {
-  current:
-    "border-emerald-500/30 bg-emerald-500/12 text-emerald-200",
-  pending: "border-sky-500/30 bg-sky-500/12 text-sky-200",
-  declined: "border-rose-500/35 bg-rose-500/15 text-rose-200",
-  pif: "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.14)] text-[oklch(0.9_0.06_85)]",
-  overdue: "border-orange-500/35 bg-orange-500/15 text-orange-200",
-  paused: "border-zinc-500/35 bg-zinc-500/15 text-zinc-300",
-  collections: "border-red-700/40 bg-red-700/20 text-red-200",
+  current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200",
+  pending: "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-200",
+  declined: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200",
+  pif: "border-primary/40 bg-primary/14 text-primary",
+  overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200",
+  paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200",
+  collections: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200",
 }
 
 const paymentClass: Record<PaymentStatus, string> = {

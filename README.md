@@ -32,12 +32,15 @@ npm start
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right.
 
-## Overdue and wrapping-up alerts
+## Alerts
 
-## Overdue and wrapping-up alerts
+- **Overdue / declined** — red, with the payment due date. **Text all** / **Email all** on Alerts goes to this list.
+- **Collections** — amber, kept separate from a regular overdue follow-up.
+- **Paused** — violet, so the desk does not check them in by accident.
+- **Pending** — blue, so DocuSign, deposit, and first class stay visible.
+- **Wrapping up** — teal, for current payment-plan students with **3 or fewer payments left** who have checked in across **at least two months**.
 
-- Overdue, declined, and collections students are highlighted in **red** with the payment due date. Staff see a banner on every page. **Alert overdue students** texts each of them with amount and due date.
-- Current payment-plan students with **3 or fewer payments left** who have checked in across **at least two months** are highlighted in **teal**.
+Staff see a banner on every page with those counts. Names are highlighted in the same colors on every roster list.
 
 ## Class reminders
 

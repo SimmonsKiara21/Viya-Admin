@@ -102,7 +102,9 @@ export default function HomePage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl text-rose-100">Overdue — staff + student</h2>
+            <h2 className="font-heading text-2xl text-rose-800 dark:text-rose-100 sepia:text-rose-200">
+              Overdue — staff + student
+            </h2>
             <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
               Alerts
             </Link>
@@ -159,7 +161,9 @@ export default function HomePage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl">Pending starts</h2>
+          <h2 className="mb-3 font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-200">
+            Pending starts
+          </h2>
           {stats.pending.length === 0 ? (
             <p className="text-sm text-muted-foreground">No pending enrollments.</p>
           ) : (

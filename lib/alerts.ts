@@ -25,8 +25,28 @@ export const ACADEMY_SESSIONS = [
 ]
 
 export function isOverdueStudent(student: Student) {
-  return ["overdue", "declined", "collections"].includes(student.enrollmentStatus)
+  return student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
 }
+
+export function isCollectionsStudent(student: Student) {
+  return student.enrollmentStatus === "collections"
+}
+
+export function isPausedStudent(student: Student) {
+  return student.enrollmentStatus === "paused"
+}
+
+export function isPendingStudent(student: Student) {
+  return student.enrollmentStatus === "pending"
+}
+
+export type HighlightTone =
+  | "overdue"
+  | "collections"
+  | "paused"
+  | "pending"
+  | "finishing"
+  | "none"
 
 export function monthsElapsed(startDate: string, asOf = new Date()) {
   if (!startDate) return 0
@@ -56,10 +76,13 @@ export function isFinishingSoon(student: Student, attendance: AttendanceRecord[]
   return attendanceMonthCount(attendance, student.id) >= 2
 }
 
-export function highlightTone(student: Student, attendance: AttendanceRecord[]) {
-  if (isOverdueStudent(student)) return "overdue" as const
-  if (isFinishingSoon(student, attendance)) return "finishing" as const
-  return "none" as const
+export function highlightTone(student: Student, attendance: AttendanceRecord[]): HighlightTone {
+  if (isCollectionsStudent(student)) return "collections"
+  if (isOverdueStudent(student)) return "overdue"
+  if (isPausedStudent(student)) return "paused"
+  if (isPendingStudent(student)) return "pending"
+  if (isFinishingSoon(student, attendance)) return "finishing"
+  return "none"
 }
 
 function phoenixNow(date = new Date()) {

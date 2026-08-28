@@ -1,7 +1,7 @@
 "use client"
 
 import { toast } from "sonner"
-import { fillTemplate, smsHref } from "@/lib/format"
+import { fillTemplate, fullName, smsHref } from "@/lib/format"
 import { MESSAGE_TEMPLATES } from "@/lib/constants"
 import { overdueStudentBody } from "@/lib/alerts"
 import type { NotificationRecord, NotifyChannel, Student } from "@/lib/types"
@@ -40,7 +40,7 @@ export async function sendDeskNotice(opts: {
 
   if (students.length === 1) {
     const student = students[0]
-    const text = body.includes("{{") ? fillTemplate(body, student) : overdueStudentBody(student)
+    const text = body.includes("{{") ? fillTemplate(body, student) : body || overdueStudentBody(student)
     const sub = fillTemplate(subject, student)
     if (channel === "sms" && student.phone) window.open(smsHref(student.phone, text), "_blank")
     if (channel === "email" && student.email) {
@@ -48,6 +48,24 @@ export async function sendDeskNotice(opts: {
         `mailto:${student.email}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(text)}`,
       )
     }
+  } else if (channel === "email") {
+    const emails = students.map((s) => s.email).filter(Boolean)
+    if (emails.length) {
+      window.open(
+        `mailto:?bcc=${encodeURIComponent(emails.join(","))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
+      )
+    }
+  } else if (channel === "sms") {
+    const withPhone = students.filter((s) => s.phone)
+    try {
+      await navigator.clipboard.writeText(body)
+    } catch {
+      /* clipboard blocked */
+    }
+    if (withPhone[0]) window.open(smsHref(withPhone[0].phone, body), "_blank")
+    toast.message(
+      `Copied the reminder. Opened a text for ${withPhone[0] ? fullName(withPhone[0]) : "the first student"} · ${students.length} overdue.`,
+    )
   }
 
   toast.success(info.message)

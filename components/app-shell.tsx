@@ -56,7 +56,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-[oklch(0.78_0.08_85/0.16)] text-[oklch(0.9_0.06_85)]"
+                ? "bg-primary/16 text-primary"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
@@ -72,7 +72,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <Link href="/" className="block px-2 py-1">
-      <p className="font-heading text-3xl leading-none tracking-[0.22em] text-[oklch(0.86_0.07_85)]">
+      <p className="font-heading text-3xl leading-none tracking-[0.22em] text-primary">
         VIYA
       </p>
       <p className="mt-1 text-[10px] font-medium tracking-[0.28em] text-muted-foreground uppercase">
@@ -85,7 +85,7 @@ function Brand() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-full">
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-border bg-[oklch(0.12_0.015_75)] px-4 py-6 md:flex">
+      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-4 py-6 md:flex">
         <Brand />
         <div className="mt-8 flex-1">
           <NavLinks />
@@ -110,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Menu className="size-5" />
               <span className="sr-only">Open menu</span>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 bg-[oklch(0.12_0.015_75)] px-4 pt-8">
+            <SheetContent side="left" className="w-64 bg-sidebar px-4 pt-8">
               <SheetTitle className="sr-only">Menu</SheetTitle>
               <Brand />
               <div className="mt-8">

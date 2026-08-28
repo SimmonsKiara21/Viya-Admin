@@ -61,15 +61,15 @@ export function DeskGate({ children }: { children: React.ReactNode }) {
 
   if (!unlocked) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[oklch(0.12_0.02_75)] px-4">
-        <div className="w-full max-w-md rounded-3xl border border-[oklch(0.78_0.08_85/0.22)] bg-[oklch(0.16_0.02_75)] p-8 shadow-[0_24px_80px_oklch(0_0_0/0.45)]">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)]">
-            <Lock className="size-6 text-[oklch(0.86_0.07_85)]" />
+      <div className="flex min-h-dvh items-center justify-center bg-background px-4">
+        <div className="w-full max-w-md rounded-3xl border border-primary/25 bg-card p-8 shadow-[0_24px_80px_oklch(0_0_0/0.25)]">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-primary/40 bg-primary/12">
+            <Lock className="size-6 text-primary" />
           </div>
-          <p className="mt-6 text-center text-[11px] font-medium tracking-[0.32em] text-[oklch(0.78_0.08_85)] uppercase">
+          <p className="mt-6 text-center text-[11px] font-medium tracking-[0.32em] text-primary uppercase">
             Viya Academy + Agency
           </p>
-          <h1 className="mt-2 text-center font-heading text-5xl tracking-[0.18em] text-[oklch(0.9_0.05_85)]">
+          <h1 className="mt-2 text-center font-heading text-5xl tracking-[0.18em] text-primary">
             VIYA
           </h1>
           <p className="mt-3 text-center text-sm text-muted-foreground">

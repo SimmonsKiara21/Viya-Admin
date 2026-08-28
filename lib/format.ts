@@ -74,6 +74,14 @@ export function formatDateTime(iso: string | undefined) {
   }).format(date)
 }
 
+export function formatShortDate(iso: string | undefined) {
+  if (!iso) return "—"
+  const d = iso.slice(0, 10)
+  const [y, m, day] = d.split("-")
+  if (!y || !m || !day) return iso
+  return `${m}/${day}/${y.slice(-2)}`
+}
+
 export function formatTime(iso: string | undefined) {
   if (!iso) return "—"
   const date = new Date(iso)

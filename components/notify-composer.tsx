@@ -38,9 +38,11 @@ export function NotifyComposer({
   const [newGroupName, setNewGroupName] = useState("")
 
   const picked = students.filter((s) => selected.includes(s.id))
-  const searchHits = useMemo(() => {
-    if (!query.trim()) return []
-    return students.filter((s) => matchesQuery(s, query)).slice(0, 24)
+  const pickerList = useMemo(() => {
+    const pool = query.trim() ? students.filter((s) => matchesQuery(s, query)) : students
+    return [...pool]
+      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+      .slice(0, 120)
   }, [query, students])
 
   function applyTemplate(id: string) {
@@ -65,8 +67,7 @@ export function NotifyComposer({
   }
 
   function addAllHits() {
-    setSelected((prev) => [...new Set([...prev, ...searchHits.map((s) => s.id)])])
-    setQuery("")
+    setSelected((prev) => [...new Set([...prev, ...pickerList.map((s) => s.id)])])
     setGroupId("")
   }
 
@@ -220,7 +221,7 @@ export function NotifyComposer({
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs font-medium",
                   groupId === g.id
-                    ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                    ? "border-primary/50 bg-primary/16 text-primary"
                     : "border-border text-muted-foreground",
                 )}
               >
@@ -229,50 +230,50 @@ export function NotifyComposer({
             )
           })}
         </div>
-        <Field label="Add students">
+        <Field label="Click students to add">
           <Input
-            placeholder="Search name, ID, phone, or email"
+            placeholder="Filter the list, then click as many as you need"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </Field>
-        {searchHits.length > 0 ? (
-          <div className="overflow-hidden rounded-xl border border-border">
-            <div className="flex items-center justify-between border-b border-border px-3 py-1.5">
-              <p className="text-xs text-muted-foreground">{searchHits.length} matches</p>
-              <button type="button" className="text-xs underline" onClick={addAllHits}>
-                Add all matching
-              </button>
-            </div>
-            <ul className="max-h-48 overflow-y-auto">
-              {searchHits.map((s) => {
-                const on = selected.includes(s.id)
-                return (
-                  <li key={s.id}>
-                    <button
-                      type="button"
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
-                      onClick={() => toggle(s.id)}
-                    >
-                      <span
-                        className={cn(
-                          "flex size-4 shrink-0 items-center justify-center rounded border text-[10px]",
-                          on
-                            ? "border-[oklch(0.78_0.08_85)] bg-[oklch(0.78_0.08_85)] text-black"
-                            : "border-border",
-                        )}
-                      >
-                        {on ? "✓" : ""}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate">{fullName(s)}</span>
-                      <span className="text-xs text-muted-foreground">#{s.id}</span>
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
+        <div className="overflow-hidden rounded-xl border border-border">
+          <div className="flex items-center justify-between border-b border-border px-3 py-1.5">
+            <p className="text-xs text-muted-foreground">
+              {pickerList.length} shown · click several in a row
+            </p>
+            <button type="button" className="text-xs underline" onClick={addAllHits}>
+              Add all shown
+            </button>
           </div>
-        ) : null}
+          <ul className="max-h-64 overflow-y-auto">
+            {pickerList.map((s) => {
+              const on = selected.includes(s.id)
+              return (
+                <li key={s.id}>
+                  <button
+                    type="button"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                    onClick={() => toggle(s.id)}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-4 shrink-0 items-center justify-center rounded border text-[10px]",
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border",
+                      )}
+                    >
+                      {on ? "✓" : ""}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">{fullName(s)}</span>
+                    <span className="text-xs text-muted-foreground">#{s.id}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
         {picked.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No one selected yet. Use Current students, Overdue students, or Subscribers — or search and

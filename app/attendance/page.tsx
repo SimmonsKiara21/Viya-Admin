@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ClassBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { countsFor, useStore } from "@/lib/store"
-import { formatDate, formatTime, fullName } from "@/lib/format"
+import { formatShortDate, formatTime, fullName } from "@/lib/format"
 import { CLASS_LABELS } from "@/lib/constants"
 import type { ClassType } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -82,7 +82,7 @@ export default function AttendancePage() {
         <div className="grid gap-4">
           {grouped.map(([day, rows]) => (
             <Panel key={day}>
-              <h2 className="mb-3 font-heading text-2xl">{formatDate(day)}</h2>
+              <h2 className="mb-3 font-heading text-2xl">{formatShortDate(day)}</h2>
               <ul className="divide-y divide-border">
                 {rows.map((row) => {
                   const student = students.find((s) => s.id === row.studentId)

@@ -29,8 +29,8 @@ export function StudentRow({ student }: { student: Student }) {
         <p
           className={cn(
             "truncate font-medium",
-            tone === "overdue" && "text-rose-200",
-            tone === "finishing" && "text-teal-200",
+            tone === "overdue" && "text-rose-800 dark:text-rose-200 sepia:text-rose-200",
+            tone === "finishing" && "text-teal-800 dark:text-teal-200 sepia:text-teal-200",
           )}
         >
           {fullName(student)}
@@ -46,12 +46,12 @@ export function StudentRow({ student }: { student: Student }) {
       </div>
       <div className="hidden items-center gap-2 sm:flex">
         {tone === "overdue" ? (
-          <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-100 uppercase">
+          <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100 sepia:text-rose-100">
             Overdue
           </span>
         ) : null}
         {tone === "finishing" ? (
-          <span className="rounded-full bg-teal-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-teal-100 uppercase">
+          <span className="rounded-full bg-teal-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-teal-800 uppercase dark:text-teal-100 sepia:text-teal-100">
             Wrapping up
           </span>
         ) : null}

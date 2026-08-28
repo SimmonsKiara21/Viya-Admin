@@ -69,6 +69,7 @@ export const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   scheduled: "Scheduled",
 }
 
+export const ALERT_PAYMENT_REMINDER = `This is a friendly reminder your payment is due! We tried to take a payment on our end, please try on yours, thank you! If you need to make a payment visit viyatalent.com/talentresources use password "viyatalent" to access it or text (602) 342-549`
 export const DESK_PASSWORD = "viyatalent"
 export const DESK_UNLOCK_KEY = "viya-desk-unlocked"
 

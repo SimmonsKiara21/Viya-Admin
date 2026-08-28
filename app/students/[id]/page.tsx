@@ -33,10 +33,12 @@ import {
   formatDateTime,
   formatMoney,
   formatPhone,
+  formatShortDate,
   fullName,
   smsHref,
   telHref,
 } from "@/lib/format"
+import { buildPaymentSchedule } from "@/lib/schedule"
 import {
   attendanceMonthCount,
   isFinishingSoon,
@@ -93,6 +95,10 @@ export default function StudentProfilePage() {
     () => payments.filter((p) => p.studentId === id).sort((a, b) => b.dueDate.localeCompare(a.dueDate)),
     [payments, id],
   )
+  const schedule = useMemo(
+    () => (student ? buildPaymentSchedule(student, payments) : []),
+    [student, payments],
+  )
   const counts = countsFor(records)
 
   if (!student) {
@@ -128,9 +134,11 @@ export default function StudentProfilePage() {
       </button>
 
       {isOverdueStudent(student) ? (
-        <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-950/50 p-4">
-          <p className="font-heading text-2xl text-rose-100">Overdue — student alert</p>
-          <p className="mt-1 text-sm text-rose-50/90">
+        <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-950/40">
+          <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-100">
+            Overdue — student alert
+          </p>
+          <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-50/90">
             Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
             {formatDate(student.nextPaymentDate)}. Their name is highlighted in red on every list.
           </p>
@@ -151,9 +159,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isFinishingSoon(student, attendance) ? (
-        <div className="mb-4 rounded-2xl border border-teal-400/40 bg-teal-950/40 p-4">
-          <p className="font-heading text-2xl text-teal-100">Wrapping up</p>
-          <p className="mt-1 text-sm text-teal-50/90">
+        <div className="mb-4 rounded-2xl border border-teal-400/40 bg-teal-100/80 p-4 dark:bg-teal-950/40 sepia:bg-teal-950/35">
+          <p className="font-heading text-2xl text-teal-900 dark:text-teal-100 sepia:text-teal-100">
+            Wrapping up
+          </p>
+          <p className="mt-1 text-sm text-teal-800 dark:text-teal-50/90 sepia:text-teal-50/90">
             {remainingPayments(student)} payment
             {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan, and{" "}
             {attendanceMonthCount(attendance, student.id)} months of class check-ins. Highlighted in
@@ -399,6 +409,48 @@ export default function StudentProfilePage() {
                 />
               </Field>
             </div>
+            {schedule.length > 0 ? (
+              <div className="mb-6">
+                <h2 className="mb-2 font-heading text-2xl">Payment schedule</h2>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  From Square and the 6-payment academy plan. Open invoices show the Square due date
+                  and remaining balance.
+                </p>
+                <div className="overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full min-w-[520px] text-left text-sm">
+                    <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
+                      <tr>
+                        <th className="px-3 py-2 font-medium">Date</th>
+                        <th className="px-3 py-2 font-medium">Item</th>
+                        <th className="px-3 py-2 font-medium">Amount</th>
+                        <th className="px-3 py-2 font-medium">Paid</th>
+                        <th className="px-3 py-2 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schedule.map((row, index) => (
+                        <tr key={`${row.date}-${index}`} className="border-b border-border last:border-0">
+                          <td className="px-3 py-2 tabular-nums">{formatShortDate(row.date)}</td>
+                          <td className="px-3 py-2">
+                            <p>{row.label}</p>
+                            {row.invoiceId ? (
+                              <p className="font-mono text-[11px] text-muted-foreground">
+                                {row.fromSquare ? "Square" : "Plan"} · {row.invoiceId}
+                              </p>
+                            ) : null}
+                          </td>
+                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.amount)}</td>
+                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.paidAmount)}</td>
+                          <td className="px-3 py-2">
+                            <PaymentBadge status={row.status} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : null}
             {bills.length === 0 ? (
               <p className="text-sm text-muted-foreground">No Square invoices on file.</p>
             ) : (
@@ -411,7 +463,7 @@ export default function StudentProfilePage() {
                         {formatMoney(bill.amount)}
                         {bill.paidAmount ? ` · paid ${formatMoney(bill.paidAmount)}` : ""}
                         {bill.balance ? ` · balance ${formatMoney(bill.balance)}` : ""} ·{" "}
-                        {formatDate(bill.dueDate)}
+                        {formatShortDate(bill.dueDate)}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {bill.method === "square" ? "Square" : bill.method} · {bill.squareInvoiceId}

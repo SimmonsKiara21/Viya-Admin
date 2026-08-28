@@ -10,7 +10,7 @@ import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { countsFor, useStore } from "@/lib/store"
-import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/format"
+import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import { isFinishingSoon, isOverdueStudent } from "@/lib/alerts"
 import { openBalance } from "@/lib/square"
@@ -114,7 +114,7 @@ export default function HomePage() {
               {stats.attention.slice(0, 8).map((s) => (
                 <div key={s.id} className="py-1">
                   <StudentRow student={s} />
-                  <p className="px-2 pb-2 text-xs text-rose-200/90">
+                  <p className="px-2 pb-2 text-xs text-rose-800 dark:text-rose-200/90 sepia:text-rose-200">
                     Student alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
                     {formatMoney(s.nextPaymentAmount)}
                   </p>
@@ -145,7 +145,9 @@ export default function HomePage() {
                     </Link>
                     <span className="flex items-center gap-2 text-muted-foreground">
                       <ClassBadge type={row.classType} />
-                      <span className="tabular-nums">{formatTime(row.checkedInAt)}</span>
+                      <span className="tabular-nums">
+                        {formatShortDate(row.checkedInAt)} · {formatTime(row.checkedInAt)}
+                      </span>
                     </span>
                   </li>
                 )
@@ -174,7 +176,9 @@ export default function HomePage() {
           )}
         </Panel>
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-teal-100">Wrapping up (≤3 payments)</h2>
+          <h2 className="mb-3 font-heading text-2xl text-teal-800 dark:text-teal-100 sepia:text-teal-200">
+            Wrapping up (≤3 payments)
+          </h2>
           {stats.finishing.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No current students with 3 or fewer payments left and two months of check-ins.

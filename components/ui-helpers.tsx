@@ -68,7 +68,7 @@ export function PageHeader({
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {eyebrow ? (
-          <p className="mb-1 text-[11px] font-medium tracking-[0.22em] text-[oklch(0.78_0.08_85)] uppercase">
+          <p className="mb-1 text-[11px] font-medium tracking-[0.22em] text-primary uppercase">
             {eyebrow}
           </p>
         ) : null}

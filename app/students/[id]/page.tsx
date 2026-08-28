@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { StudentPhoto } from "@/components/student-photo"
 import {
   ClassBadge,
+  DocusignBadge,
   EnrollmentBadge,
   PaymentBadge,
   PhotoshootBadge,
@@ -25,6 +26,7 @@ import {
 } from "@/components/status-badge"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { NotifyComposer } from "@/components/notify-composer"
+import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -184,6 +186,7 @@ export default function StudentProfilePage() {
               <ProgramBadge program={student.program} />
               <EnrollmentBadge status={student.enrollmentStatus} />
               <SubscriptionBadge status={student.subscriptionStatus} />
+              <DocusignBadge status={student.docusignStatus} />
               {student.photoshootStatus !== "none" ? (
                 <PhotoshootBadge status={student.photoshootStatus} />
               ) : null}
@@ -259,6 +262,7 @@ export default function StudentProfilePage() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
+          <TabsTrigger value="docusign">DocuSign</TabsTrigger>
           <TabsTrigger value="notes">Feedback</TabsTrigger>
           <TabsTrigger value="subscription">Subscription</TabsTrigger>
           <TabsTrigger value="photoshoot">Photoshoot</TabsTrigger>
@@ -423,6 +427,36 @@ export default function StudentProfilePage() {
                 ))}
               </ul>
             )}
+          </Panel>
+        </TabsContent>
+
+        <TabsContent value="docusign">
+          <Panel className="grid gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-heading text-2xl">DocuSign</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Store the envelope they were sent. Open the signing link or mark it signed when
+                  it comes back.
+                </p>
+              </div>
+              {student.docusignUrl ? (
+                <a
+                  href={student.docusignUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cn(buttonVariants({ size: "sm" }))}
+                >
+                  Open DocuSign
+                </a>
+              ) : null}
+            </div>
+            <DocusignFields
+              value={student}
+              onChange={(patch) =>
+                updateStudent(student.id, withDocusignDefaults({ ...student, ...patch }))
+              }
+            />
           </Panel>
         </TabsContent>
 

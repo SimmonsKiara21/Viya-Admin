@@ -1,13 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo } from "react"
-import { AlertTriangle, CalendarCheck, CreditCard, Users } from "lucide-react"
+import { useMemo, useState } from "react"
+import { AlertTriangle, CalendarCheck, CreditCard, Plus, Users } from "lucide-react"
 import { toast } from "sonner"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { StudentFormDialog } from "@/components/student-form-dialog"
 import { countsFor, useStore } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils"
 
 export default function HomePage() {
   const { students, attendance, payments, resetRoster, addNotification } = useStore()
+  const [addOpen, setAddOpen] = useState(false)
   const today = todayISO()
 
   const stats = useMemo(() => {
@@ -43,7 +45,11 @@ export default function HomePage() {
         description="Look up talent, take check-in, track Square balances, and send a text or Gmail without leaving the floor."
         actions={
           <>
-            <Link href="/check-in" className={cn(buttonVariants())}>
+            <Button onClick={() => setAddOpen(true)}>
+              <Plus className="size-4" />
+              Add student
+            </Button>
+            <Link href="/check-in" className={cn(buttonVariants({ variant: "outline" }))}>
               Open check-in
             </Link>
             <button
@@ -210,6 +216,7 @@ export default function HomePage() {
           Restore the original workbook
         </button>
       </p>
+      <StudentFormDialog open={addOpen} onOpenChange={setAddOpen} />
     </div>
   )
 }

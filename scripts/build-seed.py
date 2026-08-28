@@ -59,6 +59,13 @@ def s(
         "photoshootNotes": photoshoot_notes,
         "classTime": class_time,
         "photoUrl": "",
+        "docusignStatus": "none",
+        "docusignUrl": "",
+        "docusignEnvelopeId": "",
+        "docusignDocument": "",
+        "docusignSentAt": "",
+        "docusignSignedAt": "",
+        "docusignNotes": "",
     }
 
 

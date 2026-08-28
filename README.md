@@ -20,7 +20,8 @@ npm start
 
 ## What you can do
 
-- **Look up a student** from the search bar on every page (name, ID, phone, or email). Their profile has a photo, contact buttons, enrollment status, notes, and class feedback.
+- **Add a student** with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
+- **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
 - **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting.
 - **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.

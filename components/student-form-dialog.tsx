@@ -4,6 +4,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Field, NativeSelect } from "@/components/ui-helpers"
+import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { useStore } from "@/lib/store"
 import { newId } from "@/lib/format"
 import type {
@@ -42,6 +44,13 @@ const blank = (): Student => ({
   photoshootNotes: "",
   classTime: "",
   photoUrl: "",
+  docusignStatus: "none",
+  docusignUrl: "",
+  docusignEnvelopeId: "",
+  docusignDocument: "Enrollment agreement",
+  docusignSentAt: "",
+  docusignSignedAt: "",
+  docusignNotes: "",
 })
 
 export function StudentFormDialog({
@@ -54,6 +63,10 @@ export function StudentFormDialog({
   const { addStudent, students } = useStore()
   const [form, setForm] = useState<Student>(blank)
 
+  function patch(next: Partial<Student>) {
+    setForm((prev) => ({ ...prev, ...next }))
+  }
+
   function save() {
     if (!form.firstName.trim() || !form.lastName.trim()) {
       toast.error("First and last name are required.")
@@ -64,8 +77,18 @@ export function StudentFormDialog({
       toast.error("That student ID is already in use.")
       return
     }
-    addStudent({ ...form, id, firstName: form.firstName.trim(), lastName: form.lastName.trim() })
-    toast.success(`${form.firstName} ${form.lastName} was added.`)
+    const student = withDocusignDefaults({
+      ...form,
+      id,
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+    })
+    addStudent(student)
+    toast.success(
+      student.docusignUrl || student.docusignEnvelopeId
+        ? `${student.firstName} ${student.lastName} was added with their DocuSign.`
+        : `${student.firstName} ${student.lastName} was added.`,
+    )
     setForm(blank())
     onOpenChange(false)
   }
@@ -76,55 +99,51 @@ export function StudentFormDialog({
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Add a student</DialogTitle>
           <DialogDescription>
-            New talent is saved on this device. You can add a photo from their profile.
+            New talent is saved on this device. Add their DocuSign envelope or signing link so
+            enrollment paperwork stays on the file.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="First name">
             <Input
               value={form.firstName}
-              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+              onChange={(e) => patch({ firstName: e.target.value })}
             />
           </Field>
           <Field label="Last name">
             <Input
               value={form.lastName}
-              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+              onChange={(e) => patch({ lastName: e.target.value })}
             />
           </Field>
           <Field label="Student ID">
             <Input
               placeholder="Auto if blank"
               value={form.id}
-              onChange={(e) => setForm({ ...form, id: e.target.value })}
+              onChange={(e) => patch({ id: e.target.value })}
             />
           </Field>
           <Field label="Age">
             <Input
               type="number"
               value={form.age ?? ""}
-              onChange={(e) =>
-                setForm({ ...form, age: e.target.value ? Number(e.target.value) : null })
-              }
+              onChange={(e) => patch({ age: e.target.value ? Number(e.target.value) : null })}
             />
           </Field>
           <Field label="Email">
             <Input
               type="email"
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) => patch({ email: e.target.value })}
             />
           </Field>
           <Field label="Phone">
-            <Input
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
+            <Input value={form.phone} onChange={(e) => patch({ phone: e.target.value })} />
           </Field>
           <Field label="Program">
             <NativeSelect
               value={form.program}
-              onChange={(e) => setForm({ ...form, program: e.target.value as Program })}
+              onChange={(e) => patch({ program: e.target.value as Program })}
             >
               <option value="academy">Academy</option>
               <option value="subscriber">Subscriber</option>
@@ -134,9 +153,7 @@ export function StudentFormDialog({
           <Field label="Enrollment / payment">
             <NativeSelect
               value={form.enrollmentStatus}
-              onChange={(e) =>
-                setForm({ ...form, enrollmentStatus: e.target.value as EnrollmentStatus })
-              }
+              onChange={(e) => patch({ enrollmentStatus: e.target.value as EnrollmentStatus })}
             >
               <option value="current">Current</option>
               <option value="pending">Pending</option>
@@ -150,7 +167,7 @@ export function StudentFormDialog({
           <Field label="Plan">
             <NativeSelect
               value={form.paymentPlan}
-              onChange={(e) => setForm({ ...form, paymentPlan: e.target.value as PaymentPlan })}
+              onChange={(e) => patch({ paymentPlan: e.target.value as PaymentPlan })}
             >
               <option value="pp">Payment Plan</option>
               <option value="pif">Paid in Full</option>
@@ -162,9 +179,22 @@ export function StudentFormDialog({
             <Input
               type="date"
               value={form.startDate}
-              onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+              onChange={(e) => patch({ startDate: e.target.value })}
             />
           </Field>
+          <Field label="Notes" className="sm:col-span-2">
+            <Textarea
+              rows={2}
+              value={form.notes}
+              onChange={(e) => patch({ notes: e.target.value })}
+            />
+          </Field>
+        </div>
+        <div className="mt-2 rounded-2xl border border-border p-4">
+          <p className="mb-3 text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+            DocuSign
+          </p>
+          <DocusignFields value={form} onChange={patch} />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

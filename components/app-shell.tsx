@@ -6,7 +6,9 @@ import {
   Camera,
   ClipboardCheck,
   CreditCard,
+  FilePenLine,
   LayoutDashboard,
+  Lock,
   Menu,
   MessageSquare,
   Sparkles,
@@ -19,6 +21,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { StudentSearch } from "@/components/student-search"
 import { StaffAlertBanner } from "@/components/staff-alert-banner"
+import { lockDesk } from "@/components/desk-gate"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -29,6 +32,7 @@ const NAV = [
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/classes", label: "Classes", icon: Clock },
   { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/docusign", label: "DocuSign", icon: FilePenLine },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
   { href: "/photoshoots", label: "Photoshoots", icon: Camera },
   { href: "/notify", label: "Notify", icon: MessageSquare },
@@ -89,6 +93,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <p className="px-2 text-[11px] leading-relaxed text-muted-foreground">
           Staff only · Phoenix
         </p>
+        <button
+          type="button"
+          onClick={lockDesk}
+          className="mt-3 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+        >
+          <Lock className="size-3.5" />
+          Lock desk
+        </button>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -104,6 +116,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="mt-8">
                 <NavLinks />
               </div>
+              <button
+                type="button"
+                onClick={lockDesk}
+                className="mt-8 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <Lock className="size-3.5" />
+                Lock desk
+              </button>
             </SheetContent>
           </Sheet>
           <StudentSearch className="max-w-xl flex-1" />

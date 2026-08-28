@@ -58,10 +58,41 @@ function looksLikeSquareId(id?: string, notes?: string) {
   return Boolean(value) && !value.startsWith("sqinv_") && !value.startsWith("sqsub_")
 }
 
+function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName" | "lastName">): Student {
+  return {
+    id: s.id,
+    firstName: s.firstName,
+    lastName: s.lastName,
+    nickname: s.nickname || "",
+    email: s.email || "",
+    phone: s.phone || "",
+    age: s.age ?? null,
+    program: s.program || "academy",
+    paymentPlan: s.paymentPlan || "none",
+    enrollmentStatus: s.enrollmentStatus || "pending",
+    startDate: s.startDate || "",
+    nextPaymentDate: s.nextPaymentDate || "",
+    nextPaymentAmount: s.nextPaymentAmount ?? null,
+    notes: s.notes || "",
+    subscriptionStatus: s.subscriptionStatus || "none",
+    photoshootStatus: s.photoshootStatus || "none",
+    photoshootNotes: s.photoshootNotes || "",
+    classTime: s.classTime || "",
+    photoUrl: s.photoUrl || "",
+    docusignStatus: s.docusignStatus || "none",
+    docusignUrl: s.docusignUrl || "",
+    docusignEnvelopeId: s.docusignEnvelopeId || "",
+    docusignDocument: s.docusignDocument || "",
+    docusignSentAt: s.docusignSentAt || "",
+    docusignSignedAt: s.docusignSignedAt || "",
+    docusignNotes: s.docusignNotes || "",
+  }
+}
+
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {
   if (!raw?.students?.length) return null
   return {
-    students: raw.students,
+    students: raw.students.map((s) => normalizeStudent(s)),
     attendance: raw.attendance ?? [],
     feedback: raw.feedback ?? [],
     payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
@@ -70,7 +101,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
   }
 }
 
-const seedData = normalizeData(seed as AppData) ?? (seed as AppData)
+const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
 
 type StoreContextValue = AppData & {
   ready: boolean
@@ -144,10 +175,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
-          students: prev.students.map((s) => (s.id === id ? { ...s, ...patch } : s)),
+          students: prev.students.map((s) => (s.id === id ? normalizeStudent({ ...s, ...patch }) : s)),
         })),
       addStudent: (student) =>
-        mutate((prev) => ({ ...prev, students: [student, ...prev.students] })),
+        mutate((prev) => ({ ...prev, students: [normalizeStudent(student), ...prev.students] })),
       checkIn: (studentId, classType, notes = "") => {
         const record: AttendanceRecord = {
           id: newId("att"),

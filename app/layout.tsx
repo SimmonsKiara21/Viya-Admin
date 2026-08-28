@@ -22,7 +22,7 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: "Viya Academy Desk",
   description:
-    "Student lookup, check-in, attendance, Square payments, and notifications for Viya Academy + Agency.",
+    "Staff desk for Viya Academy + Agency. Student lookup, DocuSign, Square payments, check-in, and notifications.",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

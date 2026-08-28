@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
+import { DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
 import { highlightTone, remainingPayments } from "@/lib/alerts"
 import { useStore } from "@/lib/store"
@@ -57,6 +57,7 @@ export function StudentRow({ student }: { student: Student }) {
         ) : null}
         <ProgramBadge program={student.program} />
         <EnrollmentBadge status={student.enrollmentStatus} />
+        <DocusignBadge status={student.docusignStatus} />
       </div>
     </Link>
   )

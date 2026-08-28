@@ -20,6 +20,8 @@ export type PhotoshootStatus =
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
 export type PaymentSource = "square" | "workbook"
+export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
+export type DocusignStatus = "none" | "sent" | "viewed" | "signed" | "declined" | "expired"
 export type NotifyChannel = "sms" | "email"
 export type NotifyStatus = "sent" | "queued" | "failed" | "demo"
 export type NotifyGroupKind = "system" | "custom"
@@ -45,6 +47,13 @@ export interface Student {
   photoshootNotes: string
   classTime: string
   photoUrl: string
+  docusignStatus: DocusignStatus
+  docusignUrl: string
+  docusignEnvelopeId: string
+  docusignDocument: string
+  docusignSentAt: string
+  docusignSignedAt: string
+  docusignNotes: string
 }
 
 export interface AttendanceRecord {

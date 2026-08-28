@@ -104,6 +104,8 @@ export function searchHaystack(student: Student) {
     student.email,
     student.phone,
     student.notes,
+    student.docusignEnvelopeId,
+    student.docusignDocument,
   ]
     .join(" ")
     .toLowerCase()

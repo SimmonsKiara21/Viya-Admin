@@ -1,5 +1,6 @@
 import type {
   ClassType,
+  DocusignStatus,
   EnrollmentStatus,
   PaymentPlan,
   PaymentStatus,
@@ -68,6 +69,27 @@ export const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   scheduled: "Scheduled",
 }
 
+export const DESK_PASSWORD = "viyatalent"
+export const DESK_UNLOCK_KEY = "viya-desk-unlocked"
+
+export const DOCUSIGN_LABELS: Record<DocusignStatus, string> = {
+  none: "No envelope",
+  sent: "Sent",
+  viewed: "Viewed",
+  signed: "Signed",
+  declined: "Declined",
+  expired: "Expired",
+}
+
+export const DOCUSIGN_DOCUMENTS = [
+  "Enrollment agreement",
+  "Payment plan",
+  "Model / acting release",
+  "Subscriber agreement",
+  "Photoshoot release",
+  "Other",
+] as const
+
 export const MESSAGE_TEMPLATES = [
   {
     id: "pay-sms",
@@ -131,5 +153,12 @@ export const MESSAGE_TEMPLATES = [
     name: "Welcome / pending start",
     subject: "Welcome to Viya Academy",
     body: `Hi {{firstName}},\n\nWelcome to Viya Academy + Agency. We are excited to have you. Please complete your deposit/payment in Square before your start date so we can get you on the floor.\n\nTalent resources: https://www.viyatalent.com/talentresources\n\n— Viya Academy\n${ACADEMY_ADDRESS}`,
+  },
+  {
+    id: "docusign-sms",
+    channel: "sms" as const,
+    name: "DocuSign reminder",
+    subject: "",
+    body: `Hi {{firstName}}, this is Viya Academy. Please complete your DocuSign so we can finish enrollment. Reply here if you need the link resent. Front desk: ${ACADEMY_PHONE}.`,
   },
 ]

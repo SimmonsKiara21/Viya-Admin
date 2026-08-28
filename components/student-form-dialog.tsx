@@ -95,12 +95,11 @@ export function StudentFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Add a student</DialogTitle>
           <DialogDescription>
-            New talent is saved on this device. Add their DocuSign envelope or signing link so
-            enrollment paperwork stays on the file.
+            Name, contact, and their DocuSign go on the file together.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -116,6 +115,24 @@ export function StudentFormDialog({
               onChange={(e) => patch({ lastName: e.target.value })}
             />
           </Field>
+          <Field label="Email">
+            <Input
+              type="email"
+              value={form.email}
+              onChange={(e) => patch({ email: e.target.value })}
+            />
+          </Field>
+          <Field label="Phone">
+            <Input value={form.phone} onChange={(e) => patch({ phone: e.target.value })} />
+          </Field>
+        </div>
+        <div className="rounded-2xl border border-[oklch(0.78_0.08_85/0.35)] bg-[oklch(0.78_0.08_85/0.08)] p-4">
+          <p className="mb-3 text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+            Their DocuSign
+          </p>
+          <DocusignFields value={form} onChange={patch} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Student ID">
             <Input
               placeholder="Auto if blank"
@@ -129,16 +146,6 @@ export function StudentFormDialog({
               value={form.age ?? ""}
               onChange={(e) => patch({ age: e.target.value ? Number(e.target.value) : null })}
             />
-          </Field>
-          <Field label="Email">
-            <Input
-              type="email"
-              value={form.email}
-              onChange={(e) => patch({ email: e.target.value })}
-            />
-          </Field>
-          <Field label="Phone">
-            <Input value={form.phone} onChange={(e) => patch({ phone: e.target.value })} />
           </Field>
           <Field label="Program">
             <NativeSelect
@@ -189,12 +196,6 @@ export function StudentFormDialog({
               onChange={(e) => patch({ notes: e.target.value })}
             />
           </Field>
-        </div>
-        <div className="mt-2 rounded-2xl border border-border p-4">
-          <p className="mb-3 text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
-            DocuSign
-          </p>
-          <DocusignFields value={form} onChange={patch} />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

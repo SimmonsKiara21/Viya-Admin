@@ -64,7 +64,7 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Overdue is red, collections is amber, paused is violet, pending starts are blue, and wrapping-up payment plans are teal."
+        description="Overdue is red, collections is amber, paused is violet, pending starts (from the enrollment workbook only) are blue, and wrapping-up payment plans are teal. Photoshoot leads live on Contacts."
       />
 
       <Panel className="mb-6 grid gap-3">
@@ -129,7 +129,7 @@ export default function AlertsPage() {
           title="Pending"
           count={pending.length}
           empty="No pending starts."
-          hint="Not started yet. Blue so DocuSign, deposit, and first class do not get missed."
+          hint="Not started yet — only people the enrollment workbook marks pending. Photoshoot leads are on Contacts."
           tone="pending"
           students={pending}
           line={(s) =>

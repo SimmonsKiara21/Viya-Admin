@@ -12,7 +12,7 @@ import { StudentFormDialog } from "@/components/student-form-dialog"
 import { countsFor, useStore } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
-import { isFinishingSoon, isOverdueStudent } from "@/lib/alerts"
+import { isFinishingSoon, isOverdueStudent, isPendingStudent } from "@/lib/alerts"
 import { openBalance } from "@/lib/square"
 import { cn } from "@/lib/utils"
 
@@ -24,7 +24,7 @@ export default function HomePage() {
   const stats = useMemo(() => {
     const academy = students.filter((s) => s.program === "academy")
     const attention = students.filter(isOverdueStudent)
-    const pending = students.filter((s) => s.enrollmentStatus === "pending")
+    const pending = students.filter(isPendingStudent)
     const finishing = students.filter((s) => isFinishingSoon(s, attendance))
     const dueSoon = students.filter((s) => {
       if (!s.nextPaymentDate || !s.nextPaymentAmount) return false
@@ -165,7 +165,7 @@ export default function HomePage() {
             Pending starts
           </h2>
           {stats.pending.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No pending enrollments.</p>
+            <p className="text-sm text-muted-foreground">No pending starts on the enrollment workbook.</p>
           ) : (
             <div className="divide-y divide-border">
               {stats.pending.slice(0, 8).map((s) => (

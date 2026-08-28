@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 
 export function StudentSearch({
   className,
-  placeholder = "Look up a student by name, ID, phone, or email",
+  placeholder = "Look up a student or contact",
 }: {
   className?: string
   placeholder?: string

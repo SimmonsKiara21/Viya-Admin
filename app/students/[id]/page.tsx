@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { StudentPhoto } from "@/components/student-photo"
 import {
   ClassBadge,
+  ContactBadge,
   DocusignBadge,
   EnrollmentBadge,
   PaymentBadge,
@@ -42,6 +43,7 @@ import { buildPaymentSchedule } from "@/lib/schedule"
 import {
   attendanceMonthCount,
   highlightTone,
+  isContact,
   isCollectionsStudent,
   isFinishingSoon,
   isOverdueStudent,
@@ -52,6 +54,7 @@ import {
 import { sendDeskNotice } from "@/lib/send-notice"
 import {
   ENROLLMENT_LABELS,
+  CONTACT_LABELS,
   PHOTO_LABELS,
   PLAN_LABELS,
   PROGRAM_LABELS,
@@ -60,6 +63,7 @@ import {
 import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
 import type {
   ClassType,
+  ContactCategory,
   EnrollmentStatus,
   PaymentPlan,
   PaymentRecord,
@@ -82,6 +86,9 @@ export default function StudentProfilePage() {
     addFeedback,
     removeAttendance,
     addNotification,
+    photoshoots,
+    photoshootPlacements,
+    setPhotoshootPlacement,
   } = useStore()
   const student = students.find((s) => s.id === id)
   const [note, setNote] = useState("")
@@ -189,6 +196,16 @@ export default function StudentProfilePage() {
         </div>
       ) : null}
 
+      {isContact(student) ? (
+        <div className="mb-4 rounded-2xl border border-primary/30 bg-primary/8 p-4">
+          <p className="font-heading text-2xl text-primary">Contact</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Not on the current enrollment tab. Categorize them here, or move them to Students if they
+            actually become pending on the workbook.
+          </p>
+        </div>
+      ) : null}
+
       {isPendingStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-950/35">
           <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-100">
@@ -253,6 +270,7 @@ export default function StudentProfilePage() {
               <EnrollmentBadge status={student.enrollmentStatus} />
               <SubscriptionBadge status={student.subscriptionStatus} />
               <DocusignBadge status={student.docusignStatus} />
+              {isContact(student) ? <ContactBadge category={student.contactCategory} /> : null}
               {student.photoshootStatus !== "none" ? (
                 <PhotoshootBadge status={student.photoshootStatus} />
               ) : null}
@@ -355,7 +373,23 @@ export default function StudentProfilePage() {
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <Panel className="grid gap-3">
-              <h2 className="font-heading text-2xl">Enrollment</h2>
+              <h2 className="font-heading text-2xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
+              {isContact(student) ? (
+                <Field label="Category">
+                  <NativeSelect
+                    value={student.contactCategory || "new"}
+                    onChange={(e) =>
+                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
+                    }
+                  >
+                    {Object.entries(CONTACT_LABELS).map(([k, label]) => (
+                      <option key={k} value={k}>
+                        {label}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </Field>
+              ) : (
               <Field label="Status">
                 <NativeSelect
                   value={student.enrollmentStatus}
@@ -365,13 +399,16 @@ export default function StudentProfilePage() {
                     })
                   }
                 >
-                  {Object.entries(ENROLLMENT_LABELS).map(([k, label]) => (
+                  {Object.entries(ENROLLMENT_LABELS)
+                    .filter(([k]) => k !== "contact")
+                    .map(([k, label]) => (
                     <option key={k} value={k}>
                       {label}
                     </option>
                   ))}
                 </NativeSelect>
               </Field>
+              )}
               <Field label="Program">
                 <NativeSelect
                   value={student.program}
@@ -642,22 +679,30 @@ export default function StudentProfilePage() {
 
         <TabsContent value="photoshoot">
           <Panel className="grid gap-3">
-            <Field label="Photoshoot status">
-              <NativeSelect
-                value={student.photoshootStatus}
-                onChange={(e) =>
-                  updateStudent(student.id, {
-                    photoshootStatus: e.target.value as PhotoshootStatus,
-                  })
-                }
-              >
-                {Object.entries(PHOTO_LABELS).map(([k, label]) => (
-                  <option key={k} value={k}>
-                    {label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </Field>
+            <p className="text-sm text-muted-foreground">
+              Pick a month, then Scheduled / Headshots / Full / Refresh / Received for that shoot only.
+            </p>
+            {photoshoots.map((shoot) => {
+              const row = photoshootPlacements.find(
+                (p) => p.studentId === student.id && p.shootId === shoot.id,
+              )
+              return (
+                <Field key={shoot.id} label={`${shoot.label}${shoot.archived ? " · prior" : ""}`}>
+                  <NativeSelect
+                    value={row?.status || "none"}
+                    onChange={(e) =>
+                      setPhotoshootPlacement(student.id, shoot.id, e.target.value as PhotoshootStatus)
+                    }
+                  >
+                    {Object.entries(PHOTO_LABELS).map(([k, label]) => (
+                      <option key={k} value={k}>
+                        {label}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </Field>
+              )
+            })}
             <Field label="Shoot notes">
               <Textarea
                 value={student.photoshootNotes}

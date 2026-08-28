@@ -6,8 +6,10 @@ export type EnrollmentStatus =
   | "overdue"
   | "paused"
   | "collections"
+  | "contact"
 
 export type Program = "academy" | "subscriber" | "prospect"
+export type ContactCategory = "new" | "photoshoot" | "inquiry" | "follow-up" | "not-interested"
 export type PaymentPlan = "pp" | "pif" | "subscription" | "none"
 export type ClassType = "modeling" | "acting" | "subscriber"
 export type PhotoshootStatus =
@@ -42,6 +44,7 @@ export interface Student {
   nextPaymentDate: string
   nextPaymentAmount: number | null
   notes: string
+  contactCategory: ContactCategory | ""
   subscriptionStatus: SubscriptionStatus
   photoshootStatus: PhotoshootStatus
   photoshootNotes: string
@@ -119,6 +122,19 @@ export interface NotificationRecord {
   status: NotifyStatus
 }
 
+export interface Photoshoot {
+  id: string
+  label: string
+  archived: boolean
+}
+
+export interface PhotoshootPlacement {
+  id: string
+  shootId: string
+  studentId: string
+  status: Exclude<PhotoshootStatus, "none">
+}
+
 export interface AppData {
   students: Student[]
   attendance: AttendanceRecord[]
@@ -126,4 +142,6 @@ export interface AppData {
   payments: PaymentRecord[]
   notifications: NotificationRecord[]
   groups: NotifyGroup[]
+  photoshoots: Photoshoot[]
+  photoshootPlacements: PhotoshootPlacement[]
 }

@@ -2,34 +2,45 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { X } from "lucide-react"
+import { ChevronDown, X } from "lucide-react"
 import { toast } from "sonner"
 import { StudentPhoto } from "@/components/student-photo"
-import { PhotoshootBadge } from "@/components/status-badge"
 import { Field, NativeSelect, PageHeader, Panel } from "@/components/ui-helpers"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useStore } from "@/lib/store"
 import { fullName, matchesQuery } from "@/lib/format"
 import { PHOTO_LABELS } from "@/lib/constants"
+import { PHOTO_COLUMNS } from "@/lib/photoshoots"
 import type { PhotoshootStatus } from "@/lib/types"
 
-const COLUMNS: PhotoshootStatus[] = ["scheduled", "headshots", "full", "refresh", "received"]
-
 export default function PhotoshootsPage() {
-  const { students, updateStudent } = useStore()
+  const { students, photoshoots, photoshootPlacements, setPhotoshootPlacement, addPhotoshoot } = useStore()
   const [query, setQuery] = useState("")
-  const [addStatus, setAddStatus] = useState<PhotoshootStatus>("scheduled")
+  const [addStatus, setAddStatus] = useState<Exclude<PhotoshootStatus, "none">>("scheduled")
+  const openShoots = photoshoots.filter((s) => !s.archived)
+  const priorShoots = photoshoots.filter((s) => s.archived)
+  const [shootId, setShootId] = useState(openShoots[0]?.id || photoshoots[0]?.id || "2026-09")
+  const [priorOpen, setPriorOpen] = useState(false)
+
+  const shoot = photoshoots.find((s) => s.id === shootId) ?? openShoots[0]
+  const currentId = shoot?.id || shootId
 
   const byStatus = useMemo(() => {
-    const map = {} as Record<PhotoshootStatus, typeof students>
-    for (const status of COLUMNS) {
-      map[status] = students.filter((s) => s.photoshootStatus === status)
+    const map = {} as Record<(typeof PHOTO_COLUMNS)[number], typeof students>
+    for (const status of PHOTO_COLUMNS) {
+      const ids = photoshootPlacements
+        .filter((row) => row.shootId === currentId && row.status === status)
+        .map((row) => row.studentId)
+      map[status] = students.filter((s) => ids.includes(s.id))
     }
     return map
-  }, [students])
+  }, [students, photoshootPlacements, currentId])
 
-  const none = students.filter((s) => s.photoshootStatus === "none")
+  const onThisShoot = new Set(
+    photoshootPlacements.filter((row) => row.shootId === currentId).map((row) => row.studentId),
+  )
+  const none = students.filter((s) => !onThisShoot.has(s.id))
   const hits = useMemo(() => {
     const pool = query.trim() ? students.filter((s) => matchesQuery(s, query)) : none
     return [...pool]
@@ -39,13 +50,17 @@ export default function PhotoshootsPage() {
 
   function setStatus(id: string, status: PhotoshootStatus) {
     const student = students.find((s) => s.id === id)
-    updateStudent(id, { photoshootStatus: status })
+    setPhotoshootPlacement(id, currentId, status)
     toast.success(
       status === "none"
-        ? `${student ? fullName(student) : "Student"} was removed from photoshoots.`
-        : `${student ? fullName(student) : "Student"} moved to ${PHOTO_LABELS[status]}.`,
+        ? `${student ? fullName(student) : "Student"} was removed from ${shoot?.label || "this shoot"}.`
+        : `${student ? fullName(student) : "Student"} moved to ${PHOTO_LABELS[status]} · ${shoot?.label}.`,
     )
     if (query.trim()) setQuery("")
+  }
+
+  function statusOnShoot(studentId: string): PhotoshootStatus {
+    return photoshootPlacements.find((row) => row.studentId === studentId && row.shootId === currentId)?.status ?? "none"
   }
 
   return (
@@ -53,13 +68,91 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="Add or remove people on this tab. Search, tap a name, or move someone with the list dropdown."
+        description="Each month has its own Scheduled, Headshots, Full, Refresh, and Received lists. Prior months stay collapsed until you open them."
+        actions={
+          <Button
+            variant="outline"
+            onClick={() => {
+              const created = addPhotoshoot()
+              setShootId(created.id)
+              toast.success(`${created.label} is ready.`)
+            }}
+          >
+            Add next month
+          </Button>
+        }
       />
 
+      <div className="mb-4 flex flex-wrap gap-2">
+        {openShoots.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setShootId(item.id)}
+            className={
+              currentId === item.id
+                ? "rounded-full border border-primary/50 bg-primary/16 px-3 py-1 text-xs font-medium text-primary"
+                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+            }
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {priorShoots.length > 0 ? (
+        <Panel className="mb-6 p-0">
+          <button
+            type="button"
+            className="flex w-full items-center justify-between px-5 py-4 text-left"
+            onClick={() => setPriorOpen((v) => !v)}
+          >
+            <span>
+              <span className="font-heading text-2xl">Prior shoots</span>
+              <span className="ml-2 text-sm text-muted-foreground">
+                {priorShoots.map((s) => s.label.replace(" 2026", "")).join(" · ")}
+              </span>
+            </span>
+            <ChevronDown className={`size-4 text-muted-foreground transition ${priorOpen ? "rotate-180" : ""}`} />
+          </button>
+          {priorOpen ? (
+            <div className="border-t border-border px-5 py-4">
+              <p className="mb-3 text-sm text-muted-foreground">
+                Open a past month to see who was on Scheduled, Headshots, Full, Refresh, or Received.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {priorShoots.map((item) => {
+                  const count = photoshootPlacements.filter((row) => row.shootId === item.id).length
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setShootId(item.id)}
+                      className={
+                        currentId === item.id
+                          ? "rounded-full border border-primary/50 bg-primary/16 px-3 py-1 text-xs font-medium text-primary"
+                          : "rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+                      }
+                    >
+                      {item.label} · {count}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ) : null}
+        </Panel>
+      ) : null}
+
       <Panel className="mb-6 grid gap-3">
-        <h2 className="font-heading text-2xl">Add or move someone</h2>
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <h2 className="font-heading text-2xl">{shoot?.label || "This month"}</h2>
+          {shoot?.archived ? (
+            <span className="text-xs text-muted-foreground">Archived month — view or copy names into a new shoot.</span>
+          ) : null}
+        </div>
         <div className="grid gap-3 sm:grid-cols-[1fr_180px_auto]">
-          <Field label="Student">
+          <Field label="Student or contact">
             <Input
               placeholder="Search name, ID, phone, or email"
               value={query}
@@ -69,9 +162,9 @@ export default function PhotoshootsPage() {
           <Field label="Put them in">
             <NativeSelect
               value={addStatus}
-              onChange={(e) => setAddStatus(e.target.value as PhotoshootStatus)}
+              onChange={(e) => setAddStatus(e.target.value as Exclude<PhotoshootStatus, "none">)}
             >
-              {COLUMNS.map((status) => (
+              {PHOTO_COLUMNS.map((status) => (
                 <option key={status} value={status}>
                   {PHOTO_LABELS[status]}
                 </option>
@@ -101,7 +194,7 @@ export default function PhotoshootsPage() {
                   <span>
                     {fullName(s)}
                     <span className="ml-2 text-xs text-muted-foreground">
-                      {PHOTO_LABELS[s.photoshootStatus]}
+                      {PHOTO_LABELS[statusOnShoot(s.id)]}
                     </span>
                   </span>
                   <span className="text-xs text-muted-foreground">Add to {PHOTO_LABELS[addStatus]}</span>
@@ -115,14 +208,14 @@ export default function PhotoshootsPage() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        {COLUMNS.map((status) => (
+        {PHOTO_COLUMNS.map((status) => (
           <Panel key={status}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-heading text-2xl">{PHOTO_LABELS[status]}</h2>
               <span className="text-xs text-muted-foreground">{byStatus[status].length}</span>
             </div>
             {byStatus[status].length === 0 ? (
-              <p className="text-sm text-muted-foreground">Empty — search above to add someone.</p>
+              <p className="text-sm text-muted-foreground">Empty for {shoot?.label}.</p>
             ) : (
               <ul className="grid gap-2">
                 {byStatus[status].map((student) => (
@@ -144,10 +237,10 @@ export default function PhotoshootsPage() {
                     <NativeSelect
                       aria-label={`Move ${fullName(student)}`}
                       className="h-8 w-[9.5rem] shrink-0 text-xs"
-                      value={student.photoshootStatus}
+                      value={statusOnShoot(student.id)}
                       onChange={(e) => setStatus(student.id, e.target.value as PhotoshootStatus)}
                     >
-                      {COLUMNS.map((option) => (
+                      {PHOTO_COLUMNS.map((option) => (
                         <option key={option} value={option}>
                           {PHOTO_LABELS[option]}
                         </option>
@@ -169,38 +262,6 @@ export default function PhotoshootsPage() {
           </Panel>
         ))}
       </div>
-
-      <Panel className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-heading text-2xl">Not on a shoot list</h2>
-          <PhotoshootBadge status="none" />
-        </div>
-        {none.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Everyone has a shoot status.</p>
-        ) : (
-          <>
-            <p className="mb-3 text-sm text-muted-foreground">
-              {none.length} people are unmarked. Tap a name to add them to {PHOTO_LABELS[addStatus]},
-              or open their file.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {none.slice(0, 40).map((student) => (
-                <button
-                  key={student.id}
-                  type="button"
-                  onClick={() => setStatus(student.id, addStatus)}
-                  className="rounded-full border border-border px-3 py-1 text-xs hover:border-primary/50 hover:bg-primary/10"
-                >
-                  {fullName(student)}
-                </button>
-              ))}
-              {none.length > 40 ? (
-                <span className="self-center text-xs text-muted-foreground">+{none.length - 40} more — search above</span>
-              ) : null}
-            </div>
-          </>
-        )}
-      </Panel>
     </div>
   )
 }

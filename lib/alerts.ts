@@ -24,7 +24,12 @@ export const ACADEMY_SESSIONS = [
   },
 ]
 
+export function isContact(student: Student) {
+  return student.program === "prospect" || student.enrollmentStatus === "contact"
+}
+
 export function isOverdueStudent(student: Student) {
+  if (isContact(student)) return false
   return student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
 }
 
@@ -37,7 +42,7 @@ export function isPausedStudent(student: Student) {
 }
 
 export function isPendingStudent(student: Student) {
-  return student.enrollmentStatus === "pending"
+  return student.enrollmentStatus === "pending" && !isContact(student)
 }
 
 export type HighlightTone =

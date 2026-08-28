@@ -1,5 +1,6 @@
 import type {
   ClassType,
+  ContactCategory,
   DocusignStatus,
   EnrollmentStatus,
   PaymentPlan,
@@ -10,6 +11,7 @@ import type {
 } from "./types"
 
 export const ACADEMY_NAME = "Viya Academy"
+export const SITE_NAME = "ViyaAdmin.com"
 export const ACADEMY_PHONE = "(602) 342-2902"
 export const ACADEMY_EMAIL = "viyatalent@gmail.com"
 export const ACADEMY_ADDRESS = "2141 East Camelback Rd #222, Phoenix, AZ 85016"
@@ -26,6 +28,15 @@ export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
   overdue: "Overdue",
   paused: "Paused",
   collections: "Collections",
+  contact: "Contact",
+}
+
+export const CONTACT_LABELS: Record<ContactCategory, string> = {
+  new: "New",
+  photoshoot: "Photoshoot",
+  inquiry: "Inquiry",
+  "follow-up": "Follow-up",
+  "not-interested": "Not interested",
 }
 
 export const PROGRAM_LABELS: Record<Program, string> = {

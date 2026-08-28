@@ -37,8 +37,12 @@ def s(
     photoshoot_notes="",
     subscription="none",
     nickname="",
+    contact_category="",
     class_time="",
 ):
+    if program == "prospect" and status == "pending":
+        status = "contact"
+        contact_category = contact_category or "photoshoot"
     return {
         "id": sid,
         "firstName": first,
@@ -54,6 +58,7 @@ def s(
         "nextPaymentDate": due,
         "nextPaymentAmount": amount,
         "notes": notes,
+        "contactCategory": contact_category,
         "subscriptionStatus": subscription,
         "photoshootStatus": photoshoot,
         "photoshootNotes": photoshoot_notes,
@@ -431,7 +436,7 @@ for st in students:
         if st["program"] == "subscriber" and st["enrollmentStatus"] in ("current", "overdue"):
             amount = 49
             due = due or "2026-09-01"
-        elif st["program"] == "prospect":
+        elif st["program"] == "prospect" or st["enrollmentStatus"] == "contact":
             continue
         else:
             continue
@@ -511,6 +516,28 @@ notifications = [
 ]
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
+
+photoshoots = [
+    {"id": "2026-05", "label": "May 2026", "archived": True},
+    {"id": "2026-06", "label": "June 2026", "archived": True},
+    {"id": "2026-09", "label": "September 2026", "archived": False},
+    {"id": "2026-10", "label": "October 2026", "archived": False},
+]
+photoshoot_placements = []
+psp_n = 1
+for st in students:
+    if st.get("photoshootStatus") in (None, "none"):
+        continue
+    notes = st.get("photoshootNotes") or ""
+    shoot = "2026-06" if "June" in notes else "2026-05"
+    photoshoot_placements.append({
+        "id": uid("psp", psp_n),
+        "shootId": shoot,
+        "studentId": st["id"],
+        "status": st["photoshootStatus"],
+    })
+    psp_n += 1
+
 payload = {
     "students": students,
     "attendance": attendance,
@@ -518,6 +545,8 @@ payload = {
     "payments": payments,
     "notifications": notifications,
     "groups": [],
+    "photoshoots": photoshoots,
+    "photoshootPlacements": photoshoot_placements,
 }
 
 square_path = ROOT / "data" / "square.json"

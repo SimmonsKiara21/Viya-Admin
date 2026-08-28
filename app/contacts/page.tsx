@@ -1,0 +1,219 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import { Plus } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { EmptyState, Field, NativeSelect, PageHeader } from "@/components/ui-helpers"
+import { StudentRow } from "@/components/student-row"
+import { ContactBadge } from "@/components/status-badge"
+import { useStore } from "@/lib/store"
+import { matchesQuery, newId } from "@/lib/format"
+import { CONTACT_LABELS } from "@/lib/constants"
+import { isContact } from "@/lib/alerts"
+import type { ContactCategory, Student } from "@/lib/types"
+import { cn } from "@/lib/utils"
+
+const CATEGORIES: Array<ContactCategory | "all"> = [
+  "all",
+  "new",
+  "photoshoot",
+  "inquiry",
+  "follow-up",
+  "not-interested",
+]
+
+export default function ContactsPage() {
+  const { students, addStudent, updateStudent } = useStore()
+  const [query, setQuery] = useState("")
+  const [category, setCategory] = useState<ContactCategory | "all">("all")
+  const [adding, setAdding] = useState(false)
+  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" as ContactCategory })
+
+  const contacts = useMemo(
+    () =>
+      students
+        .filter(isContact)
+        .filter((s) => matchesQuery(s, query))
+        .filter((s) => (category === "all" ? true : s.contactCategory === category))
+        .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName)),
+    [students, query, category],
+  )
+
+  function save() {
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      toast.error("First and last name are required.")
+      return
+    }
+    const student: Student = {
+      id: newId("CT").replace("CT-", "CT").toUpperCase(),
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      nickname: "",
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      age: null,
+      program: "prospect",
+      paymentPlan: "none",
+      enrollmentStatus: "contact",
+      startDate: "",
+      nextPaymentDate: "",
+      nextPaymentAmount: null,
+      notes: form.notes.trim(),
+      contactCategory: form.contactCategory,
+      subscriptionStatus: "none",
+      photoshootStatus: "none",
+      photoshootNotes: "",
+      classTime: "",
+      photoUrl: "",
+      docusignStatus: "none",
+      docusignUrl: "",
+      docusignEnvelopeId: "",
+      docusignDocument: "",
+      docusignSentAt: "",
+      docusignSignedAt: "",
+      docusignNotes: "",
+    }
+    addStudent(student)
+    toast.success(`${student.firstName} ${student.lastName} was added to Contacts.`)
+    setForm({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" })
+    setAdding(false)
+  }
+
+  return (
+    <div>
+      <PageHeader
+        eyebrow="Leads"
+        title="Contacts"
+        description="People who are not on the current enrollment tab — photoshoot lists, inquiries, and follow-ups. Pending stays on Students only when the enrollment workbook actually says pending."
+        actions={
+          <Button onClick={() => setAdding((v) => !v)}>
+            <Plus className="size-4" />
+            Add contact
+          </Button>
+        }
+      />
+
+      {adding ? (
+        <div className="mb-6 grid gap-3 rounded-2xl border border-border bg-card/80 p-5">
+          <h2 className="font-heading text-2xl">New contact</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="First name">
+              <Input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
+            </Field>
+            <Field label="Last name">
+              <Input value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
+            </Field>
+            <Field label="Phone">
+              <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            </Field>
+            <Field label="Email">
+              <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </Field>
+            <Field label="Category">
+              <NativeSelect
+                value={form.contactCategory}
+                onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory })}
+              >
+                {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
+                  <option key={key} value={key}>
+                    {CONTACT_LABELS[key]}
+                  </option>
+                ))}
+              </NativeSelect>
+            </Field>
+          </div>
+          <Field label="Notes">
+            <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} />
+          </Field>
+          <div className="flex gap-2">
+            <Button onClick={save}>Save contact</Button>
+            <Button variant="outline" onClick={() => setAdding(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mb-4 flex flex-col gap-3">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Filter by name, phone, or email"
+          className="h-11 max-w-xl rounded-full px-4"
+        />
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => setCategory(item)}
+              className={cn(
+                "rounded-full border px-3 py-1 text-xs font-medium",
+                category === item
+                  ? "border-primary/50 bg-primary/16 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {item === "all" ? "All contacts" : CONTACT_LABELS[item]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {contacts.length === 0 ? (
+        <EmptyState
+          title="No contacts in this filter"
+          description="Add a contact or switch category. Enrollment pending students stay on Students."
+        />
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
+          <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
+            {contacts.length} contact{contacts.length === 1 ? "" : "s"}
+          </div>
+          <div className="divide-y divide-border px-2 py-1">
+            {contacts.map((student) => (
+              <div key={student.id} className="flex flex-col gap-2 py-1 sm:flex-row sm:items-center">
+                <div className="min-w-0 flex-1">
+                  <StudentRow student={student} />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
+                  <ContactBadge category={student.contactCategory} />
+                  <NativeSelect
+                    className="h-8 w-[9.5rem] text-xs"
+                    value={student.contactCategory || "new"}
+                    onChange={(e) =>
+                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
+                    }
+                  >
+                    {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
+                      <option key={key} value={key}>
+                        {CONTACT_LABELS[key]}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    onClick={() => {
+                      updateStudent(student.id, {
+                        program: "academy",
+                        enrollmentStatus: "pending",
+                        paymentPlan: "pp",
+                      })
+                      toast.success(`${student.firstName} moved to Students as pending.`)
+                    }}
+                  >
+                    Move to pending
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

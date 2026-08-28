@@ -69,11 +69,14 @@ export function DeskGate({ children }: { children: React.ReactNode }) {
           <p className="mt-6 text-center text-[11px] font-medium tracking-[0.32em] text-primary uppercase">
             Viya Academy + Agency
           </p>
-          <h1 className="mt-2 text-center font-heading text-5xl tracking-[0.18em] text-primary">
-            VIYA
+          <h1 className="mt-2 text-center font-heading text-5xl tracking-[0.12em] text-primary">
+            ViyaAdmin
           </h1>
+          <p className="mt-1 text-center text-[11px] tracking-[0.2em] text-primary/80 uppercase">
+            viyaadmin.com
+          </p>
           <p className="mt-3 text-center text-sm text-muted-foreground">
-            Staff desk is locked. Enter the password to open the roster, Square tracker, and
+            Staff desk is locked. Enter the password to open the roster, contacts, Square tracker, and
             DocuSign files.
           </p>
           <form onSubmit={onSubmit} className="mt-8 grid gap-3">

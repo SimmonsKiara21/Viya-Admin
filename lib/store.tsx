@@ -15,11 +15,14 @@ import type {
   AppData,
   AttendanceRecord,
   ClassType,
+  ContactCategory,
   FeedbackNote,
   NotificationRecord,
   NotifyGroup,
   PaymentRecord,
   PaymentSource,
+  Photoshoot,
+  PhotoshootStatus,
   SquareItemKind,
   Student,
 } from "./types"
@@ -28,8 +31,10 @@ import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
 import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jotform"
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
+import { DEFAULT_PHOTO_SHOOTS, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 
-const STORAGE_KEY = "viya-academy-store-v4"
+const STORAGE_KEY = "viya-academy-store-v5"
+const LEGACY_KEYS = ["viya-academy-store-v4"]
 
 function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amount: number }): PaymentRecord {
   const paid = p.paidAmount ?? (p.status === "paid" ? p.amount : 0)
@@ -62,6 +67,7 @@ function looksLikeSquareId(id?: string, notes?: string) {
 }
 
 function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName" | "lastName">): Student {
+  const prospect = s.program === "prospect" || s.enrollmentStatus === "contact"
   return {
     id: s.id,
     firstName: s.firstName,
@@ -70,13 +76,18 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     email: s.email || "",
     phone: s.phone || "",
     age: s.age ?? null,
-    program: s.program || "academy",
+    program: prospect ? "prospect" : s.program || "academy",
     paymentPlan: s.paymentPlan || "none",
-    enrollmentStatus: s.enrollmentStatus || "pending",
+    enrollmentStatus: prospect
+      ? "contact"
+      : s.enrollmentStatus === "pending" && s.program === "prospect"
+        ? "contact"
+        : s.enrollmentStatus || "pending",
     startDate: s.startDate || "",
     nextPaymentDate: s.nextPaymentDate || "",
     nextPaymentAmount: s.nextPaymentAmount ?? null,
     notes: s.notes || "",
+    contactCategory: (s.contactCategory || (prospect ? "photoshoot" : "")) as ContactCategory | "",
     subscriptionStatus: s.subscriptionStatus || "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
@@ -94,13 +105,19 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
 
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {
   if (!raw?.students?.length) return null
+  const students = raw.students.map((s) => normalizeStudent(s))
+  const photoshoots = raw.photoshoots?.length ? raw.photoshoots : DEFAULT_PHOTO_SHOOTS
+  const photoshootPlacements =
+    raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
   return {
-    students: raw.students.map((s) => normalizeStudent(s)),
+    students,
     attendance: raw.attendance ?? [],
     feedback: raw.feedback ?? [],
     payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
     notifications: raw.notifications ?? [],
     groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
+    photoshoots,
+    photoshootPlacements,
   }
 }
 
@@ -140,6 +157,12 @@ type StoreContextValue = AppData & {
   addGroup: (name: string, studentIds: string[]) => NotifyGroup
   updateGroup: (id: string, patch: Partial<Pick<NotifyGroup, "name" | "studentIds">>) => void
   deleteGroup: (id: string) => void
+  setPhotoshootPlacement: (
+    studentId: string,
+    shootId: string,
+    status: PhotoshootStatus,
+  ) => void
+  addPhotoshoot: () => Photoshoot
   resetRoster: () => void
 }
 
@@ -159,7 +182,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY)
+        const raw = localStorage.getItem(STORAGE_KEY) ?? LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) setData(parsed)
@@ -360,6 +383,40 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ...prev,
           groups: (prev.groups ?? []).filter((g) => g.id !== id),
         })),
+      setPhotoshootPlacement: (studentId, shootId, status) =>
+        mutate((prev) => {
+          const without = prev.photoshootPlacements.filter(
+            (row) => !(row.studentId === studentId && row.shootId === shootId),
+          )
+          const nextPlacements =
+            status === "none" ? without : [...without, newPlacement(shootId, studentId, status)]
+          const onOpen = nextPlacements.find((row) => {
+            if (row.studentId !== studentId) return false
+            const shoot = prev.photoshoots.find((s) => s.id === row.shootId)
+            return shoot && !shoot.archived
+          })
+          return {
+            ...prev,
+            photoshootPlacements: nextPlacements,
+            students: prev.students.map((s) =>
+              s.id === studentId
+                ? {
+                    ...s,
+                    photoshootStatus: onOpen?.status ?? (status === "none" ? "none" : status),
+                  }
+                : s,
+            ),
+          }
+        }),
+      addPhotoshoot: () => {
+        const next = nextShootId(data.photoshoots)
+        const shoot: Photoshoot = { ...next, archived: false }
+        mutate((prev) => {
+          if (prev.photoshoots.some((s) => s.id === shoot.id)) return prev
+          return { ...prev, photoshoots: [...prev.photoshoots, shoot] }
+        })
+        return shoot
+      },
       resetRoster: () => {
         const next = cloneSeed()
         setData(next)

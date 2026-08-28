@@ -16,6 +16,7 @@ import {
   CalendarDays,
   Bell,
   Clock,
+  BookUser,
 } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -28,6 +29,7 @@ const NAV = [
   { href: "/", label: "Home", icon: LayoutDashboard },
   { href: "/alerts", label: "Alerts", icon: Bell },
   { href: "/students", label: "Students", icon: Users },
+  { href: "/contacts", label: "Contacts", icon: BookUser },
   { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/classes", label: "Classes", icon: Clock },
@@ -76,7 +78,7 @@ function Brand() {
         VIYA
       </p>
       <p className="mt-1 text-[10px] font-medium tracking-[0.28em] text-muted-foreground uppercase">
-        Academy desk
+        ViyaAdmin.com
       </p>
     </Link>
   )

@@ -8,6 +8,7 @@ import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
+import { isContact } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, PROGRAM_LABELS } from "@/lib/constants"
 import type { EnrollmentStatus, Program } from "@/lib/types"
@@ -24,7 +25,7 @@ const STATUSES: Array<EnrollmentStatus | "all"> = [
   "collections",
 ]
 
-const PROGRAMS: Array<Program | "all"> = ["all", "academy", "subscriber", "prospect"]
+const PROGRAMS: Array<Program | "all"> = ["all", "academy", "subscriber"]
 
 export default function StudentsPage() {
   const { students } = useStore()
@@ -35,6 +36,7 @@ export default function StudentsPage() {
 
   const filtered = useMemo(() => {
     return students
+      .filter((s) => !isContact(s))
       .filter((s) => matchesQuery(s, query))
       .filter((s) => (status === "all" ? true : s.enrollmentStatus === status))
       .filter((s) => (program === "all" ? true : s.program === program))
@@ -46,7 +48,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="Search anyone on the 2026 enrollment list, subscribers, and photoshoot prospects. Tap a row for photo, notes, attendance, and payments."
+        description="Current enrollment only — academy and subscribers. Pending here is only people the enrollment workbook marks pending. Prospects and photoshoot leads are on Contacts."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />

@@ -1,6 +1,6 @@
-# Viya Academy Desk
+# ViyaAdmin.com
 
-Staff desk for **Viya Academy + Agency** in Phoenix. Look up a student, see their photo and file, take class check-in, track Square balances, and send a text or Gmail — without bouncing between spreadsheets.
+Staff desk for **Viya Academy + Agency** in Phoenix, branded as **ViyaAdmin.com**. Look up a student, see their photo and file, take class check-in, track Square balances, and send a text or Gmail — without bouncing between spreadsheets.
 
 The 2026 enrollment workbook, subscriber list, photoshoot flags, and August 26 attendance tracker are loaded as the starting roster.
 
@@ -26,9 +26,10 @@ npm start
 - **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting. Staff check-ins post to the Jotform attendance tracker, and student-phone check-ins on that form sync back to the desk.
 - **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
-- **Student Payments** on a profile shows the Square payment schedule (due dates, amounts, paid, status) plus invoice copy.
+- **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
+- **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
 - **Notify** has separate groups for **Current students**, **Overdue students**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group.
-- **Photoshoots** lets you add, move, or remove people on that tab — search, tap a name, or use the dropdown next to each person.
+- **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right.
 

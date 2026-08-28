@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import {
   CLASS_LABELS,
+  CONTACT_LABELS,
   DOCUSIGN_LABELS,
   ENROLLMENT_LABELS,
   PAYMENT_LABELS,
@@ -11,6 +12,7 @@ import {
 import { cn } from "@/lib/utils"
 import type {
   ClassType,
+  ContactCategory,
   DocusignStatus,
   EnrollmentStatus,
   PaymentStatus,
@@ -27,6 +29,7 @@ const enrollmentClass: Record<EnrollmentStatus, string> = {
   overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200",
   paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200",
   collections: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200",
+  contact: "border-primary/35 bg-primary/10 text-primary",
 }
 
 const paymentClass: Record<PaymentStatus, string> = {
@@ -41,6 +44,15 @@ export function EnrollmentBadge({ status }: { status: EnrollmentStatus }) {
   return (
     <Badge variant="outline" className={cn("font-medium", enrollmentClass[status])}>
       {ENROLLMENT_LABELS[status]}
+    </Badge>
+  )
+}
+
+export function ContactBadge({ category }: { category: ContactCategory | "" }) {
+  if (!category) return null
+  return (
+    <Badge variant="outline" className="border-primary/35 bg-primary/10 font-medium text-primary">
+      {CONTACT_LABELS[category]}
     </Badge>
   )
 }

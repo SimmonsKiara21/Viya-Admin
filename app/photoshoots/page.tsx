@@ -68,7 +68,7 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="Each month has its own Scheduled, Headshots, Full, Refresh, and Received lists. Prior months stay collapsed until you open them."
+        description="Each month has its own Scheduled, Headshots, Full, Refresh, and Received lists. July and August sit with May and June under Prior shoots. September and October are open."
         actions={
           <Button
             variant="outline"

@@ -8,11 +8,12 @@ import { StudentRow } from "@/components/student-row"
 import { useStore } from "@/lib/store"
 import {
   attendanceMonthCount,
+  isAcademyOverdue,
   isCollectionsStudent,
   isFinishingSoon,
-  isOverdueStudent,
   isPausedStudent,
   isPendingStudent,
+  isSubscriberOverdue,
   remainingPayments,
 } from "@/lib/alerts"
 import { formatDate, formatMoney } from "@/lib/format"
@@ -25,10 +26,17 @@ export default function AlertsPage() {
   const { students, attendance, addNotification } = useStore()
   const [message, setMessage] = useState(ALERT_PAYMENT_REMINDER)
 
-  const overdue = useMemo(
+  const academyOverdue = useMemo(
     () =>
       students
-        .filter(isOverdueStudent)
+        .filter(isAcademyOverdue)
+        .sort((a, b) => (a.nextPaymentDate || "").localeCompare(b.nextPaymentDate || "")),
+    [students],
+  )
+  const subscriberOverdue = useMemo(
+    () =>
+      students
+        .filter(isSubscriberOverdue)
         .sort((a, b) => (a.nextPaymentDate || "").localeCompare(b.nextPaymentDate || "")),
     [students],
   )
@@ -49,11 +57,11 @@ export default function AlertsPage() {
     [students, attendance],
   )
 
-  function blast(channel: "sms" | "email") {
+  function blast(channel: "sms" | "email", list: Student[], subject: string) {
     sendDeskNotice({
-      students: overdue,
+      students: list,
       channel,
-      subject: "Viya Academy — payment reminder",
+      subject,
       body: message,
       addNotification,
     })
@@ -64,14 +72,14 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Overdue is red, collections is amber, paused is violet, pending starts (from the enrollment workbook only) are blue, and wrapping-up payment plans are teal. Photoshoot leads live on Contacts."
+        description="Academy overdue is red. Subscriber overdue is orange so it is not mixed with training follow-up. Collections is amber, paused is violet, pending starts are blue, wrapping-up plans are teal. Photoshoot leads live on Contacts."
       />
 
       <Panel className="mb-6 grid gap-3">
         <h2 className="font-heading text-2xl">Text all / email all</h2>
         <p className="text-sm text-muted-foreground">
-          Sends to every overdue or declined student on this page. Edit the note first if you need a
-          different wording. Paused, collections, and pending stay on their own lists.
+          Edit the note, then send it to academy overdue or subscriber overdue separately. Paused,
+          collections, and pending stay on their own lists.
         </p>
         <Textarea
           value={message}
@@ -80,29 +88,56 @@ export default function AlertsPage() {
           className="min-h-32"
         />
         <div className="flex flex-wrap gap-2">
-          <Button onClick={() => blast("sms")} disabled={!overdue.length || !message.trim()}>
-            Text all
+          <Button
+            onClick={() => blast("sms", academyOverdue, "Viya Academy — payment reminder")}
+            disabled={!academyOverdue.length || !message.trim()}
+          >
+            Text academy overdue
           </Button>
           <Button
             variant="outline"
-            onClick={() => blast("email")}
-            disabled={!overdue.length || !message.trim()}
+            onClick={() => blast("email", academyOverdue, "Viya Academy — payment reminder")}
+            disabled={!academyOverdue.length || !message.trim()}
           >
-            Email all
+            Email academy overdue
+          </Button>
+          <Button
+            onClick={() => blast("sms", subscriberOverdue, "Viya Talent — subscriber payment")}
+            disabled={!subscriberOverdue.length || !message.trim()}
+          >
+            Text subscriber overdue
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => blast("email", subscriberOverdue, "Viya Talent — subscriber payment")}
+            disabled={!subscriberOverdue.length || !message.trim()}
+          >
+            Email subscriber overdue
           </Button>
         </div>
       </Panel>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AlertList
-          title="Overdue"
-          count={overdue.length}
-          empty="Nobody is overdue right now."
-          hint="Staff see this list and a banner on every page. Text all or email all uses the message above."
+          title="Academy overdue"
+          count={academyOverdue.length}
+          empty="No academy or training accounts are overdue."
+          hint="Payment-plan and academy students. Highlighted in red on every list."
           tone="overdue"
-          students={overdue}
+          students={academyOverdue}
           line={(s) =>
             `Payment due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`
+          }
+        />
+        <AlertList
+          title="Subscriber overdue"
+          count={subscriberOverdue.length}
+          empty="No subscribers are overdue."
+          hint="Subscription accounts only. Highlighted in orange so they are not mixed with academy follow-up."
+          tone="subscriberOverdue"
+          students={subscriberOverdue}
+          line={(s) =>
+            `Subscriber due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`
           }
         />
         <AlertList
@@ -158,6 +193,12 @@ const TONE = {
     title: "text-rose-800 dark:text-rose-100 sepia:text-rose-200",
     divide: "divide-rose-400/15",
     line: "text-rose-800 dark:text-rose-200/90 sepia:text-rose-200",
+  },
+  subscriberOverdue: {
+    panel: "ring-1 ring-orange-400/30",
+    title: "text-orange-900 dark:text-orange-100 sepia:text-orange-100",
+    divide: "divide-orange-400/20",
+    line: "text-orange-900 dark:text-orange-200/90 sepia:text-orange-100",
   },
   collections: {
     panel: "ring-1 ring-amber-400/30",

@@ -12,7 +12,7 @@ import { StudentFormDialog } from "@/components/student-form-dialog"
 import { countsFor, useStore } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
-import { isFinishingSoon, isOverdueStudent, isPendingStudent } from "@/lib/alerts"
+import { isAcademyOverdue, isFinishingSoon, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
 import { openBalance } from "@/lib/square"
 import { cn } from "@/lib/utils"
 
@@ -23,7 +23,9 @@ export default function HomePage() {
 
   const stats = useMemo(() => {
     const academy = students.filter((s) => s.program === "academy")
-    const attention = students.filter(isOverdueStudent)
+    const academyOverdue = students.filter(isAcademyOverdue)
+    const subscriberOverdue = students.filter(isSubscriberOverdue)
+    const attention = [...academyOverdue, ...subscriberOverdue]
     const pending = students.filter(isPendingStudent)
     const finishing = students.filter((s) => isFinishingSoon(s, attendance))
     const dueSoon = students.filter((s) => {
@@ -34,7 +36,7 @@ export default function HomePage() {
     const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
     const openTotal = openBalance(payments)
-    return { academy, attention, pending, finishing, dueSoon, todayCheckins, recent, openTotal }
+    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, dueSoon, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
 
   return (
@@ -42,16 +44,13 @@ export default function HomePage() {
       <PageHeader
         eyebrow="Viya Academy + Agency"
         title="Front desk"
-        description="Look up talent, take check-in, track Square balances, and send a text or Gmail without leaving the floor."
+        description="Look up talent, track Square balances, and send a text or Gmail without leaving the floor."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
               <Plus className="size-4" />
               Add student
             </Button>
-            <Link href="/check-in" className={cn(buttonVariants({ variant: "outline" }))}>
-              Open check-in
-            </Link>
             <button
               type="button"
               className={cn(buttonVariants({ variant: "outline" }))}
@@ -95,7 +94,7 @@ export default function HomePage() {
           icon={CalendarCheck}
           label="Checked in today"
           value={String(stats.todayCheckins.length)}
-          href="/check-in"
+          href="/attendance"
         />
       </div>
 
@@ -103,21 +102,47 @@ export default function HomePage() {
         <Panel>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-heading text-2xl text-rose-800 dark:text-rose-100 sepia:text-rose-200">
-              Overdue — staff + student
+              Academy overdue
             </h2>
             <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
               Alerts
             </Link>
           </div>
-          {stats.attention.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No overdue or declined accounts.</p>
+          {stats.academyOverdue.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No academy or training accounts are overdue.</p>
           ) : (
             <div className="divide-y divide-border">
-              {stats.attention.slice(0, 8).map((s) => (
+              {stats.academyOverdue.slice(0, 8).map((s) => (
                 <div key={s.id} className="py-1">
                   <StudentRow student={s} />
                   <p className="px-2 pb-2 text-xs text-rose-800 dark:text-rose-200/90 sepia:text-rose-200">
                     Student alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
+                    {formatMoney(s.nextPaymentAmount)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </Panel>
+
+        <Panel>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-100">
+              Subscriber overdue
+            </h2>
+            <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
+              Alerts
+            </Link>
+          </div>
+          {stats.subscriberOverdue.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No subscribers are overdue.</p>
+          ) : (
+            <div className="divide-y divide-border">
+              {stats.subscriberOverdue.slice(0, 8).map((s) => (
+                <div key={s.id} className="py-1">
+                  <StudentRow student={s} />
+                  <p className="px-2 pb-2 text-xs text-orange-900 dark:text-orange-200/90 sepia:text-orange-100">
+                    Subscriber alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
                     {formatMoney(s.nextPaymentAmount)}
                   </p>
                 </div>
@@ -134,7 +159,7 @@ export default function HomePage() {
             </Link>
           </div>
           {stats.recent.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No check-ins yet. Open Check-in to start class.</p>
+            <p className="text-sm text-muted-foreground">No check-ins yet. Use the Check-in tab at the door.</p>
           ) : (
             <ul className="grid gap-2">
               {stats.recent.slice(0, 8).map((row) => {

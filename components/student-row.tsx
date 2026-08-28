@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 
 const ROW: Record<Exclude<HighlightTone, "none">, string> = {
   overdue: "bg-rose-500/12 ring-1 ring-rose-400/35 hover:bg-rose-500/18",
+  subscriberOverdue: "bg-orange-500/14 ring-1 ring-orange-400/40 hover:bg-orange-500/20",
   collections: "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20",
   paused: "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18",
   pending: "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18",
@@ -19,6 +20,7 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
 
 const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   overdue: "text-rose-800 dark:text-rose-200 sepia:text-rose-200",
+  subscriberOverdue: "text-orange-900 dark:text-orange-100 sepia:text-orange-100",
   collections: "text-amber-900 dark:text-amber-200 sepia:text-amber-200",
   paused: "text-violet-900 dark:text-violet-200 sepia:text-violet-200",
   pending: "text-sky-900 dark:text-sky-200 sepia:text-sky-200",
@@ -27,9 +29,14 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
   overdue: {
-    label: "Overdue",
+    label: "Academy overdue",
     className:
       "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100 sepia:text-rose-100",
+  },
+  subscriberOverdue: {
+    label: "Subscriber overdue",
+    className:
+      "rounded-full bg-orange-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-orange-900 uppercase dark:text-orange-100 sepia:text-orange-100",
   },
   collections: {
     label: "Collections",
@@ -54,7 +61,7 @@ const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: s
 }
 
 function detail(student: Student, tone: HighlightTone, left: number | null) {
-  if (tone === "overdue" || tone === "collections") {
+  if (tone === "overdue" || tone === "subscriberOverdue" || tone === "collections") {
     return ` · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
   }
   if (tone === "finishing") return ` · ${left} payment${left === 1 ? "" : "s"} left`
@@ -91,8 +98,11 @@ export function StudentRow({ student }: { student: Student }) {
       </div>
       <div className="hidden items-center gap-2 sm:flex">
         {pill ? <span className={pill.className}>{pill.label}</span> : null}
-        <ProgramBadge program={student.program} />
-        <EnrollmentBadge status={student.enrollmentStatus} />
+        <ProgramBadge program={student.program} track={student.track} />
+        <EnrollmentBadge
+          status={student.enrollmentStatus}
+          subscriber={student.program === "subscriber" || student.paymentPlan === "subscription"}
+        />
         <DocusignBadge status={student.docusignStatus} />
       </div>
     </Link>

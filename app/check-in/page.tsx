@@ -56,7 +56,7 @@ export default function CheckInPage() {
       <PageHeader
         eyebrow="Floor"
         title="Check-in"
-        description="Type a name for a staff check-in, or use the same student Jotform they already fill out. Either side updates the other."
+        description="This is the only place to manually check someone in. Type a name, or use the same student Jotform they already fill out. Either side updates Attendance."
       />
 
       <Panel className="mb-6">

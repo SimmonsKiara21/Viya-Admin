@@ -18,7 +18,6 @@ import {
   Clock,
   BookUser,
 } from "lucide-react"
-import { buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { StudentSearch } from "@/components/student-search"
 import { StaffAlertBanner } from "@/components/staff-alert-banner"
@@ -129,12 +128,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <StudentSearch className="max-w-xl flex-1" />
-          <Link
-            href="/check-in"
-            className={cn(buttonVariants(), "hidden sm:inline-flex")}
-          >
-            Check in
-          </Link>
         </header>
         <StaffAlertBanner />
         <div className="flex-1 px-4 py-6 md:px-8">{children}</div>

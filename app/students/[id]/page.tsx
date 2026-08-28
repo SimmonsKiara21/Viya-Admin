@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import Link from "next/link"
 import { toast } from "sonner"
 import {
   ArrowLeft,
@@ -43,12 +42,14 @@ import { buildPaymentSchedule } from "@/lib/schedule"
 import {
   attendanceMonthCount,
   highlightTone,
+  isAcademyOverdue,
   isContact,
   isCollectionsStudent,
   isFinishingSoon,
-  isOverdueStudent,
   isPausedStudent,
   isPendingStudent,
+  isSubscriberOverdue,
+  isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
 import { sendDeskNotice } from "@/lib/send-notice"
@@ -57,7 +58,6 @@ import {
   CONTACT_LABELS,
   PHOTO_LABELS,
   PLAN_LABELS,
-  PROGRAM_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
 import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
@@ -68,8 +68,8 @@ import type {
   PaymentPlan,
   PaymentRecord,
   PhotoshootStatus,
-  Program,
   Student,
+  StudentTrack,
   SubscriptionStatus,
 } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -145,10 +145,10 @@ export default function StudentProfilePage() {
         Back
       </button>
 
-      {isOverdueStudent(student) ? (
+      {isAcademyOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-950/40">
           <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-100">
-            Overdue — student alert
+            Academy overdue
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-50/90">
             Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
@@ -166,6 +166,32 @@ export default function StudentProfilePage() {
             }
           >
             Send student alert
+          </Button>
+        </div>
+      ) : null}
+
+      {isSubscriberOverdue(student) ? (
+        <div className="mb-4 rounded-2xl border border-orange-400/45 bg-orange-100/80 p-4 dark:bg-orange-950/45 sepia:bg-orange-950/35">
+          <p className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-100">
+            Subscriber overdue
+          </p>
+          <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-50/90">
+            Subscription payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
+            {formatDate(student.nextPaymentDate)}. Highlighted in orange so it is not mixed with
+            academy training follow-up.
+          </p>
+          <Button
+            className="mt-3"
+            onClick={() =>
+              sendDeskNotice({
+                students: [student],
+                channel: "sms",
+                templateId: "overdue-sms",
+                addNotification,
+              })
+            }
+          >
+            Send subscriber alert
           </Button>
         </div>
       ) : null}
@@ -252,7 +278,9 @@ export default function StudentProfilePage() {
               className={`font-heading text-4xl md:text-5xl ${
                 tone === "overdue"
                   ? "text-rose-800 dark:text-rose-200"
-                  : tone === "collections"
+                  : tone === "subscriberOverdue"
+                    ? "text-orange-900 dark:text-orange-100"
+                    : tone === "collections"
                     ? "text-amber-900 dark:text-amber-200"
                     : tone === "paused"
                       ? "text-violet-900 dark:text-violet-200"
@@ -266,8 +294,11 @@ export default function StudentProfilePage() {
               {fullName(student)}
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              <ProgramBadge program={student.program} />
-              <EnrollmentBadge status={student.enrollmentStatus} />
+              <ProgramBadge program={student.program} track={student.track} />
+              <EnrollmentBadge
+                status={student.enrollmentStatus}
+                subscriber={isSubscriberStudent(student)}
+              />
               <SubscriptionBadge status={student.subscriptionStatus} />
               <DocusignBadge status={student.docusignStatus} />
               {isContact(student) ? <ContactBadge category={student.contactCategory} /> : null}
@@ -330,12 +361,6 @@ export default function StudentProfilePage() {
                   Gmail
                 </a>
               ) : null}
-              <Link
-                href="/check-in"
-                className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
-              >
-                Check in
-              </Link>
             </div>
           </div>
         </div>
@@ -411,14 +436,39 @@ export default function StudentProfilePage() {
               )}
               <Field label="Program">
                 <NativeSelect
-                  value={student.program}
-                  onChange={(e) => updateStudent(student.id, { program: e.target.value as Program })}
+                  value={
+                    student.program === "subscriber"
+                      ? "subscriber"
+                      : student.program === "prospect"
+                        ? "prospect"
+                        : student.track === "modeling"
+                          ? "modeling"
+                          : student.track === "acting"
+                            ? "acting"
+                            : "academy"
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (value === "subscriber") {
+                      updateStudent(student.id, { program: "subscriber", track: "none", paymentPlan: "subscription" })
+                      return
+                    }
+                    if (value === "prospect") {
+                      updateStudent(student.id, { program: "prospect", track: "none" })
+                      return
+                    }
+                    const track = value as StudentTrack
+                    updateStudent(student.id, {
+                      program: "academy",
+                      track: track === "modeling" || track === "acting" ? track : "academy",
+                    })
+                  }}
                 >
-                  {Object.entries(PROGRAM_LABELS).map(([k, label]) => (
-                    <option key={k} value={k}>
-                      {label}
-                    </option>
-                  ))}
+                  <option value="academy">Academy</option>
+                  <option value="modeling">Modeling</option>
+                  <option value="acting">Acting</option>
+                  <option value="subscriber">Subscriber</option>
+                  <option value="prospect">Prospect</option>
                 </NativeSelect>
               </Field>
               <Field label="Plan">

@@ -10,8 +10,8 @@ import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
 import { isContact } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
-import { ENROLLMENT_LABELS, PROGRAM_LABELS } from "@/lib/constants"
-import type { EnrollmentStatus, Program } from "@/lib/types"
+import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
+import type { EnrollmentStatus } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const STATUSES: Array<EnrollmentStatus | "all"> = [
@@ -25,13 +25,19 @@ const STATUSES: Array<EnrollmentStatus | "all"> = [
   "collections",
 ]
 
-const PROGRAMS: Array<Program | "all"> = ["all", "academy", "subscriber"]
+const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting" | "subscriber"> = [
+  "all",
+  "academy",
+  "modeling",
+  "acting",
+  "subscriber",
+]
 
 export default function StudentsPage() {
   const { students } = useStore()
   const [query, setQuery] = useState("")
   const [status, setStatus] = useState<EnrollmentStatus | "all">("all")
-  const [program, setProgram] = useState<Program | "all">("all")
+  const [program, setProgram] = useState<(typeof PROGRAMS)[number]>("all")
   const [open, setOpen] = useState(false)
 
   const filtered = useMemo(() => {
@@ -39,7 +45,15 @@ export default function StudentsPage() {
       .filter((s) => !isContact(s))
       .filter((s) => matchesQuery(s, query))
       .filter((s) => (status === "all" ? true : s.enrollmentStatus === status))
-      .filter((s) => (program === "all" ? true : s.program === program))
+      .filter((s) => {
+        if (program === "all") return true
+        if (program === "modeling") return s.track === "modeling"
+        if (program === "acting") return s.track === "acting"
+        if (program === "academy") {
+          return s.program === "academy" && s.track !== "modeling" && s.track !== "acting"
+        }
+        return s.program === program
+      })
       .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
   }, [students, query, status, program])
 
@@ -48,7 +62,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="Current enrollment only — academy and subscribers. Pending here is only people the enrollment workbook marks pending. Prospects and photoshoot leads are on Contacts."
+        description="Current enrollment only — academy, modeling, acting, and subscribers. Pending here is only people the enrollment workbook marks pending. Prospects and photoshoot leads are on Contacts."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />
@@ -67,7 +81,7 @@ export default function StudentsPage() {
         <div className="flex flex-wrap gap-2">
           {PROGRAMS.map((p) => (
             <Chip key={p} active={program === p} onClick={() => setProgram(p)}>
-              {p === "all" ? "All programs" : PROGRAM_LABELS[p]}
+              {p === "all" ? "All programs" : p === "modeling" || p === "acting" ? TRACK_LABELS[p] : PROGRAM_LABELS[p]}
             </Chip>
           ))}
         </div>

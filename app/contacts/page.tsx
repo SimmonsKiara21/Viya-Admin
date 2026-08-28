@@ -56,6 +56,7 @@ export default function ContactsPage() {
       phone: form.phone.trim(),
       age: null,
       program: "prospect",
+      track: "none",
       paymentPlan: "none",
       enrollmentStatus: "contact",
       startDate: "",
@@ -200,6 +201,7 @@ export default function ContactsPage() {
                     onClick={() => {
                       updateStudent(student.id, {
                         program: "academy",
+                        track: "academy",
                         enrollmentStatus: "pending",
                         paymentPlan: "pp",
                       })

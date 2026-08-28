@@ -9,6 +9,7 @@ import { StudentPhoto } from "@/components/student-photo"
 import { EnrollmentBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
 import { fullName, matchesQuery } from "@/lib/format"
+import { highlightTone, isSubscriberStudent } from "@/lib/alerts"
 import { cn } from "@/lib/utils"
 
 export function StudentSearch({
@@ -18,7 +19,7 @@ export function StudentSearch({
   className?: string
   placeholder?: string
 }) {
-  const { students } = useStore()
+  const { students, attendance } = useStore()
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
@@ -74,8 +75,12 @@ export function StudentSearch({
                       <p
                         className={cn(
                           "truncate font-medium",
-                          ["overdue", "declined", "collections"].includes(student.enrollmentStatus) &&
-                            "text-rose-200",
+                          highlightTone(student, attendance) === "overdue" &&
+                            "text-rose-800 dark:text-rose-200",
+                          highlightTone(student, attendance) === "subscriberOverdue" &&
+                            "text-orange-900 dark:text-orange-100",
+                          highlightTone(student, attendance) === "collections" &&
+                            "text-amber-900 dark:text-amber-200",
                         )}
                       >
                         {fullName(student)}
@@ -87,7 +92,10 @@ export function StudentSearch({
                           : ` · ${student.email || "no email"} · ${student.phone || "no phone"}`}
                       </p>
                     </div>
-                    <EnrollmentBadge status={student.enrollmentStatus} />
+                    <EnrollmentBadge
+                      status={student.enrollmentStatus}
+                      subscriber={isSubscriberStudent(student)}
+                    />
                   </Link>
                 </li>
               ))}

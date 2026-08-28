@@ -20,9 +20,40 @@ import { newId } from "@/lib/format"
 import type {
   EnrollmentStatus,
   PaymentPlan,
-  Program,
   Student,
 } from "@/lib/types"
+
+type AddKind = "academy" | "modeling" | "acting" | "subscriber" | "prospect"
+
+function applyKind(kind: AddKind): Partial<Student> {
+  if (kind === "subscriber") {
+    return { program: "subscriber", track: "none", paymentPlan: "subscription" }
+  }
+  if (kind === "prospect") {
+    return {
+      program: "prospect",
+      track: "none",
+      paymentPlan: "none",
+      enrollmentStatus: "contact",
+      contactCategory: "new",
+    }
+  }
+  if (kind === "modeling") {
+    return { program: "academy", track: "modeling", paymentPlan: "pp" }
+  }
+  if (kind === "acting") {
+    return { program: "academy", track: "acting", paymentPlan: "pp" }
+  }
+  return { program: "academy", track: "academy", paymentPlan: "pp" }
+}
+
+function kindOf(student: Student): AddKind {
+  if (student.program === "subscriber") return "subscriber"
+  if (student.program === "prospect") return "prospect"
+  if (student.track === "modeling") return "modeling"
+  if (student.track === "acting") return "acting"
+  return "academy"
+}
 
 const blank = (): Student => ({
   id: "",
@@ -33,6 +64,7 @@ const blank = (): Student => ({
   phone: "",
   age: null,
   program: "academy",
+  track: "academy",
   paymentPlan: "pp",
   enrollmentStatus: "pending",
   startDate: "",
@@ -150,10 +182,12 @@ export function StudentFormDialog({
           </Field>
           <Field label="Program">
             <NativeSelect
-              value={form.program}
-              onChange={(e) => patch({ program: e.target.value as Program })}
+              value={kindOf(form)}
+              onChange={(e) => patch(applyKind(e.target.value as AddKind))}
             >
               <option value="academy">Academy</option>
+              <option value="modeling">Modeling</option>
+              <option value="acting">Acting</option>
               <option value="subscriber">Subscriber</option>
               <option value="prospect">Prospect</option>
             </NativeSelect>

@@ -33,6 +33,18 @@ export function isOverdueStudent(student: Student) {
   return student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
 }
 
+export function isSubscriberStudent(student: Student) {
+  return student.program === "subscriber" || student.paymentPlan === "subscription"
+}
+
+export function isAcademyOverdue(student: Student) {
+  return isOverdueStudent(student) && !isSubscriberStudent(student)
+}
+
+export function isSubscriberOverdue(student: Student) {
+  return isOverdueStudent(student) && isSubscriberStudent(student)
+}
+
 export function isCollectionsStudent(student: Student) {
   return student.enrollmentStatus === "collections"
 }
@@ -47,6 +59,7 @@ export function isPendingStudent(student: Student) {
 
 export type HighlightTone =
   | "overdue"
+  | "subscriberOverdue"
   | "collections"
   | "paused"
   | "pending"
@@ -83,7 +96,8 @@ export function isFinishingSoon(student: Student, attendance: AttendanceRecord[]
 
 export function highlightTone(student: Student, attendance: AttendanceRecord[]): HighlightTone {
   if (isCollectionsStudent(student)) return "collections"
-  if (isOverdueStudent(student)) return "overdue"
+  if (isSubscriberOverdue(student)) return "subscriberOverdue"
+  if (isAcademyOverdue(student)) return "overdue"
   if (isPausedStudent(student)) return "paused"
   if (isPendingStudent(student)) return "pending"
   if (isFinishingSoon(student, attendance)) return "finishing"

@@ -2,7 +2,7 @@
 
 Staff desk for **Viya Academy + Agency** in Phoenix, branded as **ViyaAdmin.com**. Look up a student, see their photo and file, take class check-in, track Square balances, and send a text or Gmail — without bouncing between spreadsheets.
 
-The 2026 enrollment workbook, subscriber list, photoshoot flags, and August 26 attendance tracker are loaded as the starting roster.
+The 2026 enrollment workbook, subscriber list, photoshoot flags, and the August 26 Jotform attendance tracker are loaded as the starting roster. Attendance after that comes from Jotform.
 
 ## Run locally
 
@@ -20,22 +20,24 @@ npm start
 
 ## What you can do
 
-- **Add a student** with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
+- **Add a student** as **Academy**, **Modeling**, **Acting**, or **Subscriber**, with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
-- **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting. Staff check-ins post to the Jotform attendance tracker, and student-phone check-ins on that form sync back to the desk.
+- **Check-in** is the only place to manually check someone in (Modeling, Acting, or Subscriber). Staff check-ins post to the Jotform attendance tracker. Student-phone check-ins on that form sync back to **Attendance**.
+- **Attendance** is the Jotform record. The August 26 class from the tracker is loaded; earlier nights were not kept because the desk did not have those check-ins yet.
 - **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
-- **Notify** has separate groups for **Current students**, **Overdue students**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group.
-- **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June) sit in a dropdown.
+- **Notify** has separate groups for **Current students**, **Academy overdue**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group.
+- **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right.
 
 ## Alerts
 
-- **Overdue / declined** — red, with the payment due date. **Text all** / **Email all** on Alerts goes to this list.
+- **Academy overdue / declined** — red, with the payment due date. **Text academy overdue** / **Email academy overdue** on Alerts goes to this list.
+- **Subscriber overdue** — orange, kept separate from academy and training follow-up. **Text subscriber overdue** / **Email subscriber overdue** goes to this list.
 - **Collections** — amber, kept separate from a regular overdue follow-up.
 - **Paused** — violet, so the desk does not check them in by accident.
 - **Pending** — blue, so DocuSign, deposit, and first class stay visible.

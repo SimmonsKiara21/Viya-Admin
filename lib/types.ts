@@ -9,6 +9,7 @@ export type EnrollmentStatus =
   | "contact"
 
 export type Program = "academy" | "subscriber" | "prospect"
+export type StudentTrack = "academy" | "modeling" | "acting" | "none"
 export type ContactCategory = "new" | "photoshoot" | "inquiry" | "follow-up" | "not-interested"
 export type PaymentPlan = "pp" | "pif" | "subscription" | "none"
 export type ClassType = "modeling" | "acting" | "subscriber"
@@ -27,7 +28,7 @@ export type DocusignStatus = "none" | "sent" | "viewed" | "signed" | "declined" 
 export type NotifyChannel = "sms" | "email"
 export type NotifyStatus = "sent" | "queued" | "failed" | "demo"
 export type NotifyGroupKind = "system" | "custom"
-export type SystemGroupKey = "current" | "overdue" | "subscribers"
+export type SystemGroupKey = "current" | "overdue" | "subscriberOverdue" | "subscribers"
 
 export interface Student {
   id: string
@@ -38,6 +39,7 @@ export interface Student {
   phone: string
   age: number | null
   program: Program
+  track: StudentTrack
   paymentPlan: PaymentPlan
   enrollmentStatus: EnrollmentStatus
   startDate: string

@@ -37,7 +37,7 @@ export default function AttendancePage() {
       <PageHeader
         eyebrow="Classes"
         title="Attendance"
-        description="Modeling and acting are tracked separately. Check-ins from the Jotform student tracker land here automatically."
+        description="Jotform is the attendance record. The August 26 class from the student tracker is loaded. New check-ins land here from the form or the Check-in tab."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -76,7 +76,7 @@ export default function AttendancePage() {
       {grouped.length === 0 ? (
         <EmptyState
           title="No attendance yet"
-          description="Use Check-in at the door. Records from August 26 are loaded from the tracker you uploaded."
+          description="Use the Check-in tab at the door. Jotform submissions appear here as soon as they sync."
         />
       ) : (
         <div className="grid gap-4">

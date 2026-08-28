@@ -22,6 +22,7 @@ export default function NotifyPage() {
   const templateForGroup = useMemo(() => {
     const group = groups.find((g) => g.id === activeGroup)
     if (group?.systemKey === "overdue") return "overdue-sms"
+    if (group?.systemKey === "subscriberOverdue") return "overdue-sms"
     if (group?.systemKey === "current") return "weekly-academy"
     if (group?.systemKey === "subscribers") return "weekly-subscriber"
     return undefined
@@ -35,10 +36,10 @@ export default function NotifyPage() {
       <PageHeader
         eyebrow="Outreach"
         title="Text & Gmail"
-        description="Current students, overdue students, and subscribers each have their own notification group. Add several people and save them as a custom group for a group message."
+        description="Current students, academy overdue, subscriber overdue, and subscribers each have their own notification group. Add several people and save them as a custom group for a group message."
       />
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {systemGroups.map((g) => {
           const def = SYSTEM_GROUP_DEFS.find((d) => d.systemKey === g.systemKey)
           const on = activeGroup === g.id

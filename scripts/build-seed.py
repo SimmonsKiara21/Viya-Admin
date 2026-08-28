@@ -63,6 +63,7 @@ def s(
         "photoshootStatus": photoshoot,
         "photoshootNotes": photoshoot_notes,
         "classTime": class_time,
+        "track": "none" if program != "academy" else "academy",
         "photoUrl": "",
         "docusignStatus": "none",
         "docusignUrl": "",
@@ -313,20 +314,6 @@ checkins = [
     ("0501", "2026-08-26T19:32:02", "acting", "Checked in as Andrew Fordyce."),
     ("1077", "2026-08-26T19:41:54", "modeling", ""),
     ("0914", "2026-08-26T20:45:15", "modeling", ""),
-    # Prior class nights
-    ("0731", "2026-08-19T18:58:00", "modeling", "Strong runway walk tonight."),
-    ("1090", "2026-08-19T19:04:00", "modeling", ""),
-    ("0501", "2026-08-19T19:10:00", "acting", ""),
-    ("0918", "2026-08-19T19:12:00", "acting", ""),
-    ("1079", "2026-08-19T19:15:00", "modeling", ""),
-    ("0516", "2026-08-19T19:18:00", "modeling", ""),
-    ("0916", "2026-08-19T19:22:00", "modeling", ""),
-    ("0522", "2026-08-12T19:05:00", "acting", ""),
-    ("0501", "2026-08-12T19:08:00", "acting", ""),
-    ("0918", "2026-08-12T19:09:00", "acting", ""),
-    ("0729", "2026-08-12T19:20:00", "modeling", ""),
-    ("1005", "2026-08-12T19:21:00", "modeling", ""),
-    ("0583", "2026-08-12T19:24:00", "modeling", ""),
 ]
 
 attendance = []
@@ -338,44 +325,6 @@ for i, (sid, when, ctype, note) in enumerate(checkins, start=1):
         "classType": ctype,
         "notes": note,
     })
-
-# Wednesday 7:30pm and Saturday 4pm history so "2 months of check-ins" is real
-# for payment-plan students who started by early June.
-history_nights = [
-    ("2026-06-11T19:35:00", "modeling"),
-    ("2026-06-14T16:08:00", "modeling"),
-    ("2026-07-08T19:32:00", "modeling"),
-    ("2026-07-11T16:05:00", "acting"),
-    ("2026-08-05T19:31:00", "modeling"),
-    ("2026-08-08T16:04:00", "modeling"),
-]
-seen_att = {(a["studentId"], a["checkedInAt"][:10]) for a in attendance}
-hist_i = len(attendance) + 1
-for st in students:
-    if st["program"] != "academy" or st["paymentPlan"] != "pp":
-        continue
-    start = st.get("startDate") or ""
-    if not start or start > "2026-06-01":
-        continue
-    added = 0
-    for when, ctype in history_nights:
-        if when[:10] < start:
-            continue
-        key = (st["id"], when[:10])
-        if key in seen_att:
-            continue
-        attendance.append({
-            "id": uid("att", hist_i),
-            "studentId": st["id"],
-            "checkedInAt": when,
-            "classType": ctype,
-            "notes": "",
-        })
-        seen_att.add(key)
-        hist_i += 1
-        added += 1
-        if added >= 4:
-            break
 
 feedback = [
     {"id": "fb-0001", "studentId": "1079", "createdAt": "2026-08-26T21:10:00", "author": "Staff", "classType": "modeling", "body": "First month — on time, took direction well on posture and eyeline. Keep working on a slower close."},
@@ -520,6 +469,8 @@ OUT.parent.mkdir(parents=True, exist_ok=True)
 photoshoots = [
     {"id": "2026-05", "label": "May 2026", "archived": True},
     {"id": "2026-06", "label": "June 2026", "archived": True},
+    {"id": "2026-07", "label": "July 2026", "archived": True},
+    {"id": "2026-08", "label": "August 2026", "archived": True},
     {"id": "2026-09", "label": "September 2026", "archived": False},
     {"id": "2026-10", "label": "October 2026", "archived": False},
 ]
@@ -529,7 +480,14 @@ for st in students:
     if st.get("photoshootStatus") in (None, "none"):
         continue
     notes = st.get("photoshootNotes") or ""
-    shoot = "2026-06" if "June" in notes else "2026-05"
+    if "August" in notes:
+        shoot = "2026-08"
+    elif "July" in notes:
+        shoot = "2026-07"
+    elif "June" in notes:
+        shoot = "2026-06"
+    else:
+        shoot = "2026-05"
     photoshoot_placements.append({
         "id": uid("psp", psp_n),
         "shootId": shoot,

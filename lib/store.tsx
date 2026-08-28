@@ -25,16 +25,17 @@ import type {
   PhotoshootStatus,
   SquareItemKind,
   Student,
+  StudentTrack,
 } from "./types"
 import { newId } from "./format"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
 import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jotform"
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
-import { DEFAULT_PHOTO_SHOOTS, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
+import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 
-const STORAGE_KEY = "viya-academy-store-v5"
-const LEGACY_KEYS = ["viya-academy-store-v4"]
+const STORAGE_KEY = "viya-academy-store-v6"
+const LEGACY_KEYS = ["viya-academy-store-v5", "viya-academy-store-v4"]
 
 function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amount: number }): PaymentRecord {
   const paid = p.paidAmount ?? (p.status === "paid" ? p.amount : 0)
@@ -66,6 +67,12 @@ function looksLikeSquareId(id?: string, notes?: string) {
   return Boolean(value) && !value.startsWith("sqinv_") && !value.startsWith("sqsub_")
 }
 
+function defaultTrack(s: Partial<Student>): StudentTrack {
+  if (s.track) return s.track
+  if (s.program === "academy") return "academy"
+  return "none"
+}
+
 function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName" | "lastName">): Student {
   const prospect = s.program === "prospect" || s.enrollmentStatus === "contact"
   return {
@@ -77,6 +84,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     phone: s.phone || "",
     age: s.age ?? null,
     program: prospect ? "prospect" : s.program || "academy",
+    track: prospect ? "none" : defaultTrack(s),
     paymentPlan: s.paymentPlan || "none",
     enrollmentStatus: prospect
       ? "contact"
@@ -106,7 +114,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {
   if (!raw?.students?.length) return null
   const students = raw.students.map((s) => normalizeStudent(s))
-  const photoshoots = raw.photoshoots?.length ? raw.photoshoots : DEFAULT_PHOTO_SHOOTS
+  const photoshoots = mergePhotoshoots(raw.photoshoots)
   const photoshootPlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
   return {
@@ -182,10 +190,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) ?? LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
+        const fromCurrent = localStorage.getItem(STORAGE_KEY)
+        const fromLegacy = fromCurrent
+          ? null
+          : LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
+        const raw = fromCurrent ?? fromLegacy
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
-          if (parsed) setData(parsed)
+          if (parsed) {
+            setData(
+              fromLegacy
+                ? { ...parsed, attendance: seedData.attendance, photoshoots: mergePhotoshoots(parsed.photoshoots) }
+                : parsed,
+            )
+          }
         }
       } catch {
         /* keep seed */

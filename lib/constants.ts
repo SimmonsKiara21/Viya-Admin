@@ -7,6 +7,7 @@ import type {
   PaymentStatus,
   PhotoshootStatus,
   Program,
+  StudentTrack,
   SubscriptionStatus,
 } from "./types"
 
@@ -43,6 +44,18 @@ export const PROGRAM_LABELS: Record<Program, string> = {
   academy: "Academy",
   subscriber: "Subscriber",
   prospect: "Prospect",
+}
+
+export const TRACK_LABELS: Record<StudentTrack, string> = {
+  academy: "Academy",
+  modeling: "Modeling",
+  acting: "Acting",
+  none: "None",
+}
+
+export function programDisplayLabel(program: Program, track?: StudentTrack) {
+  if (track === "modeling" || track === "acting") return TRACK_LABELS[track]
+  return PROGRAM_LABELS[program]
 }
 
 export const PLAN_LABELS: Record<PaymentPlan, string> = {

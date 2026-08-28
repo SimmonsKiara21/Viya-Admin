@@ -1,4 +1,5 @@
 import type { NotifyGroup, PaymentRecord, Student, SystemGroupKey } from "./types"
+import { isAcademyOverdue, isSubscriberOverdue } from "./alerts"
 
 export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; description: string }[] = [
   {
@@ -8,8 +9,13 @@ export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; descr
   },
   {
     systemKey: "overdue",
-    name: "Overdue students",
-    description: "Overdue, declined, or collections on the workbook, plus open Square overdue invoices.",
+    name: "Academy overdue",
+    description: "Academy and training students who are overdue or declined on the workbook.",
+  },
+  {
+    systemKey: "subscriberOverdue",
+    name: "Subscriber overdue",
+    description: "Subscribers whose workbook status is overdue or declined, kept separate from academy follow-up.",
   },
   {
     systemKey: "subscribers",
@@ -29,10 +35,13 @@ export function studentIdsForSystemGroup(
       .map((s) => s.id)
   }
   if (key === "overdue") {
-    const fromStatus = students
-      .filter((s) => ["overdue", "declined", "collections"].includes(s.enrollmentStatus))
-      .map((s) => s.id)
-    const fromPay = payments.filter((p) => p.status === "overdue").map((p) => p.studentId)
+    return students.filter(isAcademyOverdue).map((s) => s.id)
+  }
+  if (key === "subscriberOverdue") {
+    const fromStatus = students.filter(isSubscriberOverdue).map((s) => s.id)
+    const fromPay = payments
+      .filter((p) => p.status === "overdue" && p.itemKind === "subscriber")
+      .map((p) => p.studentId)
     return [...new Set([...fromStatus, ...fromPay])]
   }
   return students

@@ -6,34 +6,46 @@ import { toast } from "sonner"
 import { Bell } from "lucide-react"
 import { useStore } from "@/lib/store"
 import {
+  isAcademyOverdue,
   isCollectionsStudent,
   isFinishingSoon,
-  isOverdueStudent,
   isPausedStudent,
   isPendingStudent,
+  isSubscriberOverdue,
 } from "@/lib/alerts"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export function StaffAlertBanner() {
   const { students, attendance } = useStore()
-  const overdue = students.filter(isOverdueStudent)
+  const academyOverdue = students.filter(isAcademyOverdue)
+  const subscriberOverdue = students.filter(isSubscriberOverdue)
   const collections = students.filter(isCollectionsStudent)
   const paused = students.filter(isPausedStudent)
   const pending = students.filter(isPendingStudent)
   const finishing = students.filter((s) => isFinishingSoon(s, attendance))
   const total =
-    overdue.length + collections.length + paused.length + pending.length + finishing.length
+    academyOverdue.length +
+    subscriberOverdue.length +
+    collections.length +
+    paused.length +
+    pending.length +
+    finishing.length
 
   useEffect(() => {
     if (typeof window === "undefined") return
     if (!total) return
-    const key = `viya-staff-alert-${overdue.length}-${collections.length}-${paused.length}-${pending.length}-${finishing.length}`
+    const key = `viya-staff-alert-${academyOverdue.length}-${subscriberOverdue.length}-${collections.length}-${paused.length}-${pending.length}-${finishing.length}`
     if (sessionStorage.getItem(key)) return
     sessionStorage.setItem(key, "1")
-    if (overdue.length) {
+    if (academyOverdue.length) {
       toast.warning(
-        `${overdue.length} student${overdue.length === 1 ? " is" : "s are"} overdue. Highlighted in red.`,
+        `${academyOverdue.length} academy student${academyOverdue.length === 1 ? " is" : "s are"} overdue. Highlighted in red.`,
+      )
+    }
+    if (subscriberOverdue.length) {
+      toast.warning(
+        `${subscriberOverdue.length} subscriber${subscriberOverdue.length === 1 ? " is" : "s are"} overdue. Highlighted in orange.`,
       )
     }
     if (collections.length) {
@@ -41,12 +53,21 @@ export function StaffAlertBanner() {
         `${collections.length} in collections — highlighted in amber.`,
       )
     }
-  }, [total, overdue.length, collections.length, paused.length, pending.length, finishing.length])
+  }, [
+    total,
+    academyOverdue.length,
+    subscriberOverdue.length,
+    collections.length,
+    paused.length,
+    pending.length,
+    finishing.length,
+  ])
 
   if (!total) return null
 
   const bits: { count: number; label: string; className: string }[] = [
-    { count: overdue.length, label: "overdue", className: "text-rose-800 dark:text-rose-100" },
+    { count: academyOverdue.length, label: "academy overdue", className: "text-rose-800 dark:text-rose-100" },
+    { count: subscriberOverdue.length, label: "subscriber overdue", className: "text-orange-900 dark:text-orange-100" },
     { count: collections.length, label: "collections", className: "text-amber-900 dark:text-amber-200" },
     { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },
     { count: pending.length, label: "pending", className: "text-sky-900 dark:text-sky-200" },

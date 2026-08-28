@@ -6,7 +6,7 @@ import {
   ENROLLMENT_LABELS,
   PAYMENT_LABELS,
   PHOTO_LABELS,
-  PROGRAM_LABELS,
+  programDisplayLabel,
   SUB_LABELS,
 } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -18,6 +18,7 @@ import type {
   PaymentStatus,
   PhotoshootStatus,
   Program,
+  StudentTrack,
   SubscriptionStatus,
 } from "@/lib/types"
 
@@ -32,18 +33,33 @@ const enrollmentClass: Record<EnrollmentStatus, string> = {
   contact: "border-primary/35 bg-primary/10 text-primary",
 }
 
+const subscriberOverdueClass =
+  "border-orange-500/45 bg-orange-500/18 text-orange-900 dark:text-orange-100 sepia:text-orange-100"
+
 const paymentClass: Record<PaymentStatus, string> = {
-  paid: "border-emerald-500/30 bg-emerald-500/12 text-emerald-200",
-  due: "border-sky-500/30 bg-sky-500/12 text-sky-200",
-  overdue: "border-orange-500/35 bg-orange-500/15 text-orange-200",
-  declined: "border-rose-500/35 bg-rose-500/15 text-rose-200",
-  scheduled: "border-zinc-500/35 bg-zinc-500/15 text-zinc-300",
+  paid: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-100",
+  due: "border-sky-500/30 bg-sky-500/12 text-sky-800 dark:text-sky-100",
+  overdue: "border-orange-500/35 bg-orange-500/15 text-orange-900 dark:text-orange-100",
+  declined: "border-rose-500/35 bg-rose-500/15 text-rose-900 dark:text-rose-100",
+  scheduled: "border-zinc-500/35 bg-zinc-500/15 text-zinc-800 dark:text-zinc-100",
 }
 
-export function EnrollmentBadge({ status }: { status: EnrollmentStatus }) {
+export function EnrollmentBadge({
+  status,
+  subscriber,
+}: {
+  status: EnrollmentStatus
+  subscriber?: boolean
+}) {
+  const cls =
+    subscriber && (status === "overdue" || status === "declined")
+      ? subscriberOverdueClass
+      : enrollmentClass[status]
   return (
-    <Badge variant="outline" className={cn("font-medium", enrollmentClass[status])}>
-      {ENROLLMENT_LABELS[status]}
+    <Badge variant="outline" className={cn("font-medium", cls)}>
+      {subscriber && (status === "overdue" || status === "declined")
+        ? `Subscriber ${ENROLLMENT_LABELS[status]}`
+        : ENROLLMENT_LABELS[status]}
     </Badge>
   )
 }
@@ -65,10 +81,17 @@ export function PaymentBadge({ status }: { status: PaymentStatus }) {
   )
 }
 
-export function ProgramBadge({ program }: { program: Program }) {
+export function ProgramBadge({ program, track }: { program: Program; track?: StudentTrack }) {
+  const label = programDisplayLabel(program, track)
+  const cls =
+    track === "modeling"
+      ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.45_0.08_85)] dark:text-[oklch(0.9_0.06_85)]"
+      : track === "acting"
+        ? "border-violet-500/30 bg-violet-500/12 text-violet-800 dark:text-violet-200"
+        : ""
   return (
-    <Badge variant="secondary" className="font-medium">
-      {PROGRAM_LABELS[program]}
+    <Badge variant={cls ? "outline" : "secondary"} className={cn("font-medium", cls)}>
+      {label}
     </Badge>
   )
 }

@@ -12,13 +12,26 @@ export const PHOTO_COLUMNS: Exclude<PhotoshootStatus, "none">[] = [
 export const DEFAULT_PHOTO_SHOOTS: Photoshoot[] = [
   { id: "2026-05", label: "May 2026", archived: true },
   { id: "2026-06", label: "June 2026", archived: true },
+  { id: "2026-07", label: "July 2026", archived: true },
+  { id: "2026-08", label: "August 2026", archived: true },
   { id: "2026-09", label: "September 2026", archived: false },
   { id: "2026-10", label: "October 2026", archived: false },
 ]
 
 export function shootForNotes(notes: string) {
+  if (/august/i.test(notes)) return "2026-08"
+  if (/july/i.test(notes)) return "2026-07"
   if (/june/i.test(notes)) return "2026-06"
   return "2026-05"
+}
+
+export function mergePhotoshoots(existing?: Photoshoot[]) {
+  const list = existing?.length ? [...existing] : [...DEFAULT_PHOTO_SHOOTS]
+  const ids = new Set(list.map((s) => s.id))
+  for (const shoot of DEFAULT_PHOTO_SHOOTS) {
+    if (!ids.has(shoot.id)) list.push(shoot)
+  }
+  return list.sort((a, b) => a.id.localeCompare(b.id))
 }
 
 export function placementsFromStudents(students: Student[]): PhotoshootPlacement[] {

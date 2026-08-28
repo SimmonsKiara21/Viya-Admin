@@ -17,13 +17,13 @@ import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export function StaffAlertBanner() {
-  const { students, attendance } = useStore()
+  const { students } = useStore()
   const academyOverdue = students.filter(isAcademyOverdue)
   const subscriberOverdue = students.filter(isSubscriberOverdue)
   const collections = students.filter(isCollectionsStudent)
   const paused = students.filter(isPausedStudent)
   const pending = students.filter(isPendingStudent)
-  const finishing = students.filter((s) => isFinishingSoon(s, attendance))
+  const finishing = students.filter(isFinishingSoon)
   const total =
     academyOverdue.length +
     subscriberOverdue.length +
@@ -71,7 +71,7 @@ export function StaffAlertBanner() {
     { count: collections.length, label: "collections", className: "text-amber-900 dark:text-amber-200" },
     { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },
     { count: pending.length, label: "pending", className: "text-sky-900 dark:text-sky-200" },
-    { count: finishing.length, label: "wrapping up", className: "text-teal-800 dark:text-teal-200" },
+    { count: finishing.length, label: "wrapping up", className: "text-lime-800 dark:text-lime-100" },
   ].filter((bit) => bit.count > 0)
 
   return (

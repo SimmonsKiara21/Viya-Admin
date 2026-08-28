@@ -33,9 +33,56 @@ import { defaultItemForStudent } from "./square"
 import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jotform"
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
+import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
+import { mergeEnrollmentStudents } from "./enrollment-sync"
 
 const STORAGE_KEY = "viya-academy-store-v6"
 const LEGACY_KEYS = ["viya-academy-store-v5", "viya-academy-store-v4"]
+const PHOTOS_KEY = "viya-academy-photos-v1"
+const JOTFORM_MS = 60_000
+const SQUARE_MS = 120_000
+
+function attendanceKey(rows: AttendanceRecord[]) {
+  return rows
+    .map((row) => row.id)
+    .sort()
+    .join("|")
+}
+
+function loadPhotos(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(PHOTOS_KEY) || "{}") as Record<string, string>
+  } catch {
+    return {}
+  }
+}
+
+function savePhotos(students: Student[]) {
+  const photos: Record<string, string> = {}
+  for (const student of students) {
+    if (student.photoUrl.startsWith("data:")) photos[student.id] = student.photoUrl
+  }
+  localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos))
+}
+
+function withPhotos(data: AppData): AppData {
+  const photos = loadPhotos()
+  if (!Object.keys(photos).length) return data
+  return {
+    ...data,
+    students: data.students.map((s) => (photos[s.id] ? { ...s, photoUrl: photos[s.id] } : s)),
+  }
+}
+
+function persistable(data: AppData): AppData {
+  return {
+    ...data,
+    students: data.students.map((s) => ({
+      ...s,
+      photoUrl: s.photoUrl.startsWith("data:") ? "" : s.photoUrl,
+    })),
+  }
+}
 
 function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amount: number }): PaymentRecord {
   const paid = p.paidAmount ?? (p.status === "paid" ? p.amount : 0)
@@ -94,6 +141,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     startDate: s.startDate || "",
     nextPaymentDate: s.nextPaymentDate || "",
     nextPaymentAmount: s.nextPaymentAmount ?? null,
+    installmentsLeft: s.installmentsLeft ?? null,
     notes: s.notes || "",
     contactCategory: (s.contactCategory || (prospect ? "photoshoot" : "")) as ContactCategory | "",
     subscriptionStatus: s.subscriptionStatus || "none",
@@ -153,7 +201,6 @@ type StoreContextValue = AppData & {
   ready: boolean
   groups: NotifyGroup[]
   customGroups: NotifyGroup[]
-  jotform: JotformMeta
   updateStudent: (id: string, patch: Partial<Student>) => void
   addStudent: (student: Student) => void
   checkIn: (studentId: string, classType: ClassType, notes?: string) => AttendanceRecord
@@ -174,7 +221,21 @@ type StoreContextValue = AppData & {
   resetRoster: () => void
 }
 
+type SyncMeta = {
+  fetchedAt: string
+  source: string
+  message: string
+  connected: boolean
+}
+
+type SyncContextValue = {
+  jotform: JotformMeta
+  square: SyncMeta & { matched?: number; skipped?: number }
+  enrollment: SyncMeta & { added?: number; updated?: number }
+}
+
 const StoreContext = createContext<StoreContextValue | null>(null)
+const SyncContext = createContext<SyncContextValue | null>(null)
 
 function cloneSeed(): AppData {
   return structuredClone(seedData)
@@ -184,8 +245,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(cloneSeed)
   const [ready, setReady] = useState(false)
   const [jotform, setJotform] = useState<JotformMeta>(EMPTY_JOTFORM)
+  const [square, setSquare] = useState<SyncContextValue["square"]>({
+    fetchedAt: "",
+    source: "",
+    message: "",
+    connected: false,
+  })
+  const [enrollment, setEnrollment] = useState<SyncContextValue["enrollment"]>({
+    fetchedAt: "",
+    source: "",
+    message: "",
+    connected: false,
+  })
   const dataRef = useRef(data)
-  dataRef.current = data
+  const squareFp = useRef("")
+  const persistTimer = useRef<number>(0)
+
+  useEffect(() => {
+    dataRef.current = data
+  }, [data])
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -198,11 +276,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) {
-            setData(
-              fromLegacy
-                ? { ...parsed, attendance: seedData.attendance, photoshoots: mergePhotoshoots(parsed.photoshoots) }
-                : parsed,
-            )
+            const base = fromLegacy
+              ? { ...parsed, attendance: seedData.attendance, photoshoots: mergePhotoshoots(parsed.photoshoots) }
+              : parsed
+            setData(withPhotos(base))
           }
         }
       } catch {
@@ -215,11 +292,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) return
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    } catch {
-      /* quota — photos can be large */
-    }
+    window.clearTimeout(persistTimer.current)
+    persistTimer.current = window.setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(data)))
+        savePhotos(data.students)
+      } catch {
+        /* quota */
+      }
+    }, 400)
+    return () => window.clearTimeout(persistTimer.current)
   }, [data, ready])
 
   useEffect(() => {
@@ -239,30 +321,124 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
         if (cancelled) return
         const checkIns = payload.checkIns ?? []
-        const { unmatched } = matchJotformCheckIns(checkIns, dataRef.current.students)
-        setJotform({
-          fetchedAt: payload.fetchedAt || new Date().toISOString(),
-          source: payload.source || "",
-          message: payload.message || "",
-          connected: Boolean(payload.connected),
-          unmatched,
-          formUrl: payload.formUrl || JOTFORM_ATTENDANCE_URL,
+        const matched = matchJotformCheckIns(checkIns, dataRef.current.students)
+        setJotform((prev) => {
+          const next = {
+            fetchedAt: payload.fetchedAt || new Date().toISOString(),
+            source: payload.source || "",
+            message: payload.message || "",
+            connected: Boolean(payload.connected),
+            unmatched: matched.unmatched,
+            formUrl: payload.formUrl || JOTFORM_ATTENDANCE_URL,
+          }
+          if (
+            prev.source === next.source &&
+            prev.connected === next.connected &&
+            prev.message === next.message &&
+            prev.formUrl === next.formUrl &&
+            prev.unmatched.map((row) => row.id).join("|") === next.unmatched.map((row) => row.id).join("|")
+          ) {
+            return prev
+          }
+          return next
         })
-        setData((prev) => ({
-          ...prev,
-          attendance: mergeAttendance(
-            prev.attendance,
-            matchJotformCheckIns(checkIns, prev.students).records,
-          ),
-        }))
+        setData((prev) => {
+          const attendance = mergeAttendance(prev.attendance, matched.records)
+          if (attendanceKey(attendance) === attendanceKey(prev.attendance)) return prev
+          return { ...prev, attendance }
+        })
       } catch {
         /* keep last pull */
       }
     }
 
     pull()
-    const timer = window.setInterval(pull, 15000)
+    const timer = window.setInterval(pull, JOTFORM_MS)
     const onFocus = () => pull()
+    window.addEventListener("focus", onFocus)
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      window.removeEventListener("focus", onFocus)
+    }
+  }, [ready])
+
+  useEffect(() => {
+    if (!ready) return
+    let cancelled = false
+
+    async function pullBilling() {
+      try {
+        const [enrollRes, squareRes] = await Promise.all([
+          fetch("/api/enrollment", { cache: "no-store" }),
+          fetch("/api/square", { cache: "no-store" }),
+        ])
+        const enrollPayload = (await enrollRes.json()) as {
+          students?: Student[]
+          source?: string
+          message?: string
+          connected?: boolean
+          fetchedAt?: string
+        }
+        const squarePayload = (await squareRes.json()) as {
+          invoices?: SquareInvoiceRow[]
+          source?: string
+          message?: string
+          connected?: boolean
+          syncedAt?: string
+        }
+        if (cancelled) return
+
+        const workbook = (enrollPayload.students ?? []).map((s) =>
+          normalizeStudent(s as Student & Pick<Student, "id" | "firstName" | "lastName">),
+        )
+        const liveSheet = enrollPayload.source === "csv"
+        const merged = mergeEnrollmentStudents(dataRef.current.students, workbook, {
+          updateExisting: liveSheet,
+        })
+        setEnrollment({
+          fetchedAt: enrollPayload.fetchedAt || new Date().toISOString(),
+          source: enrollPayload.source || "workbook",
+          message: enrollPayload.message || "",
+          connected: Boolean(enrollPayload.connected),
+          added: merged.added,
+          updated: merged.updated,
+        })
+
+        const invoices = squarePayload.invoices ?? []
+        const fp = squareFingerprint(invoices)
+        const invoicesChanged = Boolean(fp) && fp !== squareFp.current
+        if (fp) squareFp.current = fp
+
+        const preview = applySquareInvoices(
+          mergeEnrollmentStudents(dataRef.current.students, workbook, { updateExisting: liveSheet }).students,
+          dataRef.current.payments,
+          invoices,
+        )
+        setSquare({
+          fetchedAt: squarePayload.syncedAt || new Date().toISOString(),
+          source: squarePayload.source || "",
+          message: squarePayload.message || "",
+          connected: Boolean(squarePayload.connected),
+          matched: preview.matched,
+          skipped: preview.skipped.length,
+        })
+
+        if (!merged.added && !merged.updated && !invoicesChanged) return
+
+        setData((prev) => {
+          const roster = mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students
+          const applied = applySquareInvoices(roster, prev.payments, invoices)
+          return { ...prev, students: applied.students, payments: applied.payments }
+        })
+      } catch {
+        /* keep last overlay */
+      }
+    }
+
+    pullBilling()
+    const timer = window.setInterval(pullBilling, SQUARE_MS)
+    const onFocus = () => pullBilling()
     window.addEventListener("focus", onFocus)
     return () => {
       cancelled = true
@@ -287,7 +463,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       groups,
       customGroups,
       ready,
-      jotform,
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
@@ -439,16 +614,32 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const next = cloneSeed()
         setData(next)
         localStorage.removeItem(STORAGE_KEY)
+        localStorage.removeItem(PHOTOS_KEY)
       },
     }
-  }, [data, mutate, ready, groups, customGroups, jotform])
+  }, [data, mutate, ready, groups, customGroups])
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
+  const syncValue = useMemo<SyncContextValue>(
+    () => ({ jotform, square, enrollment }),
+    [jotform, square, enrollment],
+  )
+
+  return (
+    <StoreContext.Provider value={value}>
+      <SyncContext.Provider value={syncValue}>{children}</SyncContext.Provider>
+    </StoreContext.Provider>
+  )
 }
 
 export function useStore() {
   const ctx = useContext(StoreContext)
   if (!ctx) throw new Error("useStore must be used within StoreProvider")
+  return ctx
+}
+
+export function useSync() {
+  const ctx = useContext(SyncContext)
+  if (!ctx) throw new Error("useSync must be used within StoreProvider")
   return ctx
 }
 

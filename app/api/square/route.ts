@@ -1,30 +1,40 @@
 import { NextResponse } from "next/server"
-import square from "@/data/square.json"
+import snapshot from "@/data/square.json"
+import { fetchLiveSquareInvoices } from "@/lib/square-live"
+import type { SquareInvoiceRow } from "@/lib/square-sync"
+
+export const runtime = "nodejs"
 
 export async function GET() {
-  const token = process.env.SQUARE_ACCESS_TOKEN
-  const location = process.env.SQUARE_LOCATION_ID
-  const env = process.env.SQUARE_ENVIRONMENT || "production"
+  const token = process.env.SQUARE_ACCESS_TOKEN || ""
+  const live = await fetchLiveSquareInvoices()
+  const dashboard = (snapshot.invoices ?? []) as SquareInvoiceRow[]
+  const invoices = live.invoices.length ? live.invoices : dashboard
+  const source = live.invoices.length ? "api" : "dashboard"
+  const skipped = snapshot.skipped ?? []
 
-  const matchedInvoices = (square.invoices ?? []).length
-  const skipped = square.skipped ?? []
-
-  const message = token
-    ? "Square credentials are present. The tracker below is enrollment students matched to Square invoices from the dashboard. People on Square who are not in the enrollment workbook are left off the roster."
-    : `Desk mode is using Square invoices pulled from the logged-in dashboard (${square.syncedAt}). Only people who are also on the 2026 enrollment workbook are listed. ${skipped.length} Square customers were skipped because they are not on enrollment.`
+  let message = `Using Square dashboard invoices (${snapshot.syncedAt}). Add SQUARE_ACCESS_TOKEN to pull live invoices and due dates for enrollment students.`
+  if (token && live.error) {
+    message = `Square API failed (${live.error}). Showing the last dashboard invoice snapshot.`
+  } else if (token && live.invoices.length) {
+    message = `Live Square invoices · ${live.invoices.length} pulled. Matched to the enrollment roster only — Square customers who are not on that list stay off the desk.`
+  } else if (token) {
+    message = "Square is connected but returned no invoices yet. Enrollment students still show the last dashboard snapshot."
+  }
 
   return NextResponse.json({
-    connected: Boolean(token),
-    deskSync: true,
-    environment: env,
-    locationId: location || square.locationNote || null,
-    syncedAt: square.syncedAt,
-    source: square.source,
-    itemCount: square.items.length,
-    matchedInvoices,
+    connected: Boolean(token) && !live.error,
+    source,
+    environment: process.env.SQUARE_ENVIRONMENT || "production",
+    locationId: process.env.SQUARE_LOCATION_ID || snapshot.locationNote || null,
+    syncedAt: new Date().toISOString(),
+    snapshotAt: snapshot.syncedAt,
+    itemCount: snapshot.items.length,
+    invoiceCount: invoices.length,
     skippedCount: skipped.length,
     skipped,
-    items: square.items,
+    invoices,
     message,
+    error: live.error,
   })
 }

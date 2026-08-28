@@ -40,7 +40,6 @@ import {
 } from "@/lib/format"
 import { buildPaymentSchedule } from "@/lib/schedule"
 import {
-  attendanceMonthCount,
   highlightTone,
   isAcademyOverdue,
   isContact,
@@ -111,7 +110,7 @@ export default function StudentProfilePage() {
     [student, payments],
   )
   const counts = countsFor(records)
-  const tone = student ? highlightTone(student, attendance) : "none"
+  const tone = student ? highlightTone(student) : "none"
 
   if (!student) {
     return (
@@ -245,16 +244,16 @@ export default function StudentProfilePage() {
         </div>
       ) : null}
 
-      {isFinishingSoon(student, attendance) ? (
-        <div className="mb-4 rounded-2xl border border-teal-400/40 bg-teal-100/80 p-4 dark:bg-teal-950/40 sepia:bg-teal-950/35">
-          <p className="font-heading text-2xl text-teal-900 dark:text-teal-100 sepia:text-teal-100">
-            Wrapping up
+      {isFinishingSoon(student) ? (
+        <div className="mb-4 rounded-2xl border border-lime-400/45 bg-lime-100/80 p-4 dark:bg-lime-950/40 sepia:bg-lime-950/35">
+          <p className="font-heading text-2xl text-lime-900 dark:text-lime-100 sepia:text-lime-100">
+            Fewer than 3 payments left
           </p>
-          <p className="mt-1 text-sm text-teal-800 dark:text-teal-50/90 sepia:text-teal-50/90">
+          <p className="mt-1 text-sm text-lime-800 dark:text-lime-50/90 sepia:text-lime-50/90">
             {remainingPayments(student)} payment
-            {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan, and{" "}
-            {attendanceMonthCount(attendance, student.id)} months of class check-ins. Highlighted in
-            teal on the roster — a good time to talk subscription.
+            {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan. Started{" "}
+            {formatDate(student.startDate)} (May 2026 or earlier). Highlighted in lime — a good time to
+            talk subscription.
           </p>
         </div>
       ) : null}
@@ -287,7 +286,7 @@ export default function StudentProfilePage() {
                       : tone === "pending"
                         ? "text-sky-900 dark:text-sky-200"
                         : tone === "finishing"
-                          ? "text-teal-800 dark:text-teal-200"
+                          ? "text-lime-800 dark:text-lime-100"
                           : ""
               }`}
             >

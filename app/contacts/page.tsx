@@ -62,6 +62,7 @@ export default function ContactsPage() {
       startDate: "",
       nextPaymentDate: "",
       nextPaymentAmount: null,
+      installmentsLeft: null,
       notes: form.notes.trim(),
       contactCategory: form.contactCategory,
       subscriptionStatus: "none",

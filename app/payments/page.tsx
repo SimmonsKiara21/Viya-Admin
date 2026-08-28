@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { PaymentBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
-import { useStore } from "@/lib/store"
-import { formatDate, formatMoney, fullName } from "@/lib/format"
+import { useStore, useSync } from "@/lib/store"
+import { formatDate, formatMoney, formatTime, fullName } from "@/lib/format"
 import { PAYMENT_LABELS } from "@/lib/constants"
 import { SQUARE_ITEMS, itemKindLabel, openBalance } from "@/lib/square"
 import type { PaymentStatus } from "@/lib/types"
@@ -17,28 +17,10 @@ type ItemFilter = "all" | string
 
 export default function PaymentsPage() {
   const { payments, students, addNotification, updateStudent } = useStore()
+  const { square } = useSync()
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
   const [itemFilter, setItemFilter] = useState<ItemFilter>("all")
   const [sourceFilter, setSourceFilter] = useState<"square" | "all">("square")
-  const [square, setSquare] = useState<{
-    connected: boolean
-    message: string
-    matchedInvoices?: number
-    skippedCount?: number
-    syncedAt?: string
-  } | null>(null)
-
-  useEffect(() => {
-    fetch("/api/square")
-      .then((r) => r.json())
-      .then(setSquare)
-      .catch(() =>
-        setSquare({
-          connected: false,
-          message: "Could not reach the Square status endpoint.",
-        }),
-      )
-  }, [])
 
   const enrollmentIds = useMemo(() => new Set(students.map((s) => s.id)), [students])
 
@@ -88,17 +70,17 @@ export default function PaymentsPage() {
 
       <Panel className="mb-6">
         <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
-          {square?.connected ? "Square connected" : "Desk mode · Square dashboard"}
+          {square.connected ? "Square connected" : "Desk mode · Square dashboard"}
         </p>
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-          {square?.message || "Checking Square…"}
+          {square.message || "Checking Square…"}
         </p>
         <p className="mt-3 font-heading text-3xl">{formatMoney(openTotal)} open</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          {square?.matchedInvoices != null
-            ? `${square.matchedInvoices} Square invoices matched to enrollment · ${square.skippedCount ?? 0} Square-only customers skipped`
+          {square.matched != null
+            ? `${square.matched} Square invoices matched to enrollment · ${square.skipped ?? 0} Square-only customers skipped`
             : "Enrollment students only"}
-          {square?.syncedAt ? ` · synced ${square.syncedAt}` : ""}
+          {square.fetchedAt ? ` · synced ${formatTime(square.fetchedAt)}` : ""}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <button

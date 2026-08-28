@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { StudentPhoto } from "@/components/student-photo"
 import { ClassBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
-import { useStore } from "@/lib/store"
+import { useStore, useSync } from "@/lib/store"
 import { formatPhone, formatShortDate, formatTime, fullName, matchesQuery, todayISO } from "@/lib/format"
 import type { ClassType, Student } from "@/lib/types"
 import { CLASS_LABELS, JOTFORM_ATTENDANCE_URL } from "@/lib/constants"
@@ -17,7 +17,8 @@ import { cn } from "@/lib/utils"
 const TYPES: ClassType[] = ["modeling", "acting", "subscriber"]
 
 export default function CheckInPage() {
-  const { students, attendance, checkIn, jotform } = useStore()
+  const { students, attendance, checkIn } = useStore()
+  const { jotform } = useSync()
   const [query, setQuery] = useState("")
   const [picked, setPicked] = useState<Student | null>(null)
   const today = todayISO()

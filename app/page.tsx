@@ -9,7 +9,7 @@ import { StudentRow } from "@/components/student-row"
 import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
-import { countsFor, useStore } from "@/lib/store"
+import { countsFor, useStore, useSync } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import { isAcademyOverdue, isFinishingSoon, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 
 export default function HomePage() {
   const { students, attendance, payments, resetRoster, addNotification } = useStore()
+  const { square, enrollment, jotform } = useSync()
   const [addOpen, setAddOpen] = useState(false)
   const today = todayISO()
 
@@ -27,16 +28,11 @@ export default function HomePage() {
     const subscriberOverdue = students.filter(isSubscriberOverdue)
     const attention = [...academyOverdue, ...subscriberOverdue]
     const pending = students.filter(isPendingStudent)
-    const finishing = students.filter((s) => isFinishingSoon(s, attendance))
-    const dueSoon = students.filter((s) => {
-      if (!s.nextPaymentDate || !s.nextPaymentAmount) return false
-      if (["pif", "paused"].includes(s.enrollmentStatus)) return false
-      return s.nextPaymentDate <= "2026-09-05" && s.enrollmentStatus !== "pif"
-    })
+    const finishing = students.filter(isFinishingSoon)
     const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
     const openTotal = openBalance(payments)
-    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, dueSoon, todayCheckins, recent, openTotal }
+    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
 
   return (
@@ -44,7 +40,7 @@ export default function HomePage() {
       <PageHeader
         eyebrow="Viya Academy + Agency"
         title="Front desk"
-        description="Look up talent, track Square balances, and send a text or Gmail without leaving the floor."
+        description="Look up talent, track Square invoices, and send a text or Gmail. Enrollment and Square refresh in the background."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
@@ -68,6 +64,18 @@ export default function HomePage() {
           </>
         }
       />
+
+      <p className="mb-4 text-xs text-muted-foreground">
+        {enrollment.message || "Enrollment workbook loaded."}
+        {enrollment.fetchedAt ? ` · sheet ${formatTime(enrollment.fetchedAt)}` : ""}
+        {" · "}
+        {square.message || "Square invoices overlay enrollment students."}
+        {square.matched != null ? ` · ${square.matched} invoices matched` : ""}
+        {square.fetchedAt ? ` · Square ${formatTime(square.fetchedAt)}` : ""}
+        {" · "}
+        {jotform.connected ? "Jotform connected" : jotform.message || "Jotform syncing"}
+        {jotform.fetchedAt ? ` · check-in ${formatTime(jotform.fetchedAt)}` : ""}
+      </p>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -205,12 +213,12 @@ export default function HomePage() {
           )}
         </Panel>
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-teal-800 dark:text-teal-100 sepia:text-teal-200">
-            Wrapping up (≤3 payments)
+          <h2 className="mb-3 font-heading text-2xl text-lime-800 dark:text-lime-100 sepia:text-lime-100">
+            Fewer than 3 payments
           </h2>
           {stats.finishing.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No current students with 3 or fewer payments left and two months of check-ins.
+              No current academy payment-plan students who started May 2026 or earlier with fewer than 3 payments left.
             </p>
           ) : (
             <div className="divide-y divide-border">

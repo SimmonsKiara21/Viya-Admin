@@ -4,6 +4,7 @@ import { useRef } from "react"
 import { Camera } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { initials, portraitHue } from "@/lib/format"
+import { compressPhoto } from "@/lib/photo"
 import type { Student } from "@/lib/types"
 
 export function StudentPhoto({
@@ -31,11 +32,15 @@ export function StudentPhoto({
 
   function onFile(file: File | undefined) {
     if (!file || !onUpload) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (typeof reader.result === "string") onUpload(reader.result)
-    }
-    reader.readAsDataURL(file)
+    void compressPhoto(file)
+      .then(onUpload)
+      .catch(() => {
+        const reader = new FileReader()
+        reader.onload = () => {
+          if (typeof reader.result === "string") onUpload(reader.result)
+        }
+        reader.readAsDataURL(file)
+      })
   }
 
   const inner = student.photoUrl ? (

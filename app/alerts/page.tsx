@@ -7,7 +7,6 @@ import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { useStore } from "@/lib/store"
 import {
-  attendanceMonthCount,
   isAcademyOverdue,
   isCollectionsStudent,
   isFinishingSoon,
@@ -23,7 +22,7 @@ import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
 
 export default function AlertsPage() {
-  const { students, attendance, addNotification } = useStore()
+  const { students, addNotification } = useStore()
   const [message, setMessage] = useState(ALERT_PAYMENT_REMINDER)
 
   const academyOverdue = useMemo(
@@ -53,8 +52,8 @@ export default function AlertsPage() {
     [students],
   )
   const finishing = useMemo(
-    () => students.filter((s) => isFinishingSoon(s, attendance)),
-    [students, attendance],
+    () => students.filter(isFinishingSoon),
+    [students],
   )
 
   function blast(channel: "sms" | "email", list: Student[], subject: string) {
@@ -72,7 +71,7 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Academy overdue is red. Subscriber overdue is orange so it is not mixed with training follow-up. Collections is amber, paused is violet, pending starts are blue, wrapping-up plans are teal. Photoshoot leads live on Contacts."
+        description="Academy overdue is red. Subscriber overdue is orange. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
       />
 
       <Panel className="mb-6 grid gap-3">
@@ -172,14 +171,14 @@ export default function AlertsPage() {
           }
         />
         <AlertList
-          title="Wrapping up"
+          title="Fewer than 3 payments"
           count={finishing.length}
-          empty="Nobody is in this window right now."
-          hint="Current payment-plan students with 3 or fewer installments left who have checked in across at least two months. Good time to talk subscription."
+          empty="Nobody in this window — current academy plans that started May 2026 or earlier with fewer than 3 payments left."
+          hint="Lime highlight. Started May 2026 or before, still current on a payment plan, with 0–2 installments left. A good time to talk subscription."
           tone="finishing"
           students={finishing}
           line={(s) =>
-            `${remainingPayments(s)} payment${(remainingPayments(s) ?? 0) === 1 ? "" : "s"} left · ${attendanceMonthCount(attendance, s.id)} months of check-ins`
+            `${remainingPayments(s)} payment${(remainingPayments(s) ?? 0) === 1 ? "" : "s"} left · started ${formatDate(s.startDate)}`
           }
         />
       </div>
@@ -219,10 +218,10 @@ const TONE = {
     line: "text-sky-900 dark:text-sky-200/90 sepia:text-sky-200",
   },
   finishing: {
-    panel: "ring-1 ring-teal-400/25",
-    title: "text-teal-800 dark:text-teal-100 sepia:text-teal-200",
-    divide: "divide-teal-400/15",
-    line: "text-teal-800 dark:text-teal-200/90 sepia:text-teal-200",
+    panel: "ring-1 ring-lime-400/30",
+    title: "text-lime-800 dark:text-lime-100 sepia:text-lime-100",
+    divide: "divide-lime-400/20",
+    line: "text-lime-800 dark:text-lime-200/90 sepia:text-lime-100",
   },
 } as const
 

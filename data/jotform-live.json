@@ -1,4 +1,203 @@
 {
-  "updatedAt": "",
-  "checkIns": []
+  "updatedAt": "2026-08-28T21:15:51.781Z",
+  "checkIns": [
+    {
+      "id": "jotform-6636115156515746505",
+      "firstName": "Jackson",
+      "lastName": "Hairston",
+      "phone": "(480) 406-7345",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T23:45:31",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636077145218073312",
+      "firstName": "Ixchel",
+      "lastName": "Harguess",
+      "phone": "(602) 526-8727",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:41:54",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636071223613543856",
+      "firstName": "andrew",
+      "lastName": "fordyce",
+      "phone": "(480) 678-5253",
+      "classType": "acting",
+      "checkedInAt": "2026-08-26T22:32:02",
+      "statusLabel": "Acting"
+    },
+    {
+      "id": "jotform-6636070888856846525",
+      "firstName": "Aaliyah",
+      "lastName": "Moore",
+      "phone": "(715) 559-9839",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:31:28",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636070649317898339",
+      "firstName": "Melissa",
+      "lastName": "Flores",
+      "phone": "(602) 643-6495",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:31:04",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636069665526474079",
+      "firstName": "April",
+      "lastName": "Wilson",
+      "phone": "(520) 342-4177",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:29:26",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636069217113194284",
+      "firstName": "James",
+      "lastName": "Strysko",
+      "phone": "(480) 478-5751",
+      "classType": "subscriber",
+      "checkedInAt": "2026-08-26T22:28:41",
+      "statusLabel": "Subscriber"
+    },
+    {
+      "id": "jotform-6636069164224254717",
+      "firstName": "Tacheena",
+      "lastName": "Coicou",
+      "phone": "(480) 462-9377",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:28:36",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636068859714461616",
+      "firstName": "Tyler",
+      "lastName": "Thompson",
+      "phone": "(480) 261-4045",
+      "classType": "acting",
+      "checkedInAt": "2026-08-26T22:28:06",
+      "statusLabel": "Acting"
+    },
+    {
+      "id": "jotform-6636068780153168565",
+      "firstName": "Gabby",
+      "lastName": "Anderson",
+      "phone": "(520) 350-4455",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:29:28",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636068613711846994",
+      "firstName": "Endy",
+      "lastName": "Dixon",
+      "phone": "(623) 466-4222",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:27:42",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636068150812420193",
+      "firstName": "Ruth",
+      "lastName": "Brooks",
+      "phone": "(702) 929-1766",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:26:56",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636067852118526343",
+      "firstName": "Ivan",
+      "lastName": "Parker",
+      "phone": "(251) 487-4948",
+      "classType": "acting",
+      "checkedInAt": "2026-08-26T22:26:25",
+      "statusLabel": "Acting"
+    },
+    {
+      "id": "jotform-6636066582566445280",
+      "firstName": "Ailiyah",
+      "lastName": "Mercado",
+      "phone": "(602) 821-2840",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:24:19",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636065921426523249",
+      "firstName": "Celine",
+      "lastName": "Bahdouch",
+      "phone": "(602) 821-3113",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:23:12",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636065838681061859",
+      "firstName": "Mikayla",
+      "lastName": "Evans",
+      "phone": "(928) 322-3017",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:23:03",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636062679841398814",
+      "firstName": "Sierra",
+      "lastName": "Swider",
+      "phone": "(623) 980-9935",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:17:47",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636058671018432743",
+      "firstName": "Landon",
+      "lastName": "Flenniken",
+      "phone": "(714) 615-2585",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T22:11:07",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636054155214279009",
+      "firstName": "Divine",
+      "lastName": "Kungwa",
+      "phone": "(602) 803-8095",
+      "classType": "subscriber",
+      "checkedInAt": "2026-08-26T22:03:36",
+      "statusLabel": "Subscriber"
+    },
+    {
+      "id": "jotform-6636053433212239063",
+      "firstName": "Malaika",
+      "lastName": "Jones",
+      "phone": "(520) 701-2068",
+      "classType": "subscriber",
+      "checkedInAt": "2026-08-26T22:02:23",
+      "statusLabel": "Subscriber"
+    },
+    {
+      "id": "jotform-6636048547302353003",
+      "firstName": "Lilliana",
+      "lastName": "Fernandez",
+      "phone": "(623) 341-0249",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T21:54:15",
+      "statusLabel": "Modeling"
+    },
+    {
+      "id": "jotform-6636036682012997443",
+      "firstName": "Kiara",
+      "lastName": "Simmons",
+      "phone": "(435) 419-0352",
+      "classType": "modeling",
+      "checkedInAt": "2026-08-26T21:34:28",
+      "statusLabel": "Modeling"
+    }
+  ]
 }

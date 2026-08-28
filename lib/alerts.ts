@@ -76,6 +76,7 @@ export function monthsElapsed(startDate: string, asOf = new Date()) {
 export function remainingPayments(student: Student) {
   if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") return 0
   if (student.paymentPlan !== "pp") return null
+  if (typeof student.installmentsLeft === "number") return Math.max(0, student.installmentsLeft)
   return Math.max(0, PLAN_LENGTH - monthsElapsed(student.startDate))
 }
 
@@ -86,21 +87,30 @@ export function attendanceMonthCount(records: AttendanceRecord[], studentId: str
   return months.size
 }
 
-export function isFinishingSoon(student: Student, attendance: AttendanceRecord[]) {
-  if (student.program !== "academy") return false
-  if (student.enrollmentStatus !== "current") return false
-  const left = remainingPayments(student)
-  if (left == null || left > 3) return false
-  return attendanceMonthCount(attendance, student.id) >= 2
+/** Current academy payment-plan students who started May 2026 or earlier, with fewer than 3 installments left. */
+export const WRAP_START_CUTOFF = "2026-05-31"
+
+export function startedByMay2026(student: Student) {
+  const start = (student.startDate || "").slice(0, 10)
+  return Boolean(start) && start <= WRAP_START_CUTOFF
 }
 
-export function highlightTone(student: Student, attendance: AttendanceRecord[]): HighlightTone {
+export function isFinishingSoon(student: Student) {
+  if (student.program !== "academy") return false
+  if (student.enrollmentStatus !== "current") return false
+  if (student.paymentPlan !== "pp") return false
+  if (!startedByMay2026(student)) return false
+  const left = remainingPayments(student)
+  return left != null && left < 3
+}
+
+export function highlightTone(student: Student): HighlightTone {
   if (isCollectionsStudent(student)) return "collections"
   if (isSubscriberOverdue(student)) return "subscriberOverdue"
   if (isAcademyOverdue(student)) return "overdue"
   if (isPausedStudent(student)) return "paused"
   if (isPendingStudent(student)) return "pending"
-  if (isFinishingSoon(student, attendance)) return "finishing"
+  if (isFinishingSoon(student)) return "finishing"
   return "none"
 }
 

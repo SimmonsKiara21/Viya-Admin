@@ -70,6 +70,7 @@ const blank = (): Student => ({
   startDate: "",
   nextPaymentDate: "",
   nextPaymentAmount: 104,
+  installmentsLeft: null,
   notes: "",
   subscriptionStatus: "none",
   photoshootStatus: "none",

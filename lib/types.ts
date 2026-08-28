@@ -45,6 +45,7 @@ export interface Student {
   startDate: string
   nextPaymentDate: string
   nextPaymentAmount: number | null
+  installmentsLeft: number | null
   notes: string
   contactCategory: ContactCategory | ""
   subscriptionStatus: SubscriptionStatus

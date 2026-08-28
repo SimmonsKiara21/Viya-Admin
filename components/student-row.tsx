@@ -1,11 +1,11 @@
 "use client"
 
+import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
 import { DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
 import { highlightTone, remainingPayments, type HighlightTone } from "@/lib/alerts"
-import { useStore } from "@/lib/store"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -15,7 +15,7 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
   collections: "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20",
   paused: "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18",
   pending: "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18",
-  finishing: "bg-teal-500/12 ring-1 ring-teal-400/35 hover:bg-teal-500/18",
+  finishing: "bg-lime-500/16 ring-1 ring-lime-400/45 hover:bg-lime-500/22",
 }
 
 const NAME: Record<Exclude<HighlightTone, "none">, string> = {
@@ -24,7 +24,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   collections: "text-amber-900 dark:text-amber-200 sepia:text-amber-200",
   paused: "text-violet-900 dark:text-violet-200 sepia:text-violet-200",
   pending: "text-sky-900 dark:text-sky-200 sepia:text-sky-200",
-  finishing: "text-teal-800 dark:text-teal-200 sepia:text-teal-200",
+  finishing: "text-lime-800 dark:text-lime-100 sepia:text-lime-100",
 }
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
@@ -54,9 +54,9 @@ const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: s
       "rounded-full bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100 sepia:text-sky-100",
   },
   finishing: {
-    label: "Wrapping up",
+    label: "<3 payments",
     className:
-      "rounded-full bg-teal-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-teal-800 uppercase dark:text-teal-100 sepia:text-teal-100",
+      "rounded-full bg-lime-500/25 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100 sepia:text-lime-100",
   },
 }
 
@@ -72,9 +72,8 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
   return ` · ${student.email || "no email"}`
 }
 
-export function StudentRow({ student }: { student: Student }) {
-  const { attendance } = useStore()
-  const tone = highlightTone(student, attendance)
+export const StudentRow = memo(function StudentRow({ student }: { student: Student }) {
+  const tone = highlightTone(student)
   const left = remainingPayments(student)
   const pill = tone === "none" ? null : PILL[tone]
 
@@ -107,4 +106,4 @@ export function StudentRow({ student }: { student: Student }) {
       </div>
     </Link>
   )
-}
+})

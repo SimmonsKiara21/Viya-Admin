@@ -13,6 +13,8 @@ npm run dev
 
 Open [http://localhost:43147](http://localhost:43147).
 
+Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save.
+
 ```bash
 npm run build
 npm start
@@ -25,7 +27,7 @@ npm start
 - **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
 - **Check-in** is the only place to manually check someone in (Modeling, Acting, or Subscriber). Staff check-ins post to the Jotform attendance tracker. Student-phone check-ins on that form sync back to **Attendance**.
 - **Attendance** is the Jotform record. The August 26 class from the tracker is loaded; earlier nights were not kept because the desk did not have those check-ins yet.
-- **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
+- **Payments** is a Square tracker for **enrollment students only**. The desk pulls invoices every couple of minutes. With `SQUARE_ACCESS_TOKEN` those are live Square invoices (due dates, paid, balance). Without a token it uses the last dashboard snapshot in `data/square.json`. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
@@ -41,7 +43,7 @@ npm start
 - **Collections** — amber, kept separate from a regular overdue follow-up.
 - **Paused** — violet, so the desk does not check them in by accident.
 - **Pending** — blue, so DocuSign, deposit, and first class stay visible.
-- **Wrapping up** — teal, for current payment-plan students with **3 or fewer payments left** who have checked in across **at least two months**.
+- **Fewer than 3 payments** — lime, for current academy payment-plan students who **started May 2026 or earlier** and have **fewer than 3 installments left**. Remaining payments come from the Square invoice (balance vs plan) when we have one, otherwise from the 6-payment start date. May 2026 starters currently have 3 left until the next installment posts, so they highlight once they drop to 2.
 
 Staff see a banner on every page with those counts. Names are highlighted in the same colors on every roster list.
 
@@ -56,15 +58,18 @@ Send the weekly reminder from **Classes** or **Notify**. Subscriber class times 
 
 Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Full**, plus Overdue, Paused, and Collections so the desk matches how the academy already works.
 
-## Square, Gmail, and texts
+## Square, enrollment, Gmail, and texts
 
-Payments use Square invoices pulled from the logged-in dashboard and kept in `data/square.json`. Live API keys are optional.
+Enrollment auto-updates from the bundled 2026 workbook snapshot. To follow a live Google Sheet, publish it as CSV and set `ENROLLMENT_CSV_URL`. New names on that sheet are added; email, phone, and start date refresh. Square / staff payment status is not overwritten by the sheet.
+
+Payments use Square invoices. Live API keys are optional — without them the desk still overlays due dates from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices and writes the correct due date, amount, and remaining installments onto enrollment students only.
 
 The desk works without API keys. Copy `.env.example` to `.env.local` and add credentials when you want live send/sync:
 
 | Service | Variables |
 | --- | --- |
-| Square | `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_ENVIRONMENT` |
+| Square invoices | `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_ENVIRONMENT=production` |
+| Enrollment sheet | `ENROLLMENT_CSV_URL` (published Google Sheet CSV) |
 | Jotform attendance | `JOTFORM_API_KEY` (or a webhook to `/api/jotform/webhook`) |
 | Gmail | `GMAIL_USER`, `GMAIL_APP_PASSWORD` |
 | Textla or Twilio | `TEXTLA_API_KEY` or `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` + `TWILIO_FROM_NUMBER` |

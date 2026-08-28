@@ -19,7 +19,7 @@ export function StudentSearch({
   className?: string
   placeholder?: string
 }) {
-  const { students, attendance } = useStore()
+  const { students } = useStore()
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
@@ -75,12 +75,12 @@ export function StudentSearch({
                       <p
                         className={cn(
                           "truncate font-medium",
-                          highlightTone(student, attendance) === "overdue" &&
-                            "text-rose-800 dark:text-rose-200",
-                          highlightTone(student, attendance) === "subscriberOverdue" &&
+                          highlightTone(student) === "overdue" && "text-rose-800 dark:text-rose-200",
+                          highlightTone(student) === "subscriberOverdue" &&
                             "text-orange-900 dark:text-orange-100",
-                          highlightTone(student, attendance) === "collections" &&
+                          highlightTone(student) === "collections" &&
                             "text-amber-900 dark:text-amber-200",
+                          highlightTone(student) === "finishing" && "text-lime-800 dark:text-lime-100",
                         )}
                       >
                         {fullName(student)}

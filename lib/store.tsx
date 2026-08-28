@@ -18,6 +18,7 @@ import type {
   NotificationRecord,
   NotifyGroup,
   PaymentRecord,
+  PaymentSource,
   SquareItemKind,
   Student,
 } from "./types"
@@ -25,7 +26,7 @@ import { newId } from "./format"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
 
-const STORAGE_KEY = "viya-academy-store-v3"
+const STORAGE_KEY = "viya-academy-store-v4"
 
 function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amount: number }): PaymentRecord {
   const paid = p.paidAmount ?? (p.status === "paid" ? p.amount : 0)
@@ -46,7 +47,15 @@ function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amoun
     itemName: p.itemName || "",
     itemDescription: p.itemDescription || "",
     itemKind: (p.itemKind || "academy") as SquareItemKind,
+    source: (p.source as PaymentSource) || (looksLikeSquareId(p.squareInvoiceId, p.notes) ? "square" : "workbook"),
   }
+}
+
+function looksLikeSquareId(id?: string, notes?: string) {
+  const text = notes || ""
+  if (text.startsWith("Square subscription") || /^Square invoice \S+ ·/.test(text)) return true
+  const value = id || ""
+  return Boolean(value) && !value.startsWith("sqinv_") && !value.startsWith("sqsub_")
 }
 
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {

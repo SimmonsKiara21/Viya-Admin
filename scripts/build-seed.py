@@ -416,6 +416,7 @@ for st in students:
             "itemName": "VA101 Modelling & Acting Training",
             "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
             "itemKind": "academy",
+            "source": "workbook",
         })
         n += 1
         continue
@@ -448,6 +449,7 @@ for st in students:
             else "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans."
         ),
         "itemKind": "subscriber" if st["program"] == "subscriber" else "academy",
+        "source": "workbook",
     }
     n += 1
     payments.append(rec)
@@ -476,6 +478,7 @@ for st in students:
             "itemName": "VA101 Modelling & Acting Training",
             "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
             "itemKind": "academy",
+            "source": "workbook",
         })
         n += 1
 

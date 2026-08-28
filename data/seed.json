@@ -1736,7 +1736,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Keep at 5. Square subscription cancelling 2026-09-01.",
+      "notes": "Keep at 5. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -1778,7 +1778,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -1820,7 +1820,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -2072,7 +2072,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -2576,7 +2576,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -2723,7 +2723,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -2786,7 +2786,7 @@
       "startDate": "",
       "nextPaymentDate": "2026-04-01",
       "nextPaymentAmount": null,
-      "notes": "Square subscription cancelling 2026-09-01.",
+      "notes": "Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01. Square subscription cancelling 2026-09-01.",
       "subscriptionStatus": "paused",
       "photoshootStatus": "none",
       "photoshootNotes": "",
@@ -4773,7 +4773,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 125.0
+      "balance": 125.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0002",
@@ -4790,7 +4791,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0003",
@@ -4807,7 +4809,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 360.0,
-      "balance": 265.3
+      "balance": 265.3,
+      "source": "square"
     },
     {
       "id": "pay-0004",
@@ -4824,7 +4827,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1080.0,
-      "balance": 156.0
+      "balance": 156.0,
+      "source": "square"
     },
     {
       "id": "pay-0005",
@@ -4841,7 +4845,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 50.0
+      "balance": 50.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0006",
@@ -4858,7 +4863,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 200.0,
-      "balance": 1242.0
+      "balance": 1242.0,
+      "source": "square"
     },
     {
       "id": "pay-0007",
@@ -4875,7 +4881,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 1236.0
+      "balance": 1236.0,
+      "source": "square"
     },
     {
       "id": "pay-0008",
@@ -4892,7 +4899,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 1236.0
+      "balance": 1236.0,
+      "source": "square"
     },
     {
       "id": "pay-0009",
@@ -4909,7 +4917,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 1236.0
+      "balance": 1236.0,
+      "source": "square"
     },
     {
       "id": "pay-0010",
@@ -4926,7 +4935,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 820.0,
-      "balance": 416.0
+      "balance": 416.0,
+      "source": "square"
     },
     {
       "id": "pay-0011",
@@ -4943,7 +4953,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 712.0,
-      "balance": 524.0
+      "balance": 524.0,
+      "source": "square"
     },
     {
       "id": "pay-0012",
@@ -4960,7 +4971,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0013",
@@ -4977,7 +4989,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0014",
@@ -4994,7 +5007,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 300.0,
-      "balance": 936.0
+      "balance": 936.0,
+      "source": "square"
     },
     {
       "id": "pay-0015",
@@ -5011,7 +5025,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0016",
@@ -5028,7 +5043,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 1236.0
+      "balance": 1236.0,
+      "source": "square"
     },
     {
       "id": "pay-0017",
@@ -5045,7 +5061,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0018",
@@ -5062,7 +5079,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0019",
@@ -5079,7 +5097,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0020",
@@ -5096,7 +5115,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 300.0,
-      "balance": 936.0
+      "balance": 936.0,
+      "source": "square"
     },
     {
       "id": "pay-0021",
@@ -5113,7 +5133,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0022",
@@ -5130,7 +5151,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 103.0
+      "balance": 103.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0023",
@@ -5147,7 +5169,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 103.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0024",
@@ -5164,7 +5187,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 103.0
+      "balance": 103.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0025",
@@ -5181,7 +5205,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 103.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0026",
@@ -5198,7 +5223,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0027",
@@ -5215,7 +5241,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0028",
@@ -5232,7 +5259,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 404.0,
-      "balance": 832.0
+      "balance": 832.0,
+      "source": "square"
     },
     {
       "id": "pay-0029",
@@ -5249,7 +5277,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0030",
@@ -5266,7 +5295,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 103.0
+      "balance": 103.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0031",
@@ -5283,7 +5313,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 103.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0032",
@@ -5300,7 +5331,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 100.0
+      "balance": 100.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0033",
@@ -5317,7 +5349,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 100.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0034",
@@ -5334,7 +5367,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0035",
@@ -5351,7 +5385,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0036",
@@ -5368,7 +5403,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 60.0
+      "balance": 60.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0037",
@@ -5385,7 +5421,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 60.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0038",
@@ -5402,7 +5439,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0039",
@@ -5419,7 +5457,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0040",
@@ -5436,7 +5475,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0041",
@@ -5453,7 +5493,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0042",
@@ -5470,7 +5511,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 50.0
+      "balance": 50.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0043",
@@ -5487,7 +5529,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 50.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0044",
@@ -5504,7 +5547,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0045",
@@ -5521,7 +5565,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0046",
@@ -5538,7 +5583,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0047",
@@ -5555,7 +5601,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0048",
@@ -5572,7 +5619,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0049",
@@ -5589,7 +5637,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0050",
@@ -5606,7 +5655,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0051",
@@ -5623,7 +5673,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0052",
@@ -5640,7 +5691,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0053",
@@ -5657,7 +5709,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0054",
@@ -5674,7 +5727,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 78.0
+      "balance": 78.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0055",
@@ -5691,7 +5745,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 78.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0056",
@@ -5708,7 +5763,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0057",
@@ -5725,7 +5781,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0058",
@@ -5742,7 +5799,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0059",
@@ -5759,7 +5817,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0060",
@@ -5776,7 +5835,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0061",
@@ -5793,7 +5853,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0062",
@@ -5810,7 +5871,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 60.0
+      "balance": 60.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0063",
@@ -5827,7 +5889,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 60.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0064",
@@ -5844,7 +5907,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0065",
@@ -5861,7 +5925,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0066",
@@ -5878,7 +5943,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0067",
@@ -5895,7 +5961,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 104.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0068",
@@ -5912,7 +5979,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0069",
@@ -5929,7 +5997,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 927.0
+      "balance": 927.0,
+      "source": "square"
     },
     {
       "id": "pay-0070",
@@ -5946,7 +6015,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0.0,
-      "balance": 927.0
+      "balance": 927.0,
+      "source": "square"
     },
     {
       "id": "pay-0071",
@@ -5963,7 +6033,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0072",
@@ -5980,7 +6051,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 927.0,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0073",
@@ -5997,7 +6069,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 927.0,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0074",
@@ -6014,7 +6087,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 927.0,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0075",
@@ -6031,7 +6105,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0076",
@@ -6048,7 +6123,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0077",
@@ -6065,7 +6141,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 927.0,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0078",
@@ -6082,7 +6159,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0079",
@@ -6099,7 +6177,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0080",
@@ -6116,7 +6195,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0081",
@@ -6133,7 +6213,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0082",
@@ -6150,7 +6231,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0083",
@@ -6167,7 +6249,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0084",
@@ -6184,7 +6267,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0085",
@@ -6201,7 +6285,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0086",
@@ -6218,7 +6303,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0087",
@@ -6235,7 +6321,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0088",
@@ -6252,7 +6339,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0089",
@@ -6269,7 +6357,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0090",
@@ -6286,7 +6375,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0091",
@@ -6303,7 +6393,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0092",
@@ -6320,7 +6411,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0093",
@@ -6337,7 +6429,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0094",
@@ -6354,7 +6447,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0095",
@@ -6371,7 +6465,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0096",
@@ -6388,7 +6483,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0097",
@@ -6405,7 +6501,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0098",
@@ -6422,7 +6519,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0099",
@@ -6439,7 +6537,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0100",
@@ -6456,7 +6555,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 1850.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0101",
@@ -6473,7 +6573,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0102",
@@ -6490,7 +6591,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0103",
@@ -6507,7 +6609,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0104",
@@ -6524,7 +6627,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 50.0
+      "balance": 50.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0105",
@@ -6541,7 +6645,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 100.0
+      "balance": 100.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0106",
@@ -6558,7 +6663,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 750.0
+      "balance": 750.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0107",
@@ -6575,7 +6681,8 @@
       "itemDescription": "Viya Academy modelling and acting training. Used on Square invoices for academy tuition and payment plans.",
       "itemKind": "academy",
       "paidAmount": 0,
-      "balance": 104.0
+      "balance": 104.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0108",
@@ -6585,14 +6692,15 @@
       "paidDate": "2026-08-01",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0650_20260401",
+      "squareInvoiceId": "sub-0650",
       "notes": "Square subscription \u00b7 Viya Talent Subscription",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0109",
@@ -6609,7 +6717,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0110",
@@ -6619,14 +6728,15 @@
       "paidDate": "2026-08-01",
       "status": "scheduled",
       "method": "square",
-      "squareInvoiceId": "sqinv_0647_20260401",
+      "squareInvoiceId": "sub-0647",
       "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0111",
@@ -6643,7 +6753,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0112",
@@ -6653,14 +6764,15 @@
       "paidDate": "2026-08-01",
       "status": "scheduled",
       "method": "square",
-      "squareInvoiceId": "sqinv_0634_20260401",
+      "squareInvoiceId": "sub-0634",
       "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0113",
@@ -6677,7 +6789,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 5.14,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0114",
@@ -6694,7 +6807,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0115",
@@ -6711,7 +6825,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0116",
@@ -6728,7 +6843,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0117",
@@ -6745,7 +6861,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0118",
@@ -6755,14 +6872,15 @@
       "paidDate": "2026-08-01",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0654_20260401",
+      "squareInvoiceId": "sub-0654",
       "notes": "Square subscription \u00b7 Viya Talent Subscription",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0119",
@@ -6779,7 +6897,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0120",
@@ -6789,14 +6908,15 @@
       "paidDate": "2026-08-01",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0636_20260401",
+      "squareInvoiceId": "sub-0636",
       "notes": "Square subscription \u00b7 Viya Talent Subscription",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0121",
@@ -6813,7 +6933,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0122",
@@ -6830,7 +6951,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0123",
@@ -6847,7 +6969,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0124",
@@ -6864,7 +6987,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0125",
@@ -6881,7 +7005,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0126",
@@ -6891,14 +7016,15 @@
       "paidDate": "2026-08-01",
       "status": "scheduled",
       "method": "square",
-      "squareInvoiceId": "sqinv_0633_20260401",
+      "squareInvoiceId": "sub-0633",
       "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0127",
@@ -6915,7 +7041,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0128",
@@ -6932,7 +7059,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0129",
@@ -6949,7 +7077,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0130",
@@ -6966,7 +7095,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0131",
@@ -6983,7 +7113,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0132",
@@ -7000,7 +7131,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0133",
@@ -7017,7 +7149,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0134",
@@ -7034,7 +7167,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0135",
@@ -7051,7 +7185,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0136",
@@ -7068,7 +7203,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0137",
@@ -7085,7 +7221,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0138",
@@ -7102,7 +7239,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0139",
@@ -7119,7 +7257,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 5.14,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0140",
@@ -7136,7 +7275,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0141",
@@ -7153,7 +7293,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0142",
@@ -7170,7 +7311,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0143",
@@ -7187,7 +7329,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0144",
@@ -7204,7 +7347,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0145",
@@ -7221,7 +7365,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0146",
@@ -7238,7 +7383,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0147",
@@ -7255,7 +7401,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0148",
@@ -7272,7 +7419,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0149",
@@ -7289,7 +7437,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0150",
@@ -7299,14 +7448,15 @@
       "paidDate": "2026-08-01",
       "status": "scheduled",
       "method": "square",
-      "squareInvoiceId": "sqinv_0646_20260401",
+      "squareInvoiceId": "sub-0646",
       "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0151",
@@ -7323,7 +7473,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0152",
@@ -7340,7 +7491,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0153",
@@ -7357,7 +7509,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0154",
@@ -7374,7 +7527,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0155",
@@ -7391,7 +7545,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0156",
@@ -7401,14 +7556,15 @@
       "paidDate": "2026-08-01",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0656_20260401",
+      "squareInvoiceId": "sub-0656",
       "notes": "Square subscription \u00b7 Viya Talent Subscription",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0157",
@@ -7425,7 +7581,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 4.99,
-      "balance": 0.0
+      "balance": 0.0,
+      "source": "square"
     },
     {
       "id": "pay-0158",
@@ -7442,7 +7599,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0159",
@@ -7459,7 +7617,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0160",
@@ -7469,14 +7628,15 @@
       "paidDate": "2026-08-01",
       "status": "scheduled",
       "method": "square",
-      "squareInvoiceId": "sqinv_0641_20260401",
+      "squareInvoiceId": "sub-0641",
       "notes": "Square subscription \u00b7 Viya Talent Subscription \u00b7 cancels 2026-09-01",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0161",
@@ -7493,7 +7653,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0162",
@@ -7503,14 +7664,15 @@
       "paidDate": "2026-08-01",
       "status": "due",
       "method": "square",
-      "squareInvoiceId": "sqinv_0631_20260401",
+      "squareInvoiceId": "sub-0631",
       "notes": "Square subscription \u00b7 Viya Talent Subscription",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 51.49
+      "balance": 51.49,
+      "source": "square"
     },
     {
       "id": "pay-0163",
@@ -7527,7 +7689,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0164",
@@ -7544,7 +7707,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0165",
@@ -7561,7 +7725,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0166",
@@ -7578,7 +7743,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0167",
@@ -7595,7 +7761,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0168",
@@ -7612,7 +7779,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0169",
@@ -7629,7 +7797,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0170",
@@ -7646,7 +7815,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0171",
@@ -7663,7 +7833,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0172",
@@ -7680,7 +7851,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0173",
@@ -7697,7 +7869,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0174",
@@ -7714,7 +7887,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0175",
@@ -7731,7 +7905,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0176",
@@ -7748,7 +7923,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0177",
@@ -7765,7 +7941,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0178",
@@ -7782,7 +7959,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0179",
@@ -7799,7 +7977,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0180",
@@ -7816,7 +7995,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 49.0
+      "balance": 49.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0181",
@@ -7833,7 +8013,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 49.0
+      "balance": 49.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0182",
@@ -7850,7 +8031,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 49.0
+      "balance": 49.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0183",
@@ -7867,7 +8049,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 0,
-      "balance": 49.0
+      "balance": 49.0,
+      "source": "workbook"
     },
     {
       "id": "pay-0184",
@@ -7884,7 +8067,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0185",
@@ -7901,7 +8085,8 @@
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
       "itemKind": "subscriber",
       "paidAmount": 49.0,
-      "balance": 0
+      "balance": 0,
+      "source": "workbook"
     },
     {
       "id": "pay-0186",
@@ -7918,7 +8103,8 @@
       "itemId": "va-subscription-og",
       "itemName": "Viya Talent Subscription OG",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     },
     {
       "id": "pay-0187",
@@ -7935,7 +8121,8 @@
       "itemId": "va-subscription-og",
       "itemName": "Viya Talent Subscription OG",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     },
     {
       "id": "pay-0188",
@@ -7948,11 +8135,12 @@
       "dueDate": "2026-09-01",
       "paidDate": "2026-08-01",
       "status": "scheduled",
-      "squareInvoiceId": "sqsub_0645",
+      "squareInvoiceId": "sub-0645",
       "itemId": "va-subscription-og",
       "itemName": "Viya Talent Subscription OG",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     },
     {
       "id": "pay-0189",
@@ -7965,11 +8153,12 @@
       "dueDate": "2026-09-01",
       "paidDate": "2026-08-01",
       "status": "scheduled",
-      "squareInvoiceId": "sqsub_0649",
+      "squareInvoiceId": "sub-0649",
       "itemId": "va-subscription",
       "itemName": "Viya Talent Subscription",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     },
     {
       "id": "pay-0190",
@@ -7982,11 +8171,12 @@
       "dueDate": "2026-07-01",
       "paidDate": "2026-06-01",
       "status": "paid",
-      "squareInvoiceId": "sqsub_0637",
+      "squareInvoiceId": "sub-0637",
       "itemId": "va-subscription-og",
       "itemName": "Viya Talent Subscription OG",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     },
     {
       "id": "pay-0191",
@@ -7999,11 +8189,12 @@
       "dueDate": "2026-08-01",
       "paidDate": "",
       "status": "paid",
-      "squareInvoiceId": "sqsub_0658",
+      "squareInvoiceId": "sub-0658",
       "itemId": "va-subscription-og",
       "itemName": "Viya Talent Subscription OG",
       "itemDescription": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops.",
-      "itemKind": "subscriber"
+      "itemKind": "subscriber",
+      "source": "square"
     }
   ],
   "notifications": [

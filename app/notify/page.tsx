@@ -84,7 +84,7 @@ export default function NotifyPage() {
 
       <Panel className="mb-8">
         <NotifyComposer
-          key={activeGroup + presetStudents.map((s) => s.id).join(",")}
+          key={activeGroup || "pick"}
           presetStudents={presetStudents}
           initialGroupId={activeGroup || undefined}
           initialTemplateId={templateForGroup}

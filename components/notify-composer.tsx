@@ -319,7 +319,26 @@ export function NotifyComposer({
               </Button>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="grid gap-2 rounded-xl border border-dashed border-border p-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Save as a group for later
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Add at least two students, name the group, then save it for a group message.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                placeholder="Group name — Saturday modeling, photoshoot day…"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+              />
+              <Button type="button" variant="outline" onClick={saveGroup}>
+                Save group
+              </Button>
+            </div>
+          </div>
+        )}
         {customGroups.length > 0 ? (
           <ul className="grid gap-1.5">
             {customGroups.map((g) => (

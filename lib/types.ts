@@ -19,7 +19,7 @@ export type PhotoshootStatus =
   | "received"
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
-export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
+export type PaymentSource = "square" | "workbook"
 export type NotifyChannel = "sms" | "email"
 export type NotifyStatus = "sent" | "queued" | "failed" | "demo"
 export type NotifyGroupKind = "system" | "custom"
@@ -88,6 +88,7 @@ export interface PaymentRecord {
   itemName: string
   itemDescription: string
   itemKind: SquareItemKind
+  source: PaymentSource
 }
 
 export interface NotifyGroup {

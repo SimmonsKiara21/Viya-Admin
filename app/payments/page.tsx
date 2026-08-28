@@ -19,6 +19,7 @@ export default function PaymentsPage() {
   const { payments, students, addNotification, updateStudent } = useStore()
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
   const [itemFilter, setItemFilter] = useState<ItemFilter>("all")
+  const [sourceFilter, setSourceFilter] = useState<"square" | "all">("square")
   const [square, setSquare] = useState<{
     connected: boolean
     message: string
@@ -43,13 +44,23 @@ export default function PaymentsPage() {
 
   const rows = useMemo(() => {
     let list = payments.filter((p) => enrollmentIds.has(p.studentId))
+    if (sourceFilter === "square") list = list.filter((p) => p.source === "square")
     if (filter !== "all") list = list.filter((p) => p.status === filter)
     if (itemFilter !== "all") list = list.filter((p) => p.itemId === itemFilter)
-    return [...list].sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
-  }, [payments, filter, itemFilter, enrollmentIds])
+    const rank = (status: string) =>
+      status === "overdue" ? 0 : status === "due" ? 1 : status === "declined" ? 2 : 3
+    return [...list].sort((a, b) => {
+      const r = rank(a.status) - rank(b.status)
+      if (r !== 0) return r
+      return (a.dueDate || "").localeCompare(b.dueDate || "")
+    })
+  }, [payments, filter, itemFilter, enrollmentIds, sourceFilter])
 
-  const openTotal = openBalance(payments.filter((p) => enrollmentIds.has(p.studentId)))
-  const usedItems = SQUARE_ITEMS.filter((item) => payments.some((p) => p.itemId === item.id))
+  const tracked = payments.filter(
+    (p) => enrollmentIds.has(p.studentId) && (sourceFilter === "all" || p.source === "square"),
+  )
+  const openTotal = openBalance(tracked)
+  const usedItems = SQUARE_ITEMS.filter((item) => tracked.some((p) => p.itemId === item.id))
 
   function remind(studentId: string) {
     const student = students.find((s) => s.id === studentId)
@@ -89,6 +100,32 @@ export default function PaymentsPage() {
             : "Enrollment students only"}
           {square?.syncedAt ? ` · synced ${square.syncedAt}` : ""}
         </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setSourceFilter("square")}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              sourceFilter === "square"
+                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                : "border-border text-muted-foreground",
+            )}
+          >
+            Square dashboard
+          </button>
+          <button
+            type="button"
+            onClick={() => setSourceFilter("all")}
+            className={cn(
+              "rounded-full border px-3 py-1 text-xs font-medium",
+              sourceFilter === "all"
+                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                : "border-border text-muted-foreground",
+            )}
+          >
+            All enrollment balances
+          </button>
+        </div>
       </Panel>
 
       <div className="mb-3 flex flex-wrap gap-2">
@@ -170,7 +207,7 @@ export default function PaymentsPage() {
                         bill.studentId
                       )}
                       <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
-                        {bill.squareInvoiceId}
+                        {bill.source === "square" ? bill.squareInvoiceId : "Enrollment workbook"}
                       </span>
                     </td>
                     <td className="px-4 py-3 max-w-[280px]">

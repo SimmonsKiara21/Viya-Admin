@@ -150,6 +150,7 @@ def overlay_invoice(payments: list[dict], student: dict, inv: dict, item: dict) 
             "method": "square",
             "squareInvoiceId": str(inv["invoiceId"]),
             "notes": f"Square invoice {inv['invoiceId']} · {item['name']}",
+            "source": "square",
         }
     )
     apply_item(rec, item)
@@ -184,6 +185,7 @@ def overlay_subscription(payments: list[dict], student: dict, sub: dict, item: d
         }
         payments.append(rec)
     paid = amount if pay_status == "paid" else 0
+    iid = str(rec.get("squareInvoiceId") or "")
     rec.update(
         {
             "amount": amount,
@@ -193,9 +195,14 @@ def overlay_subscription(payments: list[dict], student: dict, sub: dict, item: d
             "paidDate": sub.get("lastPaid") or "",
             "status": pay_status,
             "method": "square",
-            "squareInvoiceId": rec.get("squareInvoiceId") or f"sqsub_{student['id']}",
+            "squareInvoiceId": (
+                iid
+                if iid and not iid.startswith("sqinv_") and not iid.startswith("sqsub_")
+                else f"sub-{student['id']}"
+            ),
             "notes": f"Square subscription · {item['name']}"
             + (f" · cancels {sub['cancelOn']}" if sub.get("cancelOn") else ""),
+            "source": "square",
         }
     )
     apply_item(rec, item)
@@ -224,6 +231,7 @@ def merge_into(seed: dict, square: dict) -> dict:
         student = next((s for s in students if s["id"] == rec["studentId"]), None)
         if student and not rec.get("itemId"):
             apply_item(rec, default_item(student, items))
+        rec["source"] = "workbook"
         with_balances(rec)
 
     matched_invoices = []
@@ -247,6 +255,17 @@ def merge_into(seed: dict, square: dict) -> dict:
         item = items[sub["itemId"]]
         overlay_subscription(payments, student, sub, item)
         matched_subs.append({"name": sub["name"], "id": student["id"], "item": sub["itemId"]})
+
+    for rec in payments:
+        notes = rec.get("notes") or ""
+        iid = str(rec.get("squareInvoiceId") or "")
+        from_dashboard = (
+            notes.startswith("Square subscription")
+            or (" · " in notes and notes.startswith("Square invoice "))
+            or (iid.startswith("sub-"))
+            or (bool(iid) and not iid.startswith("sqinv_") and not iid.startswith("sqsub_"))
+        )
+        rec["source"] = "square" if from_dashboard else "workbook"
 
     seed["payments"] = payments
     seed["groups"] = seed.get("groups") or []

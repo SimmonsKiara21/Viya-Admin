@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react"
@@ -25,6 +26,8 @@ import type {
 import { newId } from "./format"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
+import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jotform"
+import { JOTFORM_ATTENDANCE_URL } from "./constants"
 
 const STORAGE_KEY = "viya-academy-store-v4"
 
@@ -103,10 +106,29 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
 
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
 
+type JotformMeta = {
+  fetchedAt: string
+  source: string
+  message: string
+  connected: boolean
+  unmatched: JotformCheckIn[]
+  formUrl: string
+}
+
+const EMPTY_JOTFORM: JotformMeta = {
+  fetchedAt: "",
+  source: "",
+  message: "",
+  connected: false,
+  unmatched: [],
+  formUrl: JOTFORM_ATTENDANCE_URL,
+}
+
 type StoreContextValue = AppData & {
   ready: boolean
   groups: NotifyGroup[]
   customGroups: NotifyGroup[]
+  jotform: JotformMeta
   updateStudent: (id: string, patch: Partial<Student>) => void
   addStudent: (student: Student) => void
   checkIn: (studentId: string, classType: ClassType, notes?: string) => AttendanceRecord
@@ -130,6 +152,9 @@ function cloneSeed(): AppData {
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(cloneSeed)
   const [ready, setReady] = useState(false)
+  const [jotform, setJotform] = useState<JotformMeta>(EMPTY_JOTFORM)
+  const dataRef = useRef(data)
+  dataRef.current = data
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -156,6 +181,55 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [data, ready])
 
+  useEffect(() => {
+    if (!ready) return
+    let cancelled = false
+
+    async function pull() {
+      try {
+        const res = await fetch("/api/jotform", { cache: "no-store" })
+        const payload = (await res.json()) as {
+          checkIns?: JotformCheckIn[]
+          fetchedAt?: string
+          source?: string
+          message?: string
+          connected?: boolean
+          formUrl?: string
+        }
+        if (cancelled) return
+        const checkIns = payload.checkIns ?? []
+        const { unmatched } = matchJotformCheckIns(checkIns, dataRef.current.students)
+        setJotform({
+          fetchedAt: payload.fetchedAt || new Date().toISOString(),
+          source: payload.source || "",
+          message: payload.message || "",
+          connected: Boolean(payload.connected),
+          unmatched,
+          formUrl: payload.formUrl || JOTFORM_ATTENDANCE_URL,
+        })
+        setData((prev) => ({
+          ...prev,
+          attendance: mergeAttendance(
+            prev.attendance,
+            matchJotformCheckIns(checkIns, prev.students).records,
+          ),
+        }))
+      } catch {
+        /* keep last pull */
+      }
+    }
+
+    pull()
+    const timer = window.setInterval(pull, 15000)
+    const onFocus = () => pull()
+    window.addEventListener("focus", onFocus)
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      window.removeEventListener("focus", onFocus)
+    }
+  }, [ready])
+
   const mutate = useCallback((fn: (prev: AppData) => AppData) => {
     setData((prev) => fn(prev))
   }, [])
@@ -172,6 +246,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       groups,
       customGroups,
       ready,
+      jotform,
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
@@ -188,6 +263,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           notes,
         }
         mutate((prev) => ({ ...prev, attendance: [record, ...prev.attendance] }))
+        const student = data.students.find((s) => s.id === studentId)
+        if (student) {
+          void fetch("/api/jotform/push", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              firstName: student.firstName,
+              lastName: student.lastName,
+              phone: student.phone,
+              classType,
+            }),
+          }).catch(() => {
+            /* desk check-in already saved */
+          })
+        }
         return record
       },
       removeAttendance: (id) =>
@@ -276,7 +366,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(STORAGE_KEY)
       },
     }
-  }, [data, mutate, ready, groups, customGroups])
+  }, [data, mutate, ready, groups, customGroups, jotform])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

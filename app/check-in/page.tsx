@@ -9,15 +9,15 @@ import { StudentPhoto } from "@/components/student-photo"
 import { ClassBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
-import { formatTime, fullName, matchesQuery, todayISO } from "@/lib/format"
+import { formatPhone, formatShortDate, formatTime, fullName, matchesQuery, todayISO } from "@/lib/format"
 import type { ClassType, Student } from "@/lib/types"
-import { CLASS_LABELS } from "@/lib/constants"
+import { CLASS_LABELS, JOTFORM_ATTENDANCE_URL } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 const TYPES: ClassType[] = ["modeling", "acting", "subscriber"]
 
 export default function CheckInPage() {
-  const { students, attendance, checkIn } = useStore()
+  const { students, attendance, checkIn, jotform } = useStore()
   const [query, setQuery] = useState("")
   const [picked, setPicked] = useState<Student | null>(null)
   const today = todayISO()
@@ -43,18 +43,53 @@ export default function CheckInPage() {
       return
     }
     checkIn(picked.id, type)
-    toast.success(`${fullName(picked)} — ${CLASS_LABELS[type]}`)
+    toast.success(`${fullName(picked)} — ${CLASS_LABELS[type]} · posted to Jotform`)
     setPicked(null)
     setQuery("")
   }
+
+  const webhookUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/api/jotform/webhook` : "/api/jotform/webhook"
 
   return (
     <div>
       <PageHeader
         eyebrow="Floor"
         title="Check-in"
-        description="Type a name. Tap the student. Choose Modeling, Acting, or Subscriber. That's the whole flow."
+        description="Type a name for a staff check-in, or use the same student Jotform they already fill out. Either side updates the other."
       />
+
+      <Panel className="mb-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-heading text-2xl">Jotform tracker</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {jotform.message || "Syncing the student attendance form."}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Form:{" "}
+              <a
+                href={jotform.formUrl || JOTFORM_ATTENDANCE_URL}
+                className="underline hover:text-foreground"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Student Attendance Check-In
+              </a>
+              {jotform.fetchedAt ? ` · last pull ${formatTime(jotform.fetchedAt)}` : ""}
+            </p>
+          </div>
+          <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+            {jotform.connected ? "API connected" : jotform.source === "webhook" ? "Webhook live" : "Syncing"}
+          </span>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          To receive student-phone check-ins automatically, add a Jotform webhook to{" "}
+          <span className="break-all font-mono">{webhookUrl}</span>
+          , or put <span className="font-mono">JOTFORM_API_KEY</span> in{" "}
+          <span className="font-mono">.env.local</span>.
+        </p>
+      </Panel>
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <Panel>
@@ -123,7 +158,7 @@ export default function CheckInPage() {
             <p className="mt-6 text-sm text-muted-foreground">No match. Try a first name or the last four of the ID.</p>
           ) : (
             <p className="mt-6 text-sm text-muted-foreground">
-              Start typing — the list appears as soon as it matches.
+              Start typing — the list appears as soon as it matches. Staff check-ins also post to the Jotform tracker.
             </p>
           )}
         </Panel>
@@ -143,11 +178,11 @@ export default function CheckInPage() {
                 if (!student) return null
                 return (
                   <li key={row.id} className="flex items-center justify-between gap-2 text-sm">
-                    <span className="truncate font-medium">{fullName(student)}</span>
+                    <span className="min-w-0 truncate font-medium">{fullName(student)}</span>
                     <span className="flex items-center gap-2">
                       <ClassBadge type={row.classType} />
                       <span className={cn("tabular-nums text-muted-foreground")}>
-                        {formatTime(row.checkedInAt)}
+                        {formatShortDate(row.checkedInAt)} · {formatTime(row.checkedInAt)}
                       </span>
                     </span>
                   </li>
@@ -155,8 +190,35 @@ export default function CheckInPage() {
               })}
             </ul>
           )}
+          {jotform.unmatched.length > 0 ? (
+            <div className="mt-6 border-t border-border pt-4">
+              <h3 className="text-sm font-medium">On the form, not on the roster</h3>
+              <ul className="mt-2 grid gap-1.5 text-sm">
+                {jotform.unmatched.slice(0, 8).map((row) => (
+                  <li key={row.id} className="text-muted-foreground">
+                    {row.firstName} {row.lastName}
+                    {row.phone ? ` · ${formatPhone(row.phone)}` : ""} · {CLASS_LABELS[row.classType]}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </Panel>
       </div>
+
+      <Panel className="mt-6 overflow-hidden p-0">
+        <div className="px-5 pt-5">
+          <h2 className="font-heading text-2xl">Student form</h2>
+          <p className="mb-3 text-sm text-muted-foreground">
+            Same Jotform they use on their phones. A submit here lands on the tracker and on this desk.
+          </p>
+        </div>
+        <iframe
+          title="Student Attendance Check-In"
+          src={`${JOTFORM_ATTENDANCE_URL}?isIframeEmbed=1`}
+          className="h-[560px] w-full border-0 bg-card"
+        />
+      </Panel>
     </div>
   )
 }

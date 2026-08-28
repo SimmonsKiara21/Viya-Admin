@@ -23,7 +23,7 @@ npm start
 - **Add a student** with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
-- **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting.
+- **Check-in** for Modeling, Acting, or Subscriber. Attendance is counted separately for modeling and acting. Staff check-ins post to the Jotform attendance tracker, and student-phone check-ins on that form sync back to the desk.
 - **Payments** is a Square tracker for **enrollment students only**. Invoices and subscriptions from the Square dashboard are matched by name. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Student Payments** on a profile shows the Square payment schedule (due dates, amounts, paid, status) plus invoice copy.
@@ -62,8 +62,11 @@ The desk works without API keys. Copy `.env.example` to `.env.local` and add cre
 | Service | Variables |
 | --- | --- |
 | Square | `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_ENVIRONMENT` |
+| Jotform attendance | `JOTFORM_API_KEY` (or a webhook to `/api/jotform/webhook`) |
 | Gmail | `GMAIL_USER`, `GMAIL_APP_PASSWORD` |
 | Textla or Twilio | `TEXTLA_API_KEY` or `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` + `TWILIO_FROM_NUMBER` |
+
+The student attendance tracker is [this Jotform](https://form.jotform.com/262377942791167). Staff check-ins on the desk are posted there. Student-phone check-ins come back to Attendance when you add a Jotform webhook to `/api/jotform/webhook` or an API key.
 
 Edits (notes, statuses, check-ins, photos) are saved in this browser so the floor can keep working offline. They are not a replacement for Square itself.
 

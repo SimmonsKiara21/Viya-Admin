@@ -37,7 +37,7 @@ export default function AttendancePage() {
       <PageHeader
         eyebrow="Classes"
         title="Attendance"
-        description="Modeling and acting are tracked separately, the same way the check-in sheet splits the floor."
+        description="Modeling and acting are tracked separately. Check-ins from the Jotform student tracker land here automatically."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">

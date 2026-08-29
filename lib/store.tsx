@@ -35,10 +35,10 @@ import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, mergeEnrollmentStudents } from "./enrollment-sync"
-import { applyDrivePhotos, drivePhotoUrl } from "./photos-overlay"
+import { applyDrivePhotos } from "./photos-overlay"
 
-const STORAGE_KEY = "viya-academy-store-v6"
-const LEGACY_KEYS = ["viya-academy-store-v5", "viya-academy-store-v4"]
+const STORAGE_KEY = "viya-academy-store-v7"
+const LEGACY_KEYS = ["viya-academy-store-v6", "viya-academy-store-v5", "viya-academy-store-v4"]
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const JOTFORM_MS = 60_000
 const SQUARE_MS = 60_000
@@ -122,7 +122,7 @@ function defaultTrack(s: Partial<Student>): StudentTrack {
 
 function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName" | "lastName">): Student {
   const prospect = s.program === "prospect" || s.enrollmentStatus === "contact"
-  return {
+  const student: Student = {
     id: s.id,
     firstName: s.firstName,
     lastName: s.lastName,
@@ -148,7 +148,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
     classTime: s.classTime || "",
-    photoUrl: s.photoUrl || drivePhotoUrl(s.id),
+    photoUrl: s.photoUrl || "",
     docusignStatus: s.docusignStatus || "none",
     docusignUrl: s.docusignUrl || "",
     docusignEnvelopeId: s.docusignEnvelopeId || "",
@@ -157,6 +157,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     docusignSignedAt: s.docusignSignedAt || "",
     docusignNotes: s.docusignNotes || "",
   }
+  return applyDrivePhotos([student])[0]
 }
 
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {

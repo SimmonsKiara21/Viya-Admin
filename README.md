@@ -13,7 +13,7 @@ npm run dev
 
 Open [http://localhost:43147](http://localhost:43147).
 
-Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name (`data/photos.json`); only people already on the enrollment list get a portrait.
+Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name; those portraits live in `public/photos` so they load on the desk without a Drive login. Only people already on the enrollment list get a portrait.
 
 ```bash
 npm run build

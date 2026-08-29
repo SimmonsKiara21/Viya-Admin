@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Camera } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { initials, portraitHue } from "@/lib/format"
@@ -21,6 +21,10 @@ export function StudentPhoto({
   className?: string
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [broken, setBroken] = useState(false)
+  useEffect(() => {
+    setBroken(false)
+  }, [student.photoUrl])
   const dims = {
     sm: "size-10 text-xs",
     md: "size-14 text-sm",
@@ -43,13 +47,15 @@ export function StudentPhoto({
       })
   }
 
-  const inner = student.photoUrl ? (
+  const showPhoto = Boolean(student.photoUrl) && !broken
+  const inner = showPhoto ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={student.photoUrl}
       alt={`${student.firstName} ${student.lastName}`}
       className="size-full object-cover"
       referrerPolicy="no-referrer"
+      onError={() => setBroken(true)}
     />
   ) : (
     <span className="font-heading font-semibold tracking-wide">{letters}</span>
@@ -63,7 +69,7 @@ export function StudentPhoto({
         className,
       )}
       style={
-        student.photoUrl
+        showPhoto
           ? undefined
           : {
               background: `linear-gradient(145deg, oklch(0.32 0.04 ${hue}), oklch(0.18 0.03 ${hue + 12}))`,

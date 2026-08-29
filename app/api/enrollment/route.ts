@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import seed from "@/data/seed.json"
 import type { Student } from "@/lib/types"
 import { applyWorkbookRows, parseEnrollmentCsv } from "@/lib/enrollment-sync"
-import { readEnrollmentLive, writeEnrollmentLive } from "@/lib/enrollment-live"
+import { readBundledEnrollmentRows, readEnrollmentLive, writeEnrollmentLive } from "@/lib/enrollment-live"
 import { parseEnrollmentFile } from "@/lib/enrollment-file"
 
 export const runtime = "nodejs"
@@ -13,16 +13,24 @@ function seedStudents() {
 
 export async function GET() {
   const workbook = seedStudents()
+  const bundled = await readBundledEnrollmentRows()
+  const fromDoc = bundled.length ? applyWorkbookRows(workbook, bundled) : { students: workbook, added: 0, updated: 0 }
   const live = await readEnrollmentLive()
   const csvUrl = process.env.ENROLLMENT_CSV_URL || ""
-  let students = live?.students?.length ? live.students.map((s) => ({ ...s })) : workbook
-  let source: "csv" | "upload" | "webhook" | "workbook" = live?.source ?? "workbook"
-  let message = live?.students?.length
-    ? `Enrollment doc last synced ${live.updatedAt.slice(0, 16).replace("T", " ")} (${live.source}). New edits on the sheet or an uploaded export replace this roster.`
+  let students = fromDoc.students
+  let source: "csv" | "upload" | "webhook" | "workbook" = bundled.length ? "csv" : "workbook"
+  let message = bundled.length
+    ? `Current Students enrollment doc loaded · ${fromDoc.updated} updated · ${fromDoc.added} new. Upload a newer export anytime the sheet changes.`
     : "Using the 2026 enrollment workbook snapshot. Upload the latest export, or publish the Google Sheet as CSV and set ENROLLMENT_CSV_URL so edits land on the desk."
   let error = ""
-  let added = 0
-  let updated = 0
+  let added = fromDoc.added
+  let updated = fromDoc.updated
+
+  if (live?.students?.length && live.source !== "csv") {
+    students = live.students.map((s) => ({ ...s }))
+    source = live.source
+    message = `Enrollment doc last synced ${live.updatedAt.slice(0, 16).replace("T", " ")} (${live.source}).`
+  }
 
   if (csvUrl) {
     try {

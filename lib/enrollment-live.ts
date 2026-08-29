@@ -1,6 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 import type { Student } from "./types"
+import { parseEnrollmentCsv } from "./enrollment-sync"
+
+const BUNDLED = path.join(process.cwd(), "data", "enrollment-current.csv")
 
 const FILE = path.join(process.cwd(), "data", "enrollment-live.json")
 
@@ -21,6 +24,15 @@ async function load() {
     if (Array.isArray(raw.students) && raw.students.length) memory = raw
   } catch {
     memory = null
+  }
+}
+
+export async function readBundledEnrollmentRows(): Promise<Partial<Student>[]> {
+  try {
+    const text = await readFile(BUNDLED, "utf8")
+    return parseEnrollmentCsv(text)
+  } catch {
+    return []
   }
 }
 

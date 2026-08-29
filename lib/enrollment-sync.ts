@@ -16,6 +16,7 @@ const WORKBOOK_FIELDS = [
   "notes",
   "nextPaymentDate",
   "nextPaymentAmount",
+  "installmentsLeft",
   "classTime",
 ] as const
 
@@ -42,7 +43,12 @@ export function mergeEnrollmentStudents(
     }
     if (!updateExisting) continue
     let changed = false
+    const keepNames = sameNameTokens(
+      `${existing.firstName} ${existing.lastName}`,
+      `${row.firstName} ${row.lastName}`,
+    )
     for (const field of WORKBOOK_FIELDS) {
+      if (keepNames && (field === "firstName" || field === "lastName")) continue
       const value = row[field]
       if (value === undefined || value === "" || value === null) continue
       if (existing[field] !== value) {
@@ -63,8 +69,9 @@ export function parseEnrollmentCsv(text: string): Partial<Student>[] {
   const idx = (names: string[]) => names.map((n) => headers.indexOf(n)).find((i) => i >= 0) ?? -1
   const firstI = idx(["first name", "firstname", "first"])
   const lastI = idx(["last name", "lastname", "last"])
+  const nameI = idx(["name", "student name", "full name"])
   const emailI = idx(["email", "e-mail"])
-  const phoneI = idx(["phone", "mobile", "cell"])
+  const phoneI = idx(["phone", "mobile", "cell", "number"])
   const idI = idx(["id", "student id", "studentid"])
   const startI = idx(["start date", "start", "startdate"])
   const statusI = idx(["status", "enrollment", "enrollment status"])
@@ -77,14 +84,26 @@ export function parseEnrollmentCsv(text: string): Partial<Student>[] {
   const nickI = idx(["nickname", "preferred name", "preferred"])
   const ageI = idx(["age"])
   const classI = idx(["class time", "classtime", "class"])
+  const leftI = idx(["payments left", "paymnets left", "remaining payments", "installments left"])
   const rows: Partial<Student>[] = []
   for (const line of lines.slice(1)) {
     const cols = splitCsvLine(line)
-    const firstName = (firstI >= 0 ? cols[firstI] : "").trim()
-    const lastName = (lastI >= 0 ? cols[lastI] : "").trim()
+    let firstName = (firstI >= 0 ? cols[firstI] : "").trim()
+    let lastName = (lastI >= 0 ? cols[lastI] : "").trim()
+    if (!firstName && !lastName && nameI >= 0) {
+      const split = splitFullName(cols[nameI] || "")
+      firstName = split.firstName
+      lastName = split.lastName
+    }
     if (!firstName && !lastName) continue
+    const notes = (notesI >= 0 ? cols[notesI] : "").trim()
+    const dueFromNotes = parseDueFromNotes(notes)
     const amountRaw = amountI >= 0 ? cols[amountI] : ""
     const amount = Number(String(amountRaw || "").replace(/[^0-9.]/g, ""))
+    const leftRaw = leftI >= 0 ? String(cols[leftI] || "").trim() : ""
+    const left = /^\d+$/.test(leftRaw) ? Number(leftRaw) : null
+    const ageRaw = ageI >= 0 ? String(cols[ageI] || "").trim() : ""
+    const age = /^\d{1,2}$/.test(ageRaw) ? Number(ageRaw) : null
     rows.push({
       id: (idI >= 0 ? cols[idI] : "").trim(),
       firstName,
@@ -92,14 +111,16 @@ export function parseEnrollmentCsv(text: string): Partial<Student>[] {
       nickname: (nickI >= 0 ? cols[nickI] : "").trim(),
       email: (emailI >= 0 ? cols[emailI] : "").trim(),
       phone: (phoneI >= 0 ? cols[phoneI] : "").trim(),
-      age: ageI >= 0 && cols[ageI] ? Number(cols[ageI]) || null : null,
+      age,
       startDate: normalizeDate(startI >= 0 ? cols[startI] : ""),
       enrollmentStatus: mapStatus(statusI >= 0 ? cols[statusI] : ""),
       paymentPlan: mapPlan(planI >= 0 ? cols[planI] : ""),
-      notes: (notesI >= 0 ? cols[notesI] : "").trim(),
-      nextPaymentDate: normalizeDate(dueI >= 0 ? cols[dueI] : ""),
-      nextPaymentAmount: Number.isFinite(amount) && amount > 0 ? amount : null,
-      program: mapProgram(programI >= 0 ? cols[programI] : ""),
+      notes,
+      nextPaymentDate: normalizeDate(dueI >= 0 ? cols[dueI] : "") || dueFromNotes.date,
+      nextPaymentAmount:
+        Number.isFinite(amount) && amount > 0 ? amount : dueFromNotes.amount,
+      installmentsLeft: left,
+      program: mapProgram(programI >= 0 ? cols[programI] : "") || "academy",
       track: mapTrack(trackI >= 0 ? cols[trackI] : ""),
       classTime: (classI >= 0 ? cols[classI] : "").trim(),
     })
@@ -124,7 +145,12 @@ export function applyWorkbookRows(base: Student[], rows: Partial<Student>[]): {
       )
     if (existing) {
       let changed = false
+      const keepNames = sameNameTokens(
+        `${existing.firstName} ${existing.lastName}`,
+        `${row.firstName || ""} ${row.lastName || ""}`,
+      )
       for (const field of WORKBOOK_FIELDS) {
+        if (keepNames && (field === "firstName" || field === "lastName")) continue
         const value = row[field]
         if (value === undefined || value === "" || value === null) continue
         if (existing[field] !== value) {
@@ -174,7 +200,7 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     startDate: row.startDate || "",
     nextPaymentDate: row.nextPaymentDate || "",
     nextPaymentAmount: row.nextPaymentAmount ?? null,
-    installmentsLeft: null,
+    installmentsLeft: row.installmentsLeft ?? null,
     notes: row.notes || "",
     contactCategory: "",
     subscriptionStatus: "none",
@@ -232,15 +258,71 @@ function mapStatus(value: string): Student["enrollmentStatus"] | undefined {
   return undefined
 }
 
+function splitFullName(value: string) {
+  const cleaned = value.replace(/\s*\((male|female)\)\s*/gi, " ").replace(/\s+/g, " ").trim()
+  const parts = cleaned.split(" ").filter(Boolean)
+  if (!parts.length) return { firstName: "", lastName: "" }
+  if (parts.length === 1) return { firstName: titleCaseName(parts[0]), lastName: "" }
+  return {
+    firstName: titleCaseName(parts.slice(0, -1).join(" ")),
+    lastName: titleCaseName(parts[parts.length - 1]),
+  }
+}
+
+function titleCaseName(value: string) {
+  return value
+    .split(" ")
+    .map((part) => {
+      if (!part) return part
+      if (part === part.toUpperCase() || part === part.toLowerCase()) {
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+      }
+      return part
+    })
+    .join(" ")
+}
+
+function sameNameTokens(a: string, b: string) {
+  const left = new Set(foldName(a).split(" ").filter(Boolean))
+  const right = new Set(foldName(b).split(" ").filter(Boolean))
+  if (!left.size || left.size !== right.size) return false
+  for (const token of left) if (!right.has(token)) return false
+  return true
+}
+
+function parseDueFromNotes(notes: string) {
+  const matches = [
+    ...notes.matchAll(/\$?\s*(\d+(?:\.\d{1,2})?)\s+(?:due(?:\s+on)?)\s+(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)/gi),
+  ]
+  if (!matches.length) return { date: "", amount: null as number | null }
+  const parsed = matches
+    .map((m) => ({ amount: Number(m[1]), date: normalizeDate(m[2]) }))
+    .filter((row) => row.date && Number.isFinite(row.amount))
+    .sort((a, b) => a.date.localeCompare(b.date))
+  const upcoming = parsed.find((row) => row.date >= "2026-08-29") ?? parsed[parsed.length - 1]
+  return upcoming ? { date: upcoming.date, amount: upcoming.amount } : { date: "", amount: null }
+}
+
 function normalizeDate(value: string) {
   const raw = value.trim()
+  if (!raw) return ""
   if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10)
-  const m = raw.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/)
-  if (!m) return ""
-  const month = m[1].padStart(2, "0")
-  const day = m[2].padStart(2, "0")
-  const year = m[3].length === 2 ? `20${m[3]}` : m[3]
-  return `${year}-${month}-${day}`
+  const dashed = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/)
+  if (dashed) {
+    const month = dashed[1].padStart(2, "0")
+    const day = dashed[2].padStart(2, "0")
+    const year = dashed[3].length === 2 ? `20${dashed[3]}` : dashed[3]
+    return `${year}-${month}-${day}`
+  }
+  const mixed = raw.match(/^(\d{1,2})[\/-](\d{1,2})-(\d{4})$/)
+  if (mixed) {
+    return `${mixed[3]}-${mixed[1].padStart(2, "0")}-${mixed[2].padStart(2, "0")}`
+  }
+  const monthDay = raw.match(/^(\d{1,2})[\/-](\d{1,2})$/)
+  if (monthDay) {
+    return `2026-${monthDay[1].padStart(2, "0")}-${monthDay[2].padStart(2, "0")}`
+  }
+  return ""
 }
 
 function splitCsvLine(line: string) {

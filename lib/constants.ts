@@ -20,6 +20,8 @@ export const PUBLIC_SITE = "https://www.viyatalent.com"
 export const JOTFORM_ATTENDANCE_ID = "262377942791167"
 export const JOTFORM_ATTENDANCE_URL = "https://form.jotform.com/262377942791167"
 export const JOTFORM_ATTENDANCE_SUBMIT = "https://submit.jotform.com/submit/262377942791167"
+export const ENROLLMENT_SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
 
 export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
   current: "Current",

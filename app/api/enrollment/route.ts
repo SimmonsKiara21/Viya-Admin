@@ -2,8 +2,10 @@ import { NextResponse } from "next/server"
 import seed from "@/data/seed.json"
 import type { Student } from "@/lib/types"
 import { applyWorkbookRows, parseEnrollmentCsv } from "@/lib/enrollment-sync"
-import { readBundledEnrollmentRows, readEnrollmentLive, writeEnrollmentLive } from "@/lib/enrollment-live"
+import { readBundledEnrollmentRows, writeEnrollmentLive } from "@/lib/enrollment-live"
 import { parseEnrollmentFile } from "@/lib/enrollment-file"
+import { pullPublishedEnrollment } from "@/lib/enrollment-sheet"
+import { ENROLLMENT_SHEET_URL } from "@/lib/constants"
 
 export const runtime = "nodejs"
 
@@ -13,39 +15,41 @@ function seedStudents() {
 
 export async function GET() {
   const workbook = seedStudents()
-  const bundled = await readBundledEnrollmentRows()
-  const fromDoc = bundled.length ? applyWorkbookRows(workbook, bundled) : { students: workbook, added: 0, updated: 0 }
-  const live = await readEnrollmentLive()
-  const csvUrl = process.env.ENROLLMENT_CSV_URL || ""
-  let students = fromDoc.students
-  let source: "csv" | "upload" | "webhook" | "workbook" = bundled.length ? "csv" : "workbook"
-  let message = bundled.length
-    ? `Current Students enrollment doc loaded · ${fromDoc.updated} updated · ${fromDoc.added} new. Upload a newer export anytime the sheet changes.`
-    : "Using the 2026 enrollment workbook snapshot. Upload the latest export, or publish the Google Sheet as CSV and set ENROLLMENT_CSV_URL so edits land on the desk."
+  const sheetUrl = process.env.ENROLLMENT_CSV_URL || ENROLLMENT_SHEET_URL
+  let students = workbook
+  let source: "csv" | "upload" | "webhook" | "workbook" = "workbook"
+  let message =
+    "Using the 2026 enrollment workbook snapshot. The published Google Sheet will refresh this roster when it is reachable."
   let error = ""
-  let added = fromDoc.added
-  let updated = fromDoc.updated
+  let added = 0
+  let updated = 0
+  let tabs: { name: string; rows: number }[] = []
 
-  if (live?.students?.length && live.source !== "csv") {
-    students = live.students.map((s) => ({ ...s }))
-    source = live.source
-    message = `Enrollment doc last synced ${live.updatedAt.slice(0, 16).replace("T", " ")} (${live.source}).`
-  }
-
-  if (csvUrl) {
-    try {
-      const res = await fetch(csvUrl, { cache: "no-store" })
-      if (!res.ok) throw new Error(`Enrollment sheet ${res.status}`)
-      const merged = applyWorkbookRows(students, parseEnrollmentCsv(await res.text()))
-      students = merged.students
-      added = merged.added
-      updated = merged.updated
+  try {
+    const live = await pullPublishedEnrollment(workbook, sheetUrl)
+    students = live.students
+    added = live.added
+    updated = live.updated
+    tabs = live.tabs.map((tab) => ({ name: tab.name, rows: tab.rows }))
+    source = "csv"
+    const tabBits = live.tabs
+      .filter((tab) => tab.rows)
+      .map((tab) => `${tab.name} ${tab.rows}`)
+      .join(" · ")
+    message = `Live enrollment Google Sheet · ${updated} updated · ${added} new${tabBits ? ` · ${tabBits}` : ""}. Edits on the published doc show up here automatically.`
+    if (added || updated) await writeEnrollmentLive(students, "csv")
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Enrollment sheet error"
+    const bundled = await readBundledEnrollmentRows()
+    if (bundled.length) {
+      const fallback = applyWorkbookRows(workbook, bundled)
+      students = fallback.students
+      added = fallback.added
+      updated = fallback.updated
       source = "csv"
-      message = `Live enrollment sheet · ${merged.students.length} people${added ? ` · ${added} new` : ""}${updated ? ` · ${updated} updated` : ""}.`
-      if (merged.added || merged.updated) await writeEnrollmentLive(students, "csv")
-    } catch (err) {
-      error = err instanceof Error ? err.message : "Enrollment sheet error"
-      message = `Enrollment sheet failed (${error}). ${live?.students?.length ? "Showing the last synced enrollment doc." : "Using the workbook snapshot."}`
+      message = `Published sheet failed (${error}). Showing the last saved Current Students export.`
+    } else {
+      message = `Enrollment sheet failed (${error}). Using the workbook snapshot.`
     }
   }
 
@@ -55,7 +59,8 @@ export async function GET() {
     message,
     error: error || undefined,
     fetchedAt: new Date().toISOString(),
-    updatedAt: live?.updatedAt,
+    sheetUrl,
+    tabs,
     webhookPath: "/api/enrollment/webhook",
     students,
   })

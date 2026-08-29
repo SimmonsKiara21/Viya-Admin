@@ -48,7 +48,7 @@ export function EnrollmentSyncCard() {
           onChange={(e) => void onFile(e.target.files?.[0])}
         />
         <p className="text-xs text-muted-foreground">
-          CSV or Excel. A published Google Sheet with ENROLLMENT_CSV_URL also pulls automatically.
+          The published Google Sheet refreshes on its own. You can still drop a CSV or Excel if you need a manual override.
         </p>
       </div>
     </Panel>

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
+import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { useStore } from "@/lib/store"
 import { isContact } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
@@ -71,6 +72,8 @@ export default function StudentsPage() {
         }
       />
 
+      <EnrollmentSyncCard />
+
       <div className="mb-4 flex flex-col gap-3">
         <Input
           value={query}
@@ -133,7 +136,7 @@ function Chip({
       className={cn(
         "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
         active
-          ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)] text-[oklch(0.92_0.05_85)]"
+          ? "border-primary/50 bg-primary/16 text-primary"
           : "border-border text-muted-foreground hover:text-foreground",
       )}
     >

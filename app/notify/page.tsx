@@ -36,7 +36,7 @@ export default function NotifyPage() {
       <PageHeader
         eyebrow="Outreach"
         title="Text & Gmail"
-        description="Current students, academy overdue, subscriber overdue, and subscribers each have their own notification group. Add several people and save them as a custom group for a group message."
+        description="Texts go out through the academy Textla line when it is connected. Current students, academy overdue, subscriber overdue, and subscribers each have their own group."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

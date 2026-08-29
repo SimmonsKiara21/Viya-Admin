@@ -31,10 +31,10 @@ npm start
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
-- **Notify** has separate groups for **Current students**, **Academy overdue**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group.
+- **Notify** has separate groups for **Current students**, **Academy overdue**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
-- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right.
+- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is a warm paper theme with dark ink so status labels stay readable.
 
 ## Alerts
 
@@ -60,7 +60,7 @@ Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Fu
 
 ## Square, enrollment, Gmail, and texts
 
-Enrollment auto-updates from the bundled 2026 workbook snapshot. To follow a live Google Sheet, publish it as CSV and set `ENROLLMENT_CSV_URL`. New names on that sheet are added; email, phone, and start date refresh. Square / staff payment status is not overwritten by the sheet.
+Enrollment stays in sync with the workbook. Upload the latest CSV or Excel from **Home** or **Students** whenever the doc changes. For hands-off updates, publish the Google Sheet as CSV and set `ENROLLMENT_CSV_URL`, or POST the sheet to `/api/enrollment/webhook` from a Google Apps Script on edit. New names, contact fields, start dates, and enrollment status refresh; Square then overlays invoice due dates.
 
 Payments use Square invoices. Live API keys are optional — without them the desk still overlays due dates from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices and writes the correct due date, amount, and remaining installments onto enrollment students only.
 
@@ -69,7 +69,8 @@ The desk works without API keys. Copy `.env.example` to `.env.local` and add cre
 | Service | Variables |
 | --- | --- |
 | Square invoices | `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_ENVIRONMENT=production` |
-| Enrollment sheet | `ENROLLMENT_CSV_URL` (published Google Sheet CSV) |
+| Enrollment sheet | `ENROLLMENT_CSV_URL` (published Google Sheet CSV), optional `ENROLLMENT_WEBHOOK_SECRET` |
+| Textla texts | `TEXTLA_WEBHOOK_URL` (Zapier Catch Hook → Textla Send Message), `TEXTLA_FROM_NUMBER` |
 | Jotform attendance | `JOTFORM_API_KEY` (or a webhook to `/api/jotform/webhook`) |
 | Gmail | `GMAIL_USER`, `GMAIL_APP_PASSWORD` |
 | Textla or Twilio | `TEXTLA_API_KEY` or `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` + `TWILIO_FROM_NUMBER` |

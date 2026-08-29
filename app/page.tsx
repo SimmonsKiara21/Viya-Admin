@@ -9,6 +9,7 @@ import { StudentRow } from "@/components/student-row"
 import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
+import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { countsFor, useStore, useSync } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
@@ -76,6 +77,8 @@ export default function HomePage() {
         {jotform.connected ? "Jotform connected" : jotform.message || "Jotform syncing"}
         {jotform.fetchedAt ? ` · check-in ${formatTime(jotform.fetchedAt)}` : ""}
       </p>
+
+      <EnrollmentSyncCard />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,6 +36,14 @@ export function NotifyComposer({
   const [selected, setSelected] = useState<string[]>(presetStudents.map((s) => s.id))
   const [groupId, setGroupId] = useState(initialGroupId ?? "")
   const [newGroupName, setNewGroupName] = useState("")
+  const [textla, setTextla] = useState<{ connected?: boolean; message?: string }>({})
+
+  useEffect(() => {
+    fetch("/api/notify")
+      .then((r) => r.json())
+      .then((payload: { textla?: { connected?: boolean; message?: string } }) => setTextla(payload.textla || {}))
+      .catch(() => setTextla({}))
+  }, [])
 
   const picked = students.filter((s) => selected.includes(s.id))
   const pickerList = useMemo(() => {
@@ -96,6 +104,15 @@ export function NotifyComposer({
       return
     }
 
+    const payloadStudents = picked.map((student) => ({
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      phone: student.phone,
+      email: student.email,
+      body: fillTemplate(body, student),
+    }))
+
     const res = await fetch("/api/notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -103,6 +120,8 @@ export function NotifyComposer({
         channel,
         subject,
         count: picked.length,
+        message: body,
+        students: payloadStudents,
       }),
     })
     const info = (await res.json()) as { mode: string; message: string }
@@ -115,23 +134,25 @@ export function NotifyComposer({
       status: info.mode === "live" ? "sent" : "demo",
     })
 
-    if (picked.length === 1) {
-      const student = picked[0]
-      const text = fillTemplate(body, student)
-      const sub = fillTemplate(subject, student)
-      if (channel === "sms" && student.phone) {
-        window.open(smsHref(student.phone, text), "_blank")
-      } else if (channel === "email" && student.email) {
-        window.open(
-          `mailto:${student.email}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(text)}`,
-        )
-      }
-    } else if (channel === "email") {
-      const emails = picked.map((s) => s.email).filter(Boolean)
-      if (emails.length) {
-        window.open(
-          `mailto:?bcc=${encodeURIComponent(emails.join(","))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll("{{firstName}}", "everyone"))}`,
-        )
+    if (info.mode !== "live") {
+      if (picked.length === 1) {
+        const student = picked[0]
+        const text = payloadStudents[0]?.body || ""
+        const sub = fillTemplate(subject, student)
+        if (channel === "sms" && student.phone) {
+          window.open(smsHref(student.phone, text), "_blank")
+        } else if (channel === "email" && student.email) {
+          window.open(
+            `mailto:${student.email}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(text)}`,
+          )
+        }
+      } else if (channel === "email") {
+        const emails = picked.map((s) => s.email).filter(Boolean)
+        if (emails.length) {
+          window.open(
+            `mailto:?bcc=${encodeURIComponent(emails.join(","))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll("{{firstName}}", "everyone"))}`,
+          )
+        }
       }
     }
 
@@ -179,8 +200,12 @@ export function NotifyComposer({
           />
         </Field>
         <p className="text-xs text-muted-foreground">
-          Use {"{{firstName}}"}, {"{{amount}}"}, and {"{{due}}"} — they fill in per student. Group emails open
-          Gmail with everyone on BCC.
+          Use {"{{firstName}}"}, {"{{amount}}"}, and {"{{due}}"} — they fill in per student.
+          {channel === "sms"
+            ? textla.connected
+              ? ` ${textla.message || "Texts send from the academy Textla number."}`
+              : " Texts send from Textla once TEXTLA_WEBHOOK_URL and TEXTLA_FROM_NUMBER are set. Until then we log the message and open the phone text app."
+            : " Group emails open Gmail with everyone on BCC."}
         </p>
         <Button onClick={send} className="w-full sm:w-auto">
           Send {channel === "sms" ? "texts" : "emails"} to {picked.length || 0}

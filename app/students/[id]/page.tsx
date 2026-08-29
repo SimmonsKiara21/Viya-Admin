@@ -145,11 +145,11 @@ export default function StudentProfilePage() {
       </button>
 
       {isAcademyOverdue(student) ? (
-        <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-950/40">
-          <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-100">
+        <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-200">
+          <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-950">
             Academy overdue
           </p>
-          <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-50/90">
+          <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
             Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
             {formatDate(student.nextPaymentDate)}. Their name is highlighted in red on every list.
           </p>
@@ -170,11 +170,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isSubscriberOverdue(student) ? (
-        <div className="mb-4 rounded-2xl border border-orange-400/45 bg-orange-100/80 p-4 dark:bg-orange-950/45 sepia:bg-orange-950/35">
-          <p className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-100">
+        <div className="mb-4 rounded-2xl border border-orange-400/45 bg-orange-100/80 p-4 dark:bg-orange-950/45 sepia:bg-orange-200">
+          <p className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-950">
             Subscriber overdue
           </p>
-          <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-50/90">
+          <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-950">
             Subscription payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
             {formatDate(student.nextPaymentDate)}. Highlighted in orange so it is not mixed with
             academy training follow-up.
@@ -196,11 +196,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isCollectionsStudent(student) ? (
-        <div className="mb-4 rounded-2xl border border-amber-400/40 bg-amber-100/80 p-4 dark:bg-amber-950/40 sepia:bg-amber-950/35">
-          <p className="font-heading text-2xl text-amber-900 dark:text-amber-100 sepia:text-amber-100">
+        <div className="mb-4 rounded-2xl border border-amber-400/40 bg-amber-100/80 p-4 dark:bg-amber-950/40 sepia:bg-amber-200">
+          <p className="font-heading text-2xl text-amber-900 dark:text-amber-100 sepia:text-amber-950">
             Collections
           </p>
-          <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-50/90">
+          <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-950">
             This account is in collections
             {student.nextPaymentAmount
               ? ` · ${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}`
@@ -211,11 +211,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isPausedStudent(student) ? (
-        <div className="mb-4 rounded-2xl border border-violet-400/40 bg-violet-100/80 p-4 dark:bg-violet-950/40 sepia:bg-violet-950/35">
-          <p className="font-heading text-2xl text-violet-900 dark:text-violet-100 sepia:text-violet-100">
+        <div className="mb-4 rounded-2xl border border-violet-400/40 bg-violet-100/80 p-4 dark:bg-violet-950/40 sepia:bg-violet-200">
+          <p className="font-heading text-2xl text-violet-900 dark:text-violet-100 sepia:text-violet-950">
             Paused
           </p>
-          <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-50/90">
+          <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-950">
             Enrollment is on hold. Highlighted in violet so the desk does not check them in by accident.
           </p>
         </div>
@@ -232,11 +232,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isPendingStudent(student) ? (
-        <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-950/35">
-          <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-100">
+        <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-200">
+          <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-950">
             Pending start
           </p>
-          <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-50/90">
+          <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-950">
             Not on the floor yet
             {student.startDate ? ` · first class ${formatDate(student.startDate)}` : ""}. Highlighted
             in blue so DocuSign, deposit, and first class stay on the radar.
@@ -245,11 +245,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isFinishingSoon(student) ? (
-        <div className="mb-4 rounded-2xl border border-lime-400/45 bg-lime-100/80 p-4 dark:bg-lime-950/40 sepia:bg-lime-950/35">
-          <p className="font-heading text-2xl text-lime-900 dark:text-lime-100 sepia:text-lime-100">
+        <div className="mb-4 rounded-2xl border border-lime-400/45 bg-lime-100/80 p-4 dark:bg-lime-950/40 sepia:bg-lime-200">
+          <p className="font-heading text-2xl text-lime-900 dark:text-lime-100 sepia:text-lime-950">
             Fewer than 3 payments left
           </p>
-          <p className="mt-1 text-sm text-lime-800 dark:text-lime-50/90 sepia:text-lime-50/90">
+          <p className="mt-1 text-sm text-lime-800 dark:text-lime-50/90 sepia:text-lime-950">
             {remainingPayments(student)} payment
             {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan. Started{" "}
             {formatDate(student.startDate)} (May 2026 or earlier). Highlighted in lime — a good time to

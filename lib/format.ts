@@ -32,6 +32,14 @@ export function telHref(phone: string) {
   return digits.length === 10 ? `tel:+1${digits}` : `tel:+${digits}`
 }
 
+export function toE164(phone: string) {
+  const digits = phone.replace(/\D/g, "")
+  if (!digits) return ""
+  if (digits.length === 10) return `+1${digits}`
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`
+  return `+${digits}`
+}
+
 export function smsHref(phone: string, body?: string) {
   const digits = phone.replace(/\D/g, "")
   if (!digits) return ""

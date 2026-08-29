@@ -34,13 +34,13 @@ import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jo
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
-import { mergeEnrollmentStudents } from "./enrollment-sync"
+import { enrollmentFingerprint, mergeEnrollmentStudents } from "./enrollment-sync"
 
 const STORAGE_KEY = "viya-academy-store-v6"
 const LEGACY_KEYS = ["viya-academy-store-v5", "viya-academy-store-v4"]
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const JOTFORM_MS = 60_000
-const SQUARE_MS = 120_000
+const SQUARE_MS = 60_000
 
 function attendanceKey(rows: AttendanceRecord[]) {
   return rows
@@ -259,6 +259,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   })
   const dataRef = useRef(data)
   const squareFp = useRef("")
+  const enrollFp = useRef("")
   const persistTimer = useRef<number>(0)
 
   useEffect(() => {
@@ -392,7 +393,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const workbook = (enrollPayload.students ?? []).map((s) =>
           normalizeStudent(s as Student & Pick<Student, "id" | "firstName" | "lastName">),
         )
-        const liveSheet = enrollPayload.source === "csv"
+        const liveSheet = enrollPayload.source !== "workbook"
+        const nextEnrollFp = enrollmentFingerprint(workbook)
+        const enrollChanged = nextEnrollFp !== enrollFp.current
+        if (nextEnrollFp) enrollFp.current = nextEnrollFp
         const merged = mergeEnrollmentStudents(dataRef.current.students, workbook, {
           updateExisting: liveSheet,
         })
@@ -424,7 +428,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           skipped: preview.skipped.length,
         })
 
-        if (!merged.added && !merged.updated && !invoicesChanged) return
+        if (!merged.added && !merged.updated && !invoicesChanged && !enrollChanged) return
 
         setData((prev) => {
           const roster = mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students

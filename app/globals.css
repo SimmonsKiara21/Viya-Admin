@@ -49,8 +49,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Light — cream, ivory, and gold */
-:root,
+/* Light — cream, ivory, and gold. Not on :root so Sepia is not fighting cream. */
 .light {
   --background: oklch(0.96 0.018 85);
   --foreground: oklch(0.22 0.03 70);
@@ -86,7 +85,8 @@
   --sidebar-ring: oklch(0.62 0.1 78);
 }
 
-/* Dark — current luxury gold desk */
+/* Dark — current luxury gold desk. Also :root so first paint matches the default theme. */
+:root,
 .dark {
   --background: oklch(0.145 0.012 75);
   --foreground: oklch(0.96 0.015 85);
@@ -122,40 +122,41 @@
   --sidebar-ring: oklch(0.78 0.08 85);
 }
 
-/* Sepia — kraft cocoa paper (deeper + more chroma so it does not wash to yellow) */
+/* Sepia — grocery-bag kraft. Hex so cream :root tokens cannot wash it yellow. */
+html.sepia,
 .sepia {
-  --background: oklch(0.8 0.055 48);
-  --foreground: oklch(0.18 0.045 40);
-  --card: oklch(0.86 0.042 46);
-  --card-foreground: oklch(0.18 0.045 40);
-  --popover: oklch(0.86 0.042 46);
-  --popover-foreground: oklch(0.18 0.045 40);
-  --primary: oklch(0.3 0.065 40);
-  --primary-foreground: oklch(0.94 0.02 70);
-  --secondary: oklch(0.76 0.048 46);
-  --secondary-foreground: oklch(0.2 0.04 40);
-  --muted: oklch(0.78 0.04 46);
-  --muted-foreground: oklch(0.3 0.04 40);
-  --accent: oklch(0.74 0.05 44);
-  --accent-foreground: oklch(0.2 0.04 40);
-  --destructive: oklch(0.4 0.15 28);
-  --border: oklch(0.64 0.05 44);
-  --input: oklch(0.64 0.05 44);
-  --ring: oklch(0.3 0.065 40);
-  --chart-1: oklch(0.3 0.065 40);
-  --chart-2: oklch(0.34 0.055 140);
-  --chart-3: oklch(0.34 0.05 40);
-  --chart-4: oklch(0.38 0.1 28);
-  --chart-5: oklch(0.38 0.055 46);
+  --background: #b08968;
+  --foreground: #24160e;
+  --card: #c4a07a;
+  --card-foreground: #24160e;
+  --popover: #c4a07a;
+  --popover-foreground: #24160e;
+  --primary: #5c3a22;
+  --primary-foreground: #f3e6d4;
+  --secondary: #a67c52;
+  --secondary-foreground: #24160e;
+  --muted: #a67c52;
+  --muted-foreground: #3d2818;
+  --accent: #8f5e38;
+  --accent-foreground: #24160e;
+  --destructive: #8a2f24;
+  --border: #8b623d;
+  --input: #8b623d;
+  --ring: #5c3a22;
+  --chart-1: #5c3a22;
+  --chart-2: #4a5c38;
+  --chart-3: #6b4228;
+  --chart-4: #8a2f24;
+  --chart-5: #7a4e2e;
   --radius: 0.75rem;
-  --sidebar: oklch(0.74 0.058 46);
-  --sidebar-foreground: oklch(0.18 0.045 40);
-  --sidebar-primary: oklch(0.3 0.065 40);
-  --sidebar-primary-foreground: oklch(0.94 0.02 70);
-  --sidebar-accent: oklch(0.7 0.055 44);
-  --sidebar-accent-foreground: oklch(0.2 0.04 40);
-  --sidebar-border: oklch(0.6 0.05 44);
-  --sidebar-ring: oklch(0.3 0.065 40);
+  --sidebar: #8b623d;
+  --sidebar-foreground: #24160e;
+  --sidebar-primary: #5c3a22;
+  --sidebar-primary-foreground: #f3e6d4;
+  --sidebar-accent: #7a4e2e;
+  --sidebar-accent-foreground: #24160e;
+  --sidebar-border: #6b4228;
+  --sidebar-ring: #5c3a22;
 }
 
 @layer base {

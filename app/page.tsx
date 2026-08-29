@@ -11,7 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { countsFor, useStore, useSync } from "@/lib/store"
-import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
+import { formatDate, formatMoney, formatTime, formatShortDate, fullName, isSameDay, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import { isAcademyOverdue, isFinishingSoon, isPaidInFull, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
 import { openBalance } from "@/lib/square"
@@ -31,7 +31,7 @@ export default function HomePage() {
     const pending = students.filter(isPendingStudent)
     const finishing = students.filter(isFinishingSoon)
     const pif = students.filter(isPaidInFull)
-    const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
+    const todayCheckins = attendance.filter((a) => isSameDay(a.checkedInAt, today))
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
     const openTotal = openBalance(payments)
     return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, pif, todayCheckins, recent, openTotal }

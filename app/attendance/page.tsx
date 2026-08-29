@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ClassBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { countsFor, useStore } from "@/lib/store"
-import { formatShortDate, formatTime, fullName } from "@/lib/format"
+import { academyDateISO, formatShortDate, formatTime, fullName } from "@/lib/format"
 import { CLASS_LABELS } from "@/lib/constants"
 import type { ClassType } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -22,7 +22,7 @@ export default function AttendancePage() {
   const grouped = useMemo(() => {
     const map = new Map<string, typeof filtered>()
     for (const row of filtered) {
-      const day = row.checkedInAt.slice(0, 10)
+      const day = academyDateISO(row.checkedInAt)
       const list = map.get(day) ?? []
       list.push(row)
       map.set(day, list)
@@ -37,7 +37,7 @@ export default function AttendancePage() {
       <PageHeader
         eyebrow="Classes"
         title="Attendance"
-        description="Jotform is the attendance record. The August 26 class from the student tracker is loaded. New check-ins land here from the form or the Check-in tab."
+        description="Jotform is the attendance record. Times are Arizona (Phoenix, MST). The August 26 class from the student tracker is loaded. New check-ins land here from the form or the Check-in tab."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -64,7 +64,7 @@ export default function AttendancePage() {
             className={cn(
               "rounded-full border px-3 py-1 text-xs font-medium",
               type === t
-                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
+                ? "border-primary/50 bg-primary/16 text-primary"
                 : "border-border text-muted-foreground",
             )}
           >

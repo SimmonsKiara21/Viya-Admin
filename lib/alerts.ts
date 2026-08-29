@@ -1,7 +1,9 @@
+import { ACADEMY_TIMEZONE } from "./constants"
+import { academyDateISO } from "./format"
 import type { AttendanceRecord, Student } from "./types"
 
 export const PLAN_LENGTH = 6
-export const TIMEZONE = "America/Phoenix"
+export const TIMEZONE = ACADEMY_TIMEZONE
 
 export const ACADEMY_SESSIONS = [
   {
@@ -90,7 +92,7 @@ export function remainingPayments(student: Student) {
 
 export function attendanceMonthCount(records: AttendanceRecord[], studentId: string) {
   const months = new Set(
-    records.filter((r) => r.studentId === studentId).map((r) => r.checkedInAt.slice(0, 7)),
+    records.filter((r) => r.studentId === studentId).map((r) => academyDateISO(r.checkedInAt).slice(0, 7)),
   )
   return months.size
 }

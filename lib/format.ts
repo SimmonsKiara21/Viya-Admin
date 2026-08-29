@@ -1,4 +1,29 @@
+import { ACADEMY_TIMEZONE } from "./constants"
 import type { Student } from "./types"
+
+function academyParts(date: Date, opts: Intl.DateTimeFormatOptions) {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: ACADEMY_TIMEZONE, ...opts }).formatToParts(date)
+  const get = (type: string) => parts.find((part) => part.type === type)?.value || ""
+  return { get, parts }
+}
+
+/** Parse a stored stamp. Naive datetimes (Jotform) are Arizona wall time. */
+export function parseAcademyInstant(iso: string) {
+  const raw = (iso || "").trim()
+  if (!raw) return new Date(Number.NaN)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return new Date(`${raw}T12:00:00-07:00`)
+  if (/[zZ]|[+-]\d{2}:\d{2}$/.test(raw)) return new Date(raw)
+  const naive = raw.replace(" ", "T").slice(0, 19)
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(naive)) return new Date(`${naive}-07:00`)
+  return new Date(raw)
+}
+
+export function academyDateISO(iso: string | Date = new Date()) {
+  const date = iso instanceof Date ? iso : parseAcademyInstant(iso)
+  if (Number.isNaN(date.getTime())) return ""
+  const { get } = academyParts(date, { year: "numeric", month: "2-digit", day: "2-digit" })
+  return `${get("year")}-${get("month")}-${get("day")}`
+}
 
 export function fullName(student: Pick<Student, "firstName" | "lastName" | "nickname">) {
   const nick = student.nickname ? ` “${student.nickname}”` : ""
@@ -72,9 +97,10 @@ export function formatDate(iso: string | undefined) {
 
 export function formatDateTime(iso: string | undefined) {
   if (!iso) return "—"
-  const date = new Date(iso)
+  const date = parseAcademyInstant(iso)
   if (Number.isNaN(date.getTime())) return iso
   return new Intl.DateTimeFormat("en-US", {
+    timeZone: ACADEMY_TIMEZONE,
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -92,23 +118,21 @@ export function formatShortDate(iso: string | undefined) {
 
 export function formatTime(iso: string | undefined) {
   if (!iso) return "—"
-  const date = new Date(iso)
+  const date = parseAcademyInstant(iso)
   if (Number.isNaN(date.getTime())) return iso
   return new Intl.DateTimeFormat("en-US", {
+    timeZone: ACADEMY_TIMEZONE,
     hour: "numeric",
     minute: "2-digit",
   }).format(date)
 }
 
 export function todayISO(date = new Date()) {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, "0")
-  const d = String(date.getDate()).padStart(2, "0")
-  return `${y}-${m}-${d}`
+  return academyDateISO(date)
 }
 
 export function isSameDay(iso: string, day = todayISO()) {
-  return iso.slice(0, 10) === day
+  return academyDateISO(iso) === day
 }
 
 export function searchHaystack(student: Student) {

@@ -77,11 +77,14 @@ function classFromStatus(value: unknown): { classType: ClassType; statusLabel: s
 
 function parseTimestamp(value: unknown) {
   const raw = pickString(value).replace(" ", "T")
-  if (!raw) return new Date().toISOString().slice(0, 19)
-  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(raw)) return raw.slice(0, 19)
-  const date = new Date(raw)
-  if (Number.isNaN(date.getTime())) return new Date().toISOString().slice(0, 19)
-  return date.toISOString().slice(0, 19)
+  if (!raw) return new Date().toISOString()
+  const date = /[zZ]|[+-]\d{2}:\d{2}$/.test(raw)
+    ? new Date(raw)
+    : /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(raw)
+      ? new Date(`${raw.slice(0, 19)}-07:00`)
+      : new Date(raw)
+  if (Number.isNaN(date.getTime())) return new Date().toISOString()
+  return date.toISOString()
 }
 
 function lookup(source: Record<string, unknown>, ...keys: string[]) {

@@ -34,7 +34,8 @@ npm start
 - **Notify** has separate groups for **Current students**, **Academy overdue**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
-- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is earthy brown paper with the same dark ink contrast as Light, so every label stays readable.
+- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is cocoa-brown paper with dark umber ink, not yellow tan.
+- **Times** on Check-in and Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.
 
 ## Alerts
 

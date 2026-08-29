@@ -17,6 +17,8 @@ export const ACADEMY_PHONE = "(602) 342-2902"
 export const ACADEMY_EMAIL = "viyatalent@gmail.com"
 export const ACADEMY_ADDRESS = "2141 East Camelback Rd #222, Phoenix, AZ 85016"
 export const PUBLIC_SITE = "https://www.viyatalent.com"
+/** Arizona does not observe DST. Desk times and “today” use this zone. */
+export const ACADEMY_TIMEZONE = "America/Phoenix"
 export const JOTFORM_ATTENDANCE_ID = "262377942791167"
 export const JOTFORM_ATTENDANCE_URL = "https://form.jotform.com/262377942791167"
 export const JOTFORM_ATTENDANCE_SUBMIT = "https://submit.jotform.com/submit/262377942791167"

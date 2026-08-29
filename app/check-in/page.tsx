@@ -9,7 +9,7 @@ import { StudentPhoto } from "@/components/student-photo"
 import { ClassBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore, useSync } from "@/lib/store"
-import { formatPhone, formatShortDate, formatTime, fullName, matchesQuery, todayISO } from "@/lib/format"
+import { formatPhone, formatShortDate, formatTime, fullName, isSameDay, matchesQuery, todayISO } from "@/lib/format"
 import type { ClassType, Student } from "@/lib/types"
 import { CLASS_LABELS, JOTFORM_ATTENDANCE_URL } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -31,7 +31,7 @@ export default function CheckInPage() {
   const todays = useMemo(
     () =>
       attendance
-        .filter((a) => a.checkedInAt.slice(0, 10) === today)
+        .filter((a) => isSameDay(a.checkedInAt, today))
         .sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt)),
     [attendance, today],
   )
@@ -57,7 +57,7 @@ export default function CheckInPage() {
       <PageHeader
         eyebrow="Floor"
         title="Check-in"
-        description="This is the only place to manually check someone in. Type a name, or use the same student Jotform they already fill out. Either side updates Attendance."
+        description="This is the only place to manually check someone in. Times are Arizona (Phoenix, MST). Type a name, or use the same student Jotform they already fill out. Either side updates Attendance."
       />
 
       <Panel className="mb-6">

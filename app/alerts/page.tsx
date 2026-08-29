@@ -10,6 +10,7 @@ import {
   isAcademyOverdue,
   isCollectionsStudent,
   isFinishingSoon,
+  isPaidInFull,
   isPausedStudent,
   isPendingStudent,
   isSubscriberOverdue,
@@ -55,6 +56,10 @@ export default function AlertsPage() {
     () => students.filter(isFinishingSoon),
     [students],
   )
+  const pif = useMemo(
+    () => students.filter(isPaidInFull).sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    [students],
+  )
 
   function blast(channel: "sms" | "email", list: Student[], subject: string) {
     sendDeskNotice({
@@ -71,7 +76,7 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Academy overdue is red. Subscriber overdue is orange. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
+        description="Academy overdue is red. Subscriber overdue is orange. Paid in full from the enrollment workbook is emerald. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
       />
 
       <Panel className="mb-6 grid gap-3">
@@ -181,6 +186,15 @@ export default function AlertsPage() {
             `${remainingPayments(s)} payment${(remainingPayments(s) ?? 0) === 1 ? "" : "s"} left · started ${formatDate(s.startDate)}`
           }
         />
+        <AlertList
+          title="Paid in full"
+          count={pif.length}
+          empty="Nobody on the enrollment workbook is marked paid in full."
+          hint="Emerald marker. The enrollment sheet marks these on payment plan (PIF) even when status still says Current."
+          tone="pif"
+          students={pif}
+          line={(s) => (s.startDate ? `Paid in full · started ${formatDate(s.startDate)}` : "Paid in full")}
+        />
       </div>
     </div>
   )
@@ -222,6 +236,12 @@ const TONE = {
     title: "text-lime-800 dark:text-lime-100 sepia:text-lime-100",
     divide: "divide-lime-400/20",
     line: "text-lime-800 dark:text-lime-200/90 sepia:text-lime-100",
+  },
+  pif: {
+    panel: "ring-1 ring-emerald-400/30",
+    title: "text-emerald-900 dark:text-emerald-100 sepia:text-emerald-100",
+    divide: "divide-emerald-400/20",
+    line: "text-emerald-900 dark:text-emerald-200/90 sepia:text-emerald-100",
   },
 } as const
 

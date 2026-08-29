@@ -45,6 +45,7 @@ import {
   isContact,
   isCollectionsStudent,
   isFinishingSoon,
+  isPaidInFull,
   isPausedStudent,
   isPendingStudent,
   isSubscriberOverdue,
@@ -258,6 +259,17 @@ export default function StudentProfilePage() {
         </div>
       ) : null}
 
+      {isPaidInFull(student) ? (
+        <div className="mb-4 rounded-2xl border border-emerald-400/45 bg-emerald-100/80 p-4 dark:bg-emerald-950/40 sepia:bg-emerald-200">
+          <p className="font-heading text-2xl text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950">
+            Paid in full
+          </p>
+          <p className="mt-1 text-sm text-emerald-800 dark:text-emerald-50/90 sepia:text-emerald-950">
+            The enrollment workbook marks this account PIF. Highlighted in emerald on every list.
+          </p>
+        </div>
+      ) : null}
+
       <Panel className="mb-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
           <StudentPhoto
@@ -287,6 +299,8 @@ export default function StudentProfilePage() {
                         ? "text-sky-900 dark:text-sky-200"
                         : tone === "finishing"
                           ? "text-lime-800 dark:text-lime-100"
+                          : tone === "pif"
+                            ? "text-emerald-900 dark:text-emerald-100"
                           : ""
               }`}
             >

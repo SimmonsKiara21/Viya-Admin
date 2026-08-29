@@ -34,7 +34,7 @@ import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jo
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
-import { enrollmentFingerprint, mergeEnrollmentStudents } from "./enrollment-sync"
+import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
 import { applyDrivePhotos } from "./photos-overlay"
 
 const STORAGE_KEY = "viya-academy-store-v7"
@@ -157,7 +157,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     docusignSignedAt: s.docusignSignedAt || "",
     docusignNotes: s.docusignNotes || "",
   }
-  return applyDrivePhotos([student])[0]
+  return applyDrivePhotos([markPaidInFull(student)])[0]
 }
 
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {

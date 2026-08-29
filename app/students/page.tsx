@@ -45,7 +45,11 @@ export default function StudentsPage() {
     return students
       .filter((s) => !isContact(s))
       .filter((s) => matchesQuery(s, query))
-      .filter((s) => (status === "all" ? true : s.enrollmentStatus === status))
+      .filter((s) => {
+        if (status === "all") return true
+        if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
+        return s.enrollmentStatus === status
+      })
       .filter((s) => {
         if (program === "all") return true
         if (program === "modeling") return s.track === "modeling"

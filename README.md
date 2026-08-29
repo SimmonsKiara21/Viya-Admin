@@ -44,6 +44,7 @@ npm start
 - **Paused** — violet, so the desk does not check them in by accident.
 - **Pending** — blue, so DocuSign, deposit, and first class stay visible.
 - **Fewer than 3 payments** — lime, for current academy payment-plan students who **started May 2026 or earlier** and have **fewer than 3 installments left**. Remaining payments come from the Square invoice (balance vs plan) when we have one, otherwise from the 6-payment start date. May 2026 starters currently have 3 left until the next installment posts, so they highlight once they drop to 2.
+- **Paid in full** — emerald. The enrollment workbook usually leaves STATUS as Current and marks **PAYMENT PLAN = PIF**. The desk treats that as paid in full and highlights them. Pending or collections still keep those markers first.
 
 Staff see a banner on every page with those counts. Names are highlighted in the same colors on every roster list.
 

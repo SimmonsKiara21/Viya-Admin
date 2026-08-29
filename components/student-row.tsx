@@ -16,6 +16,7 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
   paused: "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18",
   pending: "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18",
   finishing: "bg-lime-500/16 ring-1 ring-lime-400/45 hover:bg-lime-500/22",
+  pif: "bg-emerald-500/14 ring-1 ring-emerald-400/40 hover:bg-emerald-500/20",
 }
 
 const NAME: Record<Exclude<HighlightTone, "none">, string> = {
@@ -25,6 +26,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   paused: "text-violet-900 dark:text-violet-200 sepia:text-violet-200",
   pending: "text-sky-900 dark:text-sky-200 sepia:text-sky-200",
   finishing: "text-lime-800 dark:text-lime-100 sepia:text-lime-100",
+  pif: "text-emerald-900 dark:text-emerald-100 sepia:text-emerald-100",
 }
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
@@ -58,6 +60,11 @@ const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: s
     className:
       "rounded-full bg-lime-500/25 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100 sepia:text-lime-100",
   },
+  pif: {
+    label: "Paid in full",
+    className:
+      "rounded-full bg-emerald-500/22 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-900 uppercase dark:text-emerald-100 sepia:text-emerald-100",
+  },
 }
 
 function detail(student: Student, tone: HighlightTone, left: number | null) {
@@ -69,6 +76,7 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
   if (tone === "pending") {
     return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · pending start"
   }
+  if (tone === "pif") return " · paid in full"
   return ` · ${student.email || "no email"}`
 }
 

@@ -57,6 +57,13 @@ export function isPendingStudent(student: Student) {
   return student.enrollmentStatus === "pending" && !isContact(student)
 }
 
+export function isPaidInFull(student: Student) {
+  if (isContact(student)) return false
+  if (isCollectionsStudent(student) || isPausedStudent(student) || isPendingStudent(student)) return false
+  if (isOverdueStudent(student)) return false
+  return student.paymentPlan === "pif" || student.enrollmentStatus === "pif"
+}
+
 export type HighlightTone =
   | "overdue"
   | "subscriberOverdue"
@@ -64,6 +71,7 @@ export type HighlightTone =
   | "paused"
   | "pending"
   | "finishing"
+  | "pif"
   | "none"
 
 export function monthsElapsed(startDate: string, asOf = new Date()) {
@@ -111,6 +119,7 @@ export function highlightTone(student: Student): HighlightTone {
   if (isPausedStudent(student)) return "paused"
   if (isPendingStudent(student)) return "pending"
   if (isFinishingSoon(student)) return "finishing"
+  if (isPaidInFull(student)) return "pif"
   return "none"
 }
 

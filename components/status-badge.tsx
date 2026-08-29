@@ -26,7 +26,7 @@ const enrollmentClass: Record<EnrollmentStatus, string> = {
   current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200 sepia:text-emerald-950",
   pending: "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-200 sepia:text-sky-950",
   declined: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:text-rose-950",
-  pif: "border-primary/40 bg-primary/14 text-primary",
+  pif: "border-emerald-500/40 bg-emerald-500/16 text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950",
   overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:text-rose-950",
   paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200 sepia:text-violet-950",
   collections: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200 sepia:text-amber-950",

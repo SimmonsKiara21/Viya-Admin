@@ -13,7 +13,7 @@ import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { countsFor, useStore, useSync } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, formatShortDate, fullName, todayISO } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
-import { isAcademyOverdue, isFinishingSoon, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
+import { isAcademyOverdue, isFinishingSoon, isPaidInFull, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
 import { openBalance } from "@/lib/square"
 import { cn } from "@/lib/utils"
 
@@ -30,10 +30,11 @@ export default function HomePage() {
     const attention = [...academyOverdue, ...subscriberOverdue]
     const pending = students.filter(isPendingStudent)
     const finishing = students.filter(isFinishingSoon)
+    const pif = students.filter(isPaidInFull)
     const todayCheckins = attendance.filter((a) => a.checkedInAt.slice(0, 10) === today)
     const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
     const openTotal = openBalance(payments)
-    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, todayCheckins, recent, openTotal }
+    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, pif, todayCheckins, recent, openTotal }
   }, [students, attendance, payments, today])
 
   return (
@@ -226,6 +227,22 @@ export default function HomePage() {
           ) : (
             <div className="divide-y divide-border">
               {stats.finishing.slice(0, 8).map((s) => (
+                <StudentRow key={s.id} student={s} />
+              ))}
+            </div>
+          )}
+        </Panel>
+        <Panel>
+          <h2 className="mb-3 font-heading text-2xl text-emerald-900 dark:text-emerald-100 sepia:text-emerald-100">
+            Paid in full
+          </h2>
+          {stats.pif.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nobody on the enrollment workbook is marked paid in full.
+            </p>
+          ) : (
+            <div className="divide-y divide-border">
+              {stats.pif.slice(0, 8).map((s) => (
                 <StudentRow key={s.id} student={s} />
               ))}
             </div>

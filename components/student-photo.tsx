@@ -49,6 +49,7 @@ export function StudentPhoto({
       src={student.photoUrl}
       alt={`${student.firstName} ${student.lastName}`}
       className="size-full object-cover"
+      referrerPolicy="no-referrer"
     />
   ) : (
     <span className="font-heading font-semibold tracking-wide">{letters}</span>

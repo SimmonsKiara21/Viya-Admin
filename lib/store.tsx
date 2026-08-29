@@ -35,6 +35,7 @@ import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, mergeEnrollmentStudents } from "./enrollment-sync"
+import { applyDrivePhotos, drivePhotoUrl } from "./photos-overlay"
 
 const STORAGE_KEY = "viya-academy-store-v6"
 const LEGACY_KEYS = ["viya-academy-store-v5", "viya-academy-store-v4"]
@@ -67,11 +68,10 @@ function savePhotos(students: Student[]) {
 
 function withPhotos(data: AppData): AppData {
   const photos = loadPhotos()
-  if (!Object.keys(photos).length) return data
-  return {
-    ...data,
-    students: data.students.map((s) => (photos[s.id] ? { ...s, photoUrl: photos[s.id] } : s)),
-  }
+  const students = applyDrivePhotos(
+    data.students.map((s) => (photos[s.id] ? { ...s, photoUrl: photos[s.id] } : s)),
+  )
+  return { ...data, students }
 }
 
 function persistable(data: AppData): AppData {
@@ -148,7 +148,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
     classTime: s.classTime || "",
-    photoUrl: s.photoUrl || "",
+    photoUrl: s.photoUrl || drivePhotoUrl(s.id),
     docusignStatus: s.docusignStatus || "none",
     docusignUrl: s.docusignUrl || "",
     docusignEnvelopeId: s.docusignEnvelopeId || "",
@@ -431,7 +431,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (!merged.added && !merged.updated && !invoicesChanged && !enrollChanged) return
 
         setData((prev) => {
-          const roster = mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students
+          const roster = applyDrivePhotos(
+            mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students,
+          )
           const applied = applySquareInvoices(roster, prev.payments, invoices)
           return { ...prev, students: applied.students, payments: applied.payments }
         })

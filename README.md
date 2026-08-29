@@ -13,7 +13,7 @@ npm run dev
 
 Open [http://localhost:43147](http://localhost:43147).
 
-Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save.
+Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name (`data/photos.json`); only people already on the enrollment list get a portrait.
 
 ```bash
 npm run build
@@ -24,7 +24,7 @@ npm start
 
 - **Add a student** as **Academy**, **Modeling**, **Acting**, or **Subscriber**, with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
-- **Upload a photo** on the profile (tap the portrait). Photos stay in this browser.
+- **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Check-in** is the only place to manually check someone in (Modeling, Acting, or Subscriber). Staff check-ins post to the Jotform attendance tracker. Student-phone check-ins on that form sync back to **Attendance**.
 - **Attendance** is the Jotform record. The August 26 class from the tracker is loaded; earlier nights were not kept because the desk did not have those check-ins yet.
 - **Payments** is a Square tracker for **enrollment students only**. The desk pulls invoices every couple of minutes. With `SQUARE_ACCESS_TOKEN` those are live Square invoices (due dates, paid, balance). Without a token it uses the last dashboard snapshot in `data/square.json`. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.

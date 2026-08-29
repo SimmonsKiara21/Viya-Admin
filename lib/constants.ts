@@ -23,6 +23,15 @@ export const JOTFORM_ATTENDANCE_SUBMIT = "https://submit.jotform.com/submit/2623
 export const ENROLLMENT_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
 
+/** Public Season 1–5 photoshoot folders. Portraits are matched onto the roster in data/photos.json. */
+export const PHOTOSHOOT_DRIVE_FOLDERS = [
+  { season: 1, id: "1rsimW-wMWBcEeHZwHV5tCtr8ZjfwDxYA" },
+  { season: 2, id: "1r6dNtYCeZoFkqWuFgdkc-TNrQb6dTi0w" },
+  { season: 3, id: "1eimCbkVL39vH8YfvGbQSgvF713i_BWG6" },
+  { season: 4, id: "16KbdnchzHkj6nR9y3UYXHK5jNo2Znj-9" },
+  { season: 5, id: "1e-k_fRE_RVmjdwZWOesL0TxiE3eeqVlQ" },
+] as const
+
 export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
   current: "Current",
   pending: "Pending",

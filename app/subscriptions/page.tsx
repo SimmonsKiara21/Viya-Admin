@@ -33,14 +33,14 @@ export default function SubscriptionsPage() {
 
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
         <Panel>
-          <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+          <p className="text-xs font-medium tracking-wide text-primary uppercase">
             Square item · {formatMoney(SUBSCRIPTION_ITEM.price)}
           </p>
           <h2 className="mt-1 font-heading text-2xl">{SUBSCRIPTION_ITEM.name}</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{SUBSCRIPTION_ITEM.description}</p>
         </Panel>
         <Panel>
-          <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+          <p className="text-xs font-medium tracking-wide text-primary uppercase">
             Square item · {formatMoney(SUBSCRIPTION_OG_ITEM.price)}
           </p>
           <h2 className="mt-1 font-heading text-2xl">{SUBSCRIPTION_OG_ITEM.name}</h2>

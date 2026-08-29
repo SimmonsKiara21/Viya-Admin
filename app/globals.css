@@ -122,40 +122,40 @@
   --sidebar-ring: oklch(0.78 0.08 85);
 }
 
-/* Sepia — warm paper, dark ink so labels stay readable */
+/* Sepia — earthy brown paper, same contrast idea as Light: dark ink on a pale page */
 .sepia {
-  --background: oklch(0.94 0.03 78);
-  --foreground: oklch(0.24 0.04 50);
-  --card: oklch(0.97 0.02 80);
-  --card-foreground: oklch(0.24 0.04 50);
-  --popover: oklch(0.97 0.02 80);
-  --popover-foreground: oklch(0.24 0.04 50);
-  --primary: oklch(0.42 0.1 62);
-  --primary-foreground: oklch(0.98 0.02 85);
-  --secondary: oklch(0.9 0.035 75);
-  --secondary-foreground: oklch(0.26 0.04 50);
-  --muted: oklch(0.91 0.03 75);
-  --muted-foreground: oklch(0.36 0.035 50);
-  --accent: oklch(0.89 0.04 72);
-  --accent-foreground: oklch(0.26 0.04 50);
-  --destructive: oklch(0.48 0.16 28);
-  --border: oklch(0.78 0.04 70);
-  --input: oklch(0.78 0.04 70);
-  --ring: oklch(0.42 0.1 62);
-  --chart-1: oklch(0.42 0.1 62);
-  --chart-2: oklch(0.4 0.08 140);
-  --chart-3: oklch(0.42 0.08 50);
-  --chart-4: oklch(0.45 0.14 30);
-  --chart-5: oklch(0.48 0.08 55);
+  --background: oklch(0.93 0.032 68);
+  --foreground: oklch(0.21 0.045 50);
+  --card: oklch(0.96 0.022 72);
+  --card-foreground: oklch(0.21 0.045 50);
+  --popover: oklch(0.96 0.022 72);
+  --popover-foreground: oklch(0.21 0.045 50);
+  --primary: oklch(0.34 0.07 50);
+  --primary-foreground: oklch(0.97 0.02 80);
+  --secondary: oklch(0.88 0.03 68);
+  --secondary-foreground: oklch(0.22 0.04 50);
+  --muted: oklch(0.89 0.028 68);
+  --muted-foreground: oklch(0.34 0.04 50);
+  --accent: oklch(0.86 0.035 65);
+  --accent-foreground: oklch(0.22 0.04 50);
+  --destructive: oklch(0.42 0.16 28);
+  --border: oklch(0.74 0.042 62);
+  --input: oklch(0.74 0.042 62);
+  --ring: oklch(0.34 0.07 50);
+  --chart-1: oklch(0.34 0.07 50);
+  --chart-2: oklch(0.36 0.07 140);
+  --chart-3: oklch(0.38 0.06 50);
+  --chart-4: oklch(0.4 0.12 30);
+  --chart-5: oklch(0.42 0.07 55);
   --radius: 0.75rem;
-  --sidebar: oklch(0.91 0.035 72);
-  --sidebar-foreground: oklch(0.24 0.04 50);
-  --sidebar-primary: oklch(0.42 0.1 62);
-  --sidebar-primary-foreground: oklch(0.98 0.02 85);
-  --sidebar-accent: oklch(0.87 0.04 72);
-  --sidebar-accent-foreground: oklch(0.26 0.04 50);
-  --sidebar-border: oklch(0.76 0.04 70);
-  --sidebar-ring: oklch(0.42 0.1 62);
+  --sidebar: oklch(0.9 0.032 65);
+  --sidebar-foreground: oklch(0.21 0.045 50);
+  --sidebar-primary: oklch(0.34 0.07 50);
+  --sidebar-primary-foreground: oklch(0.97 0.02 80);
+  --sidebar-accent: oklch(0.85 0.036 65);
+  --sidebar-accent-foreground: oklch(0.22 0.04 50);
+  --sidebar-border: oklch(0.72 0.04 62);
+  --sidebar-ring: oklch(0.34 0.07 50);
 }
 
 @layer base {
@@ -184,45 +184,33 @@
   }
 }
 
-/* Sepia ink — pale status colors and light gold labels become readable brown/ink */
+/* Sepia reads like Light: any leftover pale/dark-theme text becomes dark brown ink */
 .sepia :is(
-  .text-rose-50,
-  .text-rose-100,
-  .text-rose-200,
-  .text-orange-50,
-  .text-orange-100,
-  .text-orange-200,
-  .text-amber-100,
-  .text-amber-200,
-  .text-violet-100,
-  .text-violet-200,
-  .text-sky-50,
-  .text-sky-100,
-  .text-sky-200,
-  .text-lime-100,
-  .text-lime-200,
-  .text-emerald-100,
-  .text-emerald-200,
-  .text-teal-200,
-  .text-zinc-100,
-  .text-zinc-200,
-  .text-zinc-300
+  [class*="text-rose-100"],
+  [class*="text-rose-200"],
+  [class*="text-orange-100"],
+  [class*="text-orange-200"],
+  [class*="text-amber-100"],
+  [class*="text-amber-200"],
+  [class*="text-violet-100"],
+  [class*="text-violet-200"],
+  [class*="text-sky-100"],
+  [class*="text-sky-200"],
+  [class*="text-lime-100"],
+  [class*="text-lime-200"],
+  [class*="text-emerald-100"],
+  [class*="text-emerald-200"],
+  [class*="text-teal-200"],
+  [class*="text-zinc-100"],
+  [class*="text-zinc-200"],
+  [class*="text-zinc-300"]
 ) {
-  color: oklch(0.28 0.06 45);
-}
-.sepia :is(
-  .text-rose-50\/90,
-  .text-orange-50\/90,
-  .text-amber-50\/90,
-  .text-violet-50\/90,
-  .text-sky-50\/90,
-  .text-lime-50\/90
-) {
-  color: oklch(0.3 0.07 40);
+  color: oklch(0.26 0.055 45);
 }
 .sepia [class*="text-[oklch(0.7"],
 .sepia [class*="text-[oklch(0.78"],
 .sepia [class*="text-[oklch(0.8"],
+.sepia [class*="text-[oklch(0.86"],
 .sepia [class*="text-[oklch(0.9"] {
-  color: oklch(0.32 0.08 55);
+  color: oklch(0.28 0.06 50);
 }

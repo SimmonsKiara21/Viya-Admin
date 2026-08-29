@@ -798,7 +798,7 @@ function SquareSubscriptionCopy({
     billed.kind === "subscriber" ? billed : SUBSCRIPTION_ITEM
   return (
     <div className="rounded-xl border border-border bg-muted/30 p-4">
-      <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+      <p className="text-xs font-medium tracking-wide text-primary uppercase">
         Square · {item.name}
         {item.price != null ? ` · ${formatMoney(item.price)}` : ""}
       </p>

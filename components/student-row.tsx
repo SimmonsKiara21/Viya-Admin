@@ -20,50 +20,50 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
 }
 
 const NAME: Record<Exclude<HighlightTone, "none">, string> = {
-  overdue: "text-rose-800 dark:text-rose-200 sepia:text-rose-200",
-  subscriberOverdue: "text-orange-900 dark:text-orange-100 sepia:text-orange-100",
-  collections: "text-amber-900 dark:text-amber-200 sepia:text-amber-200",
-  paused: "text-violet-900 dark:text-violet-200 sepia:text-violet-200",
-  pending: "text-sky-900 dark:text-sky-200 sepia:text-sky-200",
-  finishing: "text-lime-800 dark:text-lime-100 sepia:text-lime-100",
-  pif: "text-emerald-900 dark:text-emerald-100 sepia:text-emerald-100",
+  overdue: "text-rose-800 dark:text-rose-200",
+  subscriberOverdue: "text-orange-900 dark:text-orange-100",
+  collections: "text-amber-900 dark:text-amber-200",
+  paused: "text-violet-900 dark:text-violet-200",
+  pending: "text-sky-900 dark:text-sky-200",
+  finishing: "text-lime-800 dark:text-lime-100",
+  pif: "text-emerald-900 dark:text-emerald-100",
 }
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
   overdue: {
     label: "Academy overdue",
     className:
-      "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100 sepia:text-rose-100",
+      "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100",
   },
   subscriberOverdue: {
     label: "Subscriber overdue",
     className:
-      "rounded-full bg-orange-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-orange-900 uppercase dark:text-orange-100 sepia:text-orange-100",
+      "rounded-full bg-orange-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-orange-900 uppercase dark:text-orange-100",
   },
   collections: {
     label: "Collections",
     className:
-      "rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-900 uppercase dark:text-amber-100 sepia:text-amber-100",
+      "rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-900 uppercase dark:text-amber-100",
   },
   paused: {
     label: "Paused",
     className:
-      "rounded-full bg-violet-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-violet-900 uppercase dark:text-violet-100 sepia:text-violet-100",
+      "rounded-full bg-violet-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-violet-900 uppercase dark:text-violet-100",
   },
   pending: {
     label: "Pending",
     className:
-      "rounded-full bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100 sepia:text-sky-100",
+      "rounded-full bg-sky-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100",
   },
   finishing: {
     label: "<3 payments",
     className:
-      "rounded-full bg-lime-500/25 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100 sepia:text-lime-100",
+      "rounded-full bg-lime-500/25 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100",
   },
   pif: {
     label: "Paid in full",
     className:
-      "rounded-full bg-emerald-500/22 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-900 uppercase dark:text-emerald-100 sepia:text-emerald-100",
+      "rounded-full bg-emerald-500/22 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-900 uppercase dark:text-emerald-100",
   },
 }
 

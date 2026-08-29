@@ -69,7 +69,7 @@ export default function PaymentsPage() {
       />
 
       <Panel className="mb-6">
-        <p className="text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+        <p className="text-xs font-medium tracking-wide text-primary uppercase">
           {square.connected ? "Square connected" : "Desk mode · Square dashboard"}
         </p>
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">

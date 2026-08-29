@@ -99,10 +99,10 @@ export function ProgramBadge({ program, track }: { program: Program; track?: Stu
 export function ClassBadge({ type }: { type: ClassType }) {
   const cls =
     type === "modeling"
-      ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.9_0.06_85)]"
+      ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
       : type === "acting"
-        ? "border-violet-500/30 bg-violet-500/12 text-violet-200"
-        : "border-teal-500/30 bg-teal-500/12 text-teal-200"
+        ? "border-violet-500/30 bg-violet-500/12 text-violet-800 dark:text-violet-200"
+        : "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       {CLASS_LABELS[type]}
@@ -122,10 +122,10 @@ export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
   if (status === "none") return null
   const cls =
     status === "active"
-      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-200"
+      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
       : status === "interested"
-        ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.9_0.06_85)]"
-        : "border-zinc-500/35 bg-zinc-500/15 text-zinc-300"
+        ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
+        : "border-zinc-500/35 bg-zinc-500/15 text-zinc-800 dark:text-zinc-300"
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       {SUB_LABELS[status]}
@@ -137,10 +137,10 @@ export function DocusignBadge({ status }: { status: DocusignStatus }) {
   if (status === "none") return null
   const cls =
     status === "signed"
-      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-200"
+      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
       : status === "declined" || status === "expired"
-        ? "border-rose-500/35 bg-rose-500/15 text-rose-200"
-        : "border-sky-500/30 bg-sky-500/12 text-sky-200"
+        ? "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200"
+        : "border-sky-500/30 bg-sky-500/12 text-sky-800 dark:text-sky-200"
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       DocuSign · {DOCUSIGN_LABELS[status]}

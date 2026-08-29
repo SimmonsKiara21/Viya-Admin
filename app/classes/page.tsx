@@ -80,7 +80,7 @@ export default function ClassesPage() {
               Next {session.weekdayLabel}
             </p>
             <h2 className="font-heading text-3xl">{session.display}</h2>
-            <p className="mt-2 font-medium text-[oklch(0.9_0.06_85)]">
+            <p className="mt-2 font-medium text-primary">
               {session.focus === "acting" ? "Acting" : "Modeling"}
             </p>
             <p className="text-sm text-muted-foreground">

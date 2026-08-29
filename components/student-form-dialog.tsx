@@ -161,7 +161,7 @@ export function StudentFormDialog({
           </Field>
         </div>
         <div className="rounded-2xl border border-[oklch(0.78_0.08_85/0.35)] bg-[oklch(0.78_0.08_85/0.08)] p-4">
-          <p className="mb-3 text-xs font-medium tracking-wide text-[oklch(0.78_0.08_85)] uppercase">
+          <p className="mb-3 text-xs font-medium tracking-wide text-primary uppercase">
             Their DocuSign
           </p>
           <DocusignFields value={form} onChange={patch} />

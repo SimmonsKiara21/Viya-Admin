@@ -202,7 +202,7 @@ export default function DocusignPage() {
                       href={student.docusignUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[oklch(0.86_0.07_85)] hover:underline"
+                      className="text-primary hover:underline"
                     >
                       Open DocuSign
                     </a>

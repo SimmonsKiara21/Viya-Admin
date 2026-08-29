@@ -113,7 +113,7 @@ export default function HomePage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl text-rose-800 dark:text-rose-100 sepia:text-rose-200">
+            <h2 className="font-heading text-2xl text-rose-800 dark:text-rose-100">
               Academy overdue
             </h2>
             <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
@@ -127,7 +127,7 @@ export default function HomePage() {
               {stats.academyOverdue.slice(0, 8).map((s) => (
                 <div key={s.id} className="py-1">
                   <StudentRow student={s} />
-                  <p className="px-2 pb-2 text-xs text-rose-800 dark:text-rose-200/90 sepia:text-rose-200">
+                  <p className="px-2 pb-2 text-xs text-rose-800 dark:text-rose-200/90">
                     Student alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
                     {formatMoney(s.nextPaymentAmount)}
                   </p>
@@ -139,7 +139,7 @@ export default function HomePage() {
 
         <Panel>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-100">
+            <h2 className="font-heading text-2xl text-orange-900 dark:text-orange-100">
               Subscriber overdue
             </h2>
             <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
@@ -153,7 +153,7 @@ export default function HomePage() {
               {stats.subscriberOverdue.slice(0, 8).map((s) => (
                 <div key={s.id} className="py-1">
                   <StudentRow student={s} />
-                  <p className="px-2 pb-2 text-xs text-orange-900 dark:text-orange-200/90 sepia:text-orange-100">
+                  <p className="px-2 pb-2 text-xs text-orange-900 dark:text-orange-200/90">
                     Subscriber alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
                     {formatMoney(s.nextPaymentAmount)}
                   </p>
@@ -198,7 +198,7 @@ export default function HomePage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-200">
+          <h2 className="mb-3 font-heading text-2xl text-sky-900 dark:text-sky-100">
             Pending starts
           </h2>
           {stats.pending.length === 0 ? (
@@ -217,7 +217,7 @@ export default function HomePage() {
           )}
         </Panel>
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-lime-800 dark:text-lime-100 sepia:text-lime-100">
+          <h2 className="mb-3 font-heading text-2xl text-lime-800 dark:text-lime-100">
             Fewer than 3 payments
           </h2>
           {stats.finishing.length === 0 ? (
@@ -233,7 +233,7 @@ export default function HomePage() {
           )}
         </Panel>
         <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-emerald-900 dark:text-emerald-100 sepia:text-emerald-100">
+          <h2 className="mb-3 font-heading text-2xl text-emerald-900 dark:text-emerald-100">
             Paid in full
           </h2>
           {stats.pif.length === 0 ? (
@@ -300,7 +300,7 @@ function StatCard({
       <Panel className="h-full transition-colors hover:border-[oklch(0.78_0.08_85/0.4)]">
         <div className="flex items-start justify-between">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
-          <Icon className="size-4 text-[oklch(0.78_0.08_85)]" />
+          <Icon className="size-4 text-primary" />
         </div>
         <p className="mt-3 font-heading text-4xl">{value}</p>
         {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}

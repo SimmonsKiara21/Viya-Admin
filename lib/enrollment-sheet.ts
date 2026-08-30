@@ -52,7 +52,13 @@ function kindOf(name: string) {
 }
 
 const DEFAULTS: Record<string, Partial<Student>> = {
-  subscriptions: { program: "subscriber", paymentPlan: "subscription", track: "none" },
+  subscriptions: {
+    program: "subscriber",
+    paymentPlan: "subscription",
+    track: "none",
+    enrollmentStatus: "current",
+    subscriptionStatus: "active",
+  },
   collections: { program: "academy" },
   pending: { program: "academy", enrollmentStatus: "pending" },
   current: { program: "academy" },
@@ -81,7 +87,9 @@ export async function pullPublishedEnrollment(
     const group = fetched.filter((tab) => tab.kind === kind)
     for (const tab of group) {
       if (!tab.rows.length) continue
-      const merged = applyWorkbookRows(students, tab.rows)
+      const merged = applyWorkbookRows(students, tab.rows, {
+        preserveAcademy: kind === "subscriptions",
+      })
       students = merged.students
       added += merged.added
       updated += merged.updated

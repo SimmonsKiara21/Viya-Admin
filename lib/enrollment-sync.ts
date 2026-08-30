@@ -13,12 +13,22 @@ const WORKBOOK_FIELDS = [
   "paymentPlan",
   "startDate",
   "enrollmentStatus",
+  "subscriptionStatus",
   "notes",
   "nextPaymentDate",
   "nextPaymentAmount",
   "installmentsLeft",
   "classTime",
 ] as const
+
+const ACADEMY_LOCKED_FIELDS = new Set<(typeof WORKBOOK_FIELDS)[number]>([
+  "program",
+  "track",
+  "paymentPlan",
+  "startDate",
+  "enrollmentStatus",
+  "installmentsLeft",
+])
 
 export function mergeEnrollmentStudents(
   current: Student[],
@@ -71,18 +81,28 @@ export function parseEnrollmentCsv(text: string, defaults: Partial<Student> = {}
   if (lines.length < 2) return []
   const headers = splitCsvLine(lines[0]).map((h) => h.trim().toLowerCase())
   const idx = (names: string[]) => names.map((n) => headers.indexOf(n)).find((i) => i >= 0) ?? -1
-  const firstI = idx(["first name", "firstname", "first"])
-  const lastI = idx(["last name", "lastname", "last"])
-  const nameI = idx(["name", "student name", "full name"])
-  const emailI = idx(["email", "e-mail", "e-mail 1 - value"])
-  const phoneI = idx(["phone", "phone number", "mobile", "cell", "number", "phone 1 - value"])
+  const firstI = idx(["first name", "firstname", "first", "customer first name"])
+  const lastI = idx(["last name", "lastname", "last", "customer last name"])
+  const nameI = idx(["name", "student name", "full name", "customer name"])
+  const emailI = idx(["email", "e-mail", "e-mail 1 - value", "customer email", "customer e-mail"])
+  const phoneI = idx(["phone", "phone number", "mobile", "cell", "number", "phone 1 - value", "customer phone"])
   const idI = idx(["id", "student id", "studentid"])
   const startI = idx(["start date", "start", "startdate"])
   const statusI = idx(["status", "enrollment", "enrollment status"])
   const planI = idx(["payment plan", "plan", "paymentplan"])
   const notesI = idx(["notes", "note", "comments"])
   const dueI = idx(["next payment", "next payment date", "due date", "due", "deposit date"])
-  const amountI = idx(["amount", "next payment amount", "balance", "due amount", "deposit"])
+  const amountI = idx([
+    "amount",
+    "next payment amount",
+    "balance",
+    "due amount",
+    "deposit",
+    "subtotal",
+    "line items total price",
+    "total price",
+    "price",
+  ])
   const programI = idx(["program", "type"])
   const trackI = idx(["track", "focus"])
   const nickI = idx(["nickname", "preferred name", "preferred"])
@@ -104,6 +124,7 @@ export function parseEnrollmentCsv(text: string, defaults: Partial<Student> = {}
     }
     if (!firstName && !lastName) continue
     const notes = (notesI >= 0 ? cols[notesI] : "").trim()
+    const statusRaw = statusI >= 0 ? cols[statusI] : ""
     const dueFromNotes = parseDueFromNotes(notes)
     const amountRaw = amountI >= 0 ? cols[amountI] : ""
     const amount = Number(String(amountRaw || "").replace(/[^0-9.]/g, ""))
@@ -121,7 +142,8 @@ export function parseEnrollmentCsv(text: string, defaults: Partial<Student> = {}
       phone: (phoneI >= 0 ? cols[phoneI] : "").trim(),
       age,
       startDate: normalizeDate(startI >= 0 ? cols[startI] : ""),
-      enrollmentStatus: mapStatus(statusI >= 0 ? cols[statusI] : "") || defaults.enrollmentStatus,
+      enrollmentStatus: mapStatus(statusRaw) || defaults.enrollmentStatus,
+      subscriptionStatus: mapSubscriptionStatus(statusRaw) || defaults.subscriptionStatus,
       paymentPlan: mapPlan(planI >= 0 ? cols[planI] : "") || defaults.paymentPlan,
       notes,
       nextPaymentDate: normalizeDate(dueI >= 0 ? cols[dueI] : "") || dueFromNotes.date,
@@ -144,7 +166,11 @@ export function markPaidInFull<T extends Partial<Student>>(row: T): T {
   return { ...row, enrollmentStatus: "pif" }
 }
 
-export function applyWorkbookRows(base: Student[], rows: Partial<Student>[]): {
+export function applyWorkbookRows(
+  base: Student[],
+  rows: Partial<Student>[],
+  options: { preserveAcademy?: boolean } = {},
+): {
   students: Student[]
   added: number
   updated: number
@@ -165,8 +191,18 @@ export function applyWorkbookRows(base: Student[], rows: Partial<Student>[]): {
         `${existing.firstName} ${existing.lastName}`,
         `${row.firstName || ""} ${row.lastName || ""}`,
       )
+      const lockAcademy = Boolean(options.preserveAcademy && existing.program === "academy")
       for (const field of WORKBOOK_FIELDS) {
         if (keepNames && (field === "firstName" || field === "lastName")) continue
+        if (lockAcademy && ACADEMY_LOCKED_FIELDS.has(field)) continue
+        if (field === "notes") {
+          const mergedNotes = mergeNotes(existing.notes, typeof row.notes === "string" ? row.notes : "")
+          if (mergedNotes && mergedNotes !== existing.notes) {
+            existing.notes = mergedNotes
+            changed = true
+          }
+          continue
+        }
         const value = row[field]
         if (value === undefined || value === "" || value === null) continue
         if (existing[field] !== value) {
@@ -190,7 +226,7 @@ export function enrollmentFingerprint(students: Student[]) {
   return students
     .map(
       (s) =>
-        `${s.id}:${s.firstName}:${s.lastName}:${s.email}:${s.phone}:${s.startDate}:${s.enrollmentStatus}:${s.paymentPlan}:${s.nextPaymentDate}:${s.nextPaymentAmount}`,
+        `${s.id}:${s.firstName}:${s.lastName}:${s.email}:${s.phone}:${s.startDate}:${s.enrollmentStatus}:${s.paymentPlan}:${s.subscriptionStatus}:${s.nextPaymentDate}:${s.nextPaymentAmount}`,
     )
     .sort()
     .join("|")
@@ -219,7 +255,8 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     installmentsLeft: row.installmentsLeft ?? null,
     notes: row.notes || "",
     contactCategory: "",
-    subscriptionStatus: "none",
+    subscriptionStatus:
+      row.subscriptionStatus || (row.program === "subscriber" ? "active" : "none"),
     photoshootStatus: row.photoshootStatus || "none",
     photoshootNotes: "",
     classTime: row.classTime || "",
@@ -270,8 +307,28 @@ function mapStatus(value: string): Student["enrollmentStatus"] | undefined {
   if (key.includes("pause")) return "paused"
   if (key.includes("collection")) return "collections"
   if (key.includes("pif") || key.includes("paid in full")) return "pif"
-  if (key.includes("current")) return "current"
+  if (key.includes("current") || key === "active") return "current"
   return undefined
+}
+
+function mapSubscriptionStatus(value: string): Student["subscriptionStatus"] | undefined {
+  const key = value.trim().toLowerCase()
+  if (!key) return undefined
+  if (/add when|when done|interest|wait/.test(key)) return "interested"
+  if (key.includes("pause")) return "paused"
+  if (key.includes("cancel")) return "cancelled"
+  if (key.includes("active")) return "active"
+  return undefined
+}
+
+function mergeNotes(existing: string, incoming: string) {
+  const current = (existing || "").trim()
+  const next = (incoming || "").trim()
+  if (!next) return current
+  if (!current) return next
+  if (current.includes(next)) return current
+  if (next.includes(current) && next.length > current.length) return next
+  return `${current} · ${next}`
 }
 
 function withWorkbookHeaders(text: string) {
@@ -328,13 +385,19 @@ function parseDueFromNotes(notes: string) {
   const matches = [
     ...notes.matchAll(/\$?\s*(\d+(?:\.\d{1,2})?)\s+(?:due(?:\s+on)?)\s+(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)/gi),
   ]
-  if (!matches.length) return { date: "", amount: null as number | null }
-  const parsed = matches
-    .map((m) => ({ amount: Number(m[1]), date: normalizeDate(m[2]) }))
-    .filter((row) => row.date && Number.isFinite(row.amount))
-    .sort((a, b) => a.date.localeCompare(b.date))
-  const upcoming = parsed.find((row) => row.date >= "2026-08-29") ?? parsed[parsed.length - 1]
-  return upcoming ? { date: upcoming.date, amount: upcoming.amount } : { date: "", amount: null }
+  if (matches.length) {
+    const parsed = matches
+      .map((m) => ({ amount: Number(m[1]), date: normalizeDate(m[2]) }))
+      .filter((row) => row.date && Number.isFinite(row.amount))
+      .sort((a, b) => a.date.localeCompare(b.date))
+    const upcoming = parsed.find((row) => row.date >= "2026-08-29") ?? parsed[parsed.length - 1]
+    if (upcoming) return { date: upcoming.date, amount: upcoming.amount }
+  }
+  const onlyDate = notes.trim().match(/^(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)$/)
+  if (onlyDate) return { date: normalizeDate(onlyDate[1]), amount: null as number | null }
+  const checkOn = notes.match(/check on\s+(\d{1,2}[\/-]\d{1,2}(?:[\/-]\d{2,4})?)/i)
+  if (checkOn) return { date: normalizeDate(checkOn[1]), amount: null }
+  return { date: "", amount: null as number | null }
 }
 
 function normalizeDate(value: string) {

@@ -5,8 +5,10 @@ import { StudentRow } from "@/components/student-row"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
 import { SUB_LABELS } from "@/lib/constants"
+import { hasContactLabel } from "@/lib/contacts-labels"
 import { catalogItemForStudent, SUBSCRIPTION_ITEM, SUBSCRIPTION_OG_ITEM } from "@/lib/square"
 import { formatMoney } from "@/lib/format"
+import { isContact } from "@/lib/alerts"
 import type { SubscriptionStatus } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -16,10 +18,12 @@ export default function SubscriptionsPage() {
 
   const list = useMemo(() => {
     const base = students.filter((s) => {
-      if (s.program === "prospect" || s.enrollmentStatus === "contact") return false
-      return filter === "all"
-        ? s.subscriptionStatus !== "none" || s.program === "subscriber"
-        : s.subscriptionStatus === filter
+      const labeled = hasContactLabel(s, /active subscriber/i)
+      if (filter === "all") {
+        return labeled || s.subscriptionStatus !== "none" || s.program === "subscriber"
+      }
+      if (filter === "active") return labeled || s.subscriptionStatus === "active"
+      return s.subscriptionStatus === filter
     })
     return base.sort((a, b) => a.lastName.localeCompare(b.lastName))
   }, [students, filter])
@@ -29,7 +33,7 @@ export default function SubscriptionsPage() {
       <PageHeader
         eyebrow="Members"
         title="Subscriptions"
-        description="The Square subscriber items, with the copy we sell them under. Roster is enrollment students only."
+        description="Everyone labeled Active Subscribers on the Google Contacts export, plus enrollment subscribers. Square item copy stays below."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
@@ -87,8 +91,9 @@ export default function SubscriptionsPage() {
                 <div key={student.id}>
                   <StudentRow student={student} />
                   <p className="px-4 pb-3 text-xs text-muted-foreground">
-                    Square: {item.name}
-                    {item.price != null ? ` · ${formatMoney(item.price)}` : ""}
+                    {isContact(student)
+                      ? "Google Contacts · Active Subscribers"
+                      : `Square: ${item.name}${item.price != null ? ` · ${formatMoney(item.price)}` : ""}`}
                   </p>
                 </div>
               )

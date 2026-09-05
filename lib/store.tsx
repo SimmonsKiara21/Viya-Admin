@@ -37,7 +37,7 @@ import {
   type JotformCheckIn,
 } from "./jotform"
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
-import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
+import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
 import { applyContactLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
@@ -171,7 +171,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
   if (!raw?.students?.length) return null
   const students = raw.students.map((s) => normalizeStudent(s))
   const photoshoots = mergePhotoshoots(raw.photoshoots)
-  const photoshootPlacements =
+  const basePlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
   return {
     students,
@@ -181,7 +181,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
     notifications: raw.notifications ?? [],
     groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
     photoshoots,
-    photoshootPlacements,
+    photoshootPlacements: mergeLabelPlacements(basePlacements, students),
   }
 }
 
@@ -461,7 +461,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ).students,
           )
           const applied = applySquareInvoices(roster, prev.payments, invoices)
-          return { ...prev, students: applied.students, payments: applied.payments }
+          return {
+            ...prev,
+            students: applied.students,
+            payments: applied.payments,
+            photoshoots: mergePhotoshoots(prev.photoshoots),
+            photoshootPlacements: mergeLabelPlacements(prev.photoshootPlacements, applied.students),
+          }
         })
       } catch {
         /* keep last overlay */

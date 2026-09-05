@@ -190,28 +190,29 @@ export function categoryFromLabels(labels: string[]): ContactCategory {
   return "new"
 }
 
-export function matchesContactFilter(student: Student, filter: ContactCategory | "all") {
-  if (filter === "all") return true
-  if (filter === "current-student") {
-    return hasLabel(student, /current student/i) || student.contactCategory === "current-student"
-  }
-  if (filter === "subscriber") {
-    return hasLabel(student, /active subscriber/i) || student.contactCategory === "subscriber"
-  }
-  if (filter === "photoshoot") {
-    return hasLabel(student, /may photoshoot|photoshoot/i) || student.contactCategory === "photoshoot"
-  }
-  if (filter === "model-source-la") {
-    return hasLabel(student, /la model source/i) || student.contactCategory === "model-source-la"
-  }
-  if (filter === "model-source-nov") {
-    return hasLabel(student, /model source november/i) || student.contactCategory === "model-source-nov"
-  }
-  return student.contactCategory === filter
+export function hasContactLabel(student: Student, pattern: RegExp) {
+  return (student.labels || []).some((label) => pattern.test(label))
 }
 
-function hasLabel(student: Student, pattern: RegExp) {
-  return (student.labels || []).some((label) => pattern.test(label))
+export function onGoogleList(student: Student, filter: ContactCategory | "all") {
+  if (filter === "all") return (student.labels || []).length > 0
+  if (filter === "current-student") return hasContactLabel(student, /current student/i)
+  if (filter === "subscriber") return hasContactLabel(student, /active subscriber/i)
+  if (filter === "photoshoot") return hasContactLabel(student, /may photoshoot/i)
+  if (filter === "model-source-la") return hasContactLabel(student, /la model source/i)
+  if (filter === "model-source-nov") return hasContactLabel(student, /model source november/i)
+  return false
+}
+
+export function matchesContactFilter(student: Student, filter: ContactCategory | "all") {
+  if (onGoogleList(student, filter)) return true
+  if (filter === "all") return true
+  if (filter === "current-student") return student.contactCategory === "current-student"
+  if (filter === "subscriber") return student.contactCategory === "subscriber"
+  if (filter === "photoshoot") return student.contactCategory === "photoshoot"
+  if (filter === "model-source-la") return student.contactCategory === "model-source-la"
+  if (filter === "model-source-nov") return student.contactCategory === "model-source-nov"
+  return student.contactCategory === filter
 }
 
 function isDeskContact(student: Student) {

@@ -77,6 +77,14 @@ export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
   "not-interested",
 ]
 
+export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = [
+  "current-student",
+  "subscriber",
+  "photoshoot",
+  "model-source-la",
+  "model-source-nov",
+]
+
 export const PROGRAM_LABELS: Record<Program, string> = {
   academy: "Academy",
   subscriber: "Subscriber",

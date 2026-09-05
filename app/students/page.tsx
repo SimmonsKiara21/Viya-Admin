@@ -10,6 +10,7 @@ import { StudentFormDialog } from "@/components/student-form-dialog"
 import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { useStore } from "@/lib/store"
 import { isContact } from "@/lib/alerts"
+import { hasContactLabel } from "@/lib/contacts-labels"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
 import type { EnrollmentStatus } from "@/lib/types"
@@ -43,11 +44,12 @@ export default function StudentsPage() {
 
   const filtered = useMemo(() => {
     return students
-      .filter((s) => !isContact(s))
+      .filter((s) => !isContact(s) || hasContactLabel(s, /current student/i))
       .filter((s) => matchesQuery(s, query))
       .filter((s) => {
         if (status === "all") return true
         if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
+        if (status === "current" && hasContactLabel(s, /current student/i)) return true
         return s.enrollmentStatus === status
       })
       .filter((s) => {
@@ -67,7 +69,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="Current enrollment only — academy, modeling, acting, and subscribers. Pending here is only people the enrollment workbook marks pending. People from the Google Contacts export who are not on this workbook live on Contacts, in their list."
+        description="Enrollment workbook plus everyone labeled Current Student on the Google Contacts export. Active Subscribers are also on Subscriptions. Photoshoot lists live on Photoshoots and Contacts."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />

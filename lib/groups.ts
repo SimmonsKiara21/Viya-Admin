@@ -1,5 +1,6 @@
 import type { NotifyGroup, PaymentRecord, Student, SystemGroupKey } from "./types"
 import { isAcademyOverdue, isSubscriberOverdue } from "./alerts"
+import { hasContactLabel } from "./contacts-labels"
 
 export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; description: string }[] = [
   {
@@ -45,7 +46,12 @@ export function studentIdsForSystemGroup(
     return [...new Set([...fromStatus, ...fromPay])]
   }
   return students
-    .filter((s) => s.program === "subscriber" || s.subscriptionStatus === "active")
+    .filter(
+      (s) =>
+        s.program === "subscriber" ||
+        s.subscriptionStatus === "active" ||
+        hasContactLabel(s, /active subscriber/i),
+    )
     .map((s) => s.id)
 }
 

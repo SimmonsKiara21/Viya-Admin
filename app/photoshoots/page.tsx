@@ -30,12 +30,12 @@ export default function PhotoshootsPage() {
     const map = {} as Record<(typeof PHOTO_COLUMNS)[number], typeof students>
     for (const status of PHOTO_COLUMNS) {
       const ids = photoshootPlacements
-        .filter((row) => row.shootId === currentId && row.status === status)
+        .filter((row) => row.shootId === shootId && row.status === status)
         .map((row) => row.studentId)
       map[status] = students.filter((s) => ids.includes(s.id))
     }
     return map
-  }, [students, photoshootPlacements, currentId])
+  }, [students, photoshootPlacements, shootId])
 
   const onThisShoot = new Set(
     photoshootPlacements.filter((row) => row.shootId === currentId).map((row) => row.studentId),
@@ -68,7 +68,7 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="Each month has its own Scheduled, Headshots, Full, Refresh, and Received lists. July and August sit with May and June under Prior shoots. September and October are open."
+        description="May photoshoot, LA Model Source 2026, and Model Source November are filled from the Google Contacts lists. September and October stay open for the new month. June–August sit under Prior shoots."
         actions={
           <Button
             variant="outline"

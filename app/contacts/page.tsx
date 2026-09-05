@@ -11,8 +11,8 @@ import { StudentRow } from "@/components/student-row"
 import { ContactBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
-import { CONTACT_FILTERS, CONTACT_LABELS } from "@/lib/constants"
-import { matchesContactFilter } from "@/lib/contacts-labels"
+import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS } from "@/lib/constants"
+import { matchesContactFilter, onGoogleList } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -24,15 +24,14 @@ export default function ContactsPage() {
   const [adding, setAdding] = useState(false)
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" as ContactCategory })
 
-  const contacts = useMemo(
-    () =>
-      students
-        .filter(isContact)
-        .filter((s) => matchesQuery(s, query))
-        .filter((s) => matchesContactFilter(s, category))
-        .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName)),
-    [students, query, category],
-  )
+  const contacts = useMemo(() => {
+    const googleList = category !== "all" && GOOGLE_CONTACT_FILTERS.includes(category)
+    return students
+      .filter((s) => (googleList ? onGoogleList(s, category) : isContact(s)))
+      .filter((s) => matchesQuery(s, query))
+      .filter((s) => (googleList ? true : matchesContactFilter(s, category)))
+      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+  }, [students, query, category])
 
   function save() {
     if (!form.firstName.trim() || !form.lastName.trim()) {
@@ -82,7 +81,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Everyone from the Google Contacts export who is not on the enrollment workbook, filed by Current Student, Active Subscribers, May photoshoot, and the Model Source lists. Enrollment students stay on Students."
+        description="Every person on the Google Contacts lists, in that list — Current Student, Active Subscribers, May photoshoot, LA Model Source 2026, and Model Source November. Enrollment people stay on Students and Subscriptions too."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -144,7 +143,9 @@ export default function ContactsPage() {
             const count =
               item === "all"
                 ? students.filter(isContact).length
-                : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length
+                : GOOGLE_CONTACT_FILTERS.includes(item)
+                  ? students.filter((s) => onGoogleList(s, item)).length
+                  : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length
             return (
             <button
               key={item}
@@ -168,7 +169,7 @@ export default function ContactsPage() {
       {contacts.length === 0 ? (
         <EmptyState
           title="No contacts in this filter"
-          description="Switch list or add a contact. People on the enrollment workbook stay on Students."
+          description="Switch list or add a contact. Each Google list includes everyone with that label."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
@@ -182,35 +183,41 @@ export default function ContactsPage() {
                   <StudentRow student={student} />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
-                  <ContactBadge category={student.contactCategory} />
-                  <NativeSelect
-                    className="h-8 w-[13rem] text-xs"
-                    value={student.contactCategory || "new"}
-                    onChange={(e) =>
-                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
-                    }
-                  >
-                    {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
-                      <option key={key} value={key}>
-                        {CONTACT_LABELS[key]}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                  <Button
-                    size="xs"
-                    variant="outline"
-                    onClick={() => {
-                      updateStudent(student.id, {
-                        program: "academy",
-                        track: "academy",
-                        enrollmentStatus: "pending",
-                        paymentPlan: "pp",
-                      })
-                      toast.success(`${student.firstName} moved to Students as pending.`)
-                    }}
-                  >
-                    Move to pending
-                  </Button>
+                  {isContact(student) ? (
+                    <>
+                      <ContactBadge category={student.contactCategory} />
+                      <NativeSelect
+                        className="h-8 w-[13rem] text-xs"
+                        value={student.contactCategory || "new"}
+                        onChange={(e) =>
+                          updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
+                        }
+                      >
+                        {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
+                          <option key={key} value={key}>
+                            {CONTACT_LABELS[key]}
+                          </option>
+                        ))}
+                      </NativeSelect>
+                      <Button
+                        size="xs"
+                        variant="outline"
+                        onClick={() => {
+                          updateStudent(student.id, {
+                            program: "academy",
+                            track: "academy",
+                            enrollmentStatus: "pending",
+                            paymentPlan: "pp",
+                          })
+                          toast.success(`${student.firstName} moved to Students as pending.`)
+                        }}
+                      >
+                        Move to pending
+                      </Button>
+                    </>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">On the enrollment roster</span>
+                  )}
                 </div>
               </div>
             ))}

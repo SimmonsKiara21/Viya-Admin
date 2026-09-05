@@ -67,7 +67,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="Current enrollment only — academy, modeling, acting, and subscribers. Pending here is only people the enrollment workbook marks pending. Google Contacts labels update people already on this roster; anyone only on that export stays off Students."
+        description="Current enrollment only — academy, modeling, acting, and subscribers. Pending here is only people the enrollment workbook marks pending. People from the Google Contacts export who are not on this workbook live on Contacts, in their list."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />

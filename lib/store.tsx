@@ -423,7 +423,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           source: enrollPayload.source || "workbook",
           message: enrollPayload.message || "",
           connected: Boolean(enrollPayload.connected),
-          added: merged.added,
+          added: merged.added + labeled.added,
           updated: merged.updated + labeled.updated,
         })
 
@@ -442,7 +442,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           skipped: preview.skipped.length,
         })
 
-        if (!merged.added && !merged.updated && !labeled.updated && !invoicesChanged && !enrollChanged && !labelsChanged)
+        if (
+          !merged.added &&
+          !merged.updated &&
+          !labeled.updated &&
+          !labeled.added &&
+          !invoicesChanged &&
+          !enrollChanged &&
+          !labelsChanged
+        )
           return
 
         setData((prev) => {

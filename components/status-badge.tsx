@@ -67,8 +67,16 @@ export function EnrollmentBadge({
 
 export function ContactBadge({ category }: { category: ContactCategory | "" }) {
   if (!category) return null
+  const cls =
+    category === "current-student"
+      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
+      : category === "subscriber"
+        ? "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
+        : category === "photoshoot" || category === "model-source-la" || category === "model-source-nov"
+          ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
+          : "border-primary/35 bg-primary/10 text-primary"
   return (
-    <Badge variant="outline" className="border-primary/35 bg-primary/10 font-medium text-primary">
+    <Badge variant="outline" className={cn("font-medium", cls)}>
       {CONTACT_LABELS[category]}
     </Badge>
   )

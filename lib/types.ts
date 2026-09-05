@@ -10,7 +10,16 @@ export type EnrollmentStatus =
 
 export type Program = "academy" | "subscriber" | "prospect"
 export type StudentTrack = "academy" | "modeling" | "acting" | "none"
-export type ContactCategory = "new" | "photoshoot" | "inquiry" | "follow-up" | "not-interested"
+export type ContactCategory =
+  | "new"
+  | "current-student"
+  | "subscriber"
+  | "photoshoot"
+  | "model-source-la"
+  | "model-source-nov"
+  | "inquiry"
+  | "follow-up"
+  | "not-interested"
 export type PaymentPlan = "pp" | "pif" | "subscription" | "none"
 export type ClassType = "modeling" | "acting" | "subscriber"
 export type PhotoshootStatus =

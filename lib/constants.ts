@@ -53,12 +53,29 @@ export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
 }
 
 export const CONTACT_LABELS: Record<ContactCategory, string> = {
+  "current-student": "Current Student",
+  subscriber: "Active Subscribers",
+  photoshoot: "May photoshoot",
+  "model-source-la": "LA Model Source 2026",
+  "model-source-nov": "Model Source November",
   new: "New",
-  photoshoot: "Photoshoot",
   inquiry: "Inquiry",
   "follow-up": "Follow-up",
   "not-interested": "Not interested",
 }
+
+export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
+  "all",
+  "current-student",
+  "subscriber",
+  "photoshoot",
+  "model-source-la",
+  "model-source-nov",
+  "new",
+  "inquiry",
+  "follow-up",
+  "not-interested",
+]
 
 export const PROGRAM_LABELS: Record<Program, string> = {
   academy: "Academy",

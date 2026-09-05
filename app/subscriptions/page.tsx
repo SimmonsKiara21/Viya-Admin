@@ -15,11 +15,12 @@ export default function SubscriptionsPage() {
   const [filter, setFilter] = useState<SubscriptionStatus | "all">("all")
 
   const list = useMemo(() => {
-    const base = students.filter((s) =>
-      filter === "all"
+    const base = students.filter((s) => {
+      if (s.program === "prospect" || s.enrollmentStatus === "contact") return false
+      return filter === "all"
         ? s.subscriptionStatus !== "none" || s.program === "subscriber"
-        : s.subscriptionStatus === filter,
-    )
+        : s.subscriptionStatus === filter
+    })
     return base.sort((a, b) => a.lastName.localeCompare(b.lastName))
   }, [students, filter])
 

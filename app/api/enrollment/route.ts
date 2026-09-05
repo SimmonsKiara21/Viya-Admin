@@ -67,6 +67,9 @@ export async function GET() {
     if (labeled.matched) {
       message += ` · ${labeled.matched} labeled from the current-students list.`
     }
+    if (labeled.added) {
+      message += ` · ${labeled.added} added to Contacts.`
+    }
   }
   if (added || updated) await writeEnrollmentLive(students, "csv")
 

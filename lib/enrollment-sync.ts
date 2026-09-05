@@ -15,6 +15,7 @@ const WORKBOOK_FIELDS = [
   "enrollmentStatus",
   "subscriptionStatus",
   "labels",
+  "contactCategory",
   "notes",
   "nextPaymentDate",
   "nextPaymentAmount",

@@ -1,4 +1,4 @@
-import type { Student } from "./types"
+import type { ContactCategory, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
 import { CONTACTS_LABELS_URL } from "./constants"
@@ -180,9 +180,51 @@ function matchRow(row: ContactLabelRow, students: Student[]) {
   })
 }
 
+export function categoryFromLabels(labels: string[]): ContactCategory {
+  const text = labels.join(" | ").toLowerCase()
+  if (/model source november/.test(text)) return "model-source-nov"
+  if (/la model source/.test(text)) return "model-source-la"
+  if (/photoshoot/.test(text)) return "photoshoot"
+  if (/current student/.test(text)) return "current-student"
+  if (/active subscriber/.test(text)) return "subscriber"
+  return "new"
+}
+
+export function matchesContactFilter(student: Student, filter: ContactCategory | "all") {
+  if (filter === "all") return true
+  if (filter === "current-student") {
+    return hasLabel(student, /current student/i) || student.contactCategory === "current-student"
+  }
+  if (filter === "subscriber") {
+    return hasLabel(student, /active subscriber/i) || student.contactCategory === "subscriber"
+  }
+  if (filter === "photoshoot") {
+    return hasLabel(student, /may photoshoot|photoshoot/i) || student.contactCategory === "photoshoot"
+  }
+  if (filter === "model-source-la") {
+    return hasLabel(student, /la model source/i) || student.contactCategory === "model-source-la"
+  }
+  if (filter === "model-source-nov") {
+    return hasLabel(student, /model source november/i) || student.contactCategory === "model-source-nov"
+  }
+  return student.contactCategory === filter
+}
+
+function hasLabel(student: Student, pattern: RegExp) {
+  return (student.labels || []).some((label) => pattern.test(label))
+}
+
+function isDeskContact(student: Student) {
+  return student.program === "prospect" || student.enrollmentStatus === "contact"
+}
+
 function applyLabelEffects(student: Student, labels: string[]) {
   const text = labels.join(" | ").toLowerCase()
-  if (text.includes("active subscriber") && student.subscriptionStatus !== "cancelled") {
+  if (
+    !isDeskContact(student) &&
+    text.includes("active subscriber") &&
+    student.subscriptionStatus !== "cancelled"
+  ) {
     student.subscriptionStatus = "active"
   }
   if (/photoshoot|model source/.test(text)) {
@@ -195,6 +237,70 @@ function applyLabelEffects(student: Student, labels: string[]) {
       student.photoshootNotes = student.photoshootNotes ? `${student.photoshootNotes} · ${note}` : note
     }
   }
+  if (isDeskContact(student)) {
+    const nextCategory = categoryFromLabels(labels)
+    const locked = student.contactCategory === "inquiry" || student.contactCategory === "follow-up" || student.contactCategory === "not-interested"
+    if (!locked) student.contactCategory = nextCategory
+  }
+}
+
+function contactId(row: ContactLabelRow, used: Set<string>) {
+  const bits = nameBits(row)
+  const slug =
+    foldName(`${bits.firstName || bits.lastName} ${bits.firstName ? bits.lastName : ""}`).replace(/ /g, "") ||
+    "contact"
+  const base = `GC${slug.slice(0, 16)}`.toUpperCase()
+  if (!used.has(base)) return base
+  const extra = phoneDigits(row.phone).slice(-4) || row.email.replace(/[^a-z0-9]/gi, "").slice(0, 6)
+  const next = `GC${slug.slice(0, 10)}${extra}`.toUpperCase()
+  if (!used.has(next)) return next
+  let i = 2
+  while (used.has(`${base}${i}`)) i += 1
+  return `${base}${i}`
+}
+
+function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
+  const bits = nameBits(row)
+  const firstName = bits.firstName || bits.lastName
+  const lastName = bits.firstName ? bits.lastName : ""
+  const labels = [...new Set(row.labels)].sort((a, b) =>
+    displayContactLabel(a).localeCompare(displayContactLabel(b)),
+  )
+  return {
+    id: contactId(row, used),
+    firstName,
+    lastName,
+    nickname: bits.nickname,
+    email: row.email,
+    phone: row.phone,
+    age: null,
+    program: "prospect",
+    track: "none",
+    paymentPlan: "none",
+    enrollmentStatus: "contact",
+    startDate: "",
+    nextPaymentDate: "",
+    nextPaymentAmount: null,
+    installmentsLeft: null,
+    notes: "",
+    contactCategory: categoryFromLabels(labels),
+    subscriptionStatus: "none",
+    photoshootStatus: /photoshoot|model source/i.test(labels.join(" ")) ? "received" : "none",
+    photoshootNotes: labels
+      .filter((label) => /photoshoot|model source/i.test(label))
+      .map(displayContactLabel)
+      .join(" · "),
+    labels,
+    classTime: "",
+    photoUrl: "",
+    docusignStatus: "none",
+    docusignUrl: "",
+    docusignEnvelopeId: "",
+    docusignDocument: "",
+    docusignSentAt: "",
+    docusignSignedAt: "",
+    docusignNotes: "",
+  }
 }
 
 export function contactLabelsFingerprint(rows: ContactLabelRow[] | undefined) {
@@ -206,11 +312,18 @@ export function contactLabelsFingerprint(rows: ContactLabelRow[] | undefined) {
 
 export function applyContactLabels(students: Student[], rows: ContactLabelRow[]) {
   const next = students.map((s) => ({ ...s, labels: [...(s.labels || [])] }))
+  const used = new Set(next.map((s) => s.id))
   const incoming = new Map<string, string[]>()
   let matched = 0
+  let added = 0
   for (const row of rows) {
-    const existing = matchRow(row, next)
-    if (!existing) continue
+    let existing = matchRow(row, next)
+    if (!existing) {
+      existing = contactFromRow(row, used)
+      used.add(existing.id)
+      next.push(existing)
+      added += 1
+    }
     matched += 1
     incoming.set(existing.id, [...new Set([...(incoming.get(existing.id) || []), ...row.labels])])
   }
@@ -224,17 +337,19 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
     const before = (student.labels || []).join("|")
     const beforeSub = student.subscriptionStatus
     const beforePhoto = student.photoshootStatus + student.photoshootNotes
+    const beforeCategory = student.contactCategory
     student.labels = merged
     applyLabelEffects(student, merged)
     if (
       merged.join("|") !== before ||
       student.subscriptionStatus !== beforeSub ||
-      student.photoshootStatus + student.photoshootNotes !== beforePhoto
+      student.photoshootStatus + student.photoshootNotes !== beforePhoto ||
+      student.contactCategory !== beforeCategory
     ) {
       updated += 1
     }
   }
-  return { students: next, matched, updated, unmatched: rows.length - matched }
+  return { students: next, matched, updated, added, unmatched: Math.max(0, rows.length - matched) }
 }
 
 export async function pullContactLabels(

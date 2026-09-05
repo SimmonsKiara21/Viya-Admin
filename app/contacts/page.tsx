@@ -11,24 +11,16 @@ import { StudentRow } from "@/components/student-row"
 import { ContactBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
-import { CONTACT_LABELS } from "@/lib/constants"
+import { CONTACT_FILTERS, CONTACT_LABELS } from "@/lib/constants"
+import { matchesContactFilter } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-const CATEGORIES: Array<ContactCategory | "all"> = [
-  "all",
-  "new",
-  "photoshoot",
-  "inquiry",
-  "follow-up",
-  "not-interested",
-]
-
 export default function ContactsPage() {
   const { students, addStudent, updateStudent } = useStore()
   const [query, setQuery] = useState("")
-  const [category, setCategory] = useState<ContactCategory | "all">("all")
+  const [category, setCategory] = useState<(typeof CONTACT_FILTERS)[number]>("all")
   const [adding, setAdding] = useState(false)
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" as ContactCategory })
 
@@ -37,7 +29,7 @@ export default function ContactsPage() {
       students
         .filter(isContact)
         .filter((s) => matchesQuery(s, query))
-        .filter((s) => (category === "all" ? true : s.contactCategory === category))
+        .filter((s) => matchesContactFilter(s, category))
         .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName)),
     [students, query, category],
   )
@@ -90,7 +82,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="People who are not on the current enrollment tab — photoshoot lists, inquiries, and follow-ups. Current Student / Active Subscribers / photoshoot labels from the Google Contacts export update anyone already here. People only on that export are not added automatically."
+        description="Everyone from the Google Contacts export who is not on the enrollment workbook, filed by Current Student, Active Subscribers, May photoshoot, and the Model Source lists. Enrollment students stay on Students."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -148,7 +140,12 @@ export default function ContactsPage() {
           className="h-11 max-w-xl rounded-full px-4"
         />
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((item) => (
+          {CONTACT_FILTERS.map((item) => {
+            const count =
+              item === "all"
+                ? students.filter(isContact).length
+                : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length
+            return (
             <button
               key={item}
               type="button"
@@ -161,15 +158,17 @@ export default function ContactsPage() {
               )}
             >
               {item === "all" ? "All contacts" : CONTACT_LABELS[item]}
+              {count ? ` · ${count}` : ""}
             </button>
-          ))}
+            )
+          })}
         </div>
       </div>
 
       {contacts.length === 0 ? (
         <EmptyState
           title="No contacts in this filter"
-          description="Add a contact or switch category. Enrollment pending students stay on Students."
+          description="Switch list or add a contact. People on the enrollment workbook stay on Students."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
@@ -185,7 +184,7 @@ export default function ContactsPage() {
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
                   <ContactBadge category={student.contactCategory} />
                   <NativeSelect
-                    className="h-8 w-[9.5rem] text-xs"
+                    className="h-8 w-[13rem] text-xs"
                     value={student.contactCategory || "new"}
                     onChange={(e) =>
                       updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })

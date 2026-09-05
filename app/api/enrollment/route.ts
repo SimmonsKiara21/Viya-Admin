@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import seed from "@/data/seed.json"
 import type { Student } from "@/lib/types"
 import { applyWorkbookRows, parseEnrollmentCsv } from "@/lib/enrollment-sync"
-import { readBundledEnrollmentRows, writeEnrollmentLive } from "@/lib/enrollment-live"
+import { readBundledEnrollmentRows, readEnrollmentLive, writeEnrollmentLive } from "@/lib/enrollment-live"
 import { parseEnrollmentFile } from "@/lib/enrollment-file"
 import { pullPublishedEnrollment } from "@/lib/enrollment-sheet"
 import { ENROLLMENT_SHEET_URL } from "@/lib/constants"
@@ -47,16 +47,23 @@ export async function GET() {
     message = `Live enrollment Google Sheet · ${updated} updated · ${added} new${tabBits ? ` · ${tabBits}` : ""}. Edits on the published doc show up here automatically.`
   } catch (err) {
     error = err instanceof Error ? err.message : "Enrollment sheet error"
-    const bundled = await readBundledEnrollmentRows()
-    if (bundled.length) {
-      const fallback = applyWorkbookRows(workbook, bundled)
-      students = fallback.students
-      added = fallback.added
-      updated = fallback.updated
+    const lastGood = await readEnrollmentLive()
+    if (lastGood?.students?.length) {
+      students = lastGood.students
       source = "csv"
-      message = `Published sheet failed (${error}). Showing the last saved Current Students export.`
+      message = `Published sheet failed (${error}). Showing the last successful enrollment pull.`
     } else {
-      message = `Enrollment sheet failed (${error}). Using the workbook snapshot.`
+      const bundled = await readBundledEnrollmentRows()
+      if (bundled.length) {
+        const fallback = applyWorkbookRows(workbook, bundled)
+        students = fallback.students
+        added = fallback.added
+        updated = fallback.updated
+        source = "csv"
+        message = `Published sheet failed (${error}). Showing the last saved Current Students export.`
+      } else {
+        message = `Enrollment sheet failed (${error}). Using the workbook snapshot.`
+      }
     }
   }
 
@@ -71,7 +78,7 @@ export async function GET() {
       message += ` · ${labeled.added} added to Contacts.`
     }
   }
-  if (added || updated) await writeEnrollmentLive(students, "csv")
+  if (!error && (added || updated)) await writeEnrollmentLive(students, "csv")
 
   return NextResponse.json({
     source,

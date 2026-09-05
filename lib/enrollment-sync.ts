@@ -207,9 +207,9 @@ export function applyWorkbookRows(
         if (keepNames && (field === "firstName" || field === "lastName")) continue
         if (lockAcademy && ACADEMY_LOCKED_FIELDS.has(field)) continue
         if (field === "notes") {
-          const mergedNotes = mergeNotes(existing.notes, typeof row.notes === "string" ? row.notes : "")
-          if (mergedNotes && mergedNotes !== existing.notes) {
-            existing.notes = mergedNotes
+          const nextNotes = typeof row.notes === "string" ? row.notes.trim() : ""
+          if (nextNotes && nextNotes !== existing.notes) {
+            existing.notes = nextNotes
             changed = true
           }
           continue
@@ -340,16 +340,6 @@ function mapSubscriptionStatus(value: string): Student["subscriptionStatus"] | u
   if (key.includes("cancel")) return "cancelled"
   if (key.includes("active")) return "active"
   return undefined
-}
-
-function mergeNotes(existing: string, incoming: string) {
-  const current = (existing || "").trim()
-  const next = (incoming || "").trim()
-  if (!next) return current
-  if (!current) return next
-  if (current.includes(next)) return current
-  if (next.includes(current) && next.length > current.length) return next
-  return `${current} · ${next}`
 }
 
 function withWorkbookHeaders(text: string) {

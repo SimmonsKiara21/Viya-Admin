@@ -89,23 +89,94 @@ export function parseContactsLabelsCsv(text: string): ContactLabelRow[] {
   return rows
 }
 
+function nameBits(row: ContactLabelRow) {
+  const paren = row.firstName.match(/^(.+?)\s*\((.+)\)\s*$/)
+  return {
+    firstName: (paren ? paren[1] : row.firstName).trim(),
+    nickname: (paren ? paren[2] : row.nickname).trim() || row.nickname.trim(),
+    lastName: row.lastName.trim(),
+  }
+}
+
+function foldPerson(first: string, last: string) {
+  return foldName(`${first} ${last}`)
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+function firstNamesOf(first: string, nickname: string) {
+  return [first, nickname]
+    .flatMap((value) => foldName(value).split(" "))
+    .filter((part) => part && part !== "jr" && part !== "sr")
+}
+
+function firstCompatible(rowFirsts: string[], student: Student) {
+  const theirs = firstNamesOf(student.firstName, student.nickname)
+  if (!rowFirsts.length || !theirs.length) return true
+  return rowFirsts.some((a) =>
+    theirs.some((b) => a === b || (a.length >= 3 && b.length >= 3 && (a.startsWith(b) || b.startsWith(a)))),
+  )
+}
+
+function lastCompatible(rowLast: string, studentLast: string) {
+  const a = foldPerson("", rowLast)
+  const b = foldPerson("", studentLast)
+  if (!a || !b) return true
+  if (a === b || a.includes(b) || b.includes(a)) return true
+  return false
+}
+
+function samePerson(row: ContactLabelRow, student: Student) {
+  const bits = nameBits(row)
+  const rowFirsts = firstNamesOf(bits.firstName, bits.nickname)
+  const firstOk = firstCompatible(rowFirsts, student)
+  const lastOk = lastCompatible(bits.lastName, student.lastName)
+  if (firstOk && lastOk) return true
+  if (!bits.firstName) {
+    const token = foldPerson("", bits.lastName)
+    if (token && firstNamesOf(student.firstName, student.nickname).includes(token)) return true
+  }
+  return false
+}
+
+function uniqueContactHit(row: ContactLabelRow, hits: Student[]) {
+  const named = hits.filter((student) => samePerson(row, student))
+  if (named.length === 1) return named[0]
+  if (named.length === 0 && hits.length === 1 && firstCompatible(firstNamesOf(nameBits(row).firstName, nameBits(row).nickname), hits[0])) {
+    return hits[0]
+  }
+  return undefined
+}
+
 function matchRow(row: ContactLabelRow, students: Student[]) {
   const email = row.email.toLowerCase()
   if (email) {
-    const hit = students.find((s) => s.email.toLowerCase() === email)
+    const hit = uniqueContactHit(
+      row,
+      students.filter((s) => s.email.toLowerCase() === email),
+    )
     if (hit) return hit
   }
   const digits = phoneDigits(row.phone)
   if (digits.length === 10) {
-    const hits = students.filter((s) => phoneDigits(s.phone) === digits)
-    if (hits.length === 1) return hits[0]
+    const hit = uniqueContactHit(
+      row,
+      students.filter((s) => phoneDigits(s.phone) === digits),
+    )
+    if (hit) return hit
   }
-  const name = foldName(`${row.firstName} ${row.lastName}`)
-  const nick = foldName(`${row.nickname} ${row.lastName}`)
+  const bits = nameBits(row)
+  const name = foldPerson(bits.firstName, bits.lastName)
+  const nick = bits.nickname ? foldPerson(bits.nickname, bits.lastName) : ""
   return students.find((s) => {
-    const full = foldName(`${s.firstName} ${s.lastName}`)
-    const alias = foldName(`${s.nickname} ${s.lastName}`)
-    return full === name || (nick && alias === nick) || (s.nickname && foldName(`${s.nickname} ${s.lastName}`) === name)
+    const full = foldPerson(s.firstName, s.lastName)
+    const alias = s.nickname ? foldPerson(s.nickname, s.lastName) : ""
+    return (
+      (name && full === name) ||
+      (nick && (full === nick || alias === nick)) ||
+      (alias && alias === name)
+    )
   })
 }
 

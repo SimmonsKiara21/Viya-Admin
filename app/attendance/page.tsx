@@ -37,7 +37,7 @@ export default function AttendancePage() {
       <PageHeader
         eyebrow="Classes"
         title="Attendance"
-        description="The published student attendance tracker is the record. Times are Arizona (Phoenix, MST). New check-ins from the form land here as soon as the sheet updates."
+        description="Only check-ins on the published student attendance tracker. Times are Arizona (Phoenix, MST). If nobody is on the sheet for today, today stays empty."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">

@@ -76,6 +76,9 @@ export async function GET() {
     }
   }
 
+  const checkIns =
+    source === "sheet" ? unique(sheetRows) : unique([...sheetRows, ...apiRows, ...live])
+
   return NextResponse.json({
     formId: JOTFORM_ATTENDANCE_ID,
     formUrl: JOTFORM_ATTENDANCE_URL,
@@ -84,6 +87,6 @@ export async function GET() {
     message,
     error: error || undefined,
     fetchedAt: new Date().toISOString(),
-    checkIns: unique([...sheetRows, ...apiRows, ...live]),
+    checkIns,
   })
 }

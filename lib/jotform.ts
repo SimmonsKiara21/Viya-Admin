@@ -167,7 +167,9 @@ export function parseJotformPayload(raw: unknown, fallbackId?: string): JotformC
     lastName,
     phone,
     classType: status.classType,
-    checkedInAt: parseTimestamp(pretty.created_at || pretty.createdAt || pretty.submitDate || pretty.updated_at),
+    checkedInAt: parseTimestamp(
+      pretty.checkedInAt || pretty.created_at || pretty.createdAt || pretty.submitDate || pretty.updated_at,
+    ),
     statusLabel: status.statusLabel,
   }
 }
@@ -263,6 +265,18 @@ export function mergeAttendance(existing: AttendanceRecord[], incoming: Attendan
     next.unshift(row)
   }
   return next
+}
+
+/** Attendance is the published tracker. Drop leftover seed, local, and webhook rows. */
+export function replaceAttendanceFromTracker(incoming: AttendanceRecord[]) {
+  const seen = new Set<string>()
+  const next: AttendanceRecord[] = []
+  for (const row of incoming) {
+    if (seen.has(row.id) || next.some((item) => isSameCheckIn(item, row))) continue
+    seen.add(row.id)
+    next.push(row)
+  }
+  return next.sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
 }
 
 export const JOTFORM_FIELD = {

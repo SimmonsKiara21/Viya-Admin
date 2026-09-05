@@ -30,15 +30,20 @@ import type {
 import { newId } from "./format"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
-import { matchJotformCheckIns, mergeAttendance, type JotformCheckIn } from "./jotform"
+import {
+  matchJotformCheckIns,
+  mergeAttendance,
+  replaceAttendanceFromTracker,
+  type JotformCheckIn,
+} from "./jotform"
 import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
 import { applyDrivePhotos } from "./photos-overlay"
 
-const STORAGE_KEY = "viya-academy-store-v7"
-const LEGACY_KEYS = ["viya-academy-store-v6", "viya-academy-store-v5", "viya-academy-store-v4"]
+const STORAGE_KEY = "viya-academy-store-v8"
+const LEGACY_KEYS = ["viya-academy-store-v7", "viya-academy-store-v6", "viya-academy-store-v5", "viya-academy-store-v4"]
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
@@ -345,7 +350,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           return next
         })
         setData((prev) => {
-          const attendance = mergeAttendance(prev.attendance, matched.records)
+          const attendance =
+            payload.source === "sheet"
+              ? replaceAttendanceFromTracker(matched.records)
+              : mergeAttendance(prev.attendance, matched.records)
           if (attendanceKey(attendance) === attendanceKey(prev.attendance)) return prev
           return { ...prev, attendance }
         })

@@ -91,7 +91,8 @@ export function parseAttendanceCsv(text: string): JotformCheckIn[] {
     if (!firstName && !lastName && !phone) continue
     const statusLabel = (statusI >= 0 ? cols[statusI] || "" : "").trim() || "Modeling"
     const submissionId = (idI >= 0 ? cols[idI] || "" : "").trim()
-    const checkedInAt = parseTrackerStamp(dateI >= 0 ? cols[dateI] || "" : "") || new Date().toISOString()
+    const checkedInAt = parseTrackerStamp(dateI >= 0 ? cols[dateI] || "" : "")
+    if (!checkedInAt) continue
     const id = submissionId ? `jotform-${submissionId}` : `sheet-${firstName}-${lastName}-${checkedInAt}`
     if (seen.has(id)) continue
     seen.add(id)

@@ -3,7 +3,7 @@ import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
 import { CONTACTS_LABELS_URL } from "./constants"
 
-const SKIP_LABELS = new Set(["newsletter", "* mycontacts", "mycontacts"])
+const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
 function splitCsvLine(line: string) {
   const out: string[] = []

@@ -98,7 +98,7 @@ export default function HomePage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <NameList
           title="Currently enrolled"
-          empty="Nobody is marked current on the enrollment workbook."
+          empty="Nobody is marked currently enrolled."
           students={stats.current}
           href="/students"
         />
@@ -127,7 +127,7 @@ export default function HomePage() {
         />
         <NameList
           title="Pending start"
-          empty="No pending starts on the enrollment workbook."
+          empty="No pending starts."
           students={stats.pending}
           href="/students"
           tone="pending"
@@ -142,10 +142,10 @@ export default function HomePage() {
           className="underline hover:text-foreground"
           onClick={() => {
             resetRoster()
-            toast.message("Workbook roster restored.")
+            toast.message("Roster restored.")
           }}
         >
-          Restore the original workbook
+          Restore the original roster
         </button>
       </p>
       <StudentFormDialog open={addOpen} onOpenChange={setAddOpen} />

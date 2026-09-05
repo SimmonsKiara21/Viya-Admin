@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
-import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
 import { useStore } from "@/lib/store"
 import { isContact } from "@/lib/alerts"
 import { hasContactLabel } from "@/lib/contacts-labels"
@@ -69,7 +68,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="Enrollment workbook plus everyone labeled Current Student on the Google Contacts export. Active Subscribers are also on Subscriptions. Photoshoot lists live on Photoshoots and Contacts."
+        description="The desk roster — academy, modeling, acting, and subscribers. Add or edit people here. Active Subscribers are also on Subscriptions. Photoshoot lists live on Photoshoots and Contacts."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />
@@ -77,8 +76,6 @@ export default function StudentsPage() {
           </Button>
         }
       />
-
-      <EnrollmentSyncCard />
 
       <div className="mb-4 flex flex-col gap-3">
         <Input
@@ -106,7 +103,7 @@ export default function StudentsPage() {
       {filtered.length === 0 ? (
         <EmptyState
           title="No one matches those filters"
-          description="Clear the search or switch status. You can also add a student who is not on the workbook yet."
+          description="Clear the search or switch status. You can also add a student."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">

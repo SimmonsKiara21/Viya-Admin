@@ -43,6 +43,23 @@ export function isAcademyOverdue(student: Student) {
   return isOverdueStudent(student) && !isSubscriberStudent(student)
 }
 
+export function isOverdueTalent(student: Student) {
+  return !isContact(student) && !isSubscriberStudent(student) && student.enrollmentStatus === "overdue"
+}
+
+export function isDeclinedStudent(student: Student) {
+  return !isContact(student) && student.enrollmentStatus === "declined"
+}
+
+export function isCurrentlyEnrolled(student: Student) {
+  if (isContact(student)) return false
+  return (
+    student.enrollmentStatus === "current" ||
+    student.enrollmentStatus === "pif" ||
+    student.paymentPlan === "pif"
+  )
+}
+
 export function isSubscriberOverdue(student: Student) {
   return isOverdueStudent(student) && isSubscriberStudent(student)
 }

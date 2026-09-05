@@ -76,13 +76,13 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Academy overdue is red. Subscriber overdue is orange. Paid in full from the enrollment workbook is emerald. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
+        description="Overdue talent is red. Subscriber overdue is orange. Paid in full from the enrollment workbook is emerald. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
       />
 
       <Panel className="mb-6 grid gap-3">
         <h2 className="font-heading text-2xl">Text all / email all</h2>
         <p className="text-sm text-muted-foreground">
-          Edit the note, then send it to academy overdue or subscriber overdue separately. Paused,
+          Edit the note, then send it to overdue talent or subscriber overdue separately. Paused,
           collections, and pending stay on their own lists.
         </p>
         <Textarea
@@ -96,14 +96,14 @@ export default function AlertsPage() {
             onClick={() => blast("sms", academyOverdue, "Viya Academy — payment reminder")}
             disabled={!academyOverdue.length || !message.trim()}
           >
-            Text academy overdue
+            Text overdue talent
           </Button>
           <Button
             variant="outline"
             onClick={() => blast("email", academyOverdue, "Viya Academy — payment reminder")}
             disabled={!academyOverdue.length || !message.trim()}
           >
-            Email academy overdue
+            Email overdue talent
           </Button>
           <Button
             onClick={() => blast("sms", subscriberOverdue, "Viya Talent — subscriber payment")}
@@ -123,10 +123,10 @@ export default function AlertsPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AlertList
-          title="Academy overdue"
+          title="Overdue talent"
           count={academyOverdue.length}
-          empty="No academy or training accounts are overdue."
-          hint="Payment-plan and academy students. Highlighted in red on every list."
+          empty="No training accounts are overdue."
+          hint="Payment-plan students. Highlighted in red on every list."
           tone="overdue"
           students={academyOverdue}
           line={(s) =>

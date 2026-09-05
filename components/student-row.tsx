@@ -31,7 +31,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
   overdue: {
-    label: "Academy overdue",
+    label: "Overdue talent",
     className:
       "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100",
   },

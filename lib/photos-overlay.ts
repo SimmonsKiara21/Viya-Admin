@@ -16,12 +16,11 @@ const BY_NAME: Record<string, string> = {}
 
 for (const row of ROWS) {
   BY_ID[row.id] = row.url
-  const names = [
-    foldName(`${row.firstName} ${row.lastName}`),
-    foldName(`${row.nickname || ""} ${row.lastName}`),
-  ]
-  for (const name of names) {
-    if (name) BY_NAME[name] = row.url
+  const full = foldName(`${row.firstName} ${row.lastName}`)
+  if (full) BY_NAME[full] = row.url
+  if (row.nickname) {
+    const nick = foldName(`${row.nickname} ${row.lastName}`)
+    if (nick) BY_NAME[nick] = row.url
   }
 }
 
@@ -33,9 +32,28 @@ function rosterPhotoUrl(student: Pick<Student, "id" | "firstName" | "lastName" |
   return (
     BY_ID[student.id] ||
     BY_NAME[foldName(`${student.firstName} ${student.lastName}`)] ||
-    BY_NAME[foldName(`${student.nickname} ${student.lastName}`)] ||
+    (student.nickname ? BY_NAME[foldName(`${student.nickname} ${student.lastName}`)] : "") ||
     ""
   )
+}
+
+function photoOwnerName(url: string) {
+  return ROWS.find((row) => row.url === url)
+}
+
+function photoBelongsTo(
+  url: string,
+  student: Pick<Student, "id" | "firstName" | "lastName" | "nickname">,
+) {
+  const owner = photoOwnerName(url)
+  if (!owner) return true
+  if (owner.id === student.id) return true
+  const full = foldName(`${student.firstName} ${student.lastName}`)
+  if (full && full === foldName(`${owner.firstName} ${owner.lastName}`)) return true
+  if (student.nickname && foldName(`${student.nickname} ${student.lastName}`) === foldName(`${owner.nickname || ""} ${owner.lastName}`)) {
+    return true
+  }
+  return false
 }
 
 function shouldReplacePhoto(current: string, next: string) {
@@ -50,6 +68,10 @@ export function applyDrivePhotos(students: Student[]): Student[] {
   let changed = false
   const next = students.map((student) => {
     const url = rosterPhotoUrl(student)
+    if (student.photoUrl.startsWith("/photos/") && !photoBelongsTo(student.photoUrl, student)) {
+      changed = true
+      return { ...student, photoUrl: url }
+    }
     if (!shouldReplacePhoto(student.photoUrl, url)) return student
     changed = true
     return { ...student, photoUrl: url }

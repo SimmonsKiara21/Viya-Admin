@@ -131,6 +131,25 @@ export function todayISO(date = new Date()) {
   return academyDateISO(date)
 }
 
+export function formatAcademyDate(date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: ACADEMY_TIMEZONE,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date)
+}
+
+export function formatAcademyTime(date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: ACADEMY_TIMEZONE,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(date)
+}
+
 export function isSameDay(iso: string, day = todayISO()) {
   return academyDateISO(iso) === day
 }

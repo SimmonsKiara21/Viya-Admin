@@ -40,7 +40,7 @@ export function StaffAlertBanner() {
     sessionStorage.setItem(key, "1")
     if (academyOverdue.length) {
       toast.warning(
-        `${academyOverdue.length} academy student${academyOverdue.length === 1 ? " is" : "s are"} overdue. Highlighted in red.`,
+        `${academyOverdue.length} overdue talent account${academyOverdue.length === 1 ? " is" : "s are"} highlighted in red.`,
       )
     }
     if (subscriberOverdue.length) {
@@ -66,7 +66,7 @@ export function StaffAlertBanner() {
   if (!total) return null
 
   const bits: { count: number; label: string; className: string }[] = [
-    { count: academyOverdue.length, label: "academy overdue", className: "text-rose-800 dark:text-rose-100" },
+    { count: academyOverdue.length, label: "overdue talent", className: "text-rose-800 dark:text-rose-100" },
     { count: subscriberOverdue.length, label: "subscriber overdue", className: "text-orange-900 dark:text-orange-100" },
     { count: collections.length, label: "collections", className: "text-amber-900 dark:text-amber-200" },
     { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },

@@ -1,48 +1,57 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
-import { AlertTriangle, CalendarCheck, CreditCard, Plus, Users } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import { AlertTriangle, Clock3, Plus, UserMinus, UserPlus, Users } from "lucide-react"
 import { toast } from "sonner"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
-import { ClassBadge, EnrollmentBadge } from "@/components/status-badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
-import { EnrollmentSyncCard } from "@/components/enrollment-sync-card"
-import { countsFor, useStore, useSync } from "@/lib/store"
-import { formatDate, formatMoney, formatTime, formatShortDate, fullName, isSameDay, todayISO } from "@/lib/format"
+import { useStore } from "@/lib/store"
+import { formatAcademyDate, formatAcademyTime, formatDate, formatMoney } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
-import { isAcademyOverdue, isFinishingSoon, isPaidInFull, isPendingStudent, isSubscriberOverdue } from "@/lib/alerts"
-import { openBalance } from "@/lib/square"
+import {
+  isCurrentlyEnrolled,
+  isDeclinedStudent,
+  isOverdueTalent,
+  isPendingStudent,
+  isSubscriberOverdue,
+} from "@/lib/alerts"
 import { cn } from "@/lib/utils"
+import type { Student } from "@/lib/types"
+
+function sortByName(list: Student[]) {
+  return [...list].sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+}
 
 export default function HomePage() {
-  const { students, attendance, payments, resetRoster, addNotification } = useStore()
-  const { square, enrollment, jotform } = useSync()
+  const { students, resetRoster, addNotification } = useStore()
   const [addOpen, setAddOpen] = useState(false)
-  const today = todayISO()
+  const [now, setNow] = useState(() => new Date())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   const stats = useMemo(() => {
-    const academy = students.filter((s) => s.program === "academy")
-    const academyOverdue = students.filter(isAcademyOverdue)
-    const subscriberOverdue = students.filter(isSubscriberOverdue)
-    const attention = [...academyOverdue, ...subscriberOverdue]
-    const pending = students.filter(isPendingStudent)
-    const finishing = students.filter(isFinishingSoon)
-    const pif = students.filter(isPaidInFull)
-    const todayCheckins = attendance.filter((a) => isSameDay(a.checkedInAt, today))
-    const recent = [...attendance].sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt))
-    const openTotal = openBalance(payments)
-    return { academy, academyOverdue, subscriberOverdue, attention, pending, finishing, pif, todayCheckins, recent, openTotal }
-  }, [students, attendance, payments, today])
+    const current = sortByName(students.filter(isCurrentlyEnrolled))
+    const declined = sortByName(students.filter(isDeclinedStudent))
+    const overdueTalent = sortByName(students.filter(isOverdueTalent))
+    const subscriberOverdue = sortByName(
+      students.filter((s) => isSubscriberOverdue(s) && s.enrollmentStatus === "overdue"),
+    )
+    const pending = sortByName(students.filter(isPendingStudent))
+    return { current, declined, overdueTalent, subscriberOverdue, pending }
+  }, [students])
 
   return (
     <div>
       <PageHeader
-        eyebrow="Viya Academy + Agency"
+        eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="Look up talent, track Square invoices, and send a text or Gmail. Enrollment and Square refresh in the background."
+        description="Currently enrolled, declined, pending starts, overdue talent, and overdue subscribers."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
@@ -54,214 +63,76 @@ export default function HomePage() {
               className={cn(buttonVariants({ variant: "outline" }))}
               onClick={() =>
                 sendDeskNotice({
-                  students: stats.attention,
+                  students: [...stats.overdueTalent, ...stats.subscriberOverdue],
                   channel: "sms",
                   templateId: "overdue-sms",
                   addNotification,
                 })
               }
             >
-              Alert overdue students
+              Text overdue
             </button>
           </>
         }
       />
 
-      <p className="mb-4 text-xs text-muted-foreground">
-        {enrollment.message || "Enrollment workbook loaded."}
-        {enrollment.fetchedAt ? ` · sheet ${formatTime(enrollment.fetchedAt)}` : ""}
-        {" · "}
-        {square.message || "Square invoices overlay enrollment students."}
-        {square.matched != null ? ` · ${square.matched} invoices matched` : ""}
-        {square.fetchedAt ? ` · Square ${formatTime(square.fetchedAt)}` : ""}
-        {" · "}
-        {jotform.connected ? "Jotform connected" : jotform.message || "Jotform syncing"}
-        {jotform.fetchedAt ? ` · check-in ${formatTime(jotform.fetchedAt)}` : ""}
-      </p>
+      <Panel className="mb-6">
+        <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
+          Today · Phoenix
+        </p>
+        <p className="mt-2 font-heading text-3xl md:text-4xl">{formatAcademyDate(now)}</p>
+        <p className="mt-1 font-heading text-2xl tabular-nums text-primary md:text-3xl">
+          <Clock3 className="mr-2 inline size-6 align-[-0.15em]" />
+          {formatAcademyTime(now)}
+        </p>
+      </Panel>
 
-      <EnrollmentSyncCard />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <StatCard icon={Users} label="Currently enrolled" value={String(stats.current.length)} href="/students" />
+        <StatCard icon={UserMinus} label="Declined" value={String(stats.declined.length)} href="/students" />
+        <StatCard icon={AlertTriangle} label="Overdue talent" value={String(stats.overdueTalent.length)} href="/alerts" />
+        <StatCard icon={AlertTriangle} label="Overdue subscribers" value={String(stats.subscriberOverdue.length)} href="/alerts" />
+        <StatCard icon={UserPlus} label="Pending start" value={String(stats.pending.length)} href="/students" />
+      </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          icon={Users}
-          label="Academy roster"
-          value={String(stats.academy.length)}
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <NameList
+          title="Currently enrolled"
+          empty="Nobody is marked current on the enrollment workbook."
+          students={stats.current}
           href="/students"
         />
-        <StatCard
-          icon={AlertTriangle}
-          label="Needs attention"
-          value={String(stats.attention.length)}
-          hint="Overdue — due dates on the name"
+        <NameList
+          title="Declined"
+          empty="No declined accounts."
+          students={stats.declined}
+          href="/students"
+          tone="declined"
+        />
+        <NameList
+          title="Overdue talent"
+          empty="No training accounts are overdue."
+          students={stats.overdueTalent}
           href="/alerts"
+          tone="overdue"
+          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
-        <StatCard
-          icon={CreditCard}
-          label="Open Square"
-          value={formatMoney(stats.openTotal)}
-          hint="Due, overdue, and declined"
-          href="/payments"
+        <NameList
+          title="Overdue subscribers"
+          empty="No subscribers are overdue."
+          students={stats.subscriberOverdue}
+          href="/alerts"
+          tone="subscriber"
+          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
-        <StatCard
-          icon={CalendarCheck}
-          label="Checked in today"
-          value={String(stats.todayCheckins.length)}
-          href="/attendance"
+        <NameList
+          title="Pending start"
+          empty="No pending starts on the enrollment workbook."
+          students={stats.pending}
+          href="/students"
+          tone="pending"
+          line={(s) => (s.startDate ? `Start ${formatDate(s.startDate)}` : "Start date not set")}
         />
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Panel>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl text-rose-800 dark:text-rose-100">
-              Academy overdue
-            </h2>
-            <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
-              Alerts
-            </Link>
-          </div>
-          {stats.academyOverdue.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No academy or training accounts are overdue.</p>
-          ) : (
-            <div className="divide-y divide-border">
-              {stats.academyOverdue.slice(0, 8).map((s) => (
-                <div key={s.id} className="py-1">
-                  <StudentRow student={s} />
-                  <p className="px-2 pb-2 text-xs text-rose-800 dark:text-rose-200/90">
-                    Student alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
-                    {formatMoney(s.nextPaymentAmount)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </Panel>
-
-        <Panel>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl text-orange-900 dark:text-orange-100">
-              Subscriber overdue
-            </h2>
-            <Link href="/alerts" className="text-xs text-muted-foreground hover:text-foreground">
-              Alerts
-            </Link>
-          </div>
-          {stats.subscriberOverdue.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No subscribers are overdue.</p>
-          ) : (
-            <div className="divide-y divide-border">
-              {stats.subscriberOverdue.slice(0, 8).map((s) => (
-                <div key={s.id} className="py-1">
-                  <StudentRow student={s} />
-                  <p className="px-2 pb-2 text-xs text-orange-900 dark:text-orange-200/90">
-                    Subscriber alert: payment due {formatDate(s.nextPaymentDate)} ·{" "}
-                    {formatMoney(s.nextPaymentAmount)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </Panel>
-
-        <Panel>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-heading text-2xl">Latest check-ins</h2>
-            <Link href="/attendance" className="text-xs text-muted-foreground hover:text-foreground">
-              Attendance
-            </Link>
-          </div>
-          {stats.recent.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No check-ins yet. Use the Check-in tab at the door.</p>
-          ) : (
-            <ul className="grid gap-2">
-              {stats.recent.slice(0, 8).map((row) => {
-                const student = students.find((s) => s.id === row.studentId)
-                if (!student) return null
-                return (
-                  <li key={row.id} className="flex items-center justify-between gap-3 text-sm">
-                    <Link href={`/students/${student.id}`} className="min-w-0 font-medium hover:underline">
-                      {fullName(student)}
-                    </Link>
-                    <span className="flex items-center gap-2 text-muted-foreground">
-                      <ClassBadge type={row.classType} />
-                      <span className="tabular-nums">
-                        {formatShortDate(row.checkedInAt)} · {formatTime(row.checkedInAt)}
-                      </span>
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </Panel>
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-sky-900 dark:text-sky-100">
-            Pending starts
-          </h2>
-          {stats.pending.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No pending starts on the enrollment workbook.</p>
-          ) : (
-            <div className="divide-y divide-border">
-              {stats.pending.slice(0, 8).map((s) => (
-                <div key={s.id} className="flex items-center justify-between gap-2 py-1">
-                  <div className="min-w-0 flex-1">
-                    <StudentRow student={s} />
-                  </div>
-                  <EnrollmentBadge status={s.enrollmentStatus} />
-                </div>
-              ))}
-            </div>
-          )}
-        </Panel>
-        <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-lime-800 dark:text-lime-100">
-            Fewer than 3 payments
-          </h2>
-          {stats.finishing.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No current academy payment-plan students who started May 2026 or earlier with fewer than 3 payments left.
-            </p>
-          ) : (
-            <div className="divide-y divide-border">
-              {stats.finishing.slice(0, 8).map((s) => (
-                <StudentRow key={s.id} student={s} />
-              ))}
-            </div>
-          )}
-        </Panel>
-        <Panel>
-          <h2 className="mb-3 font-heading text-2xl text-emerald-900 dark:text-emerald-100">
-            Paid in full
-          </h2>
-          {stats.pif.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Nobody on the enrollment workbook is marked paid in full.
-            </p>
-          ) : (
-            <div className="divide-y divide-border">
-              {stats.pif.slice(0, 8).map((s) => (
-                <StudentRow key={s.id} student={s} />
-              ))}
-            </div>
-          )}
-        </Panel>
-        <Panel>
-          <h2 className="mb-3 font-heading text-2xl">Tonight&apos;s class mix</h2>
-          {stats.todayCheckins.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Nobody has checked in today. The Aug 26 roster is under Attendance if you need last class.
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Modeling {countsFor(stats.todayCheckins).modeling} · Acting{" "}
-              {countsFor(stats.todayCheckins).acting} · Subscriber{" "}
-              {countsFor(stats.todayCheckins).subscriber}
-            </p>
-          )}
-        </Panel>
       </div>
 
       <p className="mt-10 text-center text-xs text-muted-foreground">
@@ -282,17 +153,68 @@ export default function HomePage() {
   )
 }
 
+function NameList({
+  title,
+  empty,
+  students,
+  href,
+  tone,
+  line,
+}: {
+  title: string
+  empty: string
+  students: Student[]
+  href: string
+  tone?: "declined" | "overdue" | "subscriber" | "pending"
+  line?: (student: Student) => string
+}) {
+  const heading =
+    tone === "declined"
+      ? "text-rose-800 dark:text-rose-100"
+      : tone === "overdue"
+        ? "text-rose-800 dark:text-rose-100"
+        : tone === "subscriber"
+          ? "text-orange-900 dark:text-orange-100"
+          : tone === "pending"
+            ? "text-sky-900 dark:text-sky-100"
+            : ""
+
+  return (
+    <Panel>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className={cn("font-heading text-2xl", heading)}>
+          {title}
+          <span className="ml-2 text-base text-muted-foreground">{students.length}</span>
+        </h2>
+        <Link href={href} className="text-xs text-muted-foreground hover:text-foreground">
+          Open list
+        </Link>
+      </div>
+      {students.length === 0 ? (
+        <p className="text-sm text-muted-foreground">{empty}</p>
+      ) : (
+        <div className="max-h-[28rem] divide-y divide-border overflow-y-auto">
+          {students.map((student) => (
+            <div key={student.id} className="py-1">
+              <StudentRow student={student} />
+              {line ? <p className="px-2 pb-2 text-xs text-muted-foreground">{line(student)}</p> : null}
+            </div>
+          ))}
+        </div>
+      )}
+    </Panel>
+  )
+}
+
 function StatCard({
   icon: Icon,
   label,
   value,
-  hint,
   href,
 }: {
   icon: typeof Users
   label: string
   value: string
-  hint?: string
   href: string
 }) {
   return (
@@ -303,7 +225,6 @@ function StatCard({
           <Icon className="size-4 text-primary" />
         </div>
         <p className="mt-3 font-heading text-4xl">{value}</p>
-        {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
       </Panel>
     </Link>
   )

@@ -31,7 +31,7 @@ npm start
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
-- **Notify** has separate groups for **Current students**, **Academy overdue**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
+- **Notify** has separate groups for **Current students**, **Overdue talent**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is kraft cocoa (brown paper, umber ink), not cream or yellow.
@@ -39,7 +39,7 @@ npm start
 
 ## Alerts
 
-- **Academy overdue / declined** — red, with the payment due date. **Text academy overdue** / **Email academy overdue** on Alerts goes to this list.
+- **Overdue talent / declined** — red, with the payment due date. **Text overdue talent** / **Email overdue talent** on Alerts goes to this list.
 - **Subscriber overdue** — orange, kept separate from academy and training follow-up. **Text subscriber overdue** / **Email subscriber overdue** goes to this list.
 - **Collections** — amber, kept separate from a regular overdue follow-up.
 - **Paused** — violet, so the desk does not check them in by accident.

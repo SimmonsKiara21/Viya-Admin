@@ -149,7 +149,7 @@ export default function StudentProfilePage() {
       {isAcademyOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-200">
           <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-950">
-            Academy overdue
+            Overdue talent
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
             Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}

@@ -47,8 +47,22 @@ export function isOverdueTalent(student: Student) {
   return !isContact(student) && !isSubscriberStudent(student) && student.enrollmentStatus === "overdue"
 }
 
+/** Workbook notes mark a declined card — STATUS can still be OVERDUE or COLLECTIONS. */
+export function notesSayPaymentDeclined(notes: string) {
+  return /(?:payment|card)\s+declined|declined\s+\d{1,2}\/\d{1,2}/i.test(notes || "")
+}
+
+export function paymentDeclinedSnippet(notes: string) {
+  const text = (notes || "").trim()
+  if (!text) return ""
+  const match = text.match(/[^.]{0,48}(?:payment|card)\s+declined[^.]{0,24}/i)
+  if (match) return match[0].replace(/\s+/g, " ").trim()
+  return notesSayPaymentDeclined(text) ? "Payment declined" : ""
+}
+
 export function isDeclinedStudent(student: Student) {
-  return !isContact(student) && student.enrollmentStatus === "declined"
+  if (isContact(student)) return false
+  return student.enrollmentStatus === "declined" || notesSayPaymentDeclined(student.notes)
 }
 
 export function isCurrentlyEnrolled(student: Student) {

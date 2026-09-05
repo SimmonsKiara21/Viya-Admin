@@ -5,7 +5,7 @@ import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
 import { ContactLabelBadge, DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
-import { highlightTone, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, notesSayPaymentDeclined, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -112,6 +112,11 @@ export const StudentRow = memo(function StudentRow({ student }: { student: Stude
       </div>
       <div className="hidden items-center gap-2 sm:flex">
         {pill ? <span className={pill.className}>{pill.label}</span> : null}
+        {notesSayPaymentDeclined(student.notes) ? (
+          <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100">
+            Payment declined
+          </span>
+        ) : null}
         <ProgramBadge program={student.program} track={student.track} />
         <EnrollmentBadge
           status={student.enrollmentStatus}

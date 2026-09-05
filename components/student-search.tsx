@@ -9,7 +9,7 @@ import { StudentPhoto } from "@/components/student-photo"
 import { EnrollmentBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
 import { fullName, matchesQuery } from "@/lib/format"
-import { highlightTone, isSubscriberStudent } from "@/lib/alerts"
+import { highlightTone, isDeclinedStudent, isSubscriberStudent } from "@/lib/alerts"
 import { cn } from "@/lib/utils"
 
 export function StudentSearch({
@@ -87,7 +87,8 @@ export function StudentSearch({
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
                         #{student.id}
-                        {["overdue", "declined", "collections"].includes(student.enrollmentStatus)
+                        {["overdue", "declined", "collections"].includes(student.enrollmentStatus) ||
+                        isDeclinedStudent(student)
                           ? ` · due ${student.nextPaymentDate || "—"}`
                           : ` · ${student.email || "no email"} · ${student.phone || "no phone"}`}
                       </p>

@@ -11,7 +11,7 @@ export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; descr
   {
     systemKey: "overdue",
     name: "Overdue talent",
-    description: "Training students who are overdue or declined on the workbook.",
+    description: "Training students whose enrollment workbook STATUS is OVERDUE.",
   },
   {
     systemKey: "subscriberOverdue",

@@ -8,7 +8,7 @@ import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
-import { isContact } from "@/lib/alerts"
+import { isContact, isDeclinedStudent } from "@/lib/alerts"
 import { hasContactLabel } from "@/lib/contacts-labels"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
@@ -48,6 +48,7 @@ export default function StudentsPage() {
       .filter((s) => {
         if (status === "all") return true
         if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
+        if (status === "declined") return isDeclinedStudent(s)
         if (status === "current" && hasContactLabel(s, /current student/i)) return true
         return s.enrollmentStatus === status
       })

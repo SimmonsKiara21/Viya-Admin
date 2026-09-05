@@ -185,11 +185,12 @@ function refreshStudentsFromPayments(
       .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
     const next = open[0]
     if (next) {
-      student.nextPaymentDate = next.dueDate || student.nextPaymentDate
-      student.nextPaymentAmount = next.balance || next.amount
       const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
-      if (next.status === "overdue" && student.enrollmentStatus === "current" && !subscriber) {
-        student.enrollmentStatus = "overdue"
+      // Workbook STATUS / notes own academy enrollment and next-due copy.
+      // Square invoices stay on Payments and must not mark talent overdue.
+      if (subscriber) {
+        student.nextPaymentDate = next.dueDate || student.nextPaymentDate
+        student.nextPaymentAmount = next.balance || next.amount
       }
     }
     const academy = rows.filter((p) => isAcademyItem(p.itemId, p.itemKind))

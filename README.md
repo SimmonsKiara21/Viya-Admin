@@ -62,11 +62,11 @@ Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Fu
 
 ## Square, enrollment, Gmail, and texts
 
-The desk is the roster. Add and edit students here. Square overlays invoice due dates when a token is set.
+The desk is the roster. Add and edit students here. Academy overdue and declined come from the enrollment workbook — STATUS = OVERDUE, and “payment declined” in the notes. Square invoices stay on Payments and do not flip a current student overdue.
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export — including Newsletter — is on **Contacts** with name, phone, email, and notes.
 
-Payments use Square invoices. Live API keys are optional — without them the desk still overlays due dates from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices and writes the correct due date, amount, and remaining installments onto enrollment students only.
+Payments use Square invoices. Live API keys are optional — without them the desk still shows invoices from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices for enrollment students only. Subscriber due dates can overlay from Square; academy next-due copy stays with the workbook.
 
 The desk works without API keys. Copy `.env.example` to `.env.local` and add credentials when you want live send/sync:
 

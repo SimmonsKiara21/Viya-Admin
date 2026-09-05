@@ -17,6 +17,7 @@ import {
   isOverdueTalent,
   isPendingStudent,
   isSubscriberOverdue,
+  paymentDeclinedSnippet,
 } from "@/lib/alerts"
 import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
@@ -51,7 +52,7 @@ export default function HomePage() {
       <PageHeader
         eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="Currently enrolled, declined, pending starts, overdue talent, and overdue subscribers."
+        description="Currently enrolled, declined card notes, pending starts, overdue talent from the enrollment workbook, and overdue subscribers."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
@@ -104,10 +105,11 @@ export default function HomePage() {
         />
         <NameList
           title="Declined"
-          empty="No declined accounts."
+          empty="No declined cards in the enrollment notes."
           students={stats.declined}
           href="/students"
           tone="declined"
+          line={(s) => paymentDeclinedSnippet(s.notes) || s.notes || "Payment declined"}
         />
         <NameList
           title="Overdue talent"

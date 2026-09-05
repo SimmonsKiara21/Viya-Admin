@@ -58,6 +58,7 @@ export const CONTACT_LABELS: Record<ContactCategory, string> = {
   photoshoot: "May photoshoot",
   "model-source-la": "LA Model Source 2026",
   "model-source-nov": "Model Source November",
+  newsletter: "Newsletter",
   new: "New",
   inquiry: "Inquiry",
   "follow-up": "Follow-up",
@@ -71,6 +72,7 @@ export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
   "photoshoot",
   "model-source-la",
   "model-source-nov",
+  "newsletter",
   "new",
   "inquiry",
   "follow-up",
@@ -83,6 +85,7 @@ export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = [
   "photoshoot",
   "model-source-la",
   "model-source-nov",
+  "newsletter",
 ]
 
 export const PROGRAM_LABELS: Record<Program, string> = {

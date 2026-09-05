@@ -74,7 +74,9 @@ export function ContactBadge({ category }: { category: ContactCategory | "" }) {
         ? "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
         : category === "photoshoot" || category === "model-source-la" || category === "model-source-nov"
           ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
-          : "border-primary/35 bg-primary/10 text-primary"
+          : category === "newsletter"
+            ? "border-border text-muted-foreground"
+            : "border-primary/35 bg-primary/10 text-primary"
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       {CONTACT_LABELS[category]}

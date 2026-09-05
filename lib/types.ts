@@ -17,6 +17,7 @@ export type ContactCategory =
   | "photoshoot"
   | "model-source-la"
   | "model-source-nov"
+  | "newsletter"
   | "inquiry"
   | "follow-up"
   | "not-interested"

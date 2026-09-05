@@ -30,10 +30,12 @@ function splitCsvLine(line: string) {
 }
 
 function cleanLabels(raw: string) {
-  return raw
+  const parts = raw
     .split(":::")
     .map((part) => part.trim())
     .filter((part) => part && !SKIP_LABELS.has(part.toLowerCase()))
+  const meaningful = parts.filter((part) => !/^newsletter$/i.test(part))
+  return meaningful.length ? meaningful : parts
 }
 
 function firstValue(raw: string) {
@@ -47,6 +49,7 @@ export function displayContactLabel(label: string) {
   if (/may photoshoot/i.test(key)) return "May photoshoot"
   if (/model source november/i.test(key)) return "Model Source November"
   if (/la model source/i.test(key)) return "LA Model Source 2026"
+  if (/^newsletter$/i.test(key)) return "Newsletter"
   return key
 }
 
@@ -55,7 +58,12 @@ export type ContactLabelRow = {
   lastName: string
   nickname: string
   email: string
+  email2: string
   phone: string
+  organization: string
+  title: string
+  birthday: string
+  notes: string
   labels: string[]
 }
 
@@ -68,22 +76,33 @@ export function parseContactsLabelsCsv(text: string): ContactLabelRow[] {
   const lastI = idx(["last name", "lastname", "last"])
   const nickI = idx(["nickname", "preferred name"])
   const emailI = idx(["e-mail 1 - value", "email 1 - value", "email", "e-mail"])
+  const email2I = idx(["e-mail 2 - value", "email 2 - value"])
   const phoneI = idx(["phone 1 - value", "phone", "phone number"])
   const labelsI = idx(["labels", "label"])
+  const middleI = idx(["middle name", "middle"])
+  const orgI = idx(["organization name", "organization"])
+  const titleI = idx(["organization title", "title"])
+  const notesI = idx(["notes", "note"])
+  const bdayI = idx(["birthday"])
   const rows: ContactLabelRow[] = []
   for (const line of lines.slice(1)) {
     const cols = splitCsvLine(line)
     const firstName = (firstI >= 0 ? cols[firstI] : "").trim()
+    const middleName = (middleI >= 0 ? cols[middleI] : "").trim()
     const lastName = (lastI >= 0 ? cols[lastI] : "").trim()
-    const labels = cleanLabels(labelsI >= 0 ? cols[labelsI] || "" : "")
-    if ((!firstName && !lastName) || !labels.length) continue
+    if (!firstName && !lastName) continue
     rows.push({
-      firstName,
+      firstName: [firstName, middleName].filter(Boolean).join(" "),
       lastName,
       nickname: (nickI >= 0 ? cols[nickI] : "").trim(),
       email: firstValue(emailI >= 0 ? cols[emailI] || "" : ""),
+      email2: firstValue(email2I >= 0 ? cols[email2I] || "" : ""),
       phone: firstValue(phoneI >= 0 ? cols[phoneI] || "" : ""),
-      labels,
+      organization: (orgI >= 0 ? cols[orgI] : "").trim(),
+      title: (titleI >= 0 ? cols[titleI] : "").trim(),
+      birthday: (bdayI >= 0 ? cols[bdayI] : "").trim(),
+      notes: (notesI >= 0 ? cols[notesI] : "").trim(),
+      labels: cleanLabels(labelsI >= 0 ? cols[labelsI] || "" : ""),
     })
   }
   return rows
@@ -187,6 +206,7 @@ export function categoryFromLabels(labels: string[]): ContactCategory {
   if (/photoshoot/.test(text)) return "photoshoot"
   if (/current student/.test(text)) return "current-student"
   if (/active subscriber/.test(text)) return "subscriber"
+  if (/newsletter/.test(text)) return "newsletter"
   return "new"
 }
 
@@ -201,6 +221,7 @@ export function onGoogleList(student: Student, filter: ContactCategory | "all") 
   if (filter === "photoshoot") return hasContactLabel(student, /may photoshoot/i)
   if (filter === "model-source-la") return hasContactLabel(student, /la model source/i)
   if (filter === "model-source-nov") return hasContactLabel(student, /model source november/i)
+  if (filter === "newsletter") return hasContactLabel(student, /newsletter/i)
   return false
 }
 
@@ -212,6 +233,7 @@ export function matchesContactFilter(student: Student, filter: ContactCategory |
   if (filter === "photoshoot") return student.contactCategory === "photoshoot"
   if (filter === "model-source-la") return student.contactCategory === "model-source-la"
   if (filter === "model-source-nov") return student.contactCategory === "model-source-nov"
+  if (filter === "newsletter") return student.contactCategory === "newsletter"
   return student.contactCategory === filter
 }
 
@@ -260,6 +282,27 @@ function contactId(row: ContactLabelRow, used: Set<string>) {
   return `${base}${i}`
 }
 
+function sheetNotes(row: ContactLabelRow) {
+  const bits: string[] = []
+  if (row.organization || row.title) {
+    bits.push([row.organization, row.title].filter(Boolean).join(" · "))
+  }
+  if (row.email2) bits.push(`Alt email ${row.email2}`)
+  if (row.birthday) bits.push(`Birthday ${row.birthday}`)
+  if (row.notes) bits.push(row.notes)
+  return bits.join("\n")
+}
+
+function fillContactDetails(student: Student, row: ContactLabelRow) {
+  if (!student.email && row.email) student.email = row.email
+  if (!student.phone && row.phone) student.phone = row.phone
+  if (!student.nickname && row.nickname) student.nickname = row.nickname
+  const extra = sheetNotes(row)
+  if (extra && !student.notes.includes(extra.split("\n")[0] || extra)) {
+    student.notes = student.notes ? `${student.notes}\n${extra}` : extra
+  }
+}
+
 function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
   const bits = nameBits(row)
   const firstName = bits.firstName || bits.lastName
@@ -283,7 +326,7 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
     nextPaymentDate: "",
     nextPaymentAmount: null,
     installmentsLeft: null,
-    notes: "",
+    notes: sheetNotes(row),
     contactCategory: categoryFromLabels(labels),
     subscriptionStatus: "none",
     photoshootStatus: /photoshoot|model source/i.test(labels.join(" ")) ? "received" : "none",
@@ -306,7 +349,7 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
 
 export function contactLabelsFingerprint(rows: ContactLabelRow[] | undefined) {
   return (rows ?? [])
-    .map((row) => `${row.firstName}|${row.lastName}|${row.email}|${row.phone}|${row.labels.join(",")}`)
+    .map((row) => `${row.firstName}|${row.lastName}|${row.email}|${row.phone}|${row.email2 || ""}|${row.labels.join(",")}`)
     .sort()
     .join("||")
 }
@@ -327,12 +370,13 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
     }
     matched += 1
     incoming.set(existing.id, [...new Set([...(incoming.get(existing.id) || []), ...row.labels])])
+    if (isDeskContact(existing)) fillContactDetails(existing, row)
   }
   let updated = 0
   for (const student of next) {
     const labels = incoming.get(student.id)
-    if (!labels) continue
-    const merged = [...new Set(labels)].sort((a, b) =>
+    if (!labels?.length) continue
+    const merged = [...new Set(labels.filter(Boolean))].sort((a, b) =>
       displayContactLabel(a).localeCompare(displayContactLabel(b)),
     )
     const before = (student.labels || []).join("|")

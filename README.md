@@ -64,7 +64,7 @@ Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Fu
 
 Enrollment stays in sync with the published Google Sheet (Current Students, Pending, Subscriptions, and Collections). The desk pulls that sheet in the background whenever it changes. Upload a CSV or Excel from **Home** or **Students** only if you need a manual override. Square then overlays invoice due dates.
 
-Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. Anyone on those lists who is not on the enrollment workbook is still added so the list is complete.
+Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export — including Newsletter — is on **Contacts** with name, phone, email, and notes.
 
 Payments use Square invoices. Live API keys are optional — without them the desk still overlays due dates from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices and writes the correct due date, amount, and remaining installments onto enrollment students only.
 

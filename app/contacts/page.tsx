@@ -27,9 +27,13 @@ export default function ContactsPage() {
   const contacts = useMemo(() => {
     const googleList = category !== "all" && GOOGLE_CONTACT_FILTERS.includes(category)
     return students
-      .filter((s) => (googleList ? onGoogleList(s, category) : isContact(s)))
+      .filter((s) => {
+        if (category === "all") return isContact(s) || onGoogleList(s, "all")
+        if (googleList) return onGoogleList(s, category)
+        return isContact(s)
+      })
       .filter((s) => matchesQuery(s, query))
-      .filter((s) => (googleList ? true : matchesContactFilter(s, category)))
+      .filter((s) => (googleList || category === "all" ? true : matchesContactFilter(s, category)))
       .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
   }, [students, query, category])
 
@@ -81,7 +85,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Every person on the Google Contacts lists, in that list — Current Student, Active Subscribers, May photoshoot, LA Model Source 2026, and Model Source November. Enrollment people stay on Students and Subscriptions too."
+        description="The full Google Contacts export — name, phone, email, and list. Newsletter, Current Student, Active Subscribers, May photoshoot, and the Model Source lists are all here."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -142,7 +146,7 @@ export default function ContactsPage() {
           {CONTACT_FILTERS.map((item) => {
             const count =
               item === "all"
-                ? students.filter(isContact).length
+                ? students.filter((s) => isContact(s) || onGoogleList(s, "all")).length
                 : GOOGLE_CONTACT_FILTERS.includes(item)
                   ? students.filter((s) => onGoogleList(s, item)).length
                   : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length

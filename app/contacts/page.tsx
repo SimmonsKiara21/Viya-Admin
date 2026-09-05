@@ -68,6 +68,7 @@ export default function ContactsPage() {
       subscriptionStatus: "none",
       photoshootStatus: "none",
       photoshootNotes: "",
+      labels: [],
       classTime: "",
       photoUrl: "",
       docusignStatus: "none",
@@ -89,7 +90,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="People who are not on the current enrollment tab — photoshoot lists, inquiries, and follow-ups. Pending stays on Students only when the enrollment workbook actually says pending."
+        description="People who are not on the current enrollment tab — photoshoot lists, inquiries, and follow-ups. Current Student / Active Subscribers / photoshoot labels from the Google Contacts export update anyone already here. People only on that export are not added automatically."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />

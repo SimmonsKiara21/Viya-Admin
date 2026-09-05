@@ -40,6 +40,7 @@ import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
+import { applyContactLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
 import { applyDrivePhotos } from "./photos-overlay"
 
 const STORAGE_KEY = "viya-academy-store-v8"
@@ -152,6 +153,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     subscriptionStatus: s.subscriptionStatus || "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
+    labels: Array.isArray(s.labels) ? s.labels.filter(Boolean) : [],
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",
     docusignStatus: s.docusignStatus || "none",
@@ -266,6 +268,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const dataRef = useRef(data)
   const squareFp = useRef("")
   const enrollFp = useRef("")
+  const labelsFp = useRef("")
   const persistTimer = useRef<number>(0)
 
   useEffect(() => {
@@ -389,6 +392,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           message?: string
           connected?: boolean
           fetchedAt?: string
+          contactLabels?: ContactLabelRow[]
         }
         const squarePayload = (await squareRes.json()) as {
           invoices?: SquareInvoiceRow[]
@@ -403,19 +407,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           normalizeStudent(s as Student & Pick<Student, "id" | "firstName" | "lastName">),
         )
         const liveSheet = enrollPayload.source !== "workbook"
+        const labelRows = enrollPayload.contactLabels ?? []
         const nextEnrollFp = enrollmentFingerprint(workbook)
+        const nextLabelsFp = contactLabelsFingerprint(labelRows)
         const enrollChanged = nextEnrollFp !== enrollFp.current
+        const labelsChanged = nextLabelsFp !== labelsFp.current
         if (nextEnrollFp) enrollFp.current = nextEnrollFp
+        if (nextLabelsFp) labelsFp.current = nextLabelsFp
         const merged = mergeEnrollmentStudents(dataRef.current.students, workbook, {
           updateExisting: liveSheet,
         })
+        const labeled = applyContactLabels(merged.students, labelRows)
         setEnrollment({
           fetchedAt: enrollPayload.fetchedAt || new Date().toISOString(),
           source: enrollPayload.source || "workbook",
           message: enrollPayload.message || "",
           connected: Boolean(enrollPayload.connected),
           added: merged.added,
-          updated: merged.updated,
+          updated: merged.updated + labeled.updated,
         })
 
         const invoices = squarePayload.invoices ?? []
@@ -423,11 +432,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const invoicesChanged = Boolean(fp) && fp !== squareFp.current
         if (fp) squareFp.current = fp
 
-        const preview = applySquareInvoices(
-          mergeEnrollmentStudents(dataRef.current.students, workbook, { updateExisting: liveSheet }).students,
-          dataRef.current.payments,
-          invoices,
-        )
+        const preview = applySquareInvoices(labeled.students, dataRef.current.payments, invoices)
         setSquare({
           fetchedAt: squarePayload.syncedAt || new Date().toISOString(),
           source: squarePayload.source || "",
@@ -437,11 +442,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           skipped: preview.skipped.length,
         })
 
-        if (!merged.added && !merged.updated && !invoicesChanged && !enrollChanged) return
+        if (!merged.added && !merged.updated && !labeled.updated && !invoicesChanged && !enrollChanged && !labelsChanged)
+          return
 
         setData((prev) => {
           const roster = applyDrivePhotos(
-            mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students,
+            applyContactLabels(
+              mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students,
+              labelRows,
+            ).students,
           )
           const applied = applySquareInvoices(roster, prev.payments, invoices)
           return { ...prev, students: applied.students, payments: applied.payments }

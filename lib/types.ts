@@ -51,6 +51,8 @@ export interface Student {
   subscriptionStatus: SubscriptionStatus
   photoshootStatus: PhotoshootStatus
   photoshootNotes: string
+  /** Google Contacts labels (Current Student, Active Subscribers, photoshoot lists). */
+  labels: string[]
   classTime: string
   photoUrl: string
   docusignStatus: DocusignStatus

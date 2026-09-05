@@ -14,6 +14,7 @@ const WORKBOOK_FIELDS = [
   "startDate",
   "enrollmentStatus",
   "subscriptionStatus",
+  "labels",
   "notes",
   "nextPaymentDate",
   "nextPaymentAmount",
@@ -59,6 +60,15 @@ export function mergeEnrollmentStudents(
     )
     for (const field of WORKBOOK_FIELDS) {
       if (keepNames && (field === "firstName" || field === "lastName")) continue
+      if (field === "labels") {
+        const labels = Array.isArray(row.labels) ? row.labels.filter(Boolean) : []
+        if (!labels.length) continue
+        if ((existing.labels || []).join("|") !== labels.join("|")) {
+          existing.labels = labels
+          changed = true
+        }
+        continue
+      }
       const value = row[field]
       if (value === undefined || value === "" || value === null) continue
       if (existing[field] !== value) {
@@ -203,6 +213,15 @@ export function applyWorkbookRows(
           }
           continue
         }
+        if (field === "labels") {
+          const labels = Array.isArray(row.labels) ? row.labels.filter(Boolean) : []
+          if (!labels.length) continue
+          if ((existing.labels || []).join("|") !== labels.join("|")) {
+            existing.labels = labels
+            changed = true
+          }
+          continue
+        }
         const value = row[field]
         if (value === undefined || value === "" || value === null) continue
         if (existing[field] !== value) {
@@ -226,7 +245,7 @@ export function enrollmentFingerprint(students: Student[]) {
   return students
     .map(
       (s) =>
-        `${s.id}:${s.firstName}:${s.lastName}:${s.email}:${s.phone}:${s.startDate}:${s.enrollmentStatus}:${s.paymentPlan}:${s.subscriptionStatus}:${s.nextPaymentDate}:${s.nextPaymentAmount}`,
+        `${s.id}:${s.firstName}:${s.lastName}:${s.email}:${s.phone}:${s.startDate}:${s.enrollmentStatus}:${s.paymentPlan}:${s.subscriptionStatus}:${(s.labels || []).join(",")}:${s.nextPaymentDate}:${s.nextPaymentAmount}`,
     )
     .sort()
     .join("|")
@@ -258,6 +277,7 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     subscriptionStatus:
       row.subscriptionStatus || (row.program === "subscriber" ? "active" : "none"),
     photoshootStatus: row.photoshootStatus || "none",
+    labels: [],
     photoshootNotes: "",
     classTime: row.classTime || "",
     photoUrl: "",

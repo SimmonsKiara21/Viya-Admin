@@ -3,7 +3,7 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
+import { ContactLabelBadge, DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
 import { highlightTone, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
@@ -102,6 +102,13 @@ export const StudentRow = memo(function StudentRow({ student }: { student: Stude
           #{student.id} · {formatPhone(student.phone)}
           {detail(student, tone, left)}
         </p>
+        {student.labels?.length ? (
+          <div className="mt-1 flex flex-wrap gap-1">
+            {student.labels.map((label) => (
+              <ContactLabelBadge key={label} label={label} />
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className="hidden items-center gap-2 sm:flex">
         {pill ? <span className={pill.className}>{pill.label}</span> : null}

@@ -28,6 +28,9 @@ export const ATTENDANCE_SHEET_URL =
 export const ATTENDANCE_SHEET_GID = "164571272"
 export const ENROLLMENT_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
+/** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
+export const CONTACTS_LABELS_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXZSckUQVYXhzXedRxa5csdJ6aQPEY3Y_FKfZEwQk_8GuYXA-nNDuAveSdrQKs67V0ary5OXJwzPgV/pub?output=csv"
 
 /** Public Season 1–5 photoshoot folders. Portraits are matched onto the roster in data/photos.json. */
 export const PHOTOSHOOT_DRIVE_FOLDERS = [

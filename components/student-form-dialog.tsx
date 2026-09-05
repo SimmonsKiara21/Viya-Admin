@@ -75,6 +75,7 @@ const blank = (): Student => ({
   subscriptionStatus: "none",
   photoshootStatus: "none",
   photoshootNotes: "",
+  labels: [],
   contactCategory: "",
   classTime: "",
   photoUrl: "",

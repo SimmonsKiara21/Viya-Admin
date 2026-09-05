@@ -17,6 +17,7 @@ import { StudentPhoto } from "@/components/student-photo"
 import {
   ClassBadge,
   ContactBadge,
+  ContactLabelBadge,
   DocusignBadge,
   EnrollmentBadge,
   PaymentBadge,
@@ -318,6 +319,9 @@ export default function StudentProfilePage() {
               {student.photoshootStatus !== "none" ? (
                 <PhotoshootBadge status={student.photoshootStatus} />
               ) : null}
+              {(student.labels || []).map((label) => (
+                <ContactLabelBadge key={label} label={label} />
+              ))}
             </div>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
               <div>

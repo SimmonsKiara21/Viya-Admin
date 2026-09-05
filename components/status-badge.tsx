@@ -9,6 +9,7 @@ import {
   programDisplayLabel,
   SUB_LABELS,
 } from "@/lib/constants"
+import { displayContactLabel } from "@/lib/contacts-labels"
 import { cn } from "@/lib/utils"
 import type {
   ClassType,
@@ -129,6 +130,23 @@ export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       {SUB_LABELS[status]}
+    </Badge>
+  )
+}
+
+export function ContactLabelBadge({ label }: { label: string }) {
+  const text = displayContactLabel(label)
+  const key = label.toLowerCase()
+  const cls = key.includes("current student")
+    ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
+    : key.includes("active subscriber")
+      ? "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
+      : /photoshoot|model source/.test(key)
+        ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
+        : "border-border text-muted-foreground"
+  return (
+    <Badge variant="outline" className={cn("font-medium", cls)}>
+      {text}
     </Badge>
   )
 }

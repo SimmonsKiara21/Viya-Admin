@@ -6,6 +6,7 @@ import { readBundledEnrollmentRows, writeEnrollmentLive } from "@/lib/enrollment
 import { parseEnrollmentFile } from "@/lib/enrollment-file"
 import { pullPublishedEnrollment } from "@/lib/enrollment-sheet"
 import { ENROLLMENT_SHEET_URL } from "@/lib/constants"
+import { applyContactLabels, pullContactLabels, type ContactLabelRow } from "@/lib/contacts-labels"
 
 export const runtime = "nodejs"
 
@@ -24,6 +25,13 @@ export async function GET() {
   let added = 0
   let updated = 0
   let tabs: { name: string; rows: number }[] = []
+  let contactLabels: ContactLabelRow[] = []
+
+  try {
+    contactLabels = await pullContactLabels()
+  } catch {
+    /* labels are an overlay; enrollment still loads without them */
+  }
 
   try {
     const live = await pullPublishedEnrollment(workbook, sheetUrl)
@@ -37,7 +45,6 @@ export async function GET() {
       .map((tab) => `${tab.name} ${tab.rows}`)
       .join(" · ")
     message = `Live enrollment Google Sheet · ${updated} updated · ${added} new${tabBits ? ` · ${tabBits}` : ""}. Edits on the published doc show up here automatically.`
-    if (added || updated) await writeEnrollmentLive(students, "csv")
   } catch (err) {
     error = err instanceof Error ? err.message : "Enrollment sheet error"
     const bundled = await readBundledEnrollmentRows()
@@ -53,6 +60,16 @@ export async function GET() {
     }
   }
 
+  if (contactLabels.length) {
+    const labeled = applyContactLabels(students, contactLabels)
+    students = labeled.students
+    updated += labeled.updated
+    if (labeled.matched) {
+      message += ` · ${labeled.matched} labeled from the current-students list.`
+    }
+  }
+  if (added || updated) await writeEnrollmentLive(students, "csv")
+
   return NextResponse.json({
     source,
     connected: source !== "workbook",
@@ -61,6 +78,7 @@ export async function GET() {
     fetchedAt: new Date().toISOString(),
     sheetUrl,
     tabs,
+    contactLabels,
     webhookPath: "/api/enrollment/webhook",
     students,
   })
@@ -94,16 +112,28 @@ export async function POST(request: Request) {
     }
 
     const merged = applyWorkbookRows(seedStudents(), rows)
-    const saved = await writeEnrollmentLive(merged.students, "upload")
+    let students = merged.students
+    let updated = merged.updated
+    let contactLabels: ContactLabelRow[] = []
+    try {
+      contactLabels = await pullContactLabels()
+      const labeled = applyContactLabels(students, contactLabels)
+      students = labeled.students
+      updated += labeled.updated
+    } catch {
+      /* uploaded roster still saves without the contacts export */
+    }
+    const saved = await writeEnrollmentLive(students, "upload")
     return NextResponse.json({
       source: "upload",
       connected: true,
-      message: `Enrollment doc synced · ${merged.students.length} people · ${merged.added} new · ${merged.updated} updated.`,
+      message: `Enrollment doc synced · ${students.length} people · ${merged.added} new · ${updated} updated.`,
       fetchedAt: saved.updatedAt,
       updatedAt: saved.updatedAt,
       added: merged.added,
-      updated: merged.updated,
-      students: merged.students,
+      updated,
+      contactLabels,
+      students,
     })
   } catch (err) {
     return NextResponse.json(

@@ -3,6 +3,7 @@ import seed from "@/data/seed.json"
 import type { Student } from "@/lib/types"
 import { applyWorkbookRows, parseEnrollmentCsv } from "@/lib/enrollment-sync"
 import { writeEnrollmentLive } from "@/lib/enrollment-live"
+import { applyContactLabels, pullContactLabels } from "@/lib/contacts-labels"
 
 export const runtime = "nodejs"
 
@@ -29,14 +30,23 @@ export async function POST(request: Request) {
 
   const workbook = ((seed.students as Student[]) ?? []).map((s) => ({ ...s }))
   const merged = applyWorkbookRows(workbook, rows)
-  const saved = await writeEnrollmentLive(merged.students, "webhook")
+  let students = merged.students
+  let updated = merged.updated
+  try {
+    const labeled = applyContactLabels(students, await pullContactLabels())
+    students = labeled.students
+    updated += labeled.updated
+  } catch {
+    /* webhook roster still saves without the contacts export */
+  }
+  const saved = await writeEnrollmentLive(students, "webhook")
   return NextResponse.json({
     source: "webhook",
     connected: true,
-    message: `Enrollment webhook synced · ${merged.students.length} people · ${merged.added} new · ${merged.updated} updated.`,
+    message: `Enrollment webhook synced · ${students.length} people · ${merged.added} new · ${updated} updated.`,
     fetchedAt: saved.updatedAt,
     added: merged.added,
-    updated: merged.updated,
-    students: merged.students,
+    updated,
+    students,
   })
 }

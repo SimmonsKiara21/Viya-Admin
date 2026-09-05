@@ -49,9 +49,6 @@ export default function CheckInPage() {
     setQuery("")
   }
 
-  const webhookUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/api/jotform/webhook` : "/api/jotform/webhook"
-
   return (
     <div>
       <PageHeader
@@ -63,9 +60,9 @@ export default function CheckInPage() {
       <Panel className="mb-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="font-heading text-2xl">Jotform tracker</h2>
+            <h2 className="font-heading text-2xl">Attendance tracker</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {jotform.message || "Syncing the student attendance form."}
+              {jotform.message || "Syncing the published student attendance tracker."}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Form:{" "}
@@ -81,14 +78,17 @@ export default function CheckInPage() {
             </p>
           </div>
           <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            {jotform.connected ? "API connected" : jotform.source === "webhook" ? "Webhook live" : "Syncing"}
+            {jotform.source === "sheet"
+              ? "Sheet live"
+              : jotform.connected
+                ? "API connected"
+                : jotform.source === "webhook"
+                  ? "Webhook live"
+                  : "Syncing"}
           </span>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
-          To receive student-phone check-ins automatically, add a Jotform webhook to{" "}
-          <span className="break-all font-mono">{webhookUrl}</span>
-          , or put <span className="font-mono">JOTFORM_API_KEY</span> in{" "}
-          <span className="font-mono">.env.local</span>.
+          Student-phone check-ins come from the published attendance tracker. Keep that Google Sheet set to File → Share → Publish to web. The desk also still posts staff check-ins to Jotform.
         </p>
       </Panel>
 

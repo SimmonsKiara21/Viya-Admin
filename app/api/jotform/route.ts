@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { JOTFORM_ATTENDANCE_ID, JOTFORM_ATTENDANCE_URL } from "@/lib/constants"
+import { pullAttendanceSheet } from "@/lib/attendance-sheet"
 import { parseJotformList, type JotformCheckIn } from "@/lib/jotform"
 import { readLiveCheckIns, rememberCheckIns } from "@/lib/jotform-live"
 
@@ -32,37 +33,57 @@ async function fetchFromJotform(apiKey: string): Promise<JotformCheckIn[]> {
 export async function GET() {
   const apiKey = process.env.JOTFORM_API_KEY || ""
   const live = await readLiveCheckIns()
-  let source: "api" | "webhook" | "waiting" = live.length ? "webhook" : "waiting"
+  let source: "sheet" | "api" | "webhook" | "waiting" = live.length ? "webhook" : "waiting"
   let message =
-    "Waiting on the student form. Desk check-ins are posted to Jotform. Student-phone check-ins appear here when a Jotform API key or webhook is connected."
+    "Waiting on the published attendance tracker. Desk check-ins still post to Jotform."
+  let sheetRows: JotformCheckIn[] = []
   let apiRows: JotformCheckIn[] = []
   let error = ""
+
+  try {
+    sheetRows = await pullAttendanceSheet()
+    if (sheetRows.length) {
+      source = "sheet"
+      message = `Live attendance tracker · ${sheetRows.length} check-in${sheetRows.length === 1 ? "" : "s"} from the published sheet.`
+      await rememberCheckIns(sheetRows)
+    }
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Attendance sheet error"
+  }
 
   if (apiKey) {
     try {
       apiRows = await fetchFromJotform(apiKey)
-      source = "api"
-      message = `Live Jotform tracker · ${apiRows.length} submission${apiRows.length === 1 ? "" : "s"} pulled.`
+      if (!sheetRows.length) {
+        source = "api"
+        message = `Live Jotform tracker · ${apiRows.length} submission${apiRows.length === 1 ? "" : "s"} pulled.`
+      }
       if (apiRows.length) await rememberCheckIns(apiRows)
     } catch (err) {
-      error = err instanceof Error ? err.message : "Jotform API error"
-      message = live.length
-        ? `Jotform API failed (${error}). Showing check-ins already received by webhook.`
-        : `Jotform API failed (${error}). Desk check-ins still post to the form.`
+      const apiError = err instanceof Error ? err.message : "Jotform API error"
+      error = error ? `${error}; ${apiError}` : apiError
     }
-  } else if (live.length) {
-    source = "webhook"
-    message = `Jotform webhook is receiving check-ins · ${live.length} on file.`
+  }
+
+  if (!sheetRows.length && !apiRows.length) {
+    if (live.length) {
+      source = "webhook"
+      message = error
+        ? `Published tracker failed (${error}). Showing check-ins already received.`
+        : `Jotform webhook is receiving check-ins · ${live.length} on file.`
+    } else if (error) {
+      message = `Attendance tracker failed (${error}). Desk check-ins still post to the form.`
+    }
   }
 
   return NextResponse.json({
     formId: JOTFORM_ATTENDANCE_ID,
     formUrl: JOTFORM_ATTENDANCE_URL,
-    connected: Boolean(apiKey),
+    connected: source === "sheet" || Boolean(apiKey),
     source,
     message,
     error: error || undefined,
     fetchedAt: new Date().toISOString(),
-    checkIns: unique([...apiRows, ...live]),
+    checkIns: unique([...sheetRows, ...apiRows, ...live]),
   })
 }

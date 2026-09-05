@@ -9,6 +9,7 @@ export type JotformCheckIn = {
   classType: ClassType
   checkedInAt: string
   statusLabel: string
+  notes?: string
 }
 
 export type JotformMatchResult = {
@@ -210,7 +211,7 @@ export function matchJotformCheckIns(checkIns: JotformCheckIn[], students: Stude
       studentId: student.id,
       checkedInAt: row.checkedInAt,
       classType: row.classType,
-      notes: "Jotform check-in",
+      notes: row.notes?.trim() || "Tracker check-in",
     })
   }
 
@@ -239,7 +240,11 @@ function namesMatch(student: Student, row: JotformCheckIn) {
   const studentFirst = student.firstName.trim().toLowerCase()
   const nick = student.nickname.trim().toLowerCase()
   const studentLast = student.lastName.trim().toLowerCase()
-  return (studentFirst === first || nick === first) && studentLast === last
+  if (studentLast !== last) return false
+  if (studentFirst === first || nick === first) return true
+  if (studentFirst.startsWith(first) || first.startsWith(studentFirst)) return true
+  if (nick && (nick.startsWith(first) || first.startsWith(nick))) return true
+  return false
 }
 
 export function isSameCheckIn(a: AttendanceRecord, b: AttendanceRecord) {

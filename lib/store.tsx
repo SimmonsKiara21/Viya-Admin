@@ -40,7 +40,7 @@ import { applyDrivePhotos } from "./photos-overlay"
 const STORAGE_KEY = "viya-academy-store-v7"
 const LEGACY_KEYS = ["viya-academy-store-v6", "viya-academy-store-v5", "viya-academy-store-v4"]
 const PHOTOS_KEY = "viya-academy-photos-v1"
-const JOTFORM_MS = 60_000
+const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
 
 function attendanceKey(rows: AttendanceRecord[]) {

@@ -37,7 +37,7 @@ export default function AttendancePage() {
       <PageHeader
         eyebrow="Classes"
         title="Attendance"
-        description="Jotform is the attendance record. Times are Arizona (Phoenix, MST). The August 26 class from the student tracker is loaded. New check-ins land here from the form or the Check-in tab."
+        description="The published student attendance tracker is the record. Times are Arizona (Phoenix, MST). New check-ins from the form land here as soon as the sheet updates."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">

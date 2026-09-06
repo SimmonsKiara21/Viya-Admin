@@ -1,0 +1,51 @@
+export const COLOR_KEY = [
+  {
+    id: "overdue",
+    label: "Overdue",
+    meaning: "Academy payment is late or the card was declined",
+    swatch: "bg-rose-500",
+    text: "text-rose-800 dark:text-rose-100",
+  },
+  {
+    id: "subscriberOverdue",
+    label: "Sub overdue",
+    meaning: "Subscriber payment is late",
+    swatch: "bg-orange-500",
+    text: "text-orange-900 dark:text-orange-100",
+  },
+  {
+    id: "collections",
+    label: "Collections",
+    meaning: "Collections or cancelling — not mixed with overdue",
+    swatch: "bg-amber-500",
+    text: "text-amber-900 dark:text-amber-100",
+  },
+  {
+    id: "paused",
+    label: "Paused",
+    meaning: "On hold — not on the floor",
+    swatch: "bg-violet-500",
+    text: "text-violet-900 dark:text-violet-100",
+  },
+  {
+    id: "pending",
+    label: "Pending",
+    meaning: "Has not started yet",
+    swatch: "bg-sky-500",
+    text: "text-sky-900 dark:text-sky-100",
+  },
+  {
+    id: "finishing",
+    label: "Wrapping up",
+    meaning: "Fewer than 3 payments left",
+    swatch: "bg-lime-500",
+    text: "text-lime-800 dark:text-lime-100",
+  },
+  {
+    id: "pif",
+    label: "Paid in full",
+    meaning: "Academy plan is paid in full",
+    swatch: "bg-emerald-500",
+    text: "text-emerald-900 dark:text-emerald-100",
+  },
+] as const

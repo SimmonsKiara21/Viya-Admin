@@ -20,6 +20,7 @@ import {
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { StudentSearch } from "@/components/student-search"
 import { StaffAlertBanner } from "@/components/staff-alert-banner"
+import { ColorKey } from "@/components/color-key"
 import { lockDesk } from "@/components/desk-gate"
 import { cn } from "@/lib/utils"
 
@@ -128,6 +129,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <StudentSearch className="max-w-xl flex-1" />
         </header>
         <StaffAlertBanner />
+        <ColorKey />
         <div className="flex-1 px-4 py-6 md:px-8">{children}</div>
       </div>
     </div>

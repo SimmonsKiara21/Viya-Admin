@@ -36,7 +36,7 @@ const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: s
       "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100",
   },
   subscriberOverdue: {
-    label: "Subscriber overdue",
+    label: "Sub overdue",
     className:
       "rounded-full bg-orange-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-orange-900 uppercase dark:text-orange-100",
   },

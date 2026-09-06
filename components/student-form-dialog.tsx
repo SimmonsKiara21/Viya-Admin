@@ -37,7 +37,7 @@ function applyKind(kind: AddKind): Partial<Student> {
       track: "none",
       paymentPlan: "none",
       enrollmentStatus: "contact",
-      contactCategory: "new",
+      contactCategory: "",
     }
   }
   if (kind === "modeling") {

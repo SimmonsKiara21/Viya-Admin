@@ -22,7 +22,7 @@ export default function ContactsPage() {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<(typeof CONTACT_FILTERS)[number]>("all")
   const [adding, setAdding] = useState(false)
-  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" as ContactCategory })
+  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "" as ContactCategory | "" })
 
   const contacts = useMemo(() => {
     const googleList = category !== "all" && GOOGLE_CONTACT_FILTERS.includes(category)
@@ -78,7 +78,7 @@ export default function ContactsPage() {
     }
     addStudent(student)
     toast.success(`${student.firstName} ${student.lastName} was added to Contacts.`)
-    setForm({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "new" })
+    setForm({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "" })
     setAdding(false)
   }
 
@@ -87,7 +87,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="The full Google Contacts export — name, phone, email, and list. Newsletter, Current Student, Active Subscribers, May photoshoot, and the Model Source lists are all here."
+        description="Everyone in the Google Contacts export. People with no list stay here unlabeled. Add a label only if you need one."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -115,9 +115,10 @@ export default function ContactsPage() {
             <Field label="Category">
               <NativeSelect
                 value={form.contactCategory}
-                onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory })}
+                onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory | "" })}
               >
-                {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
+                <option value="">No label</option>
+                {(Object.keys(CONTACT_LABELS) as ContactCategory[]).filter((key) => key !== "new").map((key) => (
                   <option key={key} value={key}>
                     {CONTACT_LABELS[key]}
                   </option>
@@ -194,12 +195,15 @@ export default function ContactsPage() {
                       <ContactBadge category={student.contactCategory} />
                       <NativeSelect
                         className="h-8 w-[13rem] text-xs"
-                        value={student.contactCategory || "new"}
+                        value={student.contactCategory || ""}
                         onChange={(e) =>
-                          updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
+                          updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
                         }
                       >
-                        {(Object.keys(CONTACT_LABELS) as ContactCategory[]).map((key) => (
+                        <option value="">No label</option>
+                        {(Object.keys(CONTACT_LABELS) as ContactCategory[])
+                          .filter((key) => key !== "new")
+                          .map((key) => (
                           <option key={key} value={key}>
                             {CONTACT_LABELS[key]}
                           </option>

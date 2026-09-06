@@ -40,7 +40,7 @@ import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
-import { applyContactLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
+import { applyContactLabels, categoryFromLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
 import { applyDrivePhotos } from "./photos-overlay"
 
 const STORAGE_KEY = "viya-academy-store-v8"
@@ -149,7 +149,15 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     nextPaymentAmount: s.nextPaymentAmount ?? null,
     installmentsLeft: s.installmentsLeft ?? null,
     notes: s.notes || "",
-    contactCategory: (s.contactCategory || (prospect ? "photoshoot" : "")) as ContactCategory | "",
+    contactCategory: (() => {
+      const cat = (s.contactCategory || "") as ContactCategory | ""
+      if (!prospect) return cat
+      if (cat === "inquiry" || cat === "follow-up" || cat === "not-interested") return cat
+      const fromLabels = categoryFromLabels(Array.isArray(s.labels) ? s.labels : [])
+      if (fromLabels) return fromLabels
+      if (cat === "new") return ""
+      return cat
+    })(),
     subscriptionStatus: s.subscriptionStatus || "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",

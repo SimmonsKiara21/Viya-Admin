@@ -410,12 +410,15 @@ export default function StudentProfilePage() {
               {isContact(student) ? (
                 <Field label="Category">
                   <NativeSelect
-                    value={student.contactCategory || "new"}
+                    value={student.contactCategory || ""}
                     onChange={(e) =>
-                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory })
+                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
                     }
                   >
-                    {Object.entries(CONTACT_LABELS).map(([k, label]) => (
+                    <option value="">No label</option>
+                    {Object.entries(CONTACT_LABELS)
+                      .filter(([k]) => k !== "new")
+                      .map(([k, label]) => (
                       <option key={k} value={k}>
                         {label}
                       </option>

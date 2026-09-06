@@ -79,7 +79,7 @@ export const CONTACT_LABELS: Record<ContactCategory, string> = {
   "model-source-la": "LA Model Source 2026",
   "model-source-nov": "Model Source November",
   newsletter: "Newsletter",
-  new: "New",
+  new: "Unlabeled",
   inquiry: "Inquiry",
   "follow-up": "Follow-up",
   "not-interested": "Not interested",

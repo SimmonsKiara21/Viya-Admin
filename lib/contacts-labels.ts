@@ -199,7 +199,9 @@ function matchRow(row: ContactLabelRow, students: Student[]) {
   })
 }
 
-export function categoryFromLabels(labels: string[]): ContactCategory {
+const STAFF_CONTACT_CATEGORIES = new Set<ContactCategory>(["inquiry", "follow-up", "not-interested"])
+
+export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   const text = labels.join(" | ").toLowerCase()
   if (/model source november/.test(text)) return "model-source-nov"
   if (/la model source/.test(text)) return "model-source-la"
@@ -207,7 +209,13 @@ export function categoryFromLabels(labels: string[]): ContactCategory {
   if (/current student/.test(text)) return "current-student"
   if (/active subscriber/.test(text)) return "subscriber"
   if (/newsletter/.test(text)) return "newsletter"
-  return "new"
+  return ""
+}
+
+export function isUnlabeledContact(student: Student) {
+  if (student.program !== "prospect" && student.enrollmentStatus !== "contact") return false
+  if (onGoogleList(student, "all")) return false
+  return !student.contactCategory
 }
 
 export function hasContactLabel(student: Student, pattern: RegExp) {
@@ -234,6 +242,7 @@ export function matchesContactFilter(student: Student, filter: ContactCategory |
   if (filter === "model-source-la") return student.contactCategory === "model-source-la"
   if (filter === "model-source-nov") return student.contactCategory === "model-source-nov"
   if (filter === "newsletter") return student.contactCategory === "newsletter"
+  if (filter === "new") return isUnlabeledContact(student) || student.contactCategory === "new"
   return student.contactCategory === filter
 }
 
@@ -262,8 +271,11 @@ function applyLabelEffects(student: Student, labels: string[]) {
   }
   if (isDeskContact(student)) {
     const nextCategory = categoryFromLabels(labels)
-    const locked = student.contactCategory === "inquiry" || student.contactCategory === "follow-up" || student.contactCategory === "not-interested"
-    if (!locked) student.contactCategory = nextCategory
+    const locked = STAFF_CONTACT_CATEGORIES.has(student.contactCategory as ContactCategory)
+    if (nextCategory) student.contactCategory = nextCategory
+    else if (!locked && (student.contactCategory === "new" || !student.contactCategory)) {
+      student.contactCategory = ""
+    }
   }
 }
 
@@ -377,7 +389,13 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
   let updated = 0
   for (const student of next) {
     const labels = incoming.get(student.id)
-    if (!labels?.length) continue
+    if (!labels?.length) {
+      if (isDeskContact(student) && student.contactCategory === "new") {
+        student.contactCategory = ""
+        updated += 1
+      }
+      continue
+    }
     const removed = new Set(student.removedLabels || [])
     const extras = (student.labels || []).filter((label) => !labels.includes(label) && !removed.has(label))
     const merged = [...new Set([...labels.filter((label) => !removed.has(label)), ...extras])].sort((a, b) =>

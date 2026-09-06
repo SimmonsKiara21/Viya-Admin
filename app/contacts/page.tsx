@@ -215,7 +215,7 @@ export default function ContactsPage() {
                             enrollmentStatus: "pending",
                             paymentPlan: "pp",
                           })
-                          toast.success(`${student.firstName} moved to Students as pending.`)
+                          toast.success(`${student.firstName} moved to Talent as pending.`)
                         }}
                       >
                         Move to pending

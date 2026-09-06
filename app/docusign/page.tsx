@@ -53,7 +53,7 @@ export default function DocusignPage() {
 
   function attach() {
     if (!picked) {
-      toast.error("Pick a student first.")
+      toast.error("Pick someone first.")
       return
     }
     if (!envelope.docusignUrl && !envelope.docusignEnvelopeId) {
@@ -76,14 +76,14 @@ export default function DocusignPage() {
         actions={
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />
-            Add student + DocuSign
+            Add talent + DocuSign
           </Button>
         }
       />
 
       <Panel className="mb-6 grid gap-4">
         <div>
-          <h2 className="font-heading text-2xl">Attach to a student</h2>
+          <h2 className="font-heading text-2xl">Attach to talent</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Search someone already on the enrollment roster, then paste their DocuSign.
           </p>
@@ -182,7 +182,7 @@ export default function DocusignPage() {
       {list.length === 0 ? (
         <EmptyState
           title="No DocuSign files in this view"
-          description="Add a student with their DocuSign, or attach an envelope to someone already on the roster."
+          description="Add talent with their DocuSign, or attach an envelope to someone already on the roster."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">

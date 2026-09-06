@@ -119,8 +119,8 @@ export default function StudentProfilePage() {
   if (!student) {
     return (
       <EmptyState
-        title="Student not found"
-        description="That ID is not on the roster. Head back to Students and search by name."
+        title="Talent not found"
+        description="That ID is not on the roster. Head back to Talent and search by name."
       />
     )
   }
@@ -167,7 +167,7 @@ export default function StudentProfilePage() {
               })
             }
           >
-            Send student alert
+            Send alert
           </Button>
         </div>
       ) : null}
@@ -747,7 +747,7 @@ export default function StudentProfilePage() {
             <SquareSubscriptionCopy student={student} payments={payments} />
             <p className="text-sm text-muted-foreground">
               Use Interested when someone on a payment plan wants the subscriber track — several
-              academy students already have that flag from the workbook.
+              academy talent already have that flag from the workbook.
             </p>
           </Panel>
         </TabsContent>

@@ -49,12 +49,12 @@ export default function HomePage() {
       <PageHeader
         eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="Enrolled, overdue, collections, and pending."
+        description="Talent, overdue, collections, and pending."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
               <Plus className="size-4" />
-              Add student
+              Add talent
             </Button>
             <button
               type="button"
@@ -86,7 +86,7 @@ export default function HomePage() {
       </Panel>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard icon={Users} label="Enrolled" value={String(stats.current.length)} href="/students" />
+        <StatCard icon={Users} label="Talent" value={String(stats.current.length)} href="/students" />
         <StatCard icon={AlertTriangle} label="Overdue" value={String(stats.overdue.length)} href="/alerts" />
         <StatCard icon={FolderOpen} label="Collections" value={String(stats.collections.length)} href="/alerts" />
         <StatCard icon={AlertTriangle} label="Sub overdue" value={String(stats.subscriberOverdue.length)} href="/alerts" />
@@ -94,7 +94,7 @@ export default function HomePage() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <NameList title="Enrolled" empty="Nobody is currently enrolled." students={stats.current} href="/students" />
+        <NameList title="Talent" empty="No current academy talent." students={stats.current} href="/students" />
         <NameList
           title="Overdue"
           empty="Nobody is overdue."

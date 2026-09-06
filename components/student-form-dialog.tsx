@@ -113,7 +113,7 @@ export function StudentFormDialog({
     }
     const id = form.id.trim() || newId("VA").replace("VA-", "").toUpperCase()
     if (students.some((s) => s.id === id)) {
-      toast.error("That student ID is already in use.")
+      toast.error("That talent ID is already in use.")
       return
     }
     const student = withDocusignDefaults({
@@ -136,7 +136,7 @@ export function StudentFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-heading text-2xl">Add a student</DialogTitle>
+          <DialogTitle className="font-heading text-2xl">Add talent</DialogTitle>
           <DialogDescription>Name, status, tags, and DocuSign.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -170,7 +170,7 @@ export function StudentFormDialog({
           <DocusignFields value={form} onChange={patch} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Student ID">
+          <Field label="Talent ID">
             <Input
               placeholder="Auto if blank"
               value={form.id}
@@ -241,7 +241,7 @@ export function StudentFormDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={save}>Save student</Button>
+          <Button onClick={save}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

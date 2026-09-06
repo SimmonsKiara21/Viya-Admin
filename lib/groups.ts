@@ -1,17 +1,17 @@
 import type { NotifyGroup, PaymentRecord, Student, SystemGroupKey } from "./types"
-import { isAcademyOverdue, isSubscriberOverdue } from "./alerts"
+import { isAcademyOverdue, isCurrentlyEnrolled, isSubscriberOverdue } from "./alerts"
 import { hasContactLabel } from "./contacts-labels"
 
 export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; description: string }[] = [
   {
     systemKey: "current",
-    name: "Current students",
-    description: "Academy students whose enrollment is current.",
+    name: "Current talent",
+    description: "Academy talent whose enrollment is current.",
   },
   {
     systemKey: "overdue",
     name: "Overdue",
-    description: "Academy students who are overdue, including declined cards.",
+    description: "Academy talent who are overdue, including declined cards.",
   },
   {
     systemKey: "subscriberOverdue",
@@ -32,7 +32,7 @@ export function studentIdsForSystemGroup(
 ): string[] {
   if (key === "current") {
     return students
-      .filter((s) => s.enrollmentStatus === "current" && s.program === "academy")
+      .filter(isCurrentlyEnrolled)
       .map((s) => s.id)
   }
   if (key === "overdue") {

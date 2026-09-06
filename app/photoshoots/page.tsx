@@ -53,8 +53,8 @@ export default function PhotoshootsPage() {
     setPhotoshootPlacement(id, currentId, status)
     toast.success(
       status === "none"
-        ? `${student ? fullName(student) : "Student"} was removed from ${shoot?.label || "this shoot"}.`
-        : `${student ? fullName(student) : "Student"} moved to ${PHOTO_LABELS[status]} · ${shoot?.label}.`,
+        ? `${student ? fullName(student) : "Talent"} was removed from ${shoot?.label || "this shoot"}.`
+        : `${student ? fullName(student) : "Talent"} moved to ${PHOTO_LABELS[status]} · ${shoot?.label}.`,
     )
     if (query.trim()) setQuery("")
   }
@@ -203,7 +203,7 @@ export default function PhotoshootsPage() {
             ))}
           </ul>
         ) : query.trim() ? (
-          <p className="text-sm text-muted-foreground">No matching student.</p>
+          <p className="text-sm text-muted-foreground">No match.</p>
         ) : null}
       </Panel>
 

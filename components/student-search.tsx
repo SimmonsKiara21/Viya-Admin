@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 
 export function StudentSearch({
   className,
-  placeholder = "Look up a student or contact",
+  placeholder = "Look up talent or a contact",
 }: {
   className?: string
   placeholder?: string
@@ -49,13 +49,13 @@ export function StudentSearch({
         }}
         placeholder={placeholder}
         className="h-11 rounded-full border-[oklch(0.4_0.03_75)] bg-background/70 pl-10 pr-4 text-base md:text-sm"
-        aria-label="Look up a student"
+        aria-label="Look up talent"
       />
       {open && query.trim() ? (
         <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-border bg-popover shadow-xl">
           {results.length === 0 ? (
             <p className="px-4 py-6 text-sm text-muted-foreground">
-              No student matches “{query}”.
+              No match for “{query}”.
             </p>
           ) : (
             <ul>

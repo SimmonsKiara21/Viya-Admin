@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 const NAV = [
   { href: "/", label: "Home", icon: LayoutDashboard },
   { href: "/alerts", label: "Alerts", icon: Bell },
-  { href: "/students", label: "Students", icon: Users },
+  { href: "/students", label: "Talent", icon: Users },
   { href: "/contacts", label: "Contacts", icon: BookUser },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/classes", label: "Classes", icon: Clock },

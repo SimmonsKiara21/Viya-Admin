@@ -77,7 +77,7 @@ export default function SubscriptionsPage() {
       {list.length === 0 ? (
         <EmptyState
           title="Nobody in this subscription view"
-          description="Mark Interested on a student profile to add them here."
+          description="Mark Interested on a profile to add them here."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">

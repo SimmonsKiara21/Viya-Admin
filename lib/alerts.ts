@@ -36,11 +36,18 @@ export function notesSayPaymentDeclined(notes: string) {
 }
 
 export function isCollectionsStudent(student: Student) {
+  if (isSubscriberStudent(student)) return false
   return student.enrollmentStatus === "collections" || student.enrollmentStatus === "cancelling"
 }
 
 export function isSubscriberStudent(student: Student) {
   return student.program === "subscriber" || student.paymentPlan === "subscription"
+}
+
+/** Academy roster only — subscribers live on Subscriptions. */
+export function isAcademyTalent(student: Student) {
+  if (isContact(student) || isSubscriberStudent(student)) return false
+  return student.program === "academy"
 }
 
 /** Overdue + declined card notes. Collections / cancelling stay out. */
@@ -70,7 +77,8 @@ export function isDeclinedStudent(student: Student) {
 }
 
 export function isCurrentlyEnrolled(student: Student) {
-  if (isContact(student) || isCollectionsStudent(student) || isOverdueFollowUp(student)) return false
+  if (!isAcademyTalent(student)) return false
+  if (isCollectionsStudent(student) || isOverdueFollowUp(student)) return false
   if (student.enrollmentStatus === "paused" || student.enrollmentStatus === "pending") return false
   return (
     student.enrollmentStatus === "current" ||
@@ -84,15 +92,15 @@ export function isSubscriberOverdue(student: Student) {
 }
 
 export function isPausedStudent(student: Student) {
-  return student.enrollmentStatus === "paused"
+  return isAcademyTalent(student) && student.enrollmentStatus === "paused"
 }
 
 export function isPendingStudent(student: Student) {
-  return student.enrollmentStatus === "pending" && !isContact(student)
+  return isAcademyTalent(student) && student.enrollmentStatus === "pending"
 }
 
 export function isPaidInFull(student: Student) {
-  if (isContact(student)) return false
+  if (!isAcademyTalent(student)) return false
   if (isCollectionsStudent(student) || isPausedStudent(student) || isPendingStudent(student)) return false
   if (isOverdueStudent(student)) return false
   return student.paymentPlan === "pif" || student.enrollmentStatus === "pif"

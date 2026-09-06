@@ -1,6 +1,6 @@
 # ViyaAdmin.com
 
-Staff desk for **Viya Academy + Agency** in Phoenix, branded as **ViyaAdmin.com**. Look up a student, see their photo and file, take class check-in, track Square balances, and send a text or Gmail — without bouncing between spreadsheets.
+Staff desk for **Viya Academy + Agency** in Phoenix, branded as **ViyaAdmin.com**. Look up talent, see their photo and file, take class check-in, track Square balances, and send a text or Gmail — without bouncing between spreadsheets.
 
 The 2026 enrollment workbook, subscriber list, photoshoot flags, and the August 26 Jotform attendance tracker are loaded as the starting roster. Attendance after that comes from Jotform.
 
@@ -22,13 +22,13 @@ npm start
 
 ## What you can do
 
-- **Add a student** as **Academy**, **Modeling**, **Acting**, or **Subscriber**, with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
+- **Add talent** as **Academy**, **Modeling**, or **Acting**, with their **DocuSign**. Subscribers stay on **Subscriptions**. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Payments** is a Square tracker for **enrollment students only**. The desk pulls invoices every couple of minutes. With `SQUARE_ACCESS_TOKEN` those are live Square invoices (due dates, paid, balance). Without a token it uses the last dashboard snapshot in `data/square.json`. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
-- **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
+- **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
 - **Notify** groups: **Current**, **Overdue**, **Sub overdue**, and **Subscribers**. Click people in the list (or **Add all shown**) and save a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.

@@ -8,8 +8,7 @@ import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
-import { isContact, isOverdueTalent } from "@/lib/alerts"
-import { hasContactLabel } from "@/lib/contacts-labels"
+import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
 import type { EnrollmentStatus } from "@/lib/types"
@@ -26,12 +25,11 @@ const STATUSES: Array<EnrollmentStatus | "all"> = [
   "pif",
 ]
 
-const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting" | "subscriber"> = [
+const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting"> = [
   "all",
   "academy",
   "modeling",
   "acting",
-  "subscriber",
 ]
 
 export default function StudentsPage() {
@@ -43,13 +41,13 @@ export default function StudentsPage() {
 
   const filtered = useMemo(() => {
     return students
-      .filter((s) => !isContact(s) || hasContactLabel(s, /current student/i))
+      .filter(isAcademyTalent)
       .filter((s) => matchesQuery(s, query))
       .filter((s) => {
         if (status === "all") return true
         if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
         if (status === "overdue") return isOverdueTalent(s)
-        if (status === "current" && hasContactLabel(s, /current student/i)) return true
+        if (status === "current") return isCurrentlyEnrolled(s)
         return s.enrollmentStatus === status
       })
       .filter((s) => {
@@ -68,12 +66,12 @@ export default function StudentsPage() {
     <div>
       <PageHeader
         eyebrow="Roster"
-        title="Students"
-        description="Academy, modeling, acting, and subscribers. Change status and tags on each file."
+        title="Talent"
+        description="Academy, modeling, and acting. Subscribers are on Subscriptions."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />
-            Add student
+            Add talent
           </Button>
         }
       />
@@ -104,12 +102,12 @@ export default function StudentsPage() {
       {filtered.length === 0 ? (
         <EmptyState
           title="No one matches those filters"
-          description="Clear the search or switch status. You can also add a student."
+          description="Clear the search or switch status."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
           <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
-            {filtered.length} student{filtered.length === 1 ? "" : "s"}
+            {filtered.length} talent
           </div>
           <div className="divide-y divide-border px-2 py-1">
             {filtered.map((student) => (

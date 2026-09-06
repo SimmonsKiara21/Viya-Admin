@@ -301,8 +301,8 @@ export function NotifyComposer({
         </div>
         {picked.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No one selected yet. Use Current students, Overdue students, or Subscribers — or search and
-            check several people for a group message.
+            No one selected yet. Use Current talent, Overdue, or Subscribers — or search and
+            check several people.
           </p>
         ) : (
           <ul className="grid max-h-56 gap-1.5 overflow-y-auto">

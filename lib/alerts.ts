@@ -30,43 +30,48 @@ export function isContact(student: Student) {
   return student.program === "prospect" || student.enrollmentStatus === "contact"
 }
 
-export function isOverdueStudent(student: Student) {
-  if (isContact(student)) return false
-  return student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
+/** Workbook notes mark a declined card. Those people sit on Overdue, not a separate list. */
+export function notesSayPaymentDeclined(notes: string) {
+  return /(?:payment|card)\s+declined|declined\s+\d{1,2}\/\d{1,2}/i.test(notes || "")
+}
+
+export function isCollectionsStudent(student: Student) {
+  return student.enrollmentStatus === "collections" || student.enrollmentStatus === "cancelling"
 }
 
 export function isSubscriberStudent(student: Student) {
   return student.program === "subscriber" || student.paymentPlan === "subscription"
 }
 
-export function isAcademyOverdue(student: Student) {
-  return isOverdueStudent(student) && !isSubscriberStudent(student)
+/** Overdue + declined card notes. Collections / cancelling stay out. */
+export function isOverdueFollowUp(student: Student) {
+  if (isContact(student) || isCollectionsStudent(student)) return false
+  return (
+    student.enrollmentStatus === "overdue" ||
+    student.enrollmentStatus === "declined" ||
+    notesSayPaymentDeclined(student.notes)
+  )
+}
+
+export function isOverdueStudent(student: Student) {
+  return isOverdueFollowUp(student)
 }
 
 export function isOverdueTalent(student: Student) {
-  return !isContact(student) && !isSubscriberStudent(student) && student.enrollmentStatus === "overdue"
+  return isOverdueFollowUp(student) && !isSubscriberStudent(student)
 }
 
-/** Workbook notes mark a declined card — STATUS can still be OVERDUE or COLLECTIONS. */
-export function notesSayPaymentDeclined(notes: string) {
-  return /(?:payment|card)\s+declined|declined\s+\d{1,2}\/\d{1,2}/i.test(notes || "")
-}
-
-export function paymentDeclinedSnippet(notes: string) {
-  const text = (notes || "").trim()
-  if (!text) return ""
-  const match = text.match(/[^.]{0,48}(?:payment|card)\s+declined[^.]{0,24}/i)
-  if (match) return match[0].replace(/\s+/g, " ").trim()
-  return notesSayPaymentDeclined(text) ? "Payment declined" : ""
+export function isAcademyOverdue(student: Student) {
+  return isOverdueTalent(student)
 }
 
 export function isDeclinedStudent(student: Student) {
-  if (isContact(student)) return false
-  return student.enrollmentStatus === "declined" || notesSayPaymentDeclined(student.notes)
+  return isOverdueFollowUp(student)
 }
 
 export function isCurrentlyEnrolled(student: Student) {
-  if (isContact(student)) return false
+  if (isContact(student) || isCollectionsStudent(student) || isOverdueFollowUp(student)) return false
+  if (student.enrollmentStatus === "paused" || student.enrollmentStatus === "pending") return false
   return (
     student.enrollmentStatus === "current" ||
     student.enrollmentStatus === "pif" ||
@@ -75,11 +80,7 @@ export function isCurrentlyEnrolled(student: Student) {
 }
 
 export function isSubscriberOverdue(student: Student) {
-  return isOverdueStudent(student) && isSubscriberStudent(student)
-}
-
-export function isCollectionsStudent(student: Student) {
-  return student.enrollmentStatus === "collections"
+  return isOverdueFollowUp(student) && isSubscriberStudent(student)
 }
 
 export function isPausedStudent(student: Student) {

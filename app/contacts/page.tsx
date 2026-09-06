@@ -64,6 +64,8 @@ export default function ContactsPage() {
       photoshootStatus: "none",
       photoshootNotes: "",
       labels: [],
+      removedLabels: [],
+      deskLocks: {},
       classTime: "",
       photoUrl: "",
       docusignStatus: "none",

@@ -8,7 +8,7 @@ import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
-import { isContact, isDeclinedStudent } from "@/lib/alerts"
+import { isContact, isOverdueTalent } from "@/lib/alerts"
 import { hasContactLabel } from "@/lib/contacts-labels"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
@@ -19,11 +19,11 @@ const STATUSES: Array<EnrollmentStatus | "all"> = [
   "all",
   "current",
   "pending",
-  "declined",
-  "pif",
   "overdue",
   "paused",
   "collections",
+  "cancelling",
+  "pif",
 ]
 
 const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting" | "subscriber"> = [
@@ -48,7 +48,7 @@ export default function StudentsPage() {
       .filter((s) => {
         if (status === "all") return true
         if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
-        if (status === "declined") return isDeclinedStudent(s)
+        if (status === "overdue") return isOverdueTalent(s)
         if (status === "current" && hasContactLabel(s, /current student/i)) return true
         return s.enrollmentStatus === status
       })
@@ -69,7 +69,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Students"
-        description="The desk roster — academy, modeling, acting, and subscribers. Add or edit people here. Active Subscribers are also on Subscriptions. Photoshoot lists live on Photoshoots and Contacts."
+        description="Academy, modeling, acting, and subscribers. Change status and tags on each file."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />

@@ -154,6 +154,8 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
     labels: Array.isArray(s.labels) ? s.labels.filter(Boolean) : [],
+    removedLabels: Array.isArray(s.removedLabels) ? s.removedLabels.filter(Boolean) : [],
+    deskLocks: { status: Boolean(s.deskLocks?.status) },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",
     docusignStatus: s.docusignStatus || "none",
@@ -504,7 +506,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
-          students: prev.students.map((s) => (s.id === id ? normalizeStudent({ ...s, ...patch }) : s)),
+          students: prev.students.map((s) => {
+            if (s.id !== id) return s
+            const next: Student = { ...s, ...patch }
+            if (patch.enrollmentStatus && patch.enrollmentStatus !== s.enrollmentStatus) {
+              next.deskLocks = { ...s.deskLocks, ...patch.deskLocks, status: true }
+            }
+            if (patch.labels) {
+              const labels = [...new Set(patch.labels.map((label) => label.trim()).filter(Boolean))]
+              const removed = new Set(s.removedLabels || [])
+              for (const old of s.labels || []) {
+                if (!labels.includes(old)) removed.add(old)
+              }
+              for (const label of labels) removed.delete(label)
+              next.labels = labels
+              next.removedLabels = [...removed]
+            }
+            return normalizeStudent(next)
+          }),
         })),
       addStudent: (student) =>
         mutate((prev) => ({ ...prev, students: [normalizeStudent(student), ...prev.students] })),

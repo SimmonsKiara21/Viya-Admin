@@ -5,7 +5,7 @@ import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
 import { ContactLabelBadge, DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
-import { highlightTone, notesSayPaymentDeclined, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -31,7 +31,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 
 const PILL: Record<Exclude<HighlightTone, "none">, { className: string; label: string }> = {
   overdue: {
-    label: "Overdue talent",
+    label: "Overdue",
     className:
       "rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100",
   },
@@ -83,7 +83,12 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
 export const StudentRow = memo(function StudentRow({ student }: { student: Student }) {
   const tone = highlightTone(student)
   const left = remainingPayments(student)
-  const pill = tone === "none" ? null : PILL[tone]
+  const pill =
+    tone === "none"
+      ? null
+      : tone === "collections" && student.enrollmentStatus === "cancelling"
+        ? { ...PILL.collections, label: "Cancelling" }
+        : PILL[tone]
 
   return (
     <Link
@@ -112,11 +117,6 @@ export const StudentRow = memo(function StudentRow({ student }: { student: Stude
       </div>
       <div className="hidden items-center gap-2 sm:flex">
         {pill ? <span className={pill.className}>{pill.label}</span> : null}
-        {notesSayPaymentDeclined(student.notes) ? (
-          <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-rose-800 uppercase dark:text-rose-100">
-            Payment declined
-          </span>
-        ) : null}
         <ProgramBadge program={student.program} track={student.track} />
         <EnrollmentBadge
           status={student.enrollmentStatus}

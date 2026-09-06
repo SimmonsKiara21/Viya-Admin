@@ -6,6 +6,7 @@ export type EnrollmentStatus =
   | "overdue"
   | "paused"
   | "collections"
+  | "cancelling"
   | "contact"
 
 export type Program = "academy" | "subscriber" | "prospect"
@@ -63,6 +64,10 @@ export interface Student {
   photoshootNotes: string
   /** Google Contacts labels (Current Student, Active Subscribers, photoshoot lists). */
   labels: string[]
+  /** Labels staff removed on the desk — contact sync will not put them back. */
+  removedLabels: string[]
+  /** Desk tag edits that should not be overwritten by the workbook. */
+  deskLocks: { status?: boolean }
   classTime: string
   photoUrl: string
   docusignStatus: DocusignStatus

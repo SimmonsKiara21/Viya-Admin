@@ -335,6 +335,8 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
       .map(displayContactLabel)
       .join(" · "),
     labels,
+    removedLabels: [],
+    deskLocks: {},
     classTime: "",
     photoUrl: "",
     docusignStatus: "none",
@@ -376,7 +378,9 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
   for (const student of next) {
     const labels = incoming.get(student.id)
     if (!labels?.length) continue
-    const merged = [...new Set(labels.filter(Boolean))].sort((a, b) =>
+    const removed = new Set(student.removedLabels || [])
+    const extras = (student.labels || []).filter((label) => !labels.includes(label) && !removed.has(label))
+    const merged = [...new Set([...labels.filter((label) => !removed.has(label)), ...extras])].sort((a, b) =>
       displayContactLabel(a).localeCompare(displayContactLabel(b)),
     )
     const before = (student.labels || []).join("|")

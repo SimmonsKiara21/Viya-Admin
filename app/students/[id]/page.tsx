@@ -28,6 +28,7 @@ import {
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { NotifyComposer } from "@/components/notify-composer"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
+import { LabelsEditor } from "@/components/labels-editor"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -55,6 +56,7 @@ import {
 } from "@/lib/alerts"
 import { sendDeskNotice } from "@/lib/send-notice"
 import {
+  DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
   CONTACT_LABELS,
   PHOTO_LABELS,
@@ -149,11 +151,10 @@ export default function StudentProfilePage() {
       {isAcademyOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-200">
           <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-950">
-            Overdue talent
+            Overdue
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
-            Payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
-            {formatDate(student.nextPaymentDate)}. Their name is highlighted in red on every list.
+            {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
           </p>
           <Button
             className="mt-3"
@@ -174,12 +175,10 @@ export default function StudentProfilePage() {
       {isSubscriberOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-orange-400/45 bg-orange-100/80 p-4 dark:bg-orange-950/45 sepia:bg-orange-200">
           <p className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-950">
-            Subscriber overdue
+            Sub overdue
           </p>
           <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-950">
-            Subscription payment of {formatMoney(student.nextPaymentAmount)} was due{" "}
-            {formatDate(student.nextPaymentDate)}. Highlighted in orange so it is not mixed with
-            academy training follow-up.
+            {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
           </p>
           <Button
             className="mt-3"
@@ -200,14 +199,12 @@ export default function StudentProfilePage() {
       {isCollectionsStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-amber-400/40 bg-amber-100/80 p-4 dark:bg-amber-950/40 sepia:bg-amber-200">
           <p className="font-heading text-2xl text-amber-900 dark:text-amber-100 sepia:text-amber-950">
-            Collections
+            {student.enrollmentStatus === "cancelling" ? "Cancelling" : "Collections"}
           </p>
           <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-950">
-            This account is in collections
             {student.nextPaymentAmount
-              ? ` · ${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}`
-              : ""}
-            . Highlighted in amber on every list so it is not mixed in with a regular overdue follow-up.
+              ? `${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}.`
+              : "Not mixed with overdue."}
           </p>
         </div>
       ) : null}
@@ -218,7 +215,7 @@ export default function StudentProfilePage() {
             Paused
           </p>
           <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-950">
-            Enrollment is on hold. Highlighted in violet so the desk does not check them in by accident.
+            On hold — not on the floor.
           </p>
         </div>
       ) : null}
@@ -227,8 +224,7 @@ export default function StudentProfilePage() {
         <div className="mb-4 rounded-2xl border border-primary/30 bg-primary/8 p-4">
           <p className="font-heading text-2xl text-primary">Contact</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Not on the current enrollment tab. Categorize them here, or move them to Students if they
-            actually become pending on the workbook.
+            Contact only — not on the enrollment roster.
           </p>
         </div>
       ) : null}
@@ -236,12 +232,10 @@ export default function StudentProfilePage() {
       {isPendingStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-200">
           <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-950">
-            Pending start
+            Pending
           </p>
           <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-950">
-            Not on the floor yet
-            {student.startDate ? ` · first class ${formatDate(student.startDate)}` : ""}. Highlighted
-            in blue so DocuSign, deposit, and first class stay on the radar.
+            {student.startDate ? `Starts ${formatDate(student.startDate)}.` : "No start date yet."}
           </p>
         </div>
       ) : null}
@@ -249,13 +243,10 @@ export default function StudentProfilePage() {
       {isFinishingSoon(student) ? (
         <div className="mb-4 rounded-2xl border border-lime-400/45 bg-lime-100/80 p-4 dark:bg-lime-950/40 sepia:bg-lime-200">
           <p className="font-heading text-2xl text-lime-900 dark:text-lime-100 sepia:text-lime-950">
-            Fewer than 3 payments left
+            Wrapping up
           </p>
           <p className="mt-1 text-sm text-lime-800 dark:text-lime-50/90 sepia:text-lime-950">
-            {remainingPayments(student)} payment
-            {(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left on a 6-payment plan. Started{" "}
-            {formatDate(student.startDate)} (May 2026 or earlier). Highlighted in lime — a good time to
-            talk subscription.
+            {remainingPayments(student)} payment{(remainingPayments(student) ?? 0) === 1 ? "" : "s"} left.
           </p>
         </div>
       ) : null}
@@ -266,7 +257,7 @@ export default function StudentProfilePage() {
             Paid in full
           </p>
           <p className="mt-1 text-sm text-emerald-800 dark:text-emerald-50/90 sepia:text-emerald-950">
-            The enrollment workbook marks this account PIF. Highlighted in emerald on every list.
+            Paid in full.
           </p>
         </div>
       ) : null}
@@ -432,24 +423,35 @@ export default function StudentProfilePage() {
                   </NativeSelect>
                 </Field>
               ) : (
-              <Field label="Status">
-                <NativeSelect
-                  value={student.enrollmentStatus}
-                  onChange={(e) =>
-                    updateStudent(student.id, {
-                      enrollmentStatus: e.target.value as EnrollmentStatus,
-                    })
-                  }
-                >
-                  {Object.entries(ENROLLMENT_LABELS)
-                    .filter(([k]) => k !== "contact")
-                    .map(([k, label]) => (
-                    <option key={k} value={k}>
-                      {label}
-                    </option>
-                  ))}
-                </NativeSelect>
-              </Field>
+                <>
+                  <Field label="Status">
+                    <NativeSelect
+                      value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
+                      onChange={(e) =>
+                        updateStudent(student.id, {
+                          enrollmentStatus: e.target.value as EnrollmentStatus,
+                        })
+                      }
+                    >
+                      {DESK_STATUS_OPTIONS.map((status) => (
+                        <option key={status} value={status}>
+                          {ENROLLMENT_LABELS[status]}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </Field>
+                  {student.deskLocks?.status ? (
+                    <button
+                      type="button"
+                      className="text-left text-xs text-muted-foreground underline hover:text-foreground"
+                      onClick={() =>
+                        updateStudent(student.id, { deskLocks: { ...student.deskLocks, status: false } })
+                      }
+                    >
+                      Desk tag — use workbook again
+                    </button>
+                  ) : null}
+                </>
               )}
               <Field label="Program">
                 <NativeSelect
@@ -501,6 +503,12 @@ export default function StudentProfilePage() {
                     </option>
                   ))}
                 </NativeSelect>
+              </Field>
+              <Field label="Tags">
+                <LabelsEditor
+                  labels={student.labels || []}
+                  onChange={(labels) => updateStudent(student.id, { labels })}
+                />
               </Field>
             </Panel>
             <Panel>

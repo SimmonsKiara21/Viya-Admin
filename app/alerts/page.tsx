@@ -76,14 +76,13 @@ export default function AlertsPage() {
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Overdue talent is red. Subscriber overdue is orange. Paid in full from the enrollment workbook is emerald. Students with fewer than 3 payments left who started May 2026 or earlier are lime. Collections is amber, paused is violet, pending starts are blue."
+        description="Overdue is red. Collections is amber. Subscribers stay orange."
       />
 
       <Panel className="mb-6 grid gap-3">
-        <h2 className="font-heading text-2xl">Text all / email all</h2>
+        <h2 className="font-heading text-2xl">Text / email</h2>
         <p className="text-sm text-muted-foreground">
-          Edit the note, then send it to overdue talent or subscriber overdue separately. Paused,
-          collections, and pending stay on their own lists.
+          Send to overdue or subscriber overdue. Collections stays on its own list.
         </p>
         <Textarea
           value={message}
@@ -96,14 +95,14 @@ export default function AlertsPage() {
             onClick={() => blast("sms", academyOverdue, "Viya Academy — payment reminder")}
             disabled={!academyOverdue.length || !message.trim()}
           >
-            Text overdue talent
+            Text overdue
           </Button>
           <Button
             variant="outline"
             onClick={() => blast("email", academyOverdue, "Viya Academy — payment reminder")}
             disabled={!academyOverdue.length || !message.trim()}
           >
-            Email overdue talent
+            Email overdue
           </Button>
           <Button
             onClick={() => blast("sms", subscriberOverdue, "Viya Talent — subscriber payment")}
@@ -123,77 +122,64 @@ export default function AlertsPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AlertList
-          title="Overdue talent"
+          title="Overdue"
           count={academyOverdue.length}
-          empty="No training accounts are overdue."
-          hint="Payment-plan students. Highlighted in red on every list."
+          empty="Nobody is overdue."
           tone="overdue"
           students={academyOverdue}
-          line={(s) =>
-            `Payment due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`
-          }
+          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <AlertList
-          title="Subscriber overdue"
+          title="Sub overdue"
           count={subscriberOverdue.length}
           empty="No subscribers are overdue."
-          hint="Subscription accounts only. Highlighted in orange so they are not mixed with academy follow-up."
           tone="subscriberOverdue"
           students={subscriberOverdue}
-          line={(s) =>
-            `Subscriber due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`
-          }
+          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <AlertList
           title="Collections"
           count={collections.length}
-          empty="Nobody is in collections."
-          hint="Accounts sent to collections — amber so they are not mixed in with a regular overdue follow-up."
+          empty="Nobody is in collections or cancelling."
           tone="collections"
           students={collections}
           line={(s) =>
-            `Collections · ${formatMoney(s.nextPaymentAmount)} due ${formatDate(s.nextPaymentDate)}`
+            `${s.enrollmentStatus === "cancelling" ? "Cancelling" : "Collections"} · ${formatMoney(s.nextPaymentAmount)}`
           }
         />
         <AlertList
           title="Paused"
           count={paused.length}
           empty="Nobody is paused."
-          hint="Enrollment is on hold. Violet so the desk does not check them in by accident."
           tone="paused"
           students={paused}
-          line={(s) => (s.notes ? s.notes : "Paused — not on the floor until they restart.")}
+          line={(s) => s.notes || "Paused"}
         />
         <AlertList
           title="Pending"
           count={pending.length}
           empty="No pending starts."
-          hint="Not started yet — only people the enrollment workbook marks pending. Photoshoot leads are on Contacts."
           tone="pending"
           students={pending}
-          line={(s) =>
-            s.startDate ? `Start ${formatDate(s.startDate)}` : "Pending start — no first class date yet."
-          }
+          line={(s) => (s.startDate ? `Start ${formatDate(s.startDate)}` : "No start date")}
         />
         <AlertList
-          title="Fewer than 3 payments"
+          title="Wrapping up"
           count={finishing.length}
-          empty="Nobody in this window — current academy plans that started May 2026 or earlier with fewer than 3 payments left."
-          hint="Lime highlight. Started May 2026 or before, still current on a payment plan, with 0–2 installments left. A good time to talk subscription."
+          empty="Nobody has fewer than 3 payments left."
           tone="finishing"
           students={finishing}
           line={(s) =>
-            `${remainingPayments(s)} payment${(remainingPayments(s) ?? 0) === 1 ? "" : "s"} left · started ${formatDate(s.startDate)}`
+            `${remainingPayments(s)} left · started ${formatDate(s.startDate)}`
           }
         />
         <AlertList
           title="Paid in full"
           count={pif.length}
-          empty="Nobody on the enrollment workbook is marked paid in full."
-          hint="Emerald marker. The enrollment sheet marks these on payment plan (PIF) even when status still says Current."
+          empty="Nobody is paid in full."
           tone="pif"
           students={pif}
-          line={(s) => (s.startDate ? `Paid in full · started ${formatDate(s.startDate)}` : "Paid in full")}
+          line={(s) => (s.startDate ? `Started ${formatDate(s.startDate)}` : "Paid in full")}
         />
       </div>
     </div>
@@ -249,7 +235,6 @@ function AlertList({
   title,
   count,
   empty,
-  hint,
   tone,
   students,
   line,
@@ -257,7 +242,6 @@ function AlertList({
   title: string
   count: number
   empty: string
-  hint: string
   tone: keyof typeof TONE
   students: Student[]
   line: (student: Student) => string
@@ -269,7 +253,6 @@ function AlertList({
         <h2 className={cn("font-heading text-2xl", look.title)}>{title}</h2>
         <span className="text-xs text-muted-foreground">{count}</span>
       </div>
-      <p className="mb-4 text-sm text-muted-foreground">{hint}</p>
       {students.length === 0 ? (
         <p className="text-sm text-muted-foreground">{empty}</p>
       ) : (

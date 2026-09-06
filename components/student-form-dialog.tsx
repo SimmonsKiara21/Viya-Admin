@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/dialog"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
+import { LabelsEditor } from "@/components/labels-editor"
 import { useStore } from "@/lib/store"
 import { newId } from "@/lib/format"
+import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS } from "@/lib/constants"
 import type {
   EnrollmentStatus,
   PaymentPlan,
@@ -76,6 +78,8 @@ const blank = (): Student => ({
   photoshootStatus: "none",
   photoshootNotes: "",
   labels: [],
+  removedLabels: [],
+  deskLocks: {},
   contactCategory: "",
   classTime: "",
   photoUrl: "",
@@ -133,9 +137,7 @@ export function StudentFormDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Add a student</DialogTitle>
-          <DialogDescription>
-            Name, contact, and their DocuSign go on the file together.
-          </DialogDescription>
+          <DialogDescription>Name, status, tags, and DocuSign.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="First name">
@@ -194,18 +196,16 @@ export function StudentFormDialog({
               <option value="prospect">Prospect</option>
             </NativeSelect>
           </Field>
-          <Field label="Enrollment / payment">
+          <Field label="Status">
             <NativeSelect
-              value={form.enrollmentStatus}
+              value={form.enrollmentStatus === "declined" ? "overdue" : form.enrollmentStatus}
               onChange={(e) => patch({ enrollmentStatus: e.target.value as EnrollmentStatus })}
             >
-              <option value="current">Current</option>
-              <option value="pending">Pending</option>
-              <option value="declined">Declined</option>
-              <option value="pif">PIF / Paid in Full</option>
-              <option value="overdue">Overdue</option>
-              <option value="paused">Paused</option>
-              <option value="collections">Collections</option>
+              {DESK_STATUS_OPTIONS.map((status) => (
+                <option key={status} value={status}>
+                  {ENROLLMENT_LABELS[status]}
+                </option>
+              ))}
             </NativeSelect>
           </Field>
           <Field label="Plan">
@@ -232,6 +232,9 @@ export function StudentFormDialog({
               value={form.notes}
               onChange={(e) => patch({ notes: e.target.value })}
             />
+          </Field>
+          <Field label="Tags" className="sm:col-span-2">
+            <LabelsEditor labels={form.labels} onChange={(labels) => patch({ labels })} />
           </Field>
         </div>
         <DialogFooter>

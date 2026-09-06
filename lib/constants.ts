@@ -44,13 +44,33 @@ export const PHOTOSHOOT_DRIVE_FOLDERS = [
 export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
   current: "Current",
   pending: "Pending",
-  declined: "Declined",
-  pif: "PIF / Paid in Full",
+  declined: "Overdue",
+  pif: "Paid in full",
   overdue: "Overdue",
   paused: "Paused",
   collections: "Collections",
+  cancelling: "Cancelling",
   contact: "Contact",
 }
+
+export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
+  "current",
+  "pending",
+  "overdue",
+  "paused",
+  "collections",
+  "cancelling",
+  "pif",
+]
+
+export const SUGGESTED_LABELS = [
+  "Current Student",
+  "Active Subscribers",
+  "May photoshoot",
+  "LA Model Source 2026",
+  "Model Source November",
+  "Newsletter",
+]
 
 export const CONTACT_LABELS: Record<ContactCategory, string> = {
   "current-student": "Current Student",

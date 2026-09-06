@@ -61,6 +61,7 @@ export function mergeEnrollmentStudents(
     )
     for (const field of WORKBOOK_FIELDS) {
       if (keepNames && (field === "firstName" || field === "lastName")) continue
+      if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
       if (field === "labels") {
         const labels = Array.isArray(row.labels) ? row.labels.filter(Boolean) : []
         if (!labels.length) continue
@@ -205,6 +206,7 @@ export function applyWorkbookRows(
       const lockAcademy = Boolean(options.preserveAcademy && existing.program === "academy")
       for (const field of WORKBOOK_FIELDS) {
         if (keepNames && (field === "firstName" || field === "lastName")) continue
+        if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
         if (lockAcademy && ACADEMY_LOCKED_FIELDS.has(field)) continue
         if (field === "notes") {
           const nextNotes = typeof row.notes === "string" ? row.notes.trim() : ""
@@ -279,6 +281,8 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
       row.subscriptionStatus || (row.program === "subscriber" ? "active" : "none"),
     photoshootStatus: row.photoshootStatus || "none",
     labels: [],
+    removedLabels: [],
+    deskLocks: {},
     photoshootNotes: "",
     classTime: row.classTime || "",
     photoUrl: "",
@@ -323,9 +327,10 @@ function mapStatus(value: string): Student["enrollmentStatus"] | undefined {
   const key = value.trim().toLowerCase()
   if (!key) return undefined
   if (key.includes("overdue")) return "overdue"
-  if (key.includes("declin")) return "declined"
+  if (key.includes("declin")) return "overdue"
   if (key.includes("pending")) return "pending"
   if (key.includes("pause")) return "paused"
+  if (key.includes("cancel")) return "cancelling"
   if (key.includes("collection")) return "collections"
   if (key.includes("pif") || key.includes("paid in full")) return "pif"
   if (key.includes("current") || key === "active") return "current"

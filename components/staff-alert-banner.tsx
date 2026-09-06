@@ -40,17 +40,17 @@ export function StaffAlertBanner() {
     sessionStorage.setItem(key, "1")
     if (academyOverdue.length) {
       toast.warning(
-        `${academyOverdue.length} overdue talent account${academyOverdue.length === 1 ? " is" : "s are"} highlighted in red.`,
+        `${academyOverdue.length} overdue.`,
       )
     }
     if (subscriberOverdue.length) {
       toast.warning(
-        `${subscriberOverdue.length} subscriber${subscriberOverdue.length === 1 ? " is" : "s are"} overdue. Highlighted in orange.`,
+        `${subscriberOverdue.length} subscriber overdue.`,
       )
     }
     if (collections.length) {
       toast.warning(
-        `${collections.length} in collections — highlighted in amber.`,
+        `${collections.length} in collections.`,
       )
     }
   }, [
@@ -66,8 +66,8 @@ export function StaffAlertBanner() {
   if (!total) return null
 
   const bits: { count: number; label: string; className: string }[] = [
-    { count: academyOverdue.length, label: "overdue talent", className: "text-rose-800 dark:text-rose-100" },
-    { count: subscriberOverdue.length, label: "subscriber overdue", className: "text-orange-900 dark:text-orange-100" },
+    { count: academyOverdue.length, label: "overdue", className: "text-rose-800 dark:text-rose-100" },
+    { count: subscriberOverdue.length, label: "sub overdue", className: "text-orange-900 dark:text-orange-100" },
     { count: collections.length, label: "collections", className: "text-amber-900 dark:text-amber-200" },
     { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },
     { count: pending.length, label: "pending", className: "text-sky-900 dark:text-sky-200" },

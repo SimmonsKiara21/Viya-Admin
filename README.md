@@ -31,7 +31,7 @@ npm start
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
 - **Contacts** is everyone else — photoshoot lists, inquiries, follow-ups. Categorize them there, or move someone to pending if they actually enroll.
-- **Notify** has separate groups for **Current students**, **Overdue talent**, **Subscriber overdue**, and **Subscribers**. Click several students in the list (or **Add all shown**) then save them as a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
+- **Notify** groups: **Current**, **Overdue**, **Sub overdue**, and **Subscribers**. Click people in the list (or **Add all shown**) and save a custom group. Texts send from the academy **Textla** number when `TEXTLA_WEBHOOK_URL` and `TEXTLA_FROM_NUMBER` are set.
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is kraft cocoa (brown paper, umber ink), not cream or yellow.
@@ -39,9 +39,9 @@ npm start
 
 ## Alerts
 
-- **Overdue talent / declined** — red, with the payment due date. **Text overdue talent** / **Email overdue talent** on Alerts goes to this list.
-- **Subscriber overdue** — orange, kept separate from academy and training follow-up. **Text subscriber overdue** / **Email subscriber overdue** goes to this list.
-- **Collections** — amber, kept separate from a regular overdue follow-up.
+- **Overdue** — red. Workbook OVERDUE plus notes that say a payment was declined. One list.
+- **Sub overdue** — orange. Subscribers only.
+- **Collections / cancelling** — amber. Kept off the overdue list.
 - **Paused** — violet, so the desk does not check them in by accident.
 - **Pending** — blue, so DocuSign, deposit, and first class stay visible.
 - **Fewer than 3 payments** — lime, for current academy payment-plan students who **started May 2026 or earlier** and have **fewer than 3 installments left**. Remaining payments come from the Square invoice (balance vs plan) when we have one, otherwise from the 6-payment start date. May 2026 starters currently have 3 left until the next installment posts, so they highlight once they drop to 2.
@@ -58,11 +58,11 @@ Academy classes are always:
 
 Send the weekly reminder from **Classes** or **Notify**. Subscriber class times are pulled from [Talent Resources](https://www.viyatalent.com/talentresources) when that page is reachable.
 
-Enrollment / payment: **Current**, **Pending**, **Declined**, **PIF / Paid in Full**, plus Overdue, Paused, and Collections so the desk matches how the academy already works.
+Status tags: **Current**, **Pending**, **Overdue**, **Paused**, **Collections**, **Cancelling**, **Paid in full**. Staff can change status and labels on the student file.
 
 ## Square, enrollment, Gmail, and texts
 
-The desk is the roster. Add and edit students here. Academy overdue and declined come from the enrollment workbook — STATUS = OVERDUE, and “payment declined” in the notes. Square invoices stay on Payments and do not flip a current student overdue.
+The desk is the roster. Add and edit students here — including status tags and labels. Overdue is workbook OVERDUE plus declined-card notes. Collections and cancelling stay separate. Square invoices stay on Payments and do not flip a current student overdue.
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export — including Newsletter — is on **Contacts** with name, phone, email, and notes.
 

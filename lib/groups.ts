@@ -10,13 +10,13 @@ export const SYSTEM_GROUP_DEFS: { systemKey: SystemGroupKey; name: string; descr
   },
   {
     systemKey: "overdue",
-    name: "Overdue talent",
-    description: "Training students whose enrollment workbook STATUS is OVERDUE.",
+    name: "Overdue",
+    description: "Academy students who are overdue, including declined cards.",
   },
   {
     systemKey: "subscriberOverdue",
-    name: "Subscriber overdue",
-    description: "Subscribers whose workbook status is overdue or declined, kept separate from academy follow-up.",
+    name: "Sub overdue",
+    description: "Subscribers who are overdue.",
   },
   {
     systemKey: "subscribers",

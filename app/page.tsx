@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
-import { AlertTriangle, Clock3, Plus, UserMinus, UserPlus, Users } from "lucide-react"
+import { AlertTriangle, Clock3, FolderOpen, Plus, UserPlus, Users } from "lucide-react"
 import { toast } from "sonner"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
@@ -12,12 +12,11 @@ import { useStore } from "@/lib/store"
 import { formatAcademyDate, formatAcademyTime, formatDate, formatMoney } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import {
+  isCollectionsStudent,
   isCurrentlyEnrolled,
-  isDeclinedStudent,
   isOverdueTalent,
   isPendingStudent,
   isSubscriberOverdue,
-  paymentDeclinedSnippet,
 } from "@/lib/alerts"
 import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
@@ -38,13 +37,11 @@ export default function HomePage() {
 
   const stats = useMemo(() => {
     const current = sortByName(students.filter(isCurrentlyEnrolled))
-    const declined = sortByName(students.filter(isDeclinedStudent))
-    const overdueTalent = sortByName(students.filter(isOverdueTalent))
-    const subscriberOverdue = sortByName(
-      students.filter((s) => isSubscriberOverdue(s) && s.enrollmentStatus === "overdue"),
-    )
+    const overdue = sortByName(students.filter(isOverdueTalent))
+    const collections = sortByName(students.filter(isCollectionsStudent))
+    const subscriberOverdue = sortByName(students.filter(isSubscriberOverdue))
     const pending = sortByName(students.filter(isPendingStudent))
-    return { current, declined, overdueTalent, subscriberOverdue, pending }
+    return { current, overdue, collections, subscriberOverdue, pending }
   }, [students])
 
   return (
@@ -52,7 +49,7 @@ export default function HomePage() {
       <PageHeader
         eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="Currently enrolled, declined card notes, pending starts, overdue talent from the enrollment workbook, and overdue subscribers."
+        description="Enrolled, overdue, collections, and pending."
         actions={
           <>
             <Button onClick={() => setAddOpen(true)}>
@@ -64,7 +61,7 @@ export default function HomePage() {
               className={cn(buttonVariants({ variant: "outline" }))}
               onClick={() =>
                 sendDeskNotice({
-                  students: [...stats.overdueTalent, ...stats.subscriberOverdue],
+                  students: [...stats.overdue, ...stats.subscriberOverdue],
                   channel: "sms",
                   templateId: "overdue-sms",
                   addNotification,
@@ -89,38 +86,37 @@ export default function HomePage() {
       </Panel>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard icon={Users} label="Currently enrolled" value={String(stats.current.length)} href="/students" />
-        <StatCard icon={UserMinus} label="Declined" value={String(stats.declined.length)} href="/students" />
-        <StatCard icon={AlertTriangle} label="Overdue talent" value={String(stats.overdueTalent.length)} href="/alerts" />
-        <StatCard icon={AlertTriangle} label="Overdue subscribers" value={String(stats.subscriberOverdue.length)} href="/alerts" />
-        <StatCard icon={UserPlus} label="Pending start" value={String(stats.pending.length)} href="/students" />
+        <StatCard icon={Users} label="Enrolled" value={String(stats.current.length)} href="/students" />
+        <StatCard icon={AlertTriangle} label="Overdue" value={String(stats.overdue.length)} href="/alerts" />
+        <StatCard icon={FolderOpen} label="Collections" value={String(stats.collections.length)} href="/alerts" />
+        <StatCard icon={AlertTriangle} label="Sub overdue" value={String(stats.subscriberOverdue.length)} href="/alerts" />
+        <StatCard icon={UserPlus} label="Pending" value={String(stats.pending.length)} href="/students" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <NameList title="Enrolled" empty="Nobody is currently enrolled." students={stats.current} href="/students" />
         <NameList
-          title="Currently enrolled"
-          empty="Nobody is marked currently enrolled."
-          students={stats.current}
-          href="/students"
-        />
-        <NameList
-          title="Declined"
-          empty="No declined cards in the enrollment notes."
-          students={stats.declined}
-          href="/students"
-          tone="declined"
-          line={(s) => paymentDeclinedSnippet(s.notes) || s.notes || "Payment declined"}
-        />
-        <NameList
-          title="Overdue talent"
-          empty="No training accounts are overdue."
-          students={stats.overdueTalent}
+          title="Overdue"
+          empty="Nobody is overdue."
+          students={stats.overdue}
           href="/alerts"
           tone="overdue"
           line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <NameList
-          title="Overdue subscribers"
+          title="Collections"
+          empty="Nobody is in collections or cancelling."
+          students={stats.collections}
+          href="/alerts"
+          tone="collections"
+          line={(s) =>
+            s.enrollmentStatus === "cancelling"
+              ? "Cancelling"
+              : `Collections · ${formatMoney(s.nextPaymentAmount)}`
+          }
+        />
+        <NameList
+          title="Sub overdue"
           empty="No subscribers are overdue."
           students={stats.subscriberOverdue}
           href="/alerts"
@@ -128,7 +124,7 @@ export default function HomePage() {
           line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <NameList
-          title="Pending start"
+          title="Pending"
           empty="No pending starts."
           students={stats.pending}
           href="/students"
@@ -138,7 +134,7 @@ export default function HomePage() {
       </div>
 
       <p className="mt-10 text-center text-xs text-muted-foreground">
-        Roster is saved in this browser.{" "}
+        Saved in this browser.{" "}
         <button
           type="button"
           className="underline hover:text-foreground"
@@ -147,7 +143,7 @@ export default function HomePage() {
             toast.message("Roster restored.")
           }}
         >
-          Restore the original roster
+          Restore roster
         </button>
       </p>
       <StudentFormDialog open={addOpen} onOpenChange={setAddOpen} />
@@ -167,14 +163,14 @@ function NameList({
   empty: string
   students: Student[]
   href: string
-  tone?: "declined" | "overdue" | "subscriber" | "pending"
+  tone?: "overdue" | "collections" | "subscriber" | "pending"
   line?: (student: Student) => string
 }) {
   const heading =
-    tone === "declined"
+    tone === "overdue"
       ? "text-rose-800 dark:text-rose-100"
-      : tone === "overdue"
-        ? "text-rose-800 dark:text-rose-100"
+      : tone === "collections"
+        ? "text-amber-900 dark:text-amber-100"
         : tone === "subscriber"
           ? "text-orange-900 dark:text-orange-100"
           : tone === "pending"
@@ -189,7 +185,7 @@ function NameList({
           <span className="ml-2 text-base text-muted-foreground">{students.length}</span>
         </h2>
         <Link href={href} className="text-xs text-muted-foreground hover:text-foreground">
-          Open list
+          Open
         </Link>
       </div>
       {students.length === 0 ? (

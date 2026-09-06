@@ -25,8 +25,7 @@ npm start
 - **Add a student** as **Academy**, **Modeling**, **Acting**, or **Subscriber**, with their **DocuSign** envelope, signing link, and status. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
-- **Check-in** is the only place to manually check someone in (Modeling, Acting, or Subscriber). Staff check-ins post to the Jotform attendance tracker. Student-phone check-ins on that form sync back to **Attendance**.
-- **Attendance** is the Jotform record. The August 26 class from the tracker is loaded; earlier nights were not kept because the desk did not have those check-ins yet.
+- **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Payments** is a Square tracker for **enrollment students only**. The desk pulls invoices every couple of minutes. With `SQUARE_ACCESS_TOKEN` those are live Square invoices (due dates, paid, balance). Without a token it uses the last dashboard snapshot in `data/square.json`. People who are on Square but not on the 2026 enrollment workbook are not added. Each row shows the Square item (VA101 training, Viya Talent Subscription, OG, Model Source, cancellation fee) with that item's description, plus amount, paid, and balance.
 - **Subscriptions** uses the Square subscriber item copy: *Your Potential Unlocked - Anytime, All the Time…*
 - **Students** is the current enrollment tab (academy + subscribers). **Pending** is only people the enrollment workbook marks pending.
@@ -35,7 +34,7 @@ npm start
 - **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
 - **Alerts** has a prefilled payment reminder with **Text all** and **Email all** for overdue students.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Sepia is kraft cocoa (brown paper, umber ink), not cream or yellow.
-- **Times** on Check-in and Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.
+- **Times** on Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.
 
 ## Alerts
 

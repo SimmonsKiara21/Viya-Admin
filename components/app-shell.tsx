@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   Camera,
-  ClipboardCheck,
   CreditCard,
   FilePenLine,
   LayoutDashboard,
@@ -29,7 +28,6 @@ const NAV = [
   { href: "/alerts", label: "Alerts", icon: Bell },
   { href: "/students", label: "Students", icon: Users },
   { href: "/contacts", label: "Contacts", icon: BookUser },
-  { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/classes", label: "Classes", icon: Clock },
   { href: "/payments", label: "Payments", icon: CreditCard },

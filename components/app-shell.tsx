@@ -72,10 +72,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <Link href="/" className="block px-2 py-1">
-      <p className="font-heading text-3xl leading-none tracking-[0.22em] text-primary">
+      <p className="font-heading text-2xl leading-none tracking-[0.18em] text-primary">
         VIYA
       </p>
-      <p className="mt-1 text-[10px] font-medium tracking-[0.28em] text-muted-foreground uppercase">
+      <p className="mt-1 text-[11px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
         ViyaAdmin.com
       </p>
     </Link>

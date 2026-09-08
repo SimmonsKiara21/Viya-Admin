@@ -41,14 +41,14 @@ export default function SubscriptionsPage() {
           <p className="text-xs font-medium tracking-wide text-primary uppercase">
             Square item · {formatMoney(SUBSCRIPTION_ITEM.price)}
           </p>
-          <h2 className="mt-1 font-heading text-2xl">{SUBSCRIPTION_ITEM.name}</h2>
+          <h2 className="mt-1 font-heading text-xl">{SUBSCRIPTION_ITEM.name}</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{SUBSCRIPTION_ITEM.description}</p>
         </Panel>
         <Panel>
           <p className="text-xs font-medium tracking-wide text-primary uppercase">
             Square item · {formatMoney(SUBSCRIPTION_OG_ITEM.price)}
           </p>
-          <h2 className="mt-1 font-heading text-2xl">{SUBSCRIPTION_OG_ITEM.name}</h2>
+          <h2 className="mt-1 font-heading text-xl">{SUBSCRIPTION_OG_ITEM.name}</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{SUBSCRIPTION_OG_ITEM.description}</p>
           <p className="mt-3 text-xs text-muted-foreground">
             Grandfathered rate. Live Square invoices often show {formatMoney(5.14)} with tax.

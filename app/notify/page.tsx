@@ -55,7 +55,7 @@ export default function NotifyPage() {
                   : "border-border hover:bg-muted/40",
               )}
             >
-              <p className="font-heading text-2xl">{g.name}</p>
+              <p className="font-heading text-xl">{g.name}</p>
               <p className="mt-1 text-sm text-muted-foreground">{g.studentIds.length} people</p>
               <p className="mt-2 text-xs text-muted-foreground">{def?.description}</p>
             </button>
@@ -92,7 +92,7 @@ export default function NotifyPage() {
         />
       </Panel>
 
-      <h2 className="mb-3 font-heading text-3xl">Outbox</h2>
+      <h2 className="mb-3 font-heading text-xl">Outbox</h2>
       {notifications.length === 0 ? (
         <EmptyState
           title="Nothing sent yet"

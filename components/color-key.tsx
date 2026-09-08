@@ -13,12 +13,12 @@ export function ColorKey({ className }: { className?: string }) {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase hover:text-foreground"
+          className="text-xs font-medium tracking-wide text-muted-foreground uppercase hover:text-foreground"
         >
           Color key{open ? " · hide" : ""}
         </button>
         {COLOR_KEY.map((item) => (
-          <span key={item.id} className={cn("inline-flex items-center gap-1.5 text-[11px] font-medium", item.text)}>
+          <span key={item.id} className={cn("inline-flex items-center gap-1.5 text-xs font-medium leading-none", item.text)}>
             <span className={cn("size-2.5 shrink-0 rounded-full", item.swatch)} aria-hidden />
             {item.label}
           </span>

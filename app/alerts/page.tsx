@@ -14,9 +14,7 @@ import {
   isPausedStudent,
   isPendingStudent,
   isSubscriberOverdue,
-  remainingPayments,
 } from "@/lib/alerts"
-import { formatDate, formatMoney } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import { ALERT_PAYMENT_REMINDER } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -80,7 +78,7 @@ export default function AlertsPage() {
       />
 
       <Panel className="mb-6 grid gap-3">
-        <h2 className="font-heading text-2xl">Text / email</h2>
+        <h2 className="font-heading text-xl">Text / email</h2>
         <p className="text-sm text-muted-foreground">
           Send to overdue or subscriber overdue. Collections stays on its own list.
         </p>
@@ -127,7 +125,6 @@ export default function AlertsPage() {
           empty="Nobody is overdue."
           tone="overdue"
           students={academyOverdue}
-          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <AlertList
           title="Sub overdue"
@@ -135,7 +132,6 @@ export default function AlertsPage() {
           empty="No subscribers are overdue."
           tone="subscriberOverdue"
           students={subscriberOverdue}
-          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <AlertList
           title="Collections"
@@ -143,9 +139,6 @@ export default function AlertsPage() {
           empty="Nobody is in collections or cancelling."
           tone="collections"
           students={collections}
-          line={(s) =>
-            `${s.enrollmentStatus === "cancelling" ? "Cancelling" : "Collections"} · ${formatMoney(s.nextPaymentAmount)}`
-          }
         />
         <AlertList
           title="Paused"
@@ -153,7 +146,6 @@ export default function AlertsPage() {
           empty="Nobody is paused."
           tone="paused"
           students={paused}
-          line={(s) => s.notes || "Paused"}
         />
         <AlertList
           title="Pending"
@@ -161,7 +153,6 @@ export default function AlertsPage() {
           empty="No pending starts."
           tone="pending"
           students={pending}
-          line={(s) => (s.startDate ? `Start ${formatDate(s.startDate)}` : "No start date")}
         />
         <AlertList
           title="Wrapping up"
@@ -169,9 +160,6 @@ export default function AlertsPage() {
           empty="Nobody has fewer than 3 payments left."
           tone="finishing"
           students={finishing}
-          line={(s) =>
-            `${remainingPayments(s)} left · started ${formatDate(s.startDate)}`
-          }
         />
         <AlertList
           title="Paid in full"
@@ -179,7 +167,6 @@ export default function AlertsPage() {
           empty="Nobody is paid in full."
           tone="pif"
           students={pif}
-          line={(s) => (s.startDate ? `Started ${formatDate(s.startDate)}` : "Paid in full")}
         />
       </div>
     </div>
@@ -191,43 +178,36 @@ const TONE = {
     panel: "ring-1 ring-rose-400/25",
     title: "text-rose-800 dark:text-rose-100",
     divide: "divide-rose-400/15",
-    line: "text-rose-800 dark:text-rose-200/90",
   },
   subscriberOverdue: {
     panel: "ring-1 ring-orange-400/30",
     title: "text-orange-900 dark:text-orange-100",
     divide: "divide-orange-400/20",
-    line: "text-orange-900 dark:text-orange-200/90",
   },
   collections: {
     panel: "ring-1 ring-amber-400/30",
     title: "text-amber-900 dark:text-amber-100",
     divide: "divide-amber-400/20",
-    line: "text-amber-900 dark:text-amber-200/90",
   },
   paused: {
     panel: "ring-1 ring-violet-400/30",
     title: "text-violet-900 dark:text-violet-100",
     divide: "divide-violet-400/20",
-    line: "text-violet-900 dark:text-violet-200/90",
   },
   pending: {
     panel: "ring-1 ring-sky-400/30",
     title: "text-sky-900 dark:text-sky-100",
     divide: "divide-sky-400/20",
-    line: "text-sky-900 dark:text-sky-200/90",
   },
   finishing: {
     panel: "ring-1 ring-lime-400/30",
     title: "text-lime-800 dark:text-lime-100",
     divide: "divide-lime-400/20",
-    line: "text-lime-800 dark:text-lime-200/90",
   },
   pif: {
     panel: "ring-1 ring-emerald-400/30",
     title: "text-emerald-900 dark:text-emerald-100",
     divide: "divide-emerald-400/20",
-    line: "text-emerald-900 dark:text-emerald-200/90",
   },
 } as const
 
@@ -237,20 +217,18 @@ function AlertList({
   empty,
   tone,
   students,
-  line,
 }: {
   title: string
   count: number
   empty: string
   tone: keyof typeof TONE
   students: Student[]
-  line: (student: Student) => string
 }) {
   const look = TONE[tone]
   return (
     <Panel className={look.panel}>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className={cn("font-heading text-2xl", look.title)}>{title}</h2>
+        <h2 className={cn("font-heading text-xl leading-tight", look.title)}>{title}</h2>
         <span className="text-xs text-muted-foreground">{count}</span>
       </div>
       {students.length === 0 ? (
@@ -260,7 +238,6 @@ function AlertList({
           {students.map((s) => (
             <div key={s.id} className="py-1">
               <StudentRow student={s} />
-              <p className={cn("px-2 pb-2 text-xs", look.line)}>{line(s)}</p>
             </div>
           ))}
         </div>

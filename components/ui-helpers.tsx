@@ -72,11 +72,11 @@ export function PageHeader({
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="font-heading text-4xl tracking-tight text-balance md:text-5xl">
+        <h1 className="font-heading text-2xl tracking-tight text-balance md:text-3xl">
           {title}
         </h1>
         {description ? (
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">
+          <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
             {description}
           </p>
         ) : null}
@@ -95,7 +95,7 @@ export function EmptyState({
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-border px-6 py-12 text-center">
-      <p className="font-heading text-2xl">{title}</p>
+      <p className="font-heading text-xl">{title}</p>
       <p className="mt-2 text-sm text-muted-foreground">{description}</p>
     </div>
   )

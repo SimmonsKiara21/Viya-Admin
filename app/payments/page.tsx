@@ -75,7 +75,7 @@ export default function PaymentsPage() {
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
           {square.message || "Checking Square…"}
         </p>
-        <p className="mt-3 font-heading text-3xl">{formatMoney(openTotal)} open</p>
+        <p className="mt-3 font-heading text-2xl">{formatMoney(openTotal)} open</p>
         <p className="mt-1 text-xs text-muted-foreground">
           {square.matched != null
             ? `${square.matched} Square invoices matched to enrollment · ${square.skipped ?? 0} Square-only customers skipped`

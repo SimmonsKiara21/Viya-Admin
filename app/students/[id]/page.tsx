@@ -55,6 +55,7 @@ import {
   remainingPayments,
 } from "@/lib/alerts"
 import { sendDeskNotice } from "@/lib/send-notice"
+import { uniqueContactLabels } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
@@ -115,6 +116,13 @@ export default function StudentProfilePage() {
   )
   const counts = countsFor(records)
   const tone = student ? highlightTone(student) : "none"
+  const labels = student ? uniqueContactLabels(student) : []
+  const contactLabel = student?.contactCategory ? CONTACT_LABELS[student.contactCategory] : ""
+  const showContactBadge =
+    !!student &&
+    isContact(student) &&
+    !!contactLabel &&
+    !labels.some((label) => label.toLowerCase() === contactLabel.toLowerCase())
 
   if (!student) {
     return (
@@ -150,7 +158,7 @@ export default function StudentProfilePage() {
 
       {isAcademyOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-rose-400/40 bg-rose-100/80 p-4 dark:bg-rose-950/50 sepia:bg-rose-200">
-          <p className="font-heading text-2xl text-rose-900 dark:text-rose-100 sepia:text-rose-950">
+          <p className="font-heading text-xl text-rose-900 dark:text-rose-100 sepia:text-rose-950">
             Overdue
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
@@ -174,7 +182,7 @@ export default function StudentProfilePage() {
 
       {isSubscriberOverdue(student) ? (
         <div className="mb-4 rounded-2xl border border-orange-400/45 bg-orange-100/80 p-4 dark:bg-orange-950/45 sepia:bg-orange-200">
-          <p className="font-heading text-2xl text-orange-900 dark:text-orange-100 sepia:text-orange-950">
+          <p className="font-heading text-xl text-orange-900 dark:text-orange-100 sepia:text-orange-950">
             Sub overdue
           </p>
           <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-950">
@@ -198,7 +206,7 @@ export default function StudentProfilePage() {
 
       {isCollectionsStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-amber-400/40 bg-amber-100/80 p-4 dark:bg-amber-950/40 sepia:bg-amber-200">
-          <p className="font-heading text-2xl text-amber-900 dark:text-amber-100 sepia:text-amber-950">
+          <p className="font-heading text-xl text-amber-900 dark:text-amber-100 sepia:text-amber-950">
             {student.enrollmentStatus === "cancelling" ? "Cancelling" : "Collections"}
           </p>
           <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-950">
@@ -211,7 +219,7 @@ export default function StudentProfilePage() {
 
       {isPausedStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-violet-400/40 bg-violet-100/80 p-4 dark:bg-violet-950/40 sepia:bg-violet-200">
-          <p className="font-heading text-2xl text-violet-900 dark:text-violet-100 sepia:text-violet-950">
+          <p className="font-heading text-xl text-violet-900 dark:text-violet-100 sepia:text-violet-950">
             Paused
           </p>
           <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-950">
@@ -222,7 +230,7 @@ export default function StudentProfilePage() {
 
       {isContact(student) ? (
         <div className="mb-4 rounded-2xl border border-primary/30 bg-primary/8 p-4">
-          <p className="font-heading text-2xl text-primary">Contact</p>
+          <p className="font-heading text-xl text-primary">Contact</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Contact only — not on the enrollment roster.
           </p>
@@ -231,7 +239,7 @@ export default function StudentProfilePage() {
 
       {isPendingStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-200">
-          <p className="font-heading text-2xl text-sky-900 dark:text-sky-100 sepia:text-sky-950">
+          <p className="font-heading text-xl text-sky-900 dark:text-sky-100 sepia:text-sky-950">
             Pending
           </p>
           <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-950">
@@ -242,7 +250,7 @@ export default function StudentProfilePage() {
 
       {isFinishingSoon(student) ? (
         <div className="mb-4 rounded-2xl border border-lime-400/45 bg-lime-100/80 p-4 dark:bg-lime-950/40 sepia:bg-lime-200">
-          <p className="font-heading text-2xl text-lime-900 dark:text-lime-100 sepia:text-lime-950">
+          <p className="font-heading text-xl text-lime-900 dark:text-lime-100 sepia:text-lime-950">
             Wrapping up
           </p>
           <p className="mt-1 text-sm text-lime-800 dark:text-lime-50/90 sepia:text-lime-950">
@@ -253,11 +261,11 @@ export default function StudentProfilePage() {
 
       {isPaidInFull(student) ? (
         <div className="mb-4 rounded-2xl border border-emerald-400/45 bg-emerald-100/80 p-4 dark:bg-emerald-950/40 sepia:bg-emerald-200">
-          <p className="font-heading text-2xl text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950">
+          <p className="font-heading text-xl text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950">
             Paid in full
           </p>
           <p className="mt-1 text-sm text-emerald-800 dark:text-emerald-50/90 sepia:text-emerald-950">
-            Paid in full.
+            No remaining tuition.
           </p>
         </div>
       ) : null}
@@ -278,7 +286,7 @@ export default function StudentProfilePage() {
               #{student.id}
             </p>
             <h1
-              className={`font-heading text-4xl md:text-5xl ${
+              className={`font-heading text-2xl leading-tight md:text-3xl ${
                 tone === "overdue"
                   ? "text-rose-800 dark:text-rose-200"
                   : tone === "subscriberOverdue"
@@ -300,17 +308,22 @@ export default function StudentProfilePage() {
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
               <ProgramBadge program={student.program} track={student.track} />
-              <EnrollmentBadge
-                status={student.enrollmentStatus}
-                subscriber={isSubscriberStudent(student)}
-              />
-              <SubscriptionBadge status={student.subscriptionStatus} />
+              {student.enrollmentStatus !== "contact" ? (
+                <EnrollmentBadge
+                  status={student.enrollmentStatus}
+                  subscriber={isSubscriberStudent(student)}
+                />
+              ) : null}
+              {student.subscriptionStatus !== "none" &&
+              (student.program !== "subscriber" || student.subscriptionStatus !== "active") ? (
+                <SubscriptionBadge status={student.subscriptionStatus} />
+              ) : null}
               <DocusignBadge status={student.docusignStatus} />
-              {isContact(student) ? <ContactBadge category={student.contactCategory} /> : null}
+              {showContactBadge ? <ContactBadge category={student.contactCategory} /> : null}
               {student.photoshootStatus !== "none" ? (
                 <PhotoshootBadge status={student.photoshootStatus} />
               ) : null}
-              {(student.labels || []).map((label) => (
+              {labels.map((label) => (
                 <ContactLabelBadge key={label} label={label} />
               ))}
             </div>
@@ -375,7 +388,7 @@ export default function StudentProfilePage() {
       </Panel>
 
       <Tabs defaultValue="overview">
-        <TabsList variant="line" className="mb-4 w-full flex-wrap justify-start">
+        <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="docusign">DocuSign</TabsTrigger>
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
@@ -390,23 +403,23 @@ export default function StudentProfilePage() {
           <div className="grid gap-4 md:grid-cols-3">
             <Panel>
               <p className="text-xs text-muted-foreground uppercase">Modeling</p>
-              <p className="font-heading text-4xl">{counts.modeling}</p>
+              <p className="font-heading text-3xl leading-none">{counts.modeling}</p>
               <p className="text-xs text-muted-foreground">class check-ins</p>
             </Panel>
             <Panel>
               <p className="text-xs text-muted-foreground uppercase">Acting</p>
-              <p className="font-heading text-4xl">{counts.acting}</p>
+              <p className="font-heading text-3xl leading-none">{counts.acting}</p>
               <p className="text-xs text-muted-foreground">class check-ins</p>
             </Panel>
             <Panel>
               <p className="text-xs text-muted-foreground uppercase">Next Square</p>
-              <p className="font-heading text-4xl">{formatMoney(student.nextPaymentAmount)}</p>
+              <p className="font-heading text-3xl leading-none">{formatMoney(student.nextPaymentAmount)}</p>
               <p className="text-xs text-muted-foreground">{formatDate(student.nextPaymentDate)}</p>
             </Panel>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <Panel className="grid gap-3">
-              <h2 className="font-heading text-2xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
+              <h2 className="font-heading text-xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
               {isContact(student) ? (
                 <Field label="Category">
                   <NativeSelect
@@ -515,7 +528,7 @@ export default function StudentProfilePage() {
               </Field>
             </Panel>
             <Panel>
-              <h2 className="mb-3 font-heading text-2xl">Staff notes</h2>
+              <h2 className="mb-3 font-heading text-xl">Staff notes</h2>
               <Textarea
                 value={student.notes}
                 onChange={(e) => updateStudent(student.id, { notes: e.target.value })}
@@ -582,7 +595,7 @@ export default function StudentProfilePage() {
             </div>
             {schedule.length > 0 ? (
               <div className="mb-6">
-                <h2 className="mb-2 font-heading text-2xl">Payment schedule</h2>
+                <h2 className="mb-2 font-heading text-xl">Payment schedule</h2>
                 <p className="mb-3 text-xs text-muted-foreground">
                   From Square and the 6-payment academy plan. Open invoices show the Square due date
                   and remaining balance.
@@ -657,7 +670,7 @@ export default function StudentProfilePage() {
           <Panel className="grid gap-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="font-heading text-2xl">DocuSign</h2>
+                <h2 className="font-heading text-xl">DocuSign</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Store the envelope they were sent. Open the signing link or mark it signed when
                   it comes back.
@@ -685,7 +698,7 @@ export default function StudentProfilePage() {
 
         <TabsContent value="notes">
           <Panel className="grid gap-4">
-            <h2 className="font-heading text-2xl">Class performance</h2>
+            <h2 className="font-heading text-xl">Class performance</h2>
             <div className="grid gap-3 sm:grid-cols-[160px_1fr]">
               <Field label="Class">
                 <NativeSelect

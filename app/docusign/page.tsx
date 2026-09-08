@@ -83,7 +83,7 @@ export default function DocusignPage() {
 
       <Panel className="mb-6 grid gap-4">
         <div>
-          <h2 className="font-heading text-2xl">Attach to talent</h2>
+          <h2 className="font-heading text-xl">Attach to talent</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Search someone already on the enrollment roster, then paste their DocuSign.
           </p>

@@ -60,7 +60,7 @@ export function EnrollmentBadge({
   return (
     <Badge variant="outline" className={cn("font-medium", cls)}>
       {subscriber && (status === "overdue" || status === "declined")
-        ? `Subscriber ${ENROLLMENT_LABELS[status]}`
+        ? "Sub overdue"
         : ENROLLMENT_LABELS[status]}
     </Badge>
   )

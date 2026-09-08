@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState, Field, NativeSelect, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
-import { ContactBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
 import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS } from "@/lib/constants"
@@ -98,7 +97,7 @@ export default function ContactsPage() {
 
       {adding ? (
         <div className="mb-6 grid gap-3 rounded-2xl border border-border bg-card/80 p-5">
-          <h2 className="font-heading text-2xl">New contact</h2>
+          <h2 className="font-heading text-xl">New contact</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="First name">
               <Input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
@@ -192,7 +191,6 @@ export default function ContactsPage() {
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
                   {isContact(student) ? (
                     <>
-                      <ContactBadge category={student.contactCategory} />
                       <NativeSelect
                         className="h-8 w-[13rem] text-xs"
                         value={student.contactCategory || ""}

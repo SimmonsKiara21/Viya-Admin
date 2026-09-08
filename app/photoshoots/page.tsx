@@ -108,7 +108,7 @@ export default function PhotoshootsPage() {
             onClick={() => setPriorOpen((v) => !v)}
           >
             <span>
-              <span className="font-heading text-2xl">Prior shoots</span>
+              <span className="font-heading text-xl">Prior shoots</span>
               <span className="ml-2 text-sm text-muted-foreground">
                 {priorShoots.map((s) => s.label.replace(" 2026", "")).join(" · ")}
               </span>
@@ -146,7 +146,7 @@ export default function PhotoshootsPage() {
 
       <Panel className="mb-6 grid gap-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 className="font-heading text-2xl">{shoot?.label || "This month"}</h2>
+          <h2 className="font-heading text-xl">{shoot?.label || "This month"}</h2>
           {shoot?.archived ? (
             <span className="text-xs text-muted-foreground">Archived month — view or copy names into a new shoot.</span>
           ) : null}
@@ -211,7 +211,7 @@ export default function PhotoshootsPage() {
         {PHOTO_COLUMNS.map((status) => (
           <Panel key={status}>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-heading text-2xl">{PHOTO_LABELS[status]}</h2>
+              <h2 className="font-heading text-xl">{PHOTO_LABELS[status]}</h2>
               <span className="text-xs text-muted-foreground">{byStatus[status].length}</span>
             </div>
             {byStatus[status].length === 0 ? (

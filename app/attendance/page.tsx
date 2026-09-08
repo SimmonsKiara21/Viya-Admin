@@ -133,7 +133,7 @@ export default function AttendancePage() {
               <div className="mb-5 flex items-center gap-4">
                 <StudentPhoto student={picked} size="lg" />
                 <div>
-                  <p className="font-heading text-3xl">{fullName(picked)}</p>
+                  <p className="font-heading text-2xl">{fullName(picked)}</p>
                   <p className="text-sm text-muted-foreground">#{picked.id}</p>
                 </div>
               </div>
@@ -183,7 +183,7 @@ export default function AttendancePage() {
         </Panel>
 
         <Panel>
-          <h2 className="font-heading text-2xl">Today</h2>
+          <h2 className="font-heading text-xl">Today</h2>
           <p className="mb-4 text-sm text-muted-foreground">{todays.length} checked in</p>
           {todays.length === 0 ? (
             <EmptyState title="Nobody yet" description="Check-ins from the desk or the student form show here." />
@@ -225,15 +225,15 @@ export default function AttendancePage() {
       <div className="mt-8 mb-4 grid gap-3 sm:grid-cols-3">
         <Panel>
           <p className="text-xs text-muted-foreground uppercase">Modeling</p>
-          <p className="font-heading text-4xl">{totals.modeling}</p>
+          <p className="font-heading text-3xl leading-none">{totals.modeling}</p>
         </Panel>
         <Panel>
           <p className="text-xs text-muted-foreground uppercase">Acting</p>
-          <p className="font-heading text-4xl">{totals.acting}</p>
+          <p className="font-heading text-3xl leading-none">{totals.acting}</p>
         </Panel>
         <Panel>
           <p className="text-xs text-muted-foreground uppercase">Subscriber</p>
-          <p className="font-heading text-4xl">{totals.subscriber}</p>
+          <p className="font-heading text-3xl leading-none">{totals.subscriber}</p>
         </Panel>
       </div>
 
@@ -261,7 +261,7 @@ export default function AttendancePage() {
         <div className="grid gap-4">
           {grouped.map(([day, rows]) => (
             <Panel key={day}>
-              <h2 className="mb-3 font-heading text-2xl">{formatShortDate(day)}</h2>
+              <h2 className="mb-3 font-heading text-xl">{formatShortDate(day)}</h2>
               <ul className="divide-y divide-border">
                 {rows.map((row) => {
                   const student = students.find((s) => s.id === row.studentId)

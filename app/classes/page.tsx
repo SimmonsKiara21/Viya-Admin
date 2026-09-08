@@ -79,7 +79,7 @@ export default function ClassesPage() {
             <p className="text-xs tracking-wide text-muted-foreground uppercase">
               Next {session.weekdayLabel}
             </p>
-            <h2 className="font-heading text-3xl">{session.display}</h2>
+            <h2 className="font-heading text-xl">{session.display}</h2>
             <p className="mt-2 font-medium text-primary">
               {session.focus === "acting" ? "Acting" : "Modeling"}
             </p>
@@ -92,7 +92,7 @@ export default function ClassesPage() {
 
       <Panel className="mb-6">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="font-heading text-2xl">Subscriber workshops</h2>
+          <h2 className="font-heading text-xl">Subscriber workshops</h2>
           <a
             href="https://www.viyatalent.com/talentresources"
             className="text-xs text-muted-foreground hover:text-foreground"
@@ -128,7 +128,7 @@ export default function ClassesPage() {
 
       {resources?.academy ? (
         <Panel className="mb-6">
-          <h2 className="mb-3 font-heading text-2xl">August academy rotation</h2>
+          <h2 className="mb-3 font-heading text-xl">August academy rotation</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <p className="mb-2 text-xs tracking-wide text-muted-foreground uppercase">
@@ -174,7 +174,7 @@ export default function ClassesPage() {
       </div>
 
       <Panel>
-        <h2 className="mb-4 font-heading text-2xl">
+        <h2 className="mb-4 font-heading text-xl">
           {preset === "academy" ? "Send academy class reminder" : "Send subscriber class reminder"}
         </h2>
         <NotifyComposer

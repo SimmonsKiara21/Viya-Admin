@@ -1,7 +1,7 @@
 import type { ContactCategory, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
-import { CONTACTS_LABELS_URL } from "./constants"
+import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, programDisplayLabel } from "./constants"
 
 const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
@@ -51,6 +51,33 @@ export function displayContactLabel(label: string) {
   if (/la model source/i.test(key)) return "LA Model Source 2026"
   if (/^newsletter$/i.test(key)) return "Newsletter"
   return key
+}
+
+/** Drop Google / desk labels that repeat the enrollment or program badge. */
+export function uniqueContactLabels(student: Student) {
+  const enrollment = ENROLLMENT_LABELS[student.enrollmentStatus].toLowerCase()
+  const program = programDisplayLabel(student.program, student.track).toLowerCase()
+  const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
+
+  return (student.labels || []).filter((label) => {
+    const value = displayContactLabel(label).toLowerCase()
+    if (value === enrollment || value === program) return false
+    if (value === "current student" && student.program === "academy") return false
+    if (value === "active subscribers" && subscriber) return false
+    if (value === "subscriber" && subscriber) return false
+    if (value === "overdue" && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
+      return false
+    }
+    if (value === "collections" && (student.enrollmentStatus === "collections" || student.enrollmentStatus === "cancelling")) {
+      return false
+    }
+    if (value === "pending" && student.enrollmentStatus === "pending") return false
+    if (value === "paused" && student.enrollmentStatus === "paused") return false
+    if (value === "cancelling" && student.enrollmentStatus === "cancelling") return false
+    if ((value === "paid in full" || value === "pif") && student.enrollmentStatus === "pif") return false
+    if (value === "contact" && student.enrollmentStatus === "contact") return false
+    return true
+  })
 }
 
 export type ContactLabelRow = {

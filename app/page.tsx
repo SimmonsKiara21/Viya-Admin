@@ -9,7 +9,7 @@ import { StudentRow } from "@/components/student-row"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
-import { formatAcademyDate, formatAcademyTime, formatDate, formatMoney } from "@/lib/format"
+import { formatAcademyDate, formatAcademyTime } from "@/lib/format"
 import { sendDeskNotice } from "@/lib/send-notice"
 import {
   isCollectionsStudent,
@@ -78,9 +78,9 @@ export default function HomePage() {
         <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
           Today · Phoenix
         </p>
-        <p className="mt-2 font-heading text-3xl md:text-4xl">{formatAcademyDate(now)}</p>
-        <p className="mt-1 font-heading text-2xl tabular-nums text-primary md:text-3xl">
-          <Clock3 className="mr-2 inline size-6 align-[-0.15em]" />
+        <p className="mt-2 font-heading text-2xl md:text-3xl">{formatAcademyDate(now)}</p>
+        <p className="mt-1 font-heading text-xl tabular-nums text-primary md:text-2xl">
+          <Clock3 className="mr-2 inline size-5 align-[-0.15em]" />
           {formatAcademyTime(now)}
         </p>
       </Panel>
@@ -101,7 +101,6 @@ export default function HomePage() {
           students={stats.overdue}
           href="/alerts"
           tone="overdue"
-          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <NameList
           title="Collections"
@@ -109,11 +108,6 @@ export default function HomePage() {
           students={stats.collections}
           href="/alerts"
           tone="collections"
-          line={(s) =>
-            s.enrollmentStatus === "cancelling"
-              ? "Cancelling"
-              : `Collections · ${formatMoney(s.nextPaymentAmount)}`
-          }
         />
         <NameList
           title="Sub overdue"
@@ -121,7 +115,6 @@ export default function HomePage() {
           students={stats.subscriberOverdue}
           href="/alerts"
           tone="subscriber"
-          line={(s) => `Due ${formatDate(s.nextPaymentDate)} · ${formatMoney(s.nextPaymentAmount)}`}
         />
         <NameList
           title="Pending"
@@ -129,7 +122,6 @@ export default function HomePage() {
           students={stats.pending}
           href="/students"
           tone="pending"
-          line={(s) => (s.startDate ? `Start ${formatDate(s.startDate)}` : "Start date not set")}
         />
       </div>
 
@@ -157,14 +149,12 @@ function NameList({
   students,
   href,
   tone,
-  line,
 }: {
   title: string
   empty: string
   students: Student[]
   href: string
   tone?: "overdue" | "collections" | "subscriber" | "pending"
-  line?: (student: Student) => string
 }) {
   const heading =
     tone === "overdue"
@@ -180,9 +170,9 @@ function NameList({
   return (
     <Panel>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className={cn("font-heading text-2xl", heading)}>
+        <h2 className={cn("font-heading text-xl leading-tight", heading)}>
           {title}
-          <span className="ml-2 text-base text-muted-foreground">{students.length}</span>
+          <span className="ml-2 text-sm text-muted-foreground">{students.length}</span>
         </h2>
         <Link href={href} className="text-xs text-muted-foreground hover:text-foreground">
           Open
@@ -195,7 +185,6 @@ function NameList({
           {students.map((student) => (
             <div key={student.id} className="py-1">
               <StudentRow student={student} />
-              {line ? <p className="px-2 pb-2 text-xs text-muted-foreground">{line(student)}</p> : null}
             </div>
           ))}
         </div>
@@ -222,7 +211,7 @@ function StatCard({
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
           <Icon className="size-4 text-primary" />
         </div>
-        <p className="mt-3 font-heading text-4xl">{value}</p>
+        <p className="mt-2 font-heading text-3xl leading-none">{value}</p>
       </Panel>
     </Link>
   )

@@ -122,41 +122,41 @@
   --sidebar-ring: oklch(0.78 0.08 85);
 }
 
-/* Sepia — grocery-bag kraft. Hex so cream :root tokens cannot wash it yellow. */
+/* Sepia — tan paper, espresso ink, walnut accents. Hex so cream :root cannot wash it. */
 html.sepia,
 .sepia {
-  --background: #b08968;
-  --foreground: #24160e;
-  --card: #c4a07a;
-  --card-foreground: #24160e;
-  --popover: #c4a07a;
-  --popover-foreground: #24160e;
-  --primary: #5c3a22;
-  --primary-foreground: #f3e6d4;
-  --secondary: #a67c52;
-  --secondary-foreground: #24160e;
-  --muted: #a67c52;
-  --muted-foreground: #3d2818;
-  --accent: #8f5e38;
-  --accent-foreground: #24160e;
+  --background: #e6d3b3;
+  --foreground: #2a1810;
+  --card: #f4e8d2;
+  --card-foreground: #2a1810;
+  --popover: #f4e8d2;
+  --popover-foreground: #2a1810;
+  --primary: #4a2e18;
+  --primary-foreground: #f6ead8;
+  --secondary: #d7be96;
+  --secondary-foreground: #2a1810;
+  --muted: #ddc6a4;
+  --muted-foreground: #5c4030;
+  --accent: #c9a87a;
+  --accent-foreground: #2a1810;
   --destructive: #8a2f24;
-  --border: #8b623d;
-  --input: #8b623d;
-  --ring: #5c3a22;
-  --chart-1: #5c3a22;
+  --border: #c2a47a;
+  --input: #c2a47a;
+  --ring: #4a2e18;
+  --chart-1: #4a2e18;
   --chart-2: #4a5c38;
   --chart-3: #6b4228;
   --chart-4: #8a2f24;
   --chart-5: #7a4e2e;
   --radius: 0.75rem;
-  --sidebar: #8b623d;
-  --sidebar-foreground: #24160e;
-  --sidebar-primary: #5c3a22;
-  --sidebar-primary-foreground: #f3e6d4;
-  --sidebar-accent: #7a4e2e;
-  --sidebar-accent-foreground: #24160e;
-  --sidebar-border: #6b4228;
-  --sidebar-ring: #5c3a22;
+  --sidebar: #c4a57c;
+  --sidebar-foreground: #2a1810;
+  --sidebar-primary: #4a2e18;
+  --sidebar-primary-foreground: #f6ead8;
+  --sidebar-accent: #b89264;
+  --sidebar-accent-foreground: #2a1810;
+  --sidebar-border: #8f6b45;
+  --sidebar-ring: #4a2e18;
 }
 
 @layer base {
@@ -185,7 +185,7 @@ html.sepia,
   }
 }
 
-/* Sepia reads like Light: any leftover pale/dark-theme text becomes dark brown ink */
+/* Sepia: leftover pale/dark-theme text becomes espresso ink on tan */
 .sepia :is(
   [class*="text-rose-100"],
   [class*="text-rose-200"],
@@ -206,12 +206,12 @@ html.sepia,
   [class*="text-zinc-200"],
   [class*="text-zinc-300"]
 ) {
-  color: oklch(0.24 0.05 40);
+  color: #2a1810;
 }
 .sepia [class*="text-[oklch(0.7"],
 .sepia [class*="text-[oklch(0.78"],
 .sepia [class*="text-[oklch(0.8"],
 .sepia [class*="text-[oklch(0.86"],
 .sepia [class*="text-[oklch(0.9"] {
-  color: oklch(0.26 0.05 42);
+  color: #3d2618;
 }

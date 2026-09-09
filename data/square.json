@@ -19,10 +19,10 @@
     },
     {
       "id": "va-subscription-plus",
-      "name": "Viya Talent Subscription Plus",
-      "price": null,
+      "name": "Viya Talent Subscription",
+      "price": 100,
       "kind": "subscriber",
-      "description": "The third Square subscription plan — anyone billed on Square who is not on the $49.99 standard plan or the OG $4.99 plan."
+      "description": "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
     },
     {
       "id": "va101",

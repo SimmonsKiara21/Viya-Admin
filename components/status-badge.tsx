@@ -24,19 +24,19 @@ import type {
 } from "@/lib/types"
 
 const enrollmentClass: Record<EnrollmentStatus, string> = {
-  current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200 sepia:text-emerald-950",
-  pending: "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-200 sepia:text-sky-950",
-  declined: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:text-rose-950",
-  pif: "border-emerald-500/40 bg-emerald-500/16 text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950",
-  overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:text-rose-950",
-  paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200 sepia:text-violet-950",
-  collections: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200 sepia:text-amber-950",
-  cancelling: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200 sepia:text-amber-950",
+  current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200 sepia:border-emerald-800 sepia:bg-emerald-400/75 sepia:text-emerald-950",
+  pending: "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-200 sepia:border-sky-800 sepia:bg-sky-400/75 sepia:text-sky-950",
+  declined: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:border-rose-800 sepia:bg-rose-400/75 sepia:text-rose-950",
+  pif: "border-emerald-500/40 bg-emerald-500/16 text-emerald-900 dark:text-emerald-100 sepia:border-emerald-800 sepia:bg-emerald-400/80 sepia:text-emerald-950",
+  overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:border-rose-800 sepia:bg-rose-400/75 sepia:text-rose-950",
+  paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200 sepia:border-violet-800 sepia:bg-violet-400/75 sepia:text-violet-950",
+  collections: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200 sepia:border-amber-800 sepia:bg-amber-400/80 sepia:text-amber-950",
+  cancelling: "border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-amber-200 sepia:border-amber-800 sepia:bg-amber-400/80 sepia:text-amber-950",
   contact: "border-primary/35 bg-primary/10 text-primary",
 }
 
 const subscriberOverdueClass =
-  "border-orange-500/45 bg-orange-500/18 text-orange-900 dark:text-orange-100 sepia:text-orange-950"
+  "border-orange-500/45 bg-orange-500/18 text-orange-900 dark:text-orange-100 sepia:border-orange-800 sepia:bg-orange-400/75 sepia:text-orange-950"
 
 const paymentClass: Record<PaymentStatus, string> = {
   paid: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-100",

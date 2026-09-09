@@ -2,22 +2,21 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ChevronDown, X } from "lucide-react"
+import { ChevronDown, Pencil, X } from "lucide-react"
 import { toast } from "sonner"
 import { StudentPhoto } from "@/components/student-photo"
-import { Field, NativeSelect, PageHeader, Panel } from "@/components/ui-helpers"
+import { PageHeader, Panel } from "@/components/ui-helpers"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useStore } from "@/lib/store"
 import { fullName, matchesQuery } from "@/lib/format"
 import { PHOTO_LABELS } from "@/lib/constants"
 import { PHOTO_COLUMNS } from "@/lib/photoshoots"
-import type { PhotoshootStatus } from "@/lib/types"
+import type { PhotoshootStatus, Student } from "@/lib/types"
 
 export default function PhotoshootsPage() {
   const { students, photoshoots, photoshootPlacements, setPhotoshootPlacement, addPhotoshoot } = useStore()
-  const [query, setQuery] = useState("")
-  const [addStatus, setAddStatus] = useState<Exclude<PhotoshootStatus, "none">>("scheduled")
+  const [editing, setEditing] = useState<Partial<Record<(typeof PHOTO_COLUMNS)[number], boolean>>>({})
   const openShoots = photoshoots.filter((s) => !s.archived)
   const priorShoots = photoshoots.filter((s) => s.archived)
   const [shootId, setShootId] = useState(openShoots[0]?.id || photoshoots[0]?.id || "2026-09")
@@ -37,17 +36,6 @@ export default function PhotoshootsPage() {
     return map
   }, [students, photoshootPlacements, shootId])
 
-  const onThisShoot = new Set(
-    photoshootPlacements.filter((row) => row.shootId === currentId).map((row) => row.studentId),
-  )
-  const none = students.filter((s) => !onThisShoot.has(s.id))
-  const hits = useMemo(() => {
-    const pool = query.trim() ? students.filter((s) => matchesQuery(s, query)) : none
-    return [...pool]
-      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
-      .slice(0, query.trim() ? 12 : 8)
-  }, [query, students, none])
-
   function setStatus(id: string, status: PhotoshootStatus) {
     const student = students.find((s) => s.id === id)
     setPhotoshootPlacement(id, currentId, status)
@@ -56,11 +44,6 @@ export default function PhotoshootsPage() {
         ? `${student ? fullName(student) : "Talent"} was removed from ${shoot?.label || "this shoot"}.`
         : `${student ? fullName(student) : "Talent"} moved to ${PHOTO_LABELS[status]} · ${shoot?.label}.`,
     )
-    if (query.trim()) setQuery("")
-  }
-
-  function statusOnShoot(studentId: string): PhotoshootStatus {
-    return photoshootPlacements.find((row) => row.studentId === studentId && row.shootId === currentId)?.status ?? "none"
   }
 
   return (
@@ -101,19 +84,19 @@ export default function PhotoshootsPage() {
       </div>
 
       {priorShoots.length > 0 ? (
-        <Panel className="mb-6 p-0">
+        <Panel className="mb-6 p-0 overflow-hidden">
           <button
             type="button"
             className="flex w-full items-center justify-between px-5 py-4 text-left"
             onClick={() => setPriorOpen((v) => !v)}
           >
-            <span>
+            <span className="min-w-0">
               <span className="font-heading text-xl">Prior shoots</span>
               <span className="ml-2 text-sm text-muted-foreground">
                 {priorShoots.map((s) => s.label.replace(" 2026", "")).join(" · ")}
               </span>
             </span>
-            <ChevronDown className={`size-4 text-muted-foreground transition ${priorOpen ? "rotate-180" : ""}`} />
+            <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition ${priorOpen ? "rotate-180" : ""}`} />
           </button>
           {priorOpen ? (
             <div className="border-t border-border px-5 py-4">
@@ -144,124 +127,130 @@ export default function PhotoshootsPage() {
         </Panel>
       ) : null}
 
-      <Panel className="mb-6 grid gap-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 className="font-heading text-xl">{shoot?.label || "This month"}</h2>
-          {shoot?.archived ? (
-            <span className="text-xs text-muted-foreground">Archived month — view or copy names into a new shoot.</span>
-          ) : null}
-        </div>
-        <div className="grid gap-3 sm:grid-cols-[1fr_180px_auto]">
-          <Field label="Student or contact">
-            <Input
-              placeholder="Search name, ID, phone, or email"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </Field>
-          <Field label="Put them in">
-            <NativeSelect
-              value={addStatus}
-              onChange={(e) => setAddStatus(e.target.value as Exclude<PhotoshootStatus, "none">)}
-            >
-              {PHOTO_COLUMNS.map((status) => (
-                <option key={status} value={status}>
-                  {PHOTO_LABELS[status]}
-                </option>
-              ))}
-            </NativeSelect>
-          </Field>
-          <div className="flex items-end">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={hits.length === 0}
-              onClick={() => hits[0] && setStatus(hits[0].id, addStatus)}
-            >
-              Add
-            </Button>
-          </div>
-        </div>
-        {hits.length > 0 ? (
-          <ul className="overflow-hidden rounded-xl border border-border">
-            {hits.map((s) => (
-              <li key={s.id}>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-muted"
-                  onClick={() => setStatus(s.id, addStatus)}
-                >
-                  <span>
-                    {fullName(s)}
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {PHOTO_LABELS[statusOnShoot(s.id)]}
-                    </span>
-                  </span>
-                  <span className="text-xs text-muted-foreground">Add to {PHOTO_LABELS[addStatus]}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : query.trim() ? (
-          <p className="text-sm text-muted-foreground">No match.</p>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <h2 className="font-heading text-xl">{shoot?.label || "This month"}</h2>
+        {shoot?.archived ? (
+          <span className="text-xs text-muted-foreground">Archived month — view or copy names into a new shoot.</span>
         ) : null}
-      </Panel>
+      </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="grid items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
         {PHOTO_COLUMNS.map((status) => (
-          <Panel key={status}>
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-heading text-xl">{PHOTO_LABELS[status]}</h2>
-              <span className="text-xs text-muted-foreground">{byStatus[status].length}</span>
-            </div>
-            {byStatus[status].length === 0 ? (
-              <p className="text-sm text-muted-foreground">Empty for {shoot?.label}.</p>
-            ) : (
-              <ul className="grid gap-2">
-                {byStatus[status].map((student) => (
-                  <li key={student.id} className="flex items-center gap-2">
-                    <Link
-                      href={`/students/${student.id}`}
-                      className="flex min-w-0 flex-1 items-center gap-3 rounded-lg p-1 hover:bg-muted/50"
-                    >
-                      <StudentPhoto student={student} size="sm" />
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-medium">{fullName(student)}</span>
-                        {student.photoshootNotes ? (
-                          <span className="block truncate text-xs text-muted-foreground">
-                            {student.photoshootNotes}
-                          </span>
-                        ) : null}
-                      </span>
-                    </Link>
-                    <NativeSelect
-                      aria-label={`Move ${fullName(student)}`}
-                      className="h-8 w-[9.5rem] shrink-0 text-xs"
-                      value={statusOnShoot(student.id)}
-                      onChange={(e) => setStatus(student.id, e.target.value as PhotoshootStatus)}
-                    >
-                      {PHOTO_COLUMNS.map((option) => (
-                        <option key={option} value={option}>
-                          {PHOTO_LABELS[option]}
-                        </option>
-                      ))}
-                      <option value="none">Remove</option>
-                    </NativeSelect>
-                    <button
-                      type="button"
-                      className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                      title="Remove from this list"
-                      onClick={() => setStatus(student.id, "none")}
-                    >
-                      <X className="size-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Panel>
+          <PhotoColumn
+            key={status}
+            status={status}
+            people={byStatus[status]}
+            students={students}
+            editing={Boolean(editing[status])}
+            onToggleEdit={() => setEditing((prev) => ({ ...prev, [status]: !prev[status] }))}
+            onSetStatus={setStatus}
+          />
         ))}
       </div>
     </div>
+  )
+}
+
+function PhotoColumn({
+  status,
+  people,
+  students,
+  editing,
+  onToggleEdit,
+  onSetStatus,
+}: {
+  status: (typeof PHOTO_COLUMNS)[number]
+  people: Student[]
+  students: Student[]
+  editing: boolean
+  onToggleEdit: () => void
+  onSetStatus: (id: string, status: PhotoshootStatus) => void
+}) {
+  const [query, setQuery] = useState("")
+  const hits = useMemo(() => {
+    const q = query.trim()
+    if (!q) return []
+    const inColumn = new Set(people.map((s) => s.id))
+    return students
+      .filter((s) => !inColumn.has(s.id) && matchesQuery(s, q))
+      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+      .slice(0, 8)
+  }, [query, students, people])
+
+  return (
+    <Panel className="h-fit min-w-0 overflow-hidden p-4">
+      <div className="mb-3 flex min-w-0 items-center justify-between gap-2">
+        <h2 className="min-w-0 truncate font-heading text-xl">{PHOTO_LABELS[status]}</h2>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="text-xs text-muted-foreground">{people.length}</span>
+          <Button size="xs" variant={editing ? "default" : "outline"} onClick={onToggleEdit}>
+            <Pencil className="size-3" />
+            {editing ? "Done" : "Edit"}
+          </Button>
+        </div>
+      </div>
+      {people.length === 0 ? (
+        <p className="text-sm text-muted-foreground">{editing ? "Nobody here yet." : "None"}</p>
+      ) : (
+        <ul className="grid min-w-0 gap-2">
+          {people.map((student) => (
+            <li key={student.id} className="flex min-w-0 items-center gap-2">
+              <Link
+                href={`/students/${student.id}`}
+                className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-lg p-1 hover:bg-muted/50"
+              >
+                <StudentPhoto student={student} size="sm" />
+                <span className="min-w-0 flex-1 overflow-hidden">
+                  <span className="block truncate text-sm font-medium">{fullName(student)}</span>
+                  {student.photoshootNotes ? (
+                    <span className="block truncate text-xs text-muted-foreground">{student.photoshootNotes}</span>
+                  ) : null}
+                </span>
+              </Link>
+              {editing ? (
+                <button
+                  type="button"
+                  className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  title={`Remove from ${PHOTO_LABELS[status]}`}
+                  onClick={() => onSetStatus(student.id, "none")}
+                >
+                  <X className="size-4" />
+                </button>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
+      {editing ? (
+        <div className="mt-3 min-w-0 border-t border-border pt-3">
+          <Input
+            placeholder="Type a name to add"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {hits.length > 0 ? (
+            <ul className="mt-2 min-w-0 overflow-hidden rounded-xl border border-border">
+              {hits.map((s) => (
+                <li key={s.id} className="min-w-0 border-b border-border last:border-0">
+                  <button
+                    type="button"
+                    className="flex w-full min-w-0 items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                    onClick={() => {
+                      onSetStatus(s.id, status)
+                      setQuery("")
+                    }}
+                  >
+                    <span className="min-w-0 truncate">{fullName(s)}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">Add</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : query.trim() ? (
+            <p className="mt-2 truncate text-sm text-muted-foreground">No match.</p>
+          ) : null}
+        </div>
+      ) : null}
+    </Panel>
   )
 }

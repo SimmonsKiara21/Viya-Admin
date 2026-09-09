@@ -11,23 +11,29 @@ import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const ROW: Record<Exclude<HighlightTone, "none">, string> = {
-  overdue: "bg-rose-500/12 ring-1 ring-rose-400/35 hover:bg-rose-500/18",
-  subscriberOverdue: "bg-orange-500/14 ring-1 ring-orange-400/40 hover:bg-orange-500/20",
-  collections: "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20",
-  paused: "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18",
-  pending: "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18",
-  finishing: "bg-lime-500/16 ring-1 ring-lime-400/45 hover:bg-lime-500/22",
-  pif: "bg-emerald-500/14 ring-1 ring-emerald-400/40 hover:bg-emerald-500/20",
+  overdue:
+    "bg-rose-500/12 ring-1 ring-rose-400/35 hover:bg-rose-500/18 sepia:bg-[#e38b84] sepia:ring-2 sepia:ring-[#8b1e1e] sepia:hover:bg-[#d96f66]",
+  subscriberOverdue:
+    "bg-orange-500/14 ring-1 ring-orange-400/40 hover:bg-orange-500/20 sepia:bg-[#e8a05a] sepia:ring-2 sepia:ring-[#8a4b12] sepia:hover:bg-[#de8c3c]",
+  collections:
+    "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20 sepia:bg-[#e6c15a] sepia:ring-2 sepia:ring-[#7a5a10] sepia:hover:bg-[#d9b040]",
+  paused:
+    "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18 sepia:bg-[#c4a4e0] sepia:ring-2 sepia:ring-[#5a2d8a] sepia:hover:bg-[#b48ed6]",
+  pending:
+    "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18 sepia:bg-[#8ec8e8] sepia:ring-2 sepia:ring-[#1d5f86] sepia:hover:bg-[#74b7de]",
+  finishing:
+    "bg-lime-500/16 ring-1 ring-lime-400/45 hover:bg-lime-500/22 sepia:bg-[#b8d96a] sepia:ring-2 sepia:ring-[#4a6b14] sepia:hover:bg-[#a6cc4e]",
+  pif: "bg-emerald-500/14 ring-1 ring-emerald-400/40 hover:bg-emerald-500/20 sepia:bg-[#86d4a8] sepia:ring-2 sepia:ring-[#1f6b45] sepia:hover:bg-[#6cc894]",
 }
 
 const NAME: Record<Exclude<HighlightTone, "none">, string> = {
-  overdue: "text-rose-800 dark:text-rose-200",
-  subscriberOverdue: "text-orange-900 dark:text-orange-100",
-  collections: "text-amber-900 dark:text-amber-200",
-  paused: "text-violet-900 dark:text-violet-200",
-  pending: "text-sky-900 dark:text-sky-200",
-  finishing: "text-lime-800 dark:text-lime-100",
-  pif: "text-emerald-900 dark:text-emerald-100",
+  overdue: "text-rose-800 dark:text-rose-200 sepia:text-[#4a0d0d]",
+  subscriberOverdue: "text-orange-900 dark:text-orange-100 sepia:text-[#4a2408]",
+  collections: "text-amber-900 dark:text-amber-200 sepia:text-[#3d2e08]",
+  paused: "text-violet-900 dark:text-violet-200 sepia:text-[#2e1050]",
+  pending: "text-sky-900 dark:text-sky-200 sepia:text-[#0c3a58]",
+  finishing: "text-lime-800 dark:text-lime-100 sepia:text-[#243808]",
+  pif: "text-emerald-900 dark:text-emerald-100 sepia:text-[#0c3d28]",
 }
 
 function detail(student: Student, tone: HighlightTone, left: number | null) {
@@ -63,6 +69,7 @@ export const StudentRow = memo(function StudentRow({
   return (
     <Link
       href={`/students/${student.id}`}
+      data-highlight={context === "roster" && tone !== "none" ? tone : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors",
         tone === "none" || context === "contacts" ? "hover:bg-muted/60" : ROW[tone],

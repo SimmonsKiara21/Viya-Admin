@@ -113,6 +113,47 @@ function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amoun
   }
 }
 
+function applyManualPayments(prev: AppData, inputs: Omit<PaymentRecord, "id">[]): AppData {
+  if (!inputs.length) return prev
+  const today = todayISO()
+  let payments = prev.payments
+  let students = prev.students
+  for (const payment of inputs) {
+    const student = students.find((s) => s.id === payment.studentId)
+    const item = student ? defaultItemForStudent(student) : undefined
+    const nextPay = normalizePayment({
+      ...payment,
+      itemId: payment.itemId || item?.id,
+      itemName: payment.itemName || (payment.source === "manual" ? "Desk schedule" : item?.name),
+      itemDescription: payment.itemDescription || item?.description,
+      itemKind: payment.itemKind || item?.kind,
+      source: payment.source || "manual",
+    })
+    payments = [nextPay, ...payments]
+    students = students.map((s) => {
+      if (s.id !== nextPay.studentId) return s
+      const due = nextPay.dueDate.slice(0, 10)
+      const sooner = !s.nextPaymentDate || due <= s.nextPaymentDate.slice(0, 10)
+      const pastDue = due < today && nextPay.status !== "paid"
+      const canMarkOverdue =
+        pastDue &&
+        s.program === "academy" &&
+        s.enrollmentStatus !== "collections" &&
+        s.enrollmentStatus !== "cancelling" &&
+        s.enrollmentStatus !== "pif" &&
+        s.paymentPlan !== "pif"
+      return {
+        ...s,
+        nextPaymentDate: sooner ? due : s.nextPaymentDate,
+        nextPaymentAmount: sooner ? nextPay.amount : s.nextPaymentAmount,
+        enrollmentStatus: canMarkOverdue ? "overdue" : s.enrollmentStatus,
+        deskLocks: canMarkOverdue ? { ...s.deskLocks, status: true } : s.deskLocks,
+      }
+    })
+  }
+  return { ...prev, payments, students }
+}
+
 function looksLikeSquareId(id?: string, notes?: string) {
   const text = notes || ""
   if (text.startsWith("Square subscription") || /^Square invoice \S+ ·/.test(text)) return true
@@ -225,6 +266,7 @@ type StoreContextValue = AppData & {
   removeAttendance: (id: string) => void
   addFeedback: (note: Omit<FeedbackNote, "id" | "createdAt"> & { createdAt?: string }) => void
   addPayment: (payment: Omit<PaymentRecord, "id">) => void
+  addPayments: (payments: Omit<PaymentRecord, "id">[]) => void
   updatePayment: (id: string, patch: Partial<PaymentRecord>) => void
   removePayment: (id: string) => void
   addNotification: (note: Omit<NotificationRecord, "id" | "sentAt"> & { sentAt?: string }) => void
@@ -582,44 +624,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ...prev.feedback,
           ],
         })),
-      addPayment: (payment) =>
-        mutate((prev) => {
-          const student = prev.students.find((s) => s.id === payment.studentId)
-          const item = student ? defaultItemForStudent(student) : undefined
-          const nextPay = normalizePayment({
-            ...payment,
-            itemId: payment.itemId || item?.id,
-            itemName: payment.itemName || (payment.source === "manual" ? "Desk schedule" : item?.name),
-            itemDescription: payment.itemDescription || item?.description,
-            itemKind: payment.itemKind || item?.kind,
-            source: payment.source || "manual",
-          })
-          const today = todayISO()
-          return {
-            ...prev,
-            payments: [nextPay, ...prev.payments],
-            students: prev.students.map((s) => {
-              if (s.id !== nextPay.studentId) return s
-              const due = nextPay.dueDate.slice(0, 10)
-              const sooner = !s.nextPaymentDate || due <= s.nextPaymentDate.slice(0, 10)
-              const pastDue = due < today && nextPay.status !== "paid"
-              const canMarkOverdue =
-                pastDue &&
-                s.program === "academy" &&
-                s.enrollmentStatus !== "collections" &&
-                s.enrollmentStatus !== "cancelling" &&
-                s.enrollmentStatus !== "pif" &&
-                s.paymentPlan !== "pif"
-              return {
-                ...s,
-                nextPaymentDate: sooner ? due : s.nextPaymentDate,
-                nextPaymentAmount: sooner ? nextPay.amount : s.nextPaymentAmount,
-                enrollmentStatus: canMarkOverdue ? "overdue" : s.enrollmentStatus,
-                deskLocks: canMarkOverdue ? { ...s.deskLocks, status: true } : s.deskLocks,
-              }
-            }),
-          }
-        }),
+      addPayment: (payment) => mutate((prev) => applyManualPayments(prev, [payment])),
+      addPayments: (rows) => mutate((prev) => applyManualPayments(prev, rows)),
       updatePayment: (id, patch) =>
         mutate((prev) => ({
           ...prev,

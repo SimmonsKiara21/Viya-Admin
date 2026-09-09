@@ -190,39 +190,22 @@ export default function ContactsPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
                   {isContact(student) ? (
-                    <>
-                      <NativeSelect
-                        className="h-8 w-[13rem] text-xs"
-                        value={student.contactCategory || ""}
-                        onChange={(e) =>
-                          updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
-                        }
-                      >
-                        <option value=""></option>
-                        {(Object.keys(CONTACT_LABELS) as ContactCategory[])
-                          .filter((key) => key !== "new")
-                          .map((key) => (
-                          <option key={key} value={key}>
-                            {CONTACT_LABELS[key]}
-                          </option>
-                        ))}
-                      </NativeSelect>
-                      <Button
-                        size="xs"
-                        variant="outline"
-                        onClick={() => {
-                          updateStudent(student.id, {
-                            program: "academy",
-                            track: "academy",
-                            enrollmentStatus: "pending",
-                            paymentPlan: "pp",
-                          })
-                          toast.success(`${student.firstName} moved to Talent as pending.`)
-                        }}
-                      >
-                        Move to pending
-                      </Button>
-                    </>
+                    <NativeSelect
+                      className="h-8 w-[13rem] text-xs"
+                      value={student.contactCategory || ""}
+                      onChange={(e) =>
+                        updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
+                      }
+                    >
+                      <option value=""></option>
+                      {(Object.keys(CONTACT_LABELS) as ContactCategory[])
+                        .filter((key) => key !== "new")
+                        .map((key) => (
+                        <option key={key} value={key}>
+                          {CONTACT_LABELS[key]}
+                        </option>
+                      ))}
+                    </NativeSelect>
                   ) : null}
                 </div>
               </div>

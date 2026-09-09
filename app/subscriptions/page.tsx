@@ -17,20 +17,35 @@ import { isContact } from "@/lib/alerts"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
+const PLAN_COPY =
+  "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
+
 const PLANS = [
   { item: SUBSCRIPTION_ITEM, blurb: "Standard Square subscription." },
   { item: SUBSCRIPTION_OG_ITEM, blurb: "Grandfathered OG rate. Live Square invoices often show $5.14 with tax." },
-  { item: SUBSCRIPTION_PLUS_ITEM, blurb: "Third Square subscription plan — not Standard and not OG." },
+  { item: SUBSCRIPTION_PLUS_ITEM, blurb: "Newest Square subscription — $100." },
 ] as const
+
+function billedAmount(student: Student, payments: PaymentRecord[]) {
+  const item = catalogItemForStudent(student, payments)
+  const bill = payments
+    .filter((p) => p.studentId === student.id && p.itemKind === "subscriber")
+    .sort((a, b) => (b.dueDate || "").localeCompare(a.dueDate || ""))[0]
+  return bill?.amount ?? student.nextPaymentAmount ?? item.price
+}
 
 function planIdForStudent(student: Student, payments: PaymentRecord[]) {
   const item = catalogItemForStudent(student, payments)
   if (item.id === SUBSCRIPTION_OG_ITEM.id) return SUBSCRIPTION_OG_ITEM.id
-  if (item.id === SUBSCRIPTION_ITEM.id) return SUBSCRIPTION_ITEM.id
-  if (item.kind === "subscriber" && item.id !== SUBSCRIPTION_ITEM.id && item.id !== SUBSCRIPTION_OG_ITEM.id) {
-    return SUBSCRIPTION_PLUS_ITEM.id
+  if (item.id === SUBSCRIPTION_PLUS_ITEM.id) return SUBSCRIPTION_PLUS_ITEM.id
+  if (item.id === SUBSCRIPTION_ITEM.id) {
+    const amount = billedAmount(student, payments)
+    if (amount != null && amount >= 90 && amount <= 130) return SUBSCRIPTION_PLUS_ITEM.id
+    return SUBSCRIPTION_ITEM.id
   }
-  if (student.nextPaymentAmount != null && student.nextPaymentAmount <= 6) return SUBSCRIPTION_OG_ITEM.id
+  const amount = billedAmount(student, payments)
+  if (amount != null && amount <= 8) return SUBSCRIPTION_OG_ITEM.id
+  if (amount != null && amount >= 90 && amount <= 130) return SUBSCRIPTION_PLUS_ITEM.id
   return SUBSCRIPTION_ITEM.id
 }
 
@@ -68,7 +83,7 @@ export default function SubscriptionsPage() {
       <PageHeader
         eyebrow="Members"
         title="Subscriptions"
-        description="Three Square subscription plans. Standard, OG, and the additional Square plan."
+        description="Three Square subscription plans: $49.99, OG $4.99, and the newest $100 plan."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-3">
@@ -80,7 +95,7 @@ export default function SubscriptionsPage() {
             </p>
             <h2 className="mt-1 font-heading text-xl">{item.name}</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{blurb}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{item.description}</p>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.description || PLAN_COPY}</p>
           </Panel>
         ))}
       </div>
@@ -116,7 +131,8 @@ export default function SubscriptionsPage() {
             return (
               <div key={item.id} className="overflow-hidden rounded-2xl border border-border bg-card/60">
                 <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
-                  {item.name} · {people.length}
+                  {item.name}
+                  {item.price != null ? ` · ${formatMoney(item.price)}` : ""} · {people.length}
                 </div>
                 <div className="divide-y divide-border px-2 py-1">
                   {people.map((student) => {

@@ -13,7 +13,7 @@ export type ScheduleRow = {
   fromSquare: boolean
 }
 
-function addMonthsISO(iso: string, months: number) {
+export function addMonthsISO(iso: string, months: number) {
   const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
   if (!y || !m || !d) return iso
   const date = new Date(y, m - 1 + months, d)

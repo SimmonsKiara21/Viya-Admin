@@ -4,6 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant sepia (&:is(.sepia *));
+@custom-variant light (&:is(.light *));
 
 @theme inline {
   --color-background: var(--background);
@@ -49,43 +50,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Light — white page, dark ink. Opposite of Dark. */
-.light {
-  --background: #ffffff;
-  --foreground: #161616;
-  --card: #ffffff;
-  --card-foreground: #161616;
-  --popover: #ffffff;
-  --popover-foreground: #161616;
-  --primary: #3d2a12;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f3f3;
-  --secondary-foreground: #161616;
-  --muted: #f4f4f4;
-  --muted-foreground: #444444;
-  --accent: #ececec;
-  --accent-foreground: #161616;
-  --destructive: #b42318;
-  --border: #d8d8d8;
-  --input: #d8d8d8;
-  --ring: #3d2a12;
-  --chart-1: #3d2a12;
-  --chart-2: #2f6b3a;
-  --chart-3: #2b4c8a;
-  --chart-4: #b42318;
-  --chart-5: #8a5a12;
-  --radius: 0.75rem;
-  --sidebar: #f6f6f6;
-  --sidebar-foreground: #161616;
-  --sidebar-primary: #3d2a12;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eaeaea;
-  --sidebar-accent-foreground: #161616;
-  --sidebar-border: #d8d8d8;
-  --sidebar-ring: #3d2a12;
-}
-
-/* Dark — current luxury gold desk. Also :root so first paint matches the default theme. */
+/* Dark — luxury gold desk. Also :root so first paint matches the default theme. */
 :root,
 .dark {
   --background: oklch(0.145 0.012 75);
@@ -120,6 +85,43 @@
   --sidebar-accent-foreground: oklch(0.95 0.02 85);
   --sidebar-border: oklch(0.28 0.02 75);
   --sidebar-ring: oklch(0.78 0.08 85);
+}
+
+/* Light — white page, dark ink. After :root so it actually overrides Dark. */
+html.light,
+.light {
+  --background: #ffffff;
+  --foreground: #161616;
+  --card: #ffffff;
+  --card-foreground: #161616;
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+  --primary: #3d2a12;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f3f3;
+  --secondary-foreground: #161616;
+  --muted: #f4f4f4;
+  --muted-foreground: #444444;
+  --accent: #ececec;
+  --accent-foreground: #161616;
+  --destructive: #b42318;
+  --border: #d8d8d8;
+  --input: #d8d8d8;
+  --ring: #3d2a12;
+  --chart-1: #3d2a12;
+  --chart-2: #2f6b3a;
+  --chart-3: #2b4c8a;
+  --chart-4: #b42318;
+  --chart-5: #8a5a12;
+  --radius: 0.75rem;
+  --sidebar: #f6f6f6;
+  --sidebar-foreground: #161616;
+  --sidebar-primary: #3d2a12;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaeaea;
+  --sidebar-accent-foreground: #161616;
+  --sidebar-border: #d8d8d8;
+  --sidebar-ring: #3d2a12;
 }
 
 /* Sepia — pale tan paper, espresso ink, walnut chrome. Distinct layers for contrast. */
@@ -164,12 +166,12 @@ html.sepia,
     @apply border-border outline-ring/50;
   }
   :root,
+  .dark {
+    color-scheme: dark;
+  }
   .light,
   .sepia {
     color-scheme: light;
-  }
-  .dark {
-    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground;

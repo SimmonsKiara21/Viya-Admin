@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react"
 import { AlertTriangle, Clock3, FolderOpen, Plus, UserPlus, Users } from "lucide-react"
 import { toast } from "sonner"
 import { PageHeader, Panel } from "@/components/ui-helpers"
-import { StudentRow } from "@/components/student-row"
 import { Button } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
@@ -17,7 +16,6 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
-import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
 
 function sortByName(list: Student[]) {
@@ -48,7 +46,7 @@ export default function HomePage() {
       <PageHeader
         eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="Talent, overdue, collections, and pending."
+        description="A snapshot of the floor. Open a tab for the list — Alerts holds overdue, collections, and wrapping up."
         actions={
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />
@@ -76,38 +74,6 @@ export default function HomePage() {
         <StatCard icon={UserPlus} label="Pending" value={String(stats.pending.length)} href="/students" />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <NameList title="Talent" empty="No current academy talent." students={stats.current} href="/students" />
-        <NameList
-          title="Overdue"
-          empty="Nobody is overdue."
-          students={stats.overdue}
-          href="/alerts"
-          tone="overdue"
-        />
-        <NameList
-          title="Collections"
-          empty="Nobody is in collections or cancelling."
-          students={stats.collections}
-          href="/alerts"
-          tone="collections"
-        />
-        <NameList
-          title="Sub overdue"
-          empty="No subscribers are overdue."
-          students={stats.subscriberOverdue}
-          href="/alerts"
-          tone="subscriber"
-        />
-        <NameList
-          title="Pending"
-          empty="No pending starts."
-          students={stats.pending}
-          href="/students"
-          tone="pending"
-        />
-      </div>
-
       <p className="mt-10 text-center text-xs text-muted-foreground">
         Saved in this browser.{" "}
         <button
@@ -123,56 +89,6 @@ export default function HomePage() {
       </p>
       <StudentFormDialog open={addOpen} onOpenChange={setAddOpen} />
     </div>
-  )
-}
-
-function NameList({
-  title,
-  empty,
-  students,
-  href,
-  tone,
-}: {
-  title: string
-  empty: string
-  students: Student[]
-  href: string
-  tone?: "overdue" | "collections" | "subscriber" | "pending"
-}) {
-  const heading =
-    tone === "overdue"
-      ? "text-rose-800 dark:text-rose-100"
-      : tone === "collections"
-        ? "text-amber-900 dark:text-amber-100"
-        : tone === "subscriber"
-          ? "text-orange-900 dark:text-orange-100"
-          : tone === "pending"
-            ? "text-sky-900 dark:text-sky-100"
-            : ""
-
-  return (
-    <Panel>
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className={cn("font-heading text-xl leading-tight", heading)}>
-          {title}
-          <span className="ml-2 text-sm text-muted-foreground">{students.length}</span>
-        </h2>
-        <Link href={href} className="text-xs text-muted-foreground hover:text-foreground">
-          Open
-        </Link>
-      </div>
-      {students.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{empty}</p>
-      ) : (
-        <div className="max-h-[28rem] divide-y divide-border overflow-y-auto">
-          {students.map((student) => (
-            <div key={student.id} className="py-1">
-              <StudentRow student={student} />
-            </div>
-          ))}
-        </div>
-      )}
-    </Panel>
   )
 }
 

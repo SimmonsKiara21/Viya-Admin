@@ -102,6 +102,7 @@
     {"name": "Justin Chambers", "reason": "Guest / instructor on Square, not an enrolled student"}
   ],
   "subscriptions": [
+    {"name": "Scarlett Petroff", "amount": 100, "itemId": "va-subscription-plus", "status": "active", "since": "2026-09-01", "lastPaid": ""},
     {"name": "Stacey Boucher", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
     {"name": "Dianica Vargas", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},
     {"name": "Adam Montoya", "amount": 51.49, "itemId": "va-subscription", "status": "active", "since": "2026-01-01", "lastPaid": "2026-08-01"},

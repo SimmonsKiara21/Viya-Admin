@@ -134,18 +134,49 @@ export default function PhotoshootsPage() {
         ) : null}
       </div>
 
-      <div className="grid items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {PHOTO_COLUMNS.map((status) => (
+      <div className="grid items-start gap-4 lg:grid-cols-3">
+        <PhotoColumn
+          status="scheduled"
+          people={byStatus.scheduled}
+          students={students}
+          editing={Boolean(editing.scheduled)}
+          onToggleEdit={() => setEditing((prev) => ({ ...prev, scheduled: !prev.scheduled }))}
+          onSetStatus={setStatus}
+        />
+        <div className="grid items-start gap-4">
           <PhotoColumn
-            key={status}
-            status={status}
-            people={byStatus[status]}
+            status="headshots"
+            people={byStatus.headshots}
             students={students}
-            editing={Boolean(editing[status])}
-            onToggleEdit={() => setEditing((prev) => ({ ...prev, [status]: !prev[status] }))}
+            editing={Boolean(editing.headshots)}
+            onToggleEdit={() => setEditing((prev) => ({ ...prev, headshots: !prev.headshots }))}
             onSetStatus={setStatus}
           />
-        ))}
+          <PhotoColumn
+            status="refresh"
+            people={byStatus.refresh}
+            students={students}
+            editing={Boolean(editing.refresh)}
+            onToggleEdit={() => setEditing((prev) => ({ ...prev, refresh: !prev.refresh }))}
+            onSetStatus={setStatus}
+          />
+          <PhotoColumn
+            status="received"
+            people={byStatus.received}
+            students={students}
+            editing={Boolean(editing.received)}
+            onToggleEdit={() => setEditing((prev) => ({ ...prev, received: !prev.received }))}
+            onSetStatus={setStatus}
+          />
+        </div>
+        <PhotoColumn
+          status="full"
+          people={byStatus.full}
+          students={students}
+          editing={Boolean(editing.full)}
+          onToggleEdit={() => setEditing((prev) => ({ ...prev, full: !prev.full }))}
+          onSetStatus={setStatus}
+        />
       </div>
     </div>
   )

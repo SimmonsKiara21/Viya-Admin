@@ -40,7 +40,7 @@ import {
   telHref,
   todayISO,
 } from "@/lib/format"
-import { buildPaymentSchedule, addMonthsISO } from "@/lib/schedule"
+import { addMonthsISO } from "@/lib/schedule"
 import {
   highlightTone,
   isAcademyOverdue,
@@ -118,12 +118,11 @@ export default function StudentProfilePage() {
     [feedback, id],
   )
   const bills = useMemo(
-    () => payments.filter((p) => p.studentId === id).sort((a, b) => b.dueDate.localeCompare(a.dueDate)),
+    () =>
+      payments
+        .filter((p) => p.studentId === id)
+        .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || "")),
     [payments, id],
-  )
-  const schedule = useMemo(
-    () => (student ? buildPaymentSchedule(student, payments) : []),
-    [student, payments],
   )
   const counts = countsFor(records)
   const tone = student ? highlightTone(student) : "none"
@@ -709,40 +708,45 @@ export default function StudentProfilePage() {
                 />
               </Field>
             </div>
-            {schedule.length > 0 ? (
-              <div className="mb-6">
+            {bills.length > 0 ? (
+              <div>
                 <h2 className="mb-2 font-heading text-xl">Payment schedule</h2>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  From Square and the 6-payment academy plan. Open invoices show the Square due date
-                  and remaining balance.
+                  Dates and amounts from their file. Add more rows above for the rest of the plan.
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full min-w-[520px] text-left text-sm">
+                  <table className="w-full min-w-[420px] text-left text-sm">
                     <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 font-medium">Date</th>
-                        <th className="px-3 py-2 font-medium">Item</th>
                         <th className="px-3 py-2 font-medium">Amount</th>
                         <th className="px-3 py-2 font-medium">Paid</th>
                         <th className="px-3 py-2 font-medium">Status</th>
+                        <th className="w-10 px-2 py-2" />
                       </tr>
                     </thead>
                     <tbody>
-                      {schedule.map((row, index) => (
-                        <tr key={`${row.date}-${index}`} className="border-b border-border last:border-0">
-                          <td className="px-3 py-2 tabular-nums">{formatShortDate(row.date)}</td>
+                      {bills.map((bill) => (
+                        <tr key={bill.id} className="border-b border-border last:border-0">
+                          <td className="px-3 py-2 tabular-nums">{formatShortDate(bill.dueDate)}</td>
+                          <td className="px-3 py-2 tabular-nums">{formatMoney(bill.amount)}</td>
+                          <td className="px-3 py-2 tabular-nums">{formatMoney(bill.paidAmount)}</td>
                           <td className="px-3 py-2">
-                            <p>{row.label}</p>
-                            {row.invoiceId ? (
-                              <p className="font-mono text-[11px] text-muted-foreground">
-                                {row.fromSquare ? "Square" : "Plan"} · {row.invoiceId}
-                              </p>
-                            ) : null}
+                            <PaymentBadge status={bill.status} />
                           </td>
-                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.amount)}</td>
-                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.paidAmount)}</td>
-                          <td className="px-3 py-2">
-                            <PaymentBadge status={row.status} />
+                          <td className="px-2 py-2">
+                            {bill.source === "manual" ? (
+                              <Button
+                                size="xs"
+                                variant="ghost"
+                                onClick={() => {
+                                  removePayment(bill.id)
+                                  toast.message("Payment removed from the schedule.")
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            ) : null}
                           </td>
                         </tr>
                       ))}
@@ -750,48 +754,8 @@ export default function StudentProfilePage() {
                   </table>
                 </div>
               </div>
-            ) : null}
-            {bills.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No Square invoices on file.</p>
             ) : (
-              <ul className="divide-y divide-border">
-                {bills.map((bill) => (
-                  <li key={bill.id} className="flex flex-wrap items-start justify-between gap-2 py-3">
-                    <div className="min-w-0 max-w-xl">
-                      <p className="font-medium">{bill.itemName || "Square invoice"}</p>
-                      <p className="mt-0.5 text-sm">
-                        {formatMoney(bill.amount)}
-                        {bill.paidAmount ? ` · paid ${formatMoney(bill.paidAmount)}` : ""}
-                        {bill.balance ? ` · balance ${formatMoney(bill.balance)}` : ""} ·{" "}
-                        {formatShortDate(bill.dueDate)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {bill.method === "square" ? "Square" : bill.method} · {bill.squareInvoiceId}
-                      </p>
-                      {bill.itemDescription ? (
-                        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                          {bill.itemDescription}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <PaymentBadge status={bill.status} />
-                      {bill.source === "manual" ? (
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onClick={() => {
-                            removePayment(bill.id)
-                            toast.message("Desk schedule removed.")
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      ) : null}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-sm text-muted-foreground">No payments on the schedule yet.</p>
             )}
           </Panel>
         </TabsContent>

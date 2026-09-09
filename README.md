@@ -26,12 +26,13 @@ npm start
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
-- **Payments** is a Square tracker for **enrollment students only**. The desk pulls invoices every couple of minutes. With `SQUARE_ACCESS_TOKEN` those are live Square invoices (due dates, paid, balance). Without a token it uses the last snapshot in `data/square.json`. People who are on Square but not on the 2026 enrollment workbook are not added.
-- **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the newest plan ($100). All three share the same Square description.
+- **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
+- **Payments** on a talent file is their payment schedule (dates and amounts). Add extra rows there for the rest of the plan. The Payment tracker page still syncs invoices in the background.
+- **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
 - **Contacts** is everyone else. People who are not enrolled have no status tag unless you pick one from the dropdown (blank is allowed). Enrolled people are tagged **Current Student**.
 - **Calendar** lists who is supposed to run on each Phoenix date. On a talent file (Payments tab) add the whole schedule as multiple date + amount rows. Those dates show on Calendar and on Alerts when late.
-- **Photoshoots** is monthly. September and October start empty with the same lists (Scheduled, Headshots, Full, Refresh, Received). Prior months (May, June, July, August) sit in a dropdown.
+- **Photoshoots** is monthly. Headshots, Refresh, and Received stack together; Scheduled and Full sit beside them. Prior months sit under Prior shoots.
 - **Alerts** lists overdue, collections, pending, wrapping up, and paid in full. Texts go out from the separate messaging site, not this desk.
 - **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Light is white with dark text. Sepia is tan paper, espresso ink, and a darker walnut sidebar.
 - **Times** on Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.

@@ -2,29 +2,38 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
+import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { PaymentBadge } from "@/components/status-badge"
-import { useStore, useSync } from "@/lib/store"
-import { formatDate, formatMoney, formatTime, fullName } from "@/lib/format"
+import { Input } from "@/components/ui/input"
+import { useStore } from "@/lib/store"
+import { formatDate, formatMoney, fullName } from "@/lib/format"
 import { PAYMENT_LABELS } from "@/lib/constants"
-import { SQUARE_ITEMS, itemKindLabel, openBalance } from "@/lib/square"
-import type { PaymentStatus } from "@/lib/types"
+import { displayPaymentNotes, paymentItemLabel } from "@/lib/square"
+import type { PaymentRecord, PaymentStatus, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-type ItemFilter = "all" | string
+type KindFilter = "all" | "training" | "sub" | "collections"
+
+function kindFor(student: Student | undefined, bill: PaymentRecord): KindFilter {
+  const label = paymentItemLabel(student, bill)
+  if (label === "Collections") return "collections"
+  if (label === "Sub") return "sub"
+  return "training"
+}
 
 export default function PaymentsPage() {
-  const { payments, students } = useStore()
-  const { square } = useSync()
+  const { payments, students, updatePayment } = useStore()
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
-  const [itemFilter, setItemFilter] = useState<ItemFilter>("all")
+  const [kindFilter, setKindFilter] = useState<KindFilter>("all")
 
   const enrollmentIds = useMemo(() => new Set(students.map((s) => s.id)), [students])
 
   const rows = useMemo(() => {
     let list = payments.filter((p) => enrollmentIds.has(p.studentId))
     if (filter !== "all") list = list.filter((p) => p.status === filter)
-    if (itemFilter !== "all") list = list.filter((p) => p.itemId === itemFilter)
+    if (kindFilter !== "all") {
+      list = list.filter((p) => kindFor(students.find((s) => s.id === p.studentId), p) === kindFilter)
+    }
     const rank = (status: string) =>
       status === "overdue" ? 0 : status === "due" ? 1 : status === "declined" ? 2 : 3
     return [...list].sort((a, b) => {
@@ -32,35 +41,15 @@ export default function PaymentsPage() {
       if (r !== 0) return r
       return (a.dueDate || "").localeCompare(b.dueDate || "")
     })
-  }, [payments, filter, itemFilter, enrollmentIds])
-
-  const tracked = payments.filter((p) => enrollmentIds.has(p.studentId))
-  const openTotal = openBalance(tracked)
-  const usedItems = SQUARE_ITEMS.filter((item) => tracked.some((p) => p.itemId === item.id))
+  }, [payments, filter, kindFilter, enrollmentIds, students])
 
   return (
     <div>
       <PageHeader
-        eyebrow="Square"
+        eyebrow="Payments"
         title="Payment tracker"
-        description="Square invoices and desk schedules for students on the enrollment workbook."
+        description="Schedules from Square, the same dates that show on each talent file."
       />
-
-      <Panel className="mb-6">
-        <p className="text-xs font-medium tracking-wide text-primary uppercase">
-          {square.connected ? "Square connected" : "Square"}
-        </p>
-        <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-          {square.message || "Checking Square…"}
-        </p>
-        <p className="mt-3 font-heading text-2xl">{formatMoney(openTotal)} open</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {square.matched != null
-            ? `${square.matched} Square invoices matched to enrollment · ${square.skipped ?? 0} Square-only customers skipped`
-            : "Enrollment students only"}
-          {square.fetchedAt ? ` · synced ${formatTime(square.fetchedAt)}` : ""}
-        </p>
-      </Panel>
 
       <div className="mb-3 flex flex-wrap gap-2">
         {(["all", "due", "overdue", "declined", "paid", "scheduled"] as const).map((s) => (
@@ -75,55 +64,51 @@ export default function PaymentsPage() {
                 : "border-border text-muted-foreground",
             )}
           >
-            {s === "all" ? "All invoices" : PAYMENT_LABELS[s]}
+            {s === "all" ? "All" : PAYMENT_LABELS[s]}
           </button>
         ))}
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => setItemFilter("all")}
-          className={cn(
-            "rounded-full border px-3 py-1 text-xs font-medium",
-            itemFilter === "all"
-              ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
-              : "border-border text-muted-foreground",
-          )}
-        >
-          All Square items
-        </button>
-        {usedItems.map((item) => (
+        {(
+          [
+            ["all", "All items"],
+            ["training", "Modeling and acting training"],
+            ["sub", "Sub"],
+            ["collections", "Collections"],
+          ] as const
+        ).map(([key, label]) => (
           <button
-            key={item.id}
+            key={key}
             type="button"
-            onClick={() => setItemFilter(item.id)}
+            onClick={() => setKindFilter(key)}
             className={cn(
               "rounded-full border px-3 py-1 text-xs font-medium",
-              itemFilter === item.id
+              kindFilter === key
                 ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
                 : "border-border text-muted-foreground",
             )}
           >
-            {item.name}
+            {label}
           </button>
         ))}
       </div>
 
       {rows.length === 0 ? (
-        <EmptyState title="No invoices in this view" description="Try another status or Square item filter." />
+        <EmptyState title="No payments in this view" description="Try another status or item filter." />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border">
-          <table className="w-full min-w-[880px] text-left text-sm">
+          <table className="w-full min-w-[920px] text-left text-sm">
             <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Student</th>
-                <th className="px-4 py-3 font-medium">Square item</th>
+                <th className="px-4 py-3 font-medium">Item</th>
                 <th className="px-4 py-3 font-medium">Amount</th>
                 <th className="px-4 py-3 font-medium">Paid</th>
                 <th className="px-4 py-3 font-medium">Balance</th>
                 <th className="px-4 py-3 font-medium">Due</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Notes</th>
               </tr>
             </thead>
             <tbody>
@@ -133,31 +118,32 @@ export default function PaymentsPage() {
                   <tr key={bill.id} className="border-b border-border last:border-0 align-top">
                     <td className="px-4 py-3">
                       {student ? (
-                        <Link href={`/students/${student.id}`} className="font-medium hover:underline">
+                        <Link href={`/students/${student.id}?tab=payments`} className="font-medium hover:underline">
                           {fullName(student)}
                         </Link>
                       ) : (
                         bill.studentId
                       )}
-                      <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
-                        {bill.source === "square" ? bill.squareInvoiceId : "Enrollment workbook"}
-                      </span>
                     </td>
-                    <td className="px-4 py-3 max-w-[280px]">
-                      <p className="font-medium">{bill.itemName || "—"}</p>
-                      <p className="mt-0.5 text-[11px] uppercase tracking-wide text-muted-foreground">
-                        {itemKindLabel(bill.itemKind)}
-                      </p>
-                      {bill.itemDescription ? (
-                        <p className="mt-1 text-xs text-muted-foreground line-clamp-3">{bill.itemDescription}</p>
-                      ) : null}
-                    </td>
+                    <td className="px-4 py-3">{paymentItemLabel(student, bill)}</td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.amount)}</td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.paidAmount)}</td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.balance)}</td>
                     <td className="px-4 py-3">{formatDate(bill.dueDate)}</td>
                     <td className="px-4 py-3">
                       <PaymentBadge status={bill.status} />
+                    </td>
+                    <td className="px-4 py-3 min-w-[12rem]">
+                      <Input
+                        className="h-8 text-xs"
+                        placeholder="Notes"
+                        defaultValue={displayPaymentNotes(bill.notes)}
+                        onBlur={(e) => {
+                          const next = e.target.value.trim()
+                          if (next === displayPaymentNotes(bill.notes)) return
+                          updatePayment(bill.id, { notes: next })
+                        }}
+                      />
                     </td>
                   </tr>
                 )

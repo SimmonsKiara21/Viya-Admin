@@ -1,5 +1,5 @@
 import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./types"
-import { SQUARE_ITEMS } from "./square"
+import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
 import { newId, todayISO } from "./format"
 import { PLAN_LENGTH } from "./alerts"
@@ -76,23 +76,32 @@ export function invoicesFromSquareApi(raw: unknown[], customerNames: Record<stri
     const given = typeof recipient?.given_name === "string" ? recipient.given_name : ""
     const family = typeof recipient?.family_name === "string" ? recipient.family_name : ""
     const name = `${given} ${family}`.trim() || customerNames[customerId] || ""
+    if (!name) continue
     const requests = Array.isArray(invoice.payment_requests) ? invoice.payment_requests : []
-    const request = asRecord(requests[0]) ?? {}
-    const amount = money(request.computed_amount_money)
-    const paid = money(request.total_completed_amount_money)
-    const dueDate = typeof request.due_date === "string" ? request.due_date : ""
-    const status = mapInvoiceStatus(String(invoice.status || ""), dueDate, paid, amount)
-    if (!status || !name) continue
     const title = String(invoice.title || invoice.description || "")
-    rows.push({
-      name,
-      invoiceId: String(invoice.invoice_number || invoice.id || ""),
-      itemId: guessItemId(title),
-      amount: amount || paid,
-      paid,
-      status,
-      dueDate,
-    })
+    const invoiceNumber = String(invoice.invoice_number || invoice.id || "")
+    const itemId = guessItemId(title)
+    const requestList = requests.length ? requests : [null]
+    for (const entryReq of requestList) {
+      const request = asRecord(entryReq) ?? {}
+      const amount = money(request.computed_amount_money) || money(request.total_completed_amount_money)
+      const paid = money(request.total_completed_amount_money)
+      const dueDate = typeof request.due_date === "string" ? request.due_date : ""
+      const uid = typeof request.uid === "string" && request.uid ? request.uid : dueDate
+      let status = mapInvoiceStatus(String(invoice.status || ""), dueDate, paid, amount)
+      if (!status) continue
+      if (amount > 0 && paid >= amount) status = "paid"
+      else if (dueDate && dueDate < todayISO() && status !== "paid") status = "overdue"
+      rows.push({
+        name,
+        invoiceId: requestList.length > 1 && uid ? `${invoiceNumber}:${uid}` : invoiceNumber,
+        itemId,
+        amount: amount || paid,
+        paid,
+        status,
+        dueDate,
+      })
+    }
   }
   return rows
 }
@@ -102,6 +111,7 @@ export function applySquareInvoices(students: Student[], payments: PaymentRecord
   const nextPayments = payments.map((p) => ({ ...p }))
   const skipped: string[] = []
   const matchedIds = new Set<string>()
+  const incomingByStudent = new Map<string, Set<string>>()
   let matched = 0
 
   for (const inv of invoices) {
@@ -112,11 +122,22 @@ export function applySquareInvoices(students: Student[], payments: PaymentRecord
     }
     matched += 1
     matchedIds.add(student.id)
+    const ids = incomingByStudent.get(student.id) ?? new Set<string>()
+    ids.add(String(inv.invoiceId))
+    incomingByStudent.set(student.id, ids)
     overlayInvoice(nextPayments, student, inv)
   }
 
-  refreshStudentsFromPayments(nextStudents, nextPayments, matchedIds)
-  return { students: nextStudents, payments: nextPayments, matched, skipped: [...new Set(skipped)] }
+  const pruned = nextPayments.filter((p) => {
+    const ids = incomingByStudent.get(p.studentId)
+    if (!ids || p.source !== "square") return true
+    if (ids.has(p.squareInvoiceId)) return true
+    if (p.status === "paid") return true
+    return false
+  })
+
+  refreshStudentsFromPayments(nextStudents, pruned, matchedIds)
+  return { students: nextStudents, payments: pruned, matched, skipped: [...new Set(skipped)] }
 }
 
 function overlayInvoice(payments: PaymentRecord[], student: Student, inv: SquareInvoiceRow) {
@@ -126,9 +147,13 @@ function overlayInvoice(payments: PaymentRecord[], student: Student, inv: Square
   const balance = Math.max(Math.round((amount - paid) * 100) / 100, 0)
   let rec =
     payments.find((p) => p.studentId === student.id && p.squareInvoiceId === String(inv.invoiceId)) ??
-    (inv.status !== "paid"
-      ? payments.find((p) => p.studentId === student.id && p.itemId === item.id && ["due", "overdue", "declined", "scheduled"].includes(p.status))
-      : payments.find((p) => p.studentId === student.id && p.itemId === item.id && p.status === "paid"))
+    payments.find(
+      (p) =>
+        p.studentId === student.id &&
+        p.source === "square" &&
+        p.dueDate === inv.dueDate &&
+        p.itemId === item.id,
+    )
 
   if (!rec) {
     rec = {
@@ -142,10 +167,10 @@ function overlayInvoice(payments: PaymentRecord[], student: Student, inv: Square
       status: inv.status,
       method: "square",
       squareInvoiceId: String(inv.invoiceId),
-      notes: `Square invoice ${inv.invoiceId} · ${item.name}`,
+      notes: "",
       itemId: item.id,
       itemName: item.name,
-      itemDescription: item.description || "",
+      itemDescription: "",
       itemKind: (item.kind || "academy") as SquareItemKind,
       source: "square",
     }
@@ -159,10 +184,10 @@ function overlayInvoice(payments: PaymentRecord[], student: Student, inv: Square
     rec.status = inv.status
     rec.method = "square"
     rec.squareInvoiceId = String(inv.invoiceId)
-    rec.notes = `Square invoice ${inv.invoiceId} · ${item.name}`
+    rec.notes = displayPaymentNotes(rec.notes)
     rec.itemId = item.id
     rec.itemName = item.name
-    rec.itemDescription = item.description || ""
+    rec.itemDescription = ""
     rec.itemKind = (item.kind || "academy") as SquareItemKind
     rec.source = "square"
   }
@@ -185,13 +210,8 @@ function refreshStudentsFromPayments(
       .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
     const next = open[0]
     if (next) {
-      const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
-      // Workbook STATUS / notes own academy enrollment and next-due copy.
-      // Square invoices stay on Payments and must not mark talent overdue.
-      if (subscriber) {
-        student.nextPaymentDate = next.dueDate || student.nextPaymentDate
-        student.nextPaymentAmount = next.balance || next.amount
-      }
+      student.nextPaymentDate = next.dueDate || student.nextPaymentDate
+      student.nextPaymentAmount = next.balance || next.amount
     }
     const academy = rows.filter((p) => isAcademyItem(p.itemId, p.itemKind))
     const plan = academy.find((p) => p.amount >= 400) ?? academy[0]

@@ -27,7 +27,7 @@ npm start
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
-- **Payments** on a talent file is their payment schedule (dates and amounts). Add extra rows there for the rest of the plan. The Payment tracker page still syncs invoices in the background.
+- **Payments** on a talent file is their payment schedule from Square (and any extra rows you add). The Payment tracker uses the same short labels — modeling and acting training, sub, or collections — with a notes column. There is no open-balance total on that page.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
 - **Contacts** is everyone else. People who are not enrolled have no status tag unless you pick one from the dropdown (blank is allowed). Enrolled people are tagged **Current Student**.
@@ -66,7 +66,7 @@ The desk is the roster. Add and edit students here — including status tags and
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export — including Newsletter — is on **Contacts** with name, phone, email, and notes.
 
-Payments use Square invoices. Live API keys are optional — without them the desk still shows invoices from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices for enrollment students only. Subscriber due dates can overlay from Square; academy next-due copy stays with the workbook. Desk schedules (date + amount on a talent file) also land on Calendar and Alerts.
+Payments use Square invoices. Live API keys are optional — without them the desk still shows invoices from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices, including installment due dates, onto each talent file and the Payment tracker. Desk schedules (date + amount on a talent file) also land on Calendar and Alerts.
 
 The desk works without API keys. Copy `.env.example` to `.env.local` and add credentials when you want live send/sync:
 

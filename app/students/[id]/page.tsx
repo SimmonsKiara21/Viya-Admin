@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import {
   ArrowLeft,
@@ -63,7 +63,7 @@ import {
   PLAN_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
-import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
+import { catalogItemForStudent, displayPaymentNotes, paymentItemLabel, SUBSCRIPTION_ITEM } from "@/lib/square"
 import type {
   ClassType,
   ContactCategory,
@@ -90,6 +90,8 @@ function blankScheduleDraft(count = 6): ScheduleDraft[] {
 export default function StudentProfilePage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const initialTab = searchParams.get("tab") === "payments" ? "payments" : "overview"
   const {
     students,
     attendance,
@@ -98,6 +100,7 @@ export default function StudentProfilePage() {
     updateStudent,
     addFeedback,
     addPayments,
+    updatePayment,
     removePayment,
     removeAttendance,
     photoshoots,
@@ -371,7 +374,7 @@ export default function StudentProfilePage() {
         </div>
       </Panel>
 
-      <Tabs defaultValue="overview">
+      <Tabs defaultValue={initialTab}>
         <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="docusign">DocuSign</TabsTrigger>
@@ -712,16 +715,18 @@ export default function StudentProfilePage() {
               <div>
                 <h2 className="mb-2 font-heading text-xl">Payment schedule</h2>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  Dates and amounts from their file. Add more rows above for the rest of the plan.
+                  Dates and amounts from Square, plus any rows you add above.
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full min-w-[420px] text-left text-sm">
+                  <table className="w-full min-w-[640px] text-left text-sm">
                     <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 font-medium">Date</th>
+                        <th className="px-3 py-2 font-medium">Item</th>
                         <th className="px-3 py-2 font-medium">Amount</th>
                         <th className="px-3 py-2 font-medium">Paid</th>
                         <th className="px-3 py-2 font-medium">Status</th>
+                        <th className="px-3 py-2 font-medium">Notes</th>
                         <th className="w-10 px-2 py-2" />
                       </tr>
                     </thead>
@@ -729,10 +734,23 @@ export default function StudentProfilePage() {
                       {bills.map((bill) => (
                         <tr key={bill.id} className="border-b border-border last:border-0">
                           <td className="px-3 py-2 tabular-nums">{formatShortDate(bill.dueDate)}</td>
+                          <td className="px-3 py-2">{paymentItemLabel(student, bill)}</td>
                           <td className="px-3 py-2 tabular-nums">{formatMoney(bill.amount)}</td>
                           <td className="px-3 py-2 tabular-nums">{formatMoney(bill.paidAmount)}</td>
                           <td className="px-3 py-2">
                             <PaymentBadge status={bill.status} />
+                          </td>
+                          <td className="px-2 py-1.5 min-w-[10rem]">
+                            <Input
+                              className="h-8 text-xs"
+                              placeholder="Notes"
+                              defaultValue={displayPaymentNotes(bill.notes)}
+                              onBlur={(e) => {
+                                const next = e.target.value.trim()
+                                if (next === displayPaymentNotes(bill.notes)) return
+                                updatePayment(bill.id, { notes: next })
+                              }}
+                            />
                           </td>
                           <td className="px-2 py-2">
                             {bill.source === "manual" ? (

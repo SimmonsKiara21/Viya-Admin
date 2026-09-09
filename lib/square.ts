@@ -41,10 +41,33 @@ export function catalogItemForStudent(
 }
 
 export function itemKindLabel(kind: SquareItemKind) {
-  if (kind === "subscriber") return "Subscription"
-  if (kind === "event") return "Event"
-  if (kind === "fee") return "Fee"
-  return "Academy training"
+  if (kind === "subscriber") return "Sub"
+  if (kind === "event") return "Modeling and acting training"
+  if (kind === "fee") return "Collections"
+  return "Modeling and acting training"
+}
+
+export function paymentItemLabel(student: Student | undefined, bill: Pick<PaymentRecord, "itemId" | "itemKind">) {
+  if (
+    student?.enrollmentStatus === "collections" ||
+    student?.enrollmentStatus === "cancelling" ||
+    bill.itemId === "cancellation" ||
+    bill.itemKind === "fee"
+  ) {
+    return "Collections"
+  }
+  if (bill.itemKind === "subscriber" || student?.program === "subscriber" || student?.paymentPlan === "subscription") {
+    return "Sub"
+  }
+  return "Modeling and acting training"
+}
+
+export function displayPaymentNotes(notes: string) {
+  const value = (notes || "").trim()
+  if (!value) return ""
+  if (value === "Desk schedule") return ""
+  if (value.startsWith("Square invoice") || value.startsWith("Square subscription")) return ""
+  return value
 }
 
 export function openBalance(payments: PaymentRecord[]) {

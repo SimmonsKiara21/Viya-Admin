@@ -5,7 +5,7 @@ import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
 import { ContactLabelBadge, DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
-import { highlightTone, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import { uniqueContactLabels } from "@/lib/contacts-labels"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -40,34 +40,52 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
     return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
   }
   if (tone === "pif") return student.startDate ? ` · started ${formatDate(student.startDate)}` : ""
-  return ` · ${student.email || "no email"}`
+  return student.phone ? "" : ` · ${student.email || ""}`
 }
 
-export const StudentRow = memo(function StudentRow({ student }: { student: Student }) {
+export const StudentRow = memo(function StudentRow({
+  student,
+  context = "roster",
+}: {
+  student: Student
+  context?: "roster" | "contacts"
+}) {
   const tone = highlightTone(student)
   const left = remainingPayments(student)
   const labels = uniqueContactLabels(student)
-  const showEnrollment = student.enrollmentStatus !== "contact"
-  const showWrapUp = tone === "finishing"
+  const contact = isContact(student)
+  const showProgram = student.track === "modeling" || student.track === "acting"
+  const showWrapUp = context === "roster" && tone === "finishing"
+  const showEnrollment =
+    context === "roster" && !contact && student.enrollmentStatus !== "contact" && !showWrapUp
+  const showCurrentStudent = context === "contacts" && !contact
 
   return (
     <Link
       href={`/students/${student.id}`}
       className={cn(
         "flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors",
-        tone === "none" ? "hover:bg-muted/60" : ROW[tone],
+        tone === "none" || context === "contacts" ? "hover:bg-muted/60" : ROW[tone],
       )}
     >
       <StudentPhoto student={student} size="sm" />
       <div className="min-w-0 flex-1">
-        <p className={cn("truncate text-[15px] leading-tight font-medium", tone !== "none" && NAME[tone])}>
+        <p className={cn("truncate text-[15px] leading-tight font-medium", context === "roster" && tone !== "none" && NAME[tone])}>
           {fullName(student)}
         </p>
         <p className="truncate text-[13px] leading-snug text-muted-foreground">
-          #{student.id} · {formatPhone(student.phone)}
-          {detail(student, tone, left)}
+          #{student.id}
+          {student.phone ? ` · ${formatPhone(student.phone)}` : ""}
+          {context === "roster" ? detail(student, tone, left) : ""}
         </p>
-        {labels.length ? (
+        {context === "roster" && labels.length ? (
+          <div className="mt-1 flex flex-wrap gap-1">
+            {labels.map((label) => (
+              <ContactLabelBadge key={label} label={label} />
+            ))}
+          </div>
+        ) : null}
+        {context === "contacts" && contact && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">
             {labels.map((label) => (
               <ContactLabelBadge key={label} label={label} />
@@ -76,10 +94,15 @@ export const StudentRow = memo(function StudentRow({ student }: { student: Stude
         ) : null}
       </div>
       <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
-        <ProgramBadge program={student.program} track={student.track} />
+        {showCurrentStudent ? (
+          <span className="inline-flex h-5 items-center rounded-full border border-emerald-500/30 bg-emerald-500/12 px-2 text-[11px] font-medium leading-none text-emerald-800 dark:text-emerald-200">
+            Current Student
+          </span>
+        ) : null}
+        {showProgram ? <ProgramBadge program={student.program} track={student.track} /> : null}
         {showEnrollment ? (
           <EnrollmentBadge
-            status={student.enrollmentStatus}
+            status={student.enrollmentStatus === "pif" || student.paymentPlan === "pif" ? "pif" : student.enrollmentStatus}
             subscriber={student.program === "subscriber" || student.paymentPlan === "subscription"}
           />
         ) : null}
@@ -88,7 +111,7 @@ export const StudentRow = memo(function StudentRow({ student }: { student: Stude
             Wrapping up
           </span>
         ) : null}
-        <DocusignBadge status={student.docusignStatus} />
+        {context === "roster" ? <DocusignBadge status={student.docusignStatus} /> : null}
       </div>
     </Link>
   )

@@ -1,8 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import { useMemo } from "react"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { useStore } from "@/lib/store"
@@ -15,14 +13,11 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
-import { sendDeskNotice } from "@/lib/send-notice"
-import { ALERT_PAYMENT_REMINDER } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
 
 export default function AlertsPage() {
-  const { students, addNotification } = useStore()
-  const [message, setMessage] = useState(ALERT_PAYMENT_REMINDER)
+  const { students } = useStore()
 
   const academyOverdue = useMemo(
     () =>
@@ -59,64 +54,13 @@ export default function AlertsPage() {
     [students],
   )
 
-  function blast(channel: "sms" | "email", list: Student[], subject: string) {
-    sendDeskNotice({
-      students: list,
-      channel,
-      subject,
-      body: message,
-      addNotification,
-    })
-  }
-
   return (
     <div>
       <PageHeader
         eyebrow="Follow-up"
         title="Alerts"
-        description="Overdue is red. Collections is amber. Subscribers stay orange."
+        description="Overdue is red. Collections is amber. Subscribers stay orange. Payment dates from a talent file show here when they are late."
       />
-
-      <Panel className="mb-6 grid gap-3">
-        <h2 className="font-heading text-xl">Text / email</h2>
-        <p className="text-sm text-muted-foreground">
-          Send to overdue or subscriber overdue. Collections stays on its own list.
-        </p>
-        <Textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={6}
-          className="min-h-32"
-        />
-        <div className="flex flex-wrap gap-2">
-          <Button
-            onClick={() => blast("sms", academyOverdue, "Viya Academy — payment reminder")}
-            disabled={!academyOverdue.length || !message.trim()}
-          >
-            Text overdue
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => blast("email", academyOverdue, "Viya Academy — payment reminder")}
-            disabled={!academyOverdue.length || !message.trim()}
-          >
-            Email overdue
-          </Button>
-          <Button
-            onClick={() => blast("sms", subscriberOverdue, "Viya Talent — subscriber payment")}
-            disabled={!subscriberOverdue.length || !message.trim()}
-          >
-            Text subscriber overdue
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => blast("email", subscriberOverdue, "Viya Talent — subscriber payment")}
-            disabled={!subscriberOverdue.length || !message.trim()}
-          >
-            Email subscriber overdue
-          </Button>
-        </div>
-      </Panel>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AlertList

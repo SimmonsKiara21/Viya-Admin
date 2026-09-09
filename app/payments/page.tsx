@@ -2,10 +2,8 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { PaymentBadge } from "@/components/status-badge"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
+import { PaymentBadge } from "@/components/status-badge"
 import { useStore, useSync } from "@/lib/store"
 import { formatDate, formatMoney, formatTime, fullName } from "@/lib/format"
 import { PAYMENT_LABELS } from "@/lib/constants"
@@ -16,17 +14,15 @@ import { cn } from "@/lib/utils"
 type ItemFilter = "all" | string
 
 export default function PaymentsPage() {
-  const { payments, students, addNotification, updateStudent } = useStore()
+  const { payments, students } = useStore()
   const { square } = useSync()
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
   const [itemFilter, setItemFilter] = useState<ItemFilter>("all")
-  const [sourceFilter, setSourceFilter] = useState<"square" | "all">("square")
 
   const enrollmentIds = useMemo(() => new Set(students.map((s) => s.id)), [students])
 
   const rows = useMemo(() => {
     let list = payments.filter((p) => enrollmentIds.has(p.studentId))
-    if (sourceFilter === "square") list = list.filter((p) => p.source === "square")
     if (filter !== "all") list = list.filter((p) => p.status === filter)
     if (itemFilter !== "all") list = list.filter((p) => p.itemId === itemFilter)
     const rank = (status: string) =>
@@ -36,41 +32,23 @@ export default function PaymentsPage() {
       if (r !== 0) return r
       return (a.dueDate || "").localeCompare(b.dueDate || "")
     })
-  }, [payments, filter, itemFilter, enrollmentIds, sourceFilter])
+  }, [payments, filter, itemFilter, enrollmentIds])
 
-  const tracked = payments.filter(
-    (p) => enrollmentIds.has(p.studentId) && (sourceFilter === "all" || p.source === "square"),
-  )
+  const tracked = payments.filter((p) => enrollmentIds.has(p.studentId))
   const openTotal = openBalance(tracked)
   const usedItems = SQUARE_ITEMS.filter((item) => tracked.some((p) => p.itemId === item.id))
-
-  function remind(studentId: string) {
-    const student = students.find((s) => s.id === studentId)
-    if (!student) return
-    addNotification({
-      studentIds: [student.id],
-      channel: "sms",
-      subject: "",
-      body: `Hi ${student.firstName}, Viya Academy — Square reminder for ${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}.`,
-      status: "demo",
-    })
-    updateStudent(student.id, {
-      notes: `${student.notes ? student.notes + " " : ""}Square reminder logged ${new Date().toLocaleDateString()}.`.trim(),
-    })
-    toast.success(`Square reminder logged for ${fullName(student)}.`)
-  }
 
   return (
     <div>
       <PageHeader
         eyebrow="Square"
         title="Payment tracker"
-        description="Square invoices and subscriptions for students on the 2026 enrollment workbook only. Anyone on Square who is not on that list is left off."
+        description="Square invoices and desk schedules for students on the enrollment workbook."
       />
 
       <Panel className="mb-6">
         <p className="text-xs font-medium tracking-wide text-primary uppercase">
-          {square.connected ? "Square connected" : "Desk mode · Square dashboard"}
+          {square.connected ? "Square connected" : "Square"}
         </p>
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
           {square.message || "Checking Square…"}
@@ -82,32 +60,6 @@ export default function PaymentsPage() {
             : "Enrollment students only"}
           {square.fetchedAt ? ` · synced ${formatTime(square.fetchedAt)}` : ""}
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setSourceFilter("square")}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium",
-              sourceFilter === "square"
-                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
-                : "border-border text-muted-foreground",
-            )}
-          >
-            Square dashboard
-          </button>
-          <button
-            type="button"
-            onClick={() => setSourceFilter("all")}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium",
-              sourceFilter === "all"
-                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
-                : "border-border text-muted-foreground",
-            )}
-          >
-            All enrollment balances
-          </button>
-        </div>
       </Panel>
 
       <div className="mb-3 flex flex-wrap gap-2">
@@ -172,7 +124,6 @@ export default function PaymentsPage() {
                 <th className="px-4 py-3 font-medium">Balance</th>
                 <th className="px-4 py-3 font-medium">Due</th>
                 <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium"></th>
               </tr>
             </thead>
             <tbody>
@@ -207,13 +158,6 @@ export default function PaymentsPage() {
                     <td className="px-4 py-3">{formatDate(bill.dueDate)}</td>
                     <td className="px-4 py-3">
                       <PaymentBadge status={bill.status} />
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      {["due", "overdue", "declined"].includes(bill.status) && student ? (
-                        <Button size="xs" variant="outline" onClick={() => remind(student.id)}>
-                          Square reminder
-                        </Button>
-                      ) : null}
                     </td>
                   </tr>
                 )

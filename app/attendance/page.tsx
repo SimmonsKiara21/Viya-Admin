@@ -12,7 +12,6 @@ import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { countsFor, useStore, useSync } from "@/lib/store"
 import {
   academyDateISO,
-  formatPhone,
   formatShortDate,
   formatTime,
   fullName,
@@ -206,19 +205,6 @@ export default function AttendancePage() {
               })}
             </ul>
           )}
-          {jotform.unmatched.length > 0 ? (
-            <div className="mt-6 border-t border-border pt-4">
-              <h3 className="text-sm font-medium">On the form, not on the roster</h3>
-              <ul className="mt-2 grid gap-1.5 text-sm">
-                {jotform.unmatched.slice(0, 8).map((row) => (
-                  <li key={row.id} className="text-muted-foreground">
-                    {row.firstName} {row.lastName}
-                    {row.phone ? ` · ${formatPhone(row.phone)}` : ""} · {CLASS_LABELS[row.classType]}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
         </Panel>
       </div>
 

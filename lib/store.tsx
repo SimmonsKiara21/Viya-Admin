@@ -27,7 +27,7 @@ import type {
   Student,
   StudentTrack,
 } from "./types"
-import { newId } from "./format"
+import { newId, todayISO } from "./format"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
 import {
@@ -226,6 +226,7 @@ type StoreContextValue = AppData & {
   addFeedback: (note: Omit<FeedbackNote, "id" | "createdAt"> & { createdAt?: string }) => void
   addPayment: (payment: Omit<PaymentRecord, "id">) => void
   updatePayment: (id: string, patch: Partial<PaymentRecord>) => void
+  removePayment: (id: string) => void
   addNotification: (note: Omit<NotificationRecord, "id" | "sentAt"> & { sentAt?: string }) => void
   addGroup: (name: string, studentIds: string[]) => NotifyGroup
   updateGroup: (id: string, patch: Partial<Pick<NotifyGroup, "name" | "studentIds">>) => void
@@ -585,24 +586,49 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         mutate((prev) => {
           const student = prev.students.find((s) => s.id === payment.studentId)
           const item = student ? defaultItemForStudent(student) : undefined
+          const nextPay = normalizePayment({
+            ...payment,
+            itemId: payment.itemId || item?.id,
+            itemName: payment.itemName || (payment.source === "manual" ? "Desk schedule" : item?.name),
+            itemDescription: payment.itemDescription || item?.description,
+            itemKind: payment.itemKind || item?.kind,
+            source: payment.source || "manual",
+          })
+          const today = todayISO()
           return {
             ...prev,
-            payments: [
-              normalizePayment({
-                ...payment,
-                itemId: payment.itemId || item?.id,
-                itemName: payment.itemName || item?.name,
-                itemDescription: payment.itemDescription || item?.description,
-                itemKind: payment.itemKind || item?.kind,
-              }),
-              ...prev.payments,
-            ],
+            payments: [nextPay, ...prev.payments],
+            students: prev.students.map((s) => {
+              if (s.id !== nextPay.studentId) return s
+              const due = nextPay.dueDate.slice(0, 10)
+              const sooner = !s.nextPaymentDate || due <= s.nextPaymentDate.slice(0, 10)
+              const pastDue = due < today && nextPay.status !== "paid"
+              const canMarkOverdue =
+                pastDue &&
+                s.program === "academy" &&
+                s.enrollmentStatus !== "collections" &&
+                s.enrollmentStatus !== "cancelling" &&
+                s.enrollmentStatus !== "pif" &&
+                s.paymentPlan !== "pif"
+              return {
+                ...s,
+                nextPaymentDate: sooner ? due : s.nextPaymentDate,
+                nextPaymentAmount: sooner ? nextPay.amount : s.nextPaymentAmount,
+                enrollmentStatus: canMarkOverdue ? "overdue" : s.enrollmentStatus,
+                deskLocks: canMarkOverdue ? { ...s.deskLocks, status: true } : s.deskLocks,
+              }
+            }),
           }
         }),
       updatePayment: (id, patch) =>
         mutate((prev) => ({
           ...prev,
           payments: prev.payments.map((p) => (p.id === id ? normalizePayment({ ...p, ...patch }) : p)),
+        })),
+      removePayment: (id) =>
+        mutate((prev) => ({
+          ...prev,
+          payments: prev.payments.filter((p) => p.id !== id),
         })),
       addNotification: (note) =>
         mutate((prev) => ({

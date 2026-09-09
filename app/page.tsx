@@ -6,11 +6,10 @@ import { AlertTriangle, Clock3, FolderOpen, Plus, UserPlus, Users } from "lucide
 import { toast } from "sonner"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
 import { formatAcademyDate, formatAcademyTime } from "@/lib/format"
-import { sendDeskNotice } from "@/lib/send-notice"
 import {
   isCollectionsStudent,
   isCurrentlyEnrolled,
@@ -26,7 +25,7 @@ function sortByName(list: Student[]) {
 }
 
 export default function HomePage() {
-  const { students, resetRoster, addNotification } = useStore()
+  const { students, resetRoster } = useStore()
   const [addOpen, setAddOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
 
@@ -51,26 +50,10 @@ export default function HomePage() {
         title="Front desk"
         description="Talent, overdue, collections, and pending."
         actions={
-          <>
-            <Button onClick={() => setAddOpen(true)}>
-              <Plus className="size-4" />
-              Add talent
-            </Button>
-            <button
-              type="button"
-              className={cn(buttonVariants({ variant: "outline" }))}
-              onClick={() =>
-                sendDeskNotice({
-                  students: [...stats.overdue, ...stats.subscriberOverdue],
-                  channel: "sms",
-                  templateId: "overdue-sms",
-                  addNotification,
-                })
-              }
-            >
-              Text overdue
-            </button>
-          </>
+          <Button onClick={() => setAddOpen(true)}>
+            <Plus className="size-4" />
+            Add talent
+          </Button>
         }
       />
 

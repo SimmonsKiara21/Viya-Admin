@@ -7,6 +7,7 @@ export const SQUARE_SKIPPED = (catalog.skipped ?? []) as { name: string; reason:
 
 export const SUBSCRIPTION_ITEM = SQUARE_ITEMS.find((i) => i.id === "va-subscription")!
 export const SUBSCRIPTION_OG_ITEM = SQUARE_ITEMS.find((i) => i.id === "va-subscription-og")!
+export const SUBSCRIPTION_PLUS_ITEM = SQUARE_ITEMS.find((i) => i.id === "va-subscription-plus")!
 
 export function itemById(id: string | undefined): SquareCatalogItem | undefined {
   if (!id) return undefined

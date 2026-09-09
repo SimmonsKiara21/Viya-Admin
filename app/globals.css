@@ -49,40 +49,40 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Light — cream, ivory, and gold. Not on :root so Sepia is not fighting cream. */
+/* Light — white page, dark ink. Opposite of Dark. */
 .light {
-  --background: oklch(0.96 0.018 85);
-  --foreground: oklch(0.22 0.03 70);
-  --card: oklch(0.985 0.012 85);
-  --card-foreground: oklch(0.22 0.03 70);
-  --popover: oklch(0.985 0.012 85);
-  --popover-foreground: oklch(0.22 0.03 70);
-  --primary: oklch(0.62 0.1 78);
-  --primary-foreground: oklch(0.98 0.02 85);
-  --secondary: oklch(0.92 0.03 85);
-  --secondary-foreground: oklch(0.28 0.03 70);
-  --muted: oklch(0.93 0.025 85);
-  --muted-foreground: oklch(0.45 0.03 70);
-  --accent: oklch(0.91 0.04 80);
-  --accent-foreground: oklch(0.28 0.03 70);
-  --destructive: oklch(0.55 0.18 25);
-  --border: oklch(0.84 0.04 80);
-  --input: oklch(0.84 0.04 80);
-  --ring: oklch(0.62 0.1 78);
-  --chart-1: oklch(0.62 0.1 78);
-  --chart-2: oklch(0.55 0.1 155);
-  --chart-3: oklch(0.5 0.1 264);
-  --chart-4: oklch(0.55 0.16 25);
-  --chart-5: oklch(0.62 0.08 50);
+  --background: #ffffff;
+  --foreground: #161616;
+  --card: #ffffff;
+  --card-foreground: #161616;
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+  --primary: #3d2a12;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f3f3;
+  --secondary-foreground: #161616;
+  --muted: #f4f4f4;
+  --muted-foreground: #444444;
+  --accent: #ececec;
+  --accent-foreground: #161616;
+  --destructive: #b42318;
+  --border: #d8d8d8;
+  --input: #d8d8d8;
+  --ring: #3d2a12;
+  --chart-1: #3d2a12;
+  --chart-2: #2f6b3a;
+  --chart-3: #2b4c8a;
+  --chart-4: #b42318;
+  --chart-5: #8a5a12;
   --radius: 0.75rem;
-  --sidebar: oklch(0.93 0.03 80);
-  --sidebar-foreground: oklch(0.22 0.03 70);
-  --sidebar-primary: oklch(0.62 0.1 78);
-  --sidebar-primary-foreground: oklch(0.98 0.02 85);
-  --sidebar-accent: oklch(0.9 0.04 80);
-  --sidebar-accent-foreground: oklch(0.28 0.03 70);
-  --sidebar-border: oklch(0.82 0.04 80);
-  --sidebar-ring: oklch(0.62 0.1 78);
+  --sidebar: #f6f6f6;
+  --sidebar-foreground: #161616;
+  --sidebar-primary: #3d2a12;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaeaea;
+  --sidebar-accent-foreground: #161616;
+  --sidebar-border: #d8d8d8;
+  --sidebar-ring: #3d2a12;
 }
 
 /* Dark — current luxury gold desk. Also :root so first paint matches the default theme. */
@@ -122,41 +122,41 @@
   --sidebar-ring: oklch(0.78 0.08 85);
 }
 
-/* Sepia — tan paper, espresso ink, walnut accents. Hex so cream :root cannot wash it. */
+/* Sepia — pale tan paper, espresso ink, walnut chrome. Distinct layers for contrast. */
 html.sepia,
 .sepia {
-  --background: #e6d3b3;
-  --foreground: #2a1810;
-  --card: #f4e8d2;
-  --card-foreground: #2a1810;
-  --popover: #f4e8d2;
-  --popover-foreground: #2a1810;
-  --primary: #4a2e18;
-  --primary-foreground: #f6ead8;
-  --secondary: #d7be96;
-  --secondary-foreground: #2a1810;
-  --muted: #ddc6a4;
-  --muted-foreground: #5c4030;
-  --accent: #c9a87a;
-  --accent-foreground: #2a1810;
+  --background: #f4e6cc;
+  --foreground: #1c1008;
+  --card: #fff8ee;
+  --card-foreground: #1c1008;
+  --popover: #fff8ee;
+  --popover-foreground: #1c1008;
+  --primary: #3a2414;
+  --primary-foreground: #f8ecd8;
+  --secondary: #e2c8a0;
+  --secondary-foreground: #1c1008;
+  --muted: #ead4b4;
+  --muted-foreground: #4a301c;
+  --accent: #d7b48a;
+  --accent-foreground: #1c1008;
   --destructive: #8a2f24;
-  --border: #c2a47a;
-  --input: #c2a47a;
-  --ring: #4a2e18;
-  --chart-1: #4a2e18;
-  --chart-2: #4a5c38;
+  --border: #a07848;
+  --input: #a07848;
+  --ring: #3a2414;
+  --chart-1: #3a2414;
+  --chart-2: #3d5230;
   --chart-3: #6b4228;
   --chart-4: #8a2f24;
   --chart-5: #7a4e2e;
   --radius: 0.75rem;
-  --sidebar: #c4a57c;
-  --sidebar-foreground: #2a1810;
-  --sidebar-primary: #4a2e18;
-  --sidebar-primary-foreground: #f6ead8;
-  --sidebar-accent: #b89264;
-  --sidebar-accent-foreground: #2a1810;
-  --sidebar-border: #8f6b45;
-  --sidebar-ring: #4a2e18;
+  --sidebar: #3a2414;
+  --sidebar-foreground: #f4e6cc;
+  --sidebar-primary: #f4e6cc;
+  --sidebar-primary-foreground: #3a2414;
+  --sidebar-accent: #5a3a22;
+  --sidebar-accent-foreground: #f8ecd8;
+  --sidebar-border: #24160c;
+  --sidebar-ring: #f4e6cc;
 }
 
 @layer base {

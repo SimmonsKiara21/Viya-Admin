@@ -116,7 +116,7 @@ export default function ContactsPage() {
                 value={form.contactCategory}
                 onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory | "" })}
               >
-                <option value="">No label</option>
+                <option value=""></option>
                 {(Object.keys(CONTACT_LABELS) as ContactCategory[]).filter((key) => key !== "new").map((key) => (
                   <option key={key} value={key}>
                     {CONTACT_LABELS[key]}
@@ -186,7 +186,7 @@ export default function ContactsPage() {
             {contacts.map((student) => (
               <div key={student.id} className="flex flex-col gap-2 py-1 sm:flex-row sm:items-center">
                 <div className="min-w-0 flex-1">
-                  <StudentRow student={student} />
+                  <StudentRow student={student} context="contacts" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
                   {isContact(student) ? (
@@ -198,7 +198,7 @@ export default function ContactsPage() {
                           updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
                         }
                       >
-                        <option value="">No label</option>
+                        <option value=""></option>
                         {(Object.keys(CONTACT_LABELS) as ContactCategory[])
                           .filter((key) => key !== "new")
                           .map((key) => (
@@ -223,9 +223,7 @@ export default function ContactsPage() {
                         Move to pending
                       </Button>
                     </>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">On the enrollment roster</span>
-                  )}
+                  ) : null}
                 </div>
               </div>
             ))}

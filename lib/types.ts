@@ -33,7 +33,7 @@ export type PhotoshootStatus =
   | "received"
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
-export type PaymentSource = "square" | "workbook"
+export type PaymentSource = "square" | "workbook" | "manual"
 export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
 export type DocusignStatus = "none" | "sent" | "viewed" | "signed" | "declined" | "expired"
 export type NotifyChannel = "sms" | "email"

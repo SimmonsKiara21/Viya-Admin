@@ -26,7 +26,6 @@ import {
   SubscriptionBadge,
 } from "@/components/status-badge"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
-import { NotifyComposer } from "@/components/notify-composer"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
 import { countsFor, useStore } from "@/lib/store"
@@ -39,6 +38,7 @@ import {
   fullName,
   smsHref,
   telHref,
+  todayISO,
 } from "@/lib/format"
 import { buildPaymentSchedule } from "@/lib/schedule"
 import {
@@ -54,7 +54,6 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { sendDeskNotice } from "@/lib/send-notice"
 import { uniqueContactLabels } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
@@ -88,8 +87,9 @@ export default function StudentProfilePage() {
     payments,
     updateStudent,
     addFeedback,
+    addPayment,
+    removePayment,
     removeAttendance,
-    addNotification,
     photoshoots,
     photoshootPlacements,
     setPhotoshootPlacement,
@@ -97,6 +97,8 @@ export default function StudentProfilePage() {
   const student = students.find((s) => s.id === id)
   const [note, setNote] = useState("")
   const [noteClass, setNoteClass] = useState<ClassType | "">("modeling")
+  const [chargeDate, setChargeDate] = useState("")
+  const [chargeAmount, setChargeAmount] = useState("")
 
   const records = useMemo(
     () => attendance.filter((a) => a.studentId === id).sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt)),
@@ -164,19 +166,6 @@ export default function StudentProfilePage() {
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
             {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
           </p>
-          <Button
-            className="mt-3"
-            onClick={() =>
-              sendDeskNotice({
-                students: [student],
-                channel: "sms",
-                templateId: "overdue-sms",
-                addNotification,
-              })
-            }
-          >
-            Send alert
-          </Button>
         </div>
       ) : null}
 
@@ -188,19 +177,6 @@ export default function StudentProfilePage() {
           <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-950">
             {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
           </p>
-          <Button
-            className="mt-3"
-            onClick={() =>
-              sendDeskNotice({
-                students: [student],
-                channel: "sms",
-                templateId: "overdue-sms",
-                addNotification,
-              })
-            }
-          >
-            Send subscriber alert
-          </Button>
         </div>
       ) : null}
 
@@ -396,7 +372,6 @@ export default function StudentProfilePage() {
           <TabsTrigger value="notes">Feedback</TabsTrigger>
           <TabsTrigger value="subscription">Subscription</TabsTrigger>
           <TabsTrigger value="photoshoot">Photoshoot</TabsTrigger>
-          <TabsTrigger value="notify">Notify</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="grid gap-4">
@@ -428,7 +403,7 @@ export default function StudentProfilePage() {
                       updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
                     }
                   >
-                    <option value="">No label</option>
+                    <option value=""></option>
                     {Object.entries(CONTACT_LABELS)
                       .filter(([k]) => k !== "new")
                       .map(([k, label]) => (
@@ -573,6 +548,54 @@ export default function StudentProfilePage() {
 
         <TabsContent value="payments">
           <Panel>
+            <div className="mb-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+              <Field label="Run date">
+                <Input type="date" value={chargeDate} onChange={(e) => setChargeDate(e.target.value)} />
+              </Field>
+              <Field label="Amount">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={chargeAmount}
+                  onChange={(e) => setChargeAmount(e.target.value)}
+                  placeholder="104.00"
+                />
+              </Field>
+              <div className="flex items-end">
+                <Button
+                  onClick={() => {
+                    const amount = Number(chargeAmount)
+                    if (!chargeDate || !Number.isFinite(amount) || amount <= 0) {
+                      toast.error("Enter a date and amount.")
+                      return
+                    }
+                    addPayment({
+                      studentId: student.id,
+                      amount,
+                      paidAmount: 0,
+                      balance: amount,
+                      dueDate: chargeDate,
+                      paidDate: "",
+                      status: chargeDate < todayISO() ? "overdue" : "scheduled",
+                      method: "other",
+                      squareInvoiceId: "",
+                      notes: "Desk schedule",
+                      itemId: "",
+                      itemName: "Desk schedule",
+                      itemDescription: "",
+                      itemKind: student.program === "subscriber" ? "subscriber" : "academy",
+                      source: "manual",
+                    })
+                    setChargeDate("")
+                    setChargeAmount("")
+                    toast.success("Payment date saved. It will show on Calendar and Alerts when due.")
+                  }}
+                >
+                  Add to calendar
+                </Button>
+              </div>
+            </div>
             <div className="mb-4 grid gap-3 sm:grid-cols-2">
               <Field label="Amount due">
                 <Input
@@ -658,7 +681,21 @@ export default function StudentProfilePage() {
                         </p>
                       ) : null}
                     </div>
-                    <PaymentBadge status={bill.status} />
+                    <div className="flex items-center gap-2">
+                      <PaymentBadge status={bill.status} />
+                      {bill.source === "manual" ? (
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => {
+                            removePayment(bill.id)
+                            toast.message("Desk schedule removed.")
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      ) : null}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -801,12 +838,6 @@ export default function StudentProfilePage() {
                 rows={4}
               />
             </Field>
-          </Panel>
-        </TabsContent>
-
-        <TabsContent value="notify">
-          <Panel>
-            <NotifyComposer presetStudents={[student]} compact />
           </Panel>
         </TabsContent>
       </Tabs>

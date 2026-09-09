@@ -3,13 +3,13 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  Calendar,
   Camera,
   CreditCard,
   FilePenLine,
   LayoutDashboard,
   Lock,
   Menu,
-  MessageSquare,
   Sparkles,
   Users,
   CalendarDays,
@@ -30,12 +30,12 @@ const NAV = [
   { href: "/students", label: "Talent", icon: Users },
   { href: "/contacts", label: "Contacts", icon: BookUser },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
+  { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/classes", label: "Classes", icon: Clock },
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/docusign", label: "DocuSign", icon: FilePenLine },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
   { href: "/photoshoots", label: "Photoshoots", icon: Camera },
-  { href: "/notify", label: "Notify", icon: MessageSquare },
 ]
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
@@ -56,8 +56,8 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             className={cn(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-primary/16 text-primary"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground",
             )}
           >
             <Icon className="size-4" />
@@ -72,10 +72,10 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <Link href="/" className="block px-2 py-1">
-      <p className="font-heading text-2xl leading-none tracking-[0.18em] text-primary">
+      <p className="font-heading text-2xl leading-none tracking-[0.18em] text-sidebar-primary">
         VIYA
       </p>
-      <p className="mt-1 text-[11px] font-medium tracking-[0.2em] text-muted-foreground uppercase">
+      <p className="mt-1 text-[11px] font-medium tracking-[0.2em] text-sidebar-foreground/65 uppercase">
         ViyaAdmin.com
       </p>
     </Link>
@@ -90,13 +90,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mt-8 flex-1">
           <NavLinks />
         </div>
-        <p className="px-2 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="px-2 text-[11px] leading-relaxed text-sidebar-foreground/65">
           Staff only · Phoenix
         </p>
         <button
           type="button"
           onClick={lockDesk}
-          className="mt-3 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="mt-3 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
           <Lock className="size-3.5" />
           Lock desk
@@ -119,7 +119,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={lockDesk}
-                className="mt-8 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
                 <Lock className="size-3.5" />
                 Lock desk

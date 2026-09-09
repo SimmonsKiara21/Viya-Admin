@@ -1,11 +1,8 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 import { PageHeader, Panel } from "@/components/ui-helpers"
-import { NotifyComposer } from "@/components/notify-composer"
-import { useStore } from "@/lib/store"
-import { academyReminderBody, subscriberReminderBody, upcomingAcademyClasses } from "@/lib/alerts"
+import { upcomingAcademyClasses } from "@/lib/alerts"
 import { formatDate } from "@/lib/format"
 
 type ResourcePayload = {
@@ -32,20 +29,7 @@ type ResourcePayload = {
 }
 
 export default function ClassesPage() {
-  const { students } = useStore()
   const upcoming = upcomingAcademyClasses()
-  const academy = useMemo(
-    () => students.filter((s) => s.program === "academy" && s.enrollmentStatus === "current"),
-    [students],
-  )
-  const subscribers = useMemo(
-    () =>
-      students.filter(
-        (s) => s.program === "subscriber" && ["current", "overdue"].includes(s.enrollmentStatus),
-      ),
-    [students],
-  )
-  const [preset, setPreset] = useState<"academy" | "subscriber">("academy")
   const [resources, setResources] = useState<ResourcePayload | null>(null)
 
   useEffect(() => {
@@ -54,10 +38,6 @@ export default function ClassesPage() {
       .then(setResources)
       .catch(() => setResources(null))
   }, [])
-
-  const picked = preset === "academy" ? academy : subscribers
-  const templateId = preset === "academy" ? "weekly-academy" : "weekly-subscriber"
-  const bodyOverride = preset === "academy" ? academyReminderBody() : subscriberReminderBody()
 
   return (
     <div>
@@ -159,31 +139,6 @@ export default function ClassesPage() {
           </div>
         </Panel>
       ) : null}
-
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Button size="sm" variant={preset === "academy" ? "default" : "outline"} onClick={() => setPreset("academy")}>
-          Academy weekly ({academy.length})
-        </Button>
-        <Button
-          size="sm"
-          variant={preset === "subscriber" ? "default" : "outline"}
-          onClick={() => setPreset("subscriber")}
-        >
-          Subscriber weekly ({subscribers.length})
-        </Button>
-      </div>
-
-      <Panel>
-        <h2 className="mb-4 font-heading text-xl">
-          {preset === "academy" ? "Send academy class reminder" : "Send subscriber class reminder"}
-        </h2>
-        <NotifyComposer
-          key={preset}
-          presetStudents={picked}
-          initialTemplateId={templateId}
-          initialBody={bodyOverride}
-        />
-      </Panel>
     </div>
   )
 }

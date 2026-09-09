@@ -58,24 +58,26 @@ export function uniqueContactLabels(student: Student) {
   const enrollment = ENROLLMENT_LABELS[student.enrollmentStatus].toLowerCase()
   const program = programDisplayLabel(student.program, student.track).toLowerCase()
   const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
+  const paidInFull = student.enrollmentStatus === "pif" || student.paymentPlan === "pif"
 
   return (student.labels || []).filter((label) => {
-    const value = displayContactLabel(label).toLowerCase()
+    const value = displayContactLabel(label).toLowerCase().trim()
     if (value === enrollment || value === program) return false
-    if (value === "current student" && student.program === "academy") return false
-    if (value === "active subscribers" && subscriber) return false
-    if (value === "subscriber" && subscriber) return false
-    if (value === "overdue" && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
+    if (/current student|^current$/.test(value) && student.program === "academy") return false
+    if (/active subscribers|^subscriber$/.test(value) && subscriber) return false
+    if (/overdue|declined/.test(value) && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
       return false
     }
-    if (value === "collections" && (student.enrollmentStatus === "collections" || student.enrollmentStatus === "cancelling")) {
+    if (/collections|cancelling/.test(value) && (student.enrollmentStatus === "collections" || student.enrollmentStatus === "cancelling")) {
       return false
     }
-    if (value === "pending" && student.enrollmentStatus === "pending") return false
-    if (value === "paused" && student.enrollmentStatus === "paused") return false
-    if (value === "cancelling" && student.enrollmentStatus === "cancelling") return false
-    if ((value === "paid in full" || value === "pif") && student.enrollmentStatus === "pif") return false
-    if (value === "contact" && student.enrollmentStatus === "contact") return false
+    if (/^pending$/.test(value) && student.enrollmentStatus === "pending") return false
+    if (/^paused$/.test(value) && student.enrollmentStatus === "paused") return false
+    if (/paid\s*in\s*full|^pif$/.test(value) && paidInFull) return false
+    if (/^contact$/.test(value) && student.enrollmentStatus === "contact") return false
+    if (/^(pending|overdue|collections|cancelling|paused|current|current student|paid in full|pif|declined)$/.test(value)) {
+      return false
+    }
     return true
   })
 }

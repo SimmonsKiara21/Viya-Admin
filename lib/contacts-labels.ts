@@ -91,6 +91,7 @@ export function uniqueContactLabels(student: Student) {
     const value = displayContactLabel(label).toLowerCase().trim()
     if (value === enrollment || value === program) return false
     if (/current student|^current$/.test(value) && student.program === "academy") return false
+    if (/^newsletter$/.test(value)) return false
     if (/active subscribers|^subscriber$/.test(value) && subscriber) return false
     if (/overdue|declined/.test(value) && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
       return false
@@ -267,22 +268,15 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   return ""
 }
 
-function newsletterRemoved(student: Student) {
-  return (student.removedLabels || []).some((label) => sameGoogleTag(label, "Newsletter"))
-}
-
-/** Newsletter list: staff tag, or subscribers until staff removes them. Bulk CSV Newsletter labels do not count. */
+/** Newsletter is subscribers only — leftover Newsletter labels do not count. */
 export function isNewsletterRecipient(student: Student) {
-  if (newsletterRemoved(student)) return false
-  if (hasGoogleTag(student.labels, "Newsletter")) return true
-  if (hasContactLabel(student, /active subscriber/i) || student.contactCategory === "subscriber") {
-    return true
-  }
-  if (student.subscriptionStatus === "cancelled") return false
+  const labeled = hasContactLabel(student, /active subscriber/i)
+  if (student.subscriptionStatus === "cancelled" && !labeled) return false
   return (
     student.program === "subscriber" ||
     student.paymentPlan === "subscription" ||
-    student.subscriptionStatus === "active"
+    student.subscriptionStatus === "active" ||
+    labeled
   )
 }
 

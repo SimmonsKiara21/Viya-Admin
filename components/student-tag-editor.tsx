@@ -107,7 +107,6 @@ export function ProfileCategoryEditor({ student }: { student: Student }) {
 }
 
 export function NewsletterPanel({ student }: { student: Student }) {
-  const { updateStudent } = useStore()
   const onList = isNewsletterRecipient(student)
 
   return (
@@ -115,22 +114,15 @@ export function NewsletterPanel({ student }: { student: Student }) {
       <div>
         <h2 className="font-heading text-xl">Newsletter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          People on this list appear on Contacts → Newsletter. Subscribers are included until you take them off. Add
-          anyone else you want on the send list.
+          Newsletter is subscribers only. A leftover Newsletter label does not put anyone else on Contacts →
+          Newsletter.
         </p>
       </div>
       <p className="text-sm">
-        {onList ? `${student.firstName} is on the newsletter.` : `${student.firstName} is not on the newsletter.`}
+        {onList
+          ? `${student.firstName} is on the newsletter because they are a subscriber.`
+          : `${student.firstName} is not a subscriber, so they are not on the newsletter.`}
       </p>
-      <div>
-        <Button
-          type="button"
-          variant={onList ? "outline" : "default"}
-          onClick={() => updateStudent(student.id, toggleStudentList(student, "Newsletter"))}
-        >
-          {onList ? "Remove from newsletter" : "Add to newsletter"}
-        </Button>
-      </div>
     </div>
   )
 }

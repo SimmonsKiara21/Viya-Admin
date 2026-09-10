@@ -66,16 +66,14 @@ export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
 export const SUGGESTED_LABELS = [
   "Current Student",
   "Active Subscribers",
-  "Newsletter",
   "SEPTEMBER PHOTOSHOOT LIST",
   "MODEL SOURCE NOVEMBER",
 ]
 
-/** Exact Google Contacts list names from the live export, plus Newsletter. */
+/** Exact Google Contacts list names from the live export. Newsletter is subscribers only, not a tag. */
 export const GOOGLE_CONTACT_TAGS: Array<{ category: ContactCategory; label: string }> = [
   { category: "current-student", label: "Current Student" },
   { category: "subscriber", label: "Active Subscribers" },
-  { category: "newsletter", label: "Newsletter" },
   { category: "photoshoot", label: "SEPTEMBER PHOTOSHOOT LIST" },
   { category: "model-source-nov", label: "MODEL SOURCE NOVEMBER" },
 ]

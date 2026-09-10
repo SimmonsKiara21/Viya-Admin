@@ -111,10 +111,11 @@ export default function PaymentsPage() {
         <EmptyState title="No payments in this view" description="Try another status or item filter." />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border">
-          <table className="w-full min-w-[1080px] text-left text-sm">
+          <table className="w-full min-w-[920px] text-left text-sm">
             <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Student</th>
+                <th className="px-4 py-3 font-medium"> </th>
                 <th className="px-4 py-3 font-medium">Item</th>
                 <th className="px-4 py-3 font-medium">Amount</th>
                 <th className="px-4 py-3 font-medium">Paid</th>
@@ -122,7 +123,6 @@ export default function PaymentsPage() {
                 <th className="px-4 py-3 font-medium">Due</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Notes</th>
-                <th className="px-4 py-3 font-medium"> </th>
               </tr>
             </thead>
             <tbody>
@@ -139,6 +139,23 @@ export default function PaymentsPage() {
                       ) : (
                         bill.studentId
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1.5">
+                        <PaymentEditToggle
+                          editing={editing}
+                          onToggle={() => setEditingId(editing ? null : bill.id)}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="xs"
+                          onClick={() => setCalendarId(bill.studentId)}
+                        >
+                          <CalendarDays className="size-3.5" />
+                          Dates
+                        </Button>
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       {editing ? (
@@ -160,34 +177,21 @@ export default function PaymentsPage() {
                     <td className="px-4 py-3">
                       {editing ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={bill.status} />}
                     </td>
-                    <td className="px-4 py-3 min-w-[12rem]">
-                      <Input
-                        className="h-8 text-xs"
-                        placeholder="Notes"
-                        defaultValue={displayPaymentNotes(bill.notes)}
-                        onBlur={(e) => {
-                          const next = e.target.value.trim()
-                          if (next === displayPaymentNotes(bill.notes)) return
-                          updatePayment(bill.id, { notes: next })
-                        }}
-                      />
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1.5">
-                        <PaymentEditToggle
-                          editing={editing}
-                          onToggle={() => setEditingId(editing ? null : bill.id)}
+                    <td className="px-4 py-3 min-w-[10rem]">
+                      {editing ? (
+                        <Input
+                          className="h-8 text-xs"
+                          placeholder="Notes"
+                          defaultValue={displayPaymentNotes(bill.notes)}
+                          onBlur={(e) => {
+                            const next = e.target.value.trim()
+                            if (next === displayPaymentNotes(bill.notes)) return
+                            updatePayment(bill.id, { notes: next })
+                          }}
                         />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="xs"
-                          onClick={() => setCalendarId(bill.studentId)}
-                        >
-                          <CalendarDays className="size-3.5" />
-                          Dates
-                        </Button>
-                      </div>
+                      ) : (
+                        <span className="text-muted-foreground">{displayPaymentNotes(bill.notes) || "—"}</span>
+                      )}
                     </td>
                   </tr>
                 )

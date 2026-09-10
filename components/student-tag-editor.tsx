@@ -105,3 +105,32 @@ export function EnrollmentTagEditor({ student }: { student: Student }) {
 export function ProfileCategoryEditor({ student }: { student: Student }) {
   return <ContactTagEditor student={student} alwaysOpen />
 }
+
+export function NewsletterPanel({ student }: { student: Student }) {
+  const { updateStudent } = useStore()
+  const onList = isNewsletterRecipient(student)
+
+  return (
+    <div className="grid gap-4">
+      <div>
+        <h2 className="font-heading text-xl">Newsletter</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          People on this list appear on Contacts → Newsletter. Subscribers are included until you take them off. Add
+          anyone else you want on the send list.
+        </p>
+      </div>
+      <p className="text-sm">
+        {onList ? `${student.firstName} is on the newsletter.` : `${student.firstName} is not on the newsletter.`}
+      </p>
+      <div>
+        <Button
+          type="button"
+          variant={onList ? "outline" : "default"}
+          onClick={() => updateStudent(student.id, toggleStudentList(student, "Newsletter"))}
+        >
+          {onList ? "Remove from newsletter" : "Add to newsletter"}
+        </Button>
+      </div>
+    </div>
+  )
+}

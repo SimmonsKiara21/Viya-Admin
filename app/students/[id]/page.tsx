@@ -29,7 +29,7 @@ import {
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
-import { ProfileCategoryEditor } from "@/components/student-tag-editor"
+import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
 import {
   PaymentAmountInput,
@@ -64,7 +64,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
+import { uniqueContactLabels } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
@@ -533,28 +533,8 @@ export default function StudentProfilePage() {
         </TabsContent>
 
         <TabsContent value="newsletter">
-          <Panel className="grid gap-4">
-            <div>
-              <h2 className="font-heading text-xl">Newsletter</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                People on this list appear on Contacts → Newsletter. Subscribers are included until you take them off.
-                Add anyone else you want on the send list.
-              </p>
-            </div>
-            <p className="text-sm">
-              {isNewsletterRecipient(student)
-                ? `${student.firstName} is on the newsletter.`
-                : `${student.firstName} is not on the newsletter.`}
-            </p>
-            <div>
-              <Button
-                type="button"
-                variant={isNewsletterRecipient(student) ? "outline" : "default"}
-                onClick={() => updateStudent(student.id, toggleStudentList(student, "Newsletter"))}
-              >
-                {isNewsletterRecipient(student) ? "Remove from newsletter" : "Add to newsletter"}
-              </Button>
-            </div>
+          <Panel>
+            <NewsletterPanel student={student} />
           </Panel>
         </TabsContent>
 

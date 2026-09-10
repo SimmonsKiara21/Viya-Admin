@@ -272,12 +272,7 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
 export function isNewsletterRecipient(student: Student) {
   const labeled = hasContactLabel(student, /active subscriber/i)
   if (student.subscriptionStatus === "cancelled" && !labeled) return false
-  return (
-    student.program === "subscriber" ||
-    student.paymentPlan === "subscription" ||
-    student.subscriptionStatus === "active" ||
-    labeled
-  )
+  return student.program === "subscriber" || student.paymentPlan === "subscription" || labeled
 }
 
 export function toggleStudentList(student: Student, tag: string): Partial<Student> {

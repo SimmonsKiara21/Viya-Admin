@@ -30,7 +30,7 @@ export const ENROLLMENT_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
 /** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
 export const CONTACTS_LABELS_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXZSckUQVYXhzXedRxa5csdJ6aQPEY3Y_FKfZEwQk_8GuYXA-nNDuAveSdrQKs67V0ary5OXJwzPgV/pub?output=csv"
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHzEdPAxtZVLF_qOGBK8Kd42PXfCnQGy2pmFRrIuXuLVLbqMrt76UMwIPmban9L8g1o3B3RU7eHY_9/pub?output=csv"
 
 /** Public Season 1–5 photoshoot folders. Portraits are matched onto the roster in data/photos.json. */
 export const PHOTOSHOOT_DRIVE_FOLDERS = [
@@ -66,7 +66,7 @@ export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
 export const SUGGESTED_LABELS = [
   "Current Student",
   "Active Subscribers",
-  "May photoshoot",
+  "September photoshoot",
   "LA Model Source 2026",
   "Model Source November",
   "Newsletter",
@@ -75,7 +75,7 @@ export const SUGGESTED_LABELS = [
 export const CONTACT_LABELS: Record<ContactCategory, string> = {
   "current-student": "Current Student",
   subscriber: "Active Subscribers",
-  photoshoot: "May photoshoot",
+  photoshoot: "September photoshoot",
   "model-source-la": "LA Model Source 2026",
   "model-source-nov": "Model Source November",
   newsletter: "Newsletter",

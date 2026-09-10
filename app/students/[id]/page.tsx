@@ -28,6 +28,7 @@ import {
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
+import { ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -66,7 +67,6 @@ import {
 import { catalogItemForStudent, displayPaymentNotes, paymentItemLabel, SUBSCRIPTION_ITEM } from "@/lib/square"
 import type {
   ClassType,
-  ContactCategory,
   EnrollmentStatus,
   PaymentPlan,
   PaymentRecord,
@@ -407,22 +407,8 @@ export default function StudentProfilePage() {
             <Panel className="grid gap-3">
               <h2 className="font-heading text-xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
               {isContact(student) ? (
-                <Field label="Category">
-                  <NativeSelect
-                    value={student.contactCategory || ""}
-                    onChange={(e) =>
-                      updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
-                    }
-                  >
-                    <option value=""></option>
-                    {Object.entries(CONTACT_LABELS)
-                      .filter(([k]) => k !== "new")
-                      .map(([k, label]) => (
-                      <option key={k} value={k}>
-                        {label}
-                      </option>
-                    ))}
-                  </NativeSelect>
+                <Field label="Tag">
+                  <ProfileCategoryEditor student={student} />
                 </Field>
               ) : (
                 <>

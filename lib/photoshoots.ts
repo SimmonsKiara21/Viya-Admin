@@ -11,30 +11,33 @@ export const PHOTO_COLUMNS: Exclude<PhotoshootStatus, "none">[] = [
 ]
 
 export const DEFAULT_PHOTO_SHOOTS: Photoshoot[] = [
-  { id: "2026-05", label: "May photoshoot", archived: false },
-  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false },
+  { id: "2026-09", label: "September photoshoot", archived: false },
   { id: "model-source-nov-2026", label: "Model Source November", archived: false },
+  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false },
+  { id: "2026-10", label: "October 2026", archived: false },
+  { id: "2026-05", label: "May photoshoot", archived: true },
   { id: "2026-06", label: "June 2026", archived: true },
   { id: "2026-07", label: "July 2026", archived: true },
   { id: "2026-08", label: "August 2026", archived: true },
-  { id: "2026-09", label: "September 2026", archived: false },
-  { id: "2026-10", label: "October 2026", archived: false },
 ]
 
 const LABEL_SHOOTS: { id: string; label: string; archived: boolean; match: RegExp }[] = [
-  { id: "2026-05", label: "May photoshoot", archived: false, match: /may photoshoot/i },
-  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false, match: /la model source/i },
+  { id: "2026-09", label: "September photoshoot", archived: false, match: /september photoshoot/i },
   { id: "model-source-nov-2026", label: "Model Source November", archived: false, match: /model source november/i },
+  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false, match: /la model source/i },
+  { id: "2026-05", label: "May photoshoot", archived: true, match: /may photoshoot/i },
 ]
 
 export function shootForNotes(notes: string) {
   if (/model source november/i.test(notes)) return "model-source-nov-2026"
   if (/la model source/i.test(notes)) return "la-model-source-2026"
+  if (/september photoshoot/i.test(notes)) return "2026-09"
   if (/may photoshoot/i.test(notes)) return "2026-05"
   if (/august/i.test(notes)) return "2026-08"
   if (/july/i.test(notes)) return "2026-07"
   if (/june/i.test(notes)) return "2026-06"
-  return "2026-05"
+  if (/october/i.test(notes)) return "2026-10"
+  return "2026-09"
 }
 
 export function mergePhotoshoots(existing?: Photoshoot[]) {

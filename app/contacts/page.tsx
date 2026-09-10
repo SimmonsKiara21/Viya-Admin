@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState, Field, NativeSelect, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
+import { ContactTagEditor } from "@/components/student-tag-editor"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
 import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS } from "@/lib/constants"
@@ -17,7 +18,7 @@ import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export default function ContactsPage() {
-  const { students, addStudent, updateStudent } = useStore()
+  const { students, addStudent } = useStore()
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<(typeof CONTACT_FILTERS)[number]>("all")
   const [adding, setAdding] = useState(false)
@@ -86,7 +87,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Everyone in the Google Contacts export. People with no list stay here unlabeled. Add a label only if you need one."
+        description="Everyone in the Google Contacts export. People with no list stay unlabeled — tap Edit to add a tag. There is no empty dropdown."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -116,7 +117,7 @@ export default function ContactsPage() {
                 value={form.contactCategory}
                 onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory | "" })}
               >
-                <option value=""></option>
+                <option value="">Choose a tag</option>
                 {(Object.keys(CONTACT_LABELS) as ContactCategory[]).filter((key) => key !== "new").map((key) => (
                   <option key={key} value={key}>
                     {CONTACT_LABELS[key]}
@@ -189,24 +190,7 @@ export default function ContactsPage() {
                   <StudentRow student={student} context="contacts" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
-                  {isContact(student) ? (
-                    <NativeSelect
-                      className="h-8 w-[13rem] text-xs"
-                      value={student.contactCategory || ""}
-                      onChange={(e) =>
-                        updateStudent(student.id, { contactCategory: e.target.value as ContactCategory | "" })
-                      }
-                    >
-                      <option value=""></option>
-                      {(Object.keys(CONTACT_LABELS) as ContactCategory[])
-                        .filter((key) => key !== "new")
-                        .map((key) => (
-                        <option key={key} value={key}>
-                          {CONTACT_LABELS[key]}
-                        </option>
-                      ))}
-                    </NativeSelect>
-                  ) : null}
+                  <ContactTagEditor student={student} />
                 </div>
               </div>
             ))}

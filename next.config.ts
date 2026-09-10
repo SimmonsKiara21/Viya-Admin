@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+  async redirects() {
+    return [{ source: "/classes", destination: "/calendar", permanent: false }]
+  },
 };
 
 export default nextConfig;

@@ -27,10 +27,10 @@ npm start
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
-- **Payments** on a talent file is their payment schedule from Square (and any extra rows you add). The Payment tracker uses the same short labels — modeling and acting training, sub, or collections — with a notes column. There is no open-balance total on that page.
+- **Payments** on a talent file is their payment schedule from Square (and any extra rows you add). The Payment tracker uses the same short labels — modeling and acting training, sub, or collections — and you can edit those plus status on each row. Open **Dates** for a mini calendar of that person’s payments.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
-- **Contacts** is everyone else. People who are not enrolled have no status tag unless you pick one from the dropdown (blank is allowed). Enrolled people are tagged **Current Student**.
+- **Contacts** is everyone else. People who are not on a Google list have an **Edit** button only — no empty dropdown. Enrolled people are tagged **Current Student**.
 - **Calendar** lists who is supposed to run on each Phoenix date. On a talent file (Payments tab) add the whole schedule as multiple date + amount rows. Those dates show on Calendar and on Alerts when late.
 - **Photoshoots** is monthly. Headshots, Refresh, and Received stack together; Scheduled and Full sit beside them. Prior months sit under Prior shoots.
 - **Alerts** lists overdue, collections, pending, wrapping up, and paid in full. Texts go out from the separate messaging site, not this desk.

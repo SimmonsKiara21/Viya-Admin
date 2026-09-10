@@ -16,6 +16,7 @@ function sheetUrl(base: string, gid: string) {
   const url = new URL(base)
   url.searchParams.set("output", "csv")
   url.searchParams.set("gid", gid)
+  url.searchParams.set("single", "true")
   return url.toString()
 }
 

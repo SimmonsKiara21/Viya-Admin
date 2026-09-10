@@ -14,7 +14,6 @@ import {
   Users,
   CalendarDays,
   Bell,
-  Clock,
   BookUser,
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -31,7 +30,6 @@ const NAV = [
   { href: "/contacts", label: "Contacts", icon: BookUser },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/calendar", label: "Calendar", icon: Calendar },
-  { href: "/classes", label: "Classes", icon: Clock },
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/docusign", label: "DocuSign", icon: FilePenLine },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },

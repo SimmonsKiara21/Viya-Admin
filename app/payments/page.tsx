@@ -2,29 +2,45 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { EmptyState, PageHeader } from "@/components/ui-helpers"
-import { PaymentBadge } from "@/components/status-badge"
+import { CalendarDays } from "lucide-react"
+import { EmptyState, NativeSelect, PageHeader } from "@/components/ui-helpers"
+import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { useStore } from "@/lib/store"
-import { formatDate, formatMoney, fullName } from "@/lib/format"
+import { formatDate, formatMoney, fullName, todayISO } from "@/lib/format"
 import { PAYMENT_LABELS } from "@/lib/constants"
 import { displayPaymentNotes, paymentItemLabel } from "@/lib/square"
-import type { PaymentRecord, PaymentStatus, Student } from "@/lib/types"
+import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type KindFilter = "all" | "training" | "sub" | "collections"
 
-function kindFor(student: Student | undefined, bill: PaymentRecord): KindFilter {
+function kindFor(student: Student | undefined, bill: PaymentRecord): Exclude<KindFilter, "all"> {
   const label = paymentItemLabel(student, bill)
   if (label === "Collections") return "collections"
   if (label === "Sub") return "sub"
   return "training"
 }
 
+function kindPatch(kind: Exclude<KindFilter, "all">): Partial<PaymentRecord> {
+  if (kind === "collections") return { itemKind: "fee" as SquareItemKind, itemId: "cancellation" }
+  if (kind === "sub") return { itemKind: "subscriber" as SquareItemKind }
+  return { itemKind: "academy" as SquareItemKind, itemId: "va101" }
+}
+
+function statusPatch(bill: PaymentRecord, status: PaymentStatus): Partial<PaymentRecord> {
+  if (status === "paid") {
+    return { status, paidAmount: bill.amount, balance: 0, paidDate: bill.paidDate || todayISO() }
+  }
+  return { status, balance: Math.max(bill.amount - bill.paidAmount, 0) }
+}
+
 export default function PaymentsPage() {
   const { payments, students, updatePayment } = useStore()
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
   const [kindFilter, setKindFilter] = useState<KindFilter>("all")
+  const [calendarId, setCalendarId] = useState<string | null>(null)
 
   const enrollmentIds = useMemo(() => new Set(students.map((s) => s.id)), [students])
 
@@ -43,12 +59,15 @@ export default function PaymentsPage() {
     })
   }, [payments, filter, kindFilter, enrollmentIds, students])
 
+  const calendarStudent = students.find((s) => s.id === calendarId)
+  const calendarPayments = payments.filter((p) => p.studentId === calendarId)
+
   return (
     <div>
       <PageHeader
         eyebrow="Payments"
         title="Payment tracker"
-        description="Schedules from Square, the same dates that show on each talent file."
+        description="Edit status or item on any row. Open the calendar to see that person’s payment dates."
       />
 
       <div className="mb-3 flex flex-wrap gap-2">
@@ -98,7 +117,7 @@ export default function PaymentsPage() {
         <EmptyState title="No payments in this view" description="Try another status or item filter." />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border">
-          <table className="w-full min-w-[920px] text-left text-sm">
+          <table className="w-full min-w-[1080px] text-left text-sm">
             <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Student</th>
@@ -109,6 +128,7 @@ export default function PaymentsPage() {
                 <th className="px-4 py-3 font-medium">Due</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Notes</th>
+                <th className="px-4 py-3 font-medium">Calendar</th>
               </tr>
             </thead>
             <tbody>
@@ -125,13 +145,37 @@ export default function PaymentsPage() {
                         bill.studentId
                       )}
                     </td>
-                    <td className="px-4 py-3">{paymentItemLabel(student, bill)}</td>
+                    <td className="px-4 py-3">
+                      <NativeSelect
+                        className="h-8 min-w-[12rem] text-xs"
+                        value={kindFor(student, bill)}
+                        onChange={(e) =>
+                          updatePayment(bill.id, kindPatch(e.target.value as Exclude<KindFilter, "all">))
+                        }
+                      >
+                        <option value="training">Modeling and acting training</option>
+                        <option value="sub">Sub</option>
+                        <option value="collections">Collections</option>
+                      </NativeSelect>
+                    </td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.amount)}</td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.paidAmount)}</td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.balance)}</td>
                     <td className="px-4 py-3">{formatDate(bill.dueDate)}</td>
                     <td className="px-4 py-3">
-                      <PaymentBadge status={bill.status} />
+                      <NativeSelect
+                        className="h-8 w-[8.5rem] text-xs"
+                        value={bill.status}
+                        onChange={(e) =>
+                          updatePayment(bill.id, statusPatch(bill, e.target.value as PaymentStatus))
+                        }
+                      >
+                        {(Object.keys(PAYMENT_LABELS) as PaymentStatus[]).map((status) => (
+                          <option key={status} value={status}>
+                            {PAYMENT_LABELS[status]}
+                          </option>
+                        ))}
+                      </NativeSelect>
                     </td>
                     <td className="px-4 py-3 min-w-[12rem]">
                       <Input
@@ -145,6 +189,17 @@ export default function PaymentsPage() {
                         }}
                       />
                     </td>
+                    <td className="px-4 py-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="xs"
+                        onClick={() => setCalendarId(bill.studentId)}
+                      >
+                        <CalendarDays className="size-3.5" />
+                        Dates
+                      </Button>
+                    </td>
                   </tr>
                 )
               })}
@@ -152,6 +207,15 @@ export default function PaymentsPage() {
           </table>
         </div>
       )}
+
+      <PaymentMiniCalendar
+        student={calendarStudent}
+        payments={calendarPayments}
+        open={Boolean(calendarId)}
+        onOpenChange={(open) => {
+          if (!open) setCalendarId(null)
+        }}
+      />
     </div>
   )
 }

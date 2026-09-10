@@ -42,10 +42,22 @@ function firstValue(raw: string) {
   return raw.split(":::").map((part) => part.trim()).find(Boolean) || ""
 }
 
+/** Google Contacts list name used when staff picks a desk tag. */
+export function googleLabelForCategory(category: ContactCategory | "") {
+  if (category === "current-student") return "Current Student"
+  if (category === "subscriber") return "Active Subscribers"
+  if (category === "photoshoot") return "SEPTEMBER PHOTOSHOOT LIST"
+  if (category === "model-source-la") return "LA Model Source 2026"
+  if (category === "model-source-nov") return "MODEL SOURCE NOVEMBER"
+  if (category === "newsletter") return "Newsletter"
+  return ""
+}
+
 export function displayContactLabel(label: string) {
   const key = label.trim()
   if (/^current student$/i.test(key)) return "Current Student"
   if (/^active subscribers$/i.test(key)) return "Active Subscribers"
+  if (/september photoshoot/i.test(key)) return "September photoshoot"
   if (/may photoshoot/i.test(key)) return "May photoshoot"
   if (/model source november/i.test(key)) return "Model Source November"
   if (/la model source/i.test(key)) return "LA Model Source 2026"
@@ -255,7 +267,7 @@ export function onGoogleList(student: Student, filter: ContactCategory | "all") 
   if (filter === "all") return (student.labels || []).length > 0
   if (filter === "current-student") return hasContactLabel(student, /current student/i)
   if (filter === "subscriber") return hasContactLabel(student, /active subscriber/i)
-  if (filter === "photoshoot") return hasContactLabel(student, /may photoshoot/i)
+  if (filter === "photoshoot") return hasContactLabel(student, /photoshoot/i)
   if (filter === "model-source-la") return hasContactLabel(student, /la model source/i)
   if (filter === "model-source-nov") return hasContactLabel(student, /model source november/i)
   if (filter === "newsletter") return hasContactLabel(student, /newsletter/i)

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
+import { EnrollmentTagEditor } from "@/components/student-tag-editor"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
 import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent } from "@/lib/alerts"
@@ -111,7 +112,14 @@ export default function StudentsPage() {
           </div>
           <div className="divide-y divide-border px-2 py-1">
             {filtered.map((student) => (
-              <StudentRow key={student.id} student={student} />
+              <div key={student.id} className="flex flex-col gap-2 py-1 sm:flex-row sm:items-center">
+                <div className="min-w-0 flex-1">
+                  <StudentRow student={student} />
+                </div>
+                <div className="flex items-center px-2 pb-2 sm:pb-0">
+                  <EnrollmentTagEditor student={student} />
+                </div>
+              </div>
             ))}
           </div>
         </div>

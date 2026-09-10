@@ -51,7 +51,7 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="May photoshoot, LA Model Source 2026, and Model Source November are filled from the Google Contacts lists. September and October stay open for the new month. June–August sit under Prior shoots."
+        description="September photoshoot and Model Source November fill from Google Contacts. October stays open for the next month. May–August sit under Prior shoots."
         actions={
           <Button
             variant="outline"

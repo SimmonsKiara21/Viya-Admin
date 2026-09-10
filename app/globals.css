@@ -124,41 +124,41 @@ html.light,
   --sidebar-ring: #3d2a12;
 }
 
-/* Sepia — pale tan paper, espresso ink, walnut chrome. Distinct layers for contrast. */
+/* Forest — coffee grounds, pine, moss. Cooler and less yellow than the old tan paper. */
 html.sepia,
 .sepia {
-  --background: #f4e6cc;
-  --foreground: #1c1008;
-  --card: #fff8ee;
-  --card-foreground: #1c1008;
-  --popover: #fff8ee;
-  --popover-foreground: #1c1008;
-  --primary: #3a2414;
-  --primary-foreground: #f8ecd8;
-  --secondary: #e2c8a0;
-  --secondary-foreground: #1c1008;
-  --muted: #ead4b4;
-  --muted-foreground: #4a301c;
-  --accent: #d7b48a;
-  --accent-foreground: #1c1008;
-  --destructive: #8a2f24;
-  --border: #a07848;
-  --input: #a07848;
-  --ring: #3a2414;
-  --chart-1: #3a2414;
-  --chart-2: #3d5230;
-  --chart-3: #6b4228;
-  --chart-4: #8a2f24;
-  --chart-5: #7a4e2e;
+  --background: #e6e4d9;
+  --foreground: #1b1712;
+  --card: #f3f1e8;
+  --card-foreground: #1b1712;
+  --popover: #f3f1e8;
+  --popover-foreground: #1b1712;
+  --primary: #3e4a38;
+  --primary-foreground: #f3efe4;
+  --secondary: #d4d0c3;
+  --secondary-foreground: #1b1712;
+  --muted: #dbd7cb;
+  --muted-foreground: #4a463c;
+  --accent: #c5cbb8;
+  --accent-foreground: #1b1712;
+  --destructive: #8a3228;
+  --border: #8a8478;
+  --input: #8a8478;
+  --ring: #3e4a38;
+  --chart-1: #4a3728;
+  --chart-2: #3e4a38;
+  --chart-3: #6b5344;
+  --chart-4: #8a3228;
+  --chart-5: #5c6b4a;
   --radius: 0.75rem;
-  --sidebar: #3a2414;
-  --sidebar-foreground: #f4e6cc;
-  --sidebar-primary: #f4e6cc;
-  --sidebar-primary-foreground: #3a2414;
-  --sidebar-accent: #5a3a22;
-  --sidebar-accent-foreground: #f8ecd8;
-  --sidebar-border: #24160c;
-  --sidebar-ring: #f4e6cc;
+  --sidebar: #243028;
+  --sidebar-foreground: #e8e4d6;
+  --sidebar-primary: #d4c4a8;
+  --sidebar-primary-foreground: #243028;
+  --sidebar-accent: #354338;
+  --sidebar-accent-foreground: #e8e4d6;
+  --sidebar-border: #1a221c;
+  --sidebar-ring: #d4c4a8;
 }
 
 @layer base {
@@ -187,7 +187,7 @@ html.sepia,
   }
 }
 
-/* Sepia: leftover pale/dark-theme text becomes espresso ink on tan */
+/* Forest: leftover pale/dark-theme text becomes espresso ink on oatmeal */
 .sepia :is(
   [class*="text-rose-100"],
   [class*="text-rose-200"],
@@ -235,18 +235,18 @@ html.sepia,
   padding-right: 22px;
 }
 
-/* Sepia roster highlights — solid tints so they read on tan paper */
+/* Forest roster highlights — muted so they read on oatmeal, not yellow paper */
 html.sepia [data-highlight="overdue"] {
   background-color: #e38b84;
   box-shadow: inset 0 0 0 2px #8b1e1e;
 }
 html.sepia [data-highlight="subscriberOverdue"] {
-  background-color: #e8a05a;
-  box-shadow: inset 0 0 0 2px #8a4b12;
+  background-color: #d9a06c;
+  box-shadow: inset 0 0 0 2px #6b3f18;
 }
 html.sepia [data-highlight="collections"] {
-  background-color: #e6c15a;
-  box-shadow: inset 0 0 0 2px #7a5a10;
+  background-color: #c9b48a;
+  box-shadow: inset 0 0 0 2px #5c4a28;
 }
 html.sepia [data-highlight="paused"] {
   background-color: #c4a4e0;
@@ -257,10 +257,10 @@ html.sepia [data-highlight="pending"] {
   box-shadow: inset 0 0 0 2px #1d5f86;
 }
 html.sepia [data-highlight="finishing"] {
-  background-color: #b8d96a;
-  box-shadow: inset 0 0 0 2px #4a6b14;
+  background-color: #a8c47a;
+  box-shadow: inset 0 0 0 2px #3d5220;
 }
 html.sepia [data-highlight="pif"] {
-  background-color: #86d4a8;
+  background-color: #86c4a0;
   box-shadow: inset 0 0 0 2px #1f6b45;
 }

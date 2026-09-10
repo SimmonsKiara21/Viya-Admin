@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 
 const THEMES = [
   { id: "dark", label: "Dark" },
-  { id: "sepia", label: "Sepia" },
+  { id: "sepia", label: "Forest" },
   { id: "light", label: "Light" },
 ] as const
 

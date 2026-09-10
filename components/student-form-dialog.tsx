@@ -193,7 +193,7 @@ export function StudentFormDialog({
               <option value="modeling">Modeling</option>
               <option value="acting">Acting</option>
               <option value="subscriber">Subscriber</option>
-              <option value="prospect">Prospect</option>
+              <option value="prospect">Contact</option>
             </NativeSelect>
           </Field>
           <Field label="Status">

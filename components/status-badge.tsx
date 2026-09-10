@@ -152,7 +152,9 @@ export function ContactLabelBadge({ label }: { label: string }) {
     ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
     : key.includes("active subscriber")
       ? "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
-      : /photoshoot|model source/.test(key)
+      : key.includes("newsletter")
+        ? "border-primary/35 bg-primary/10 text-primary"
+        : /photoshoot|model source/.test(key)
         ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
         : "border-border text-muted-foreground"
   return (

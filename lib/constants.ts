@@ -66,14 +66,16 @@ export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
 export const SUGGESTED_LABELS = [
   "Current Student",
   "Active Subscribers",
+  "Newsletter",
   "SEPTEMBER PHOTOSHOOT LIST",
   "MODEL SOURCE NOVEMBER",
 ]
 
-/** Exact Google Contacts list names from the live export. */
+/** Exact Google Contacts list names from the live export, plus Newsletter. */
 export const GOOGLE_CONTACT_TAGS: Array<{ category: ContactCategory; label: string }> = [
   { category: "current-student", label: "Current Student" },
   { category: "subscriber", label: "Active Subscribers" },
+  { category: "newsletter", label: "Newsletter" },
   { category: "photoshoot", label: "SEPTEMBER PHOTOSHOOT LIST" },
   { category: "model-source-nov", label: "MODEL SOURCE NOVEMBER" },
 ]
@@ -105,7 +107,7 @@ export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = GOOGLE_CONTACT_TAGS.map
 export const PROGRAM_LABELS: Record<Program, string> = {
   academy: "Academy",
   subscriber: "Subscriber",
-  prospect: "Prospect",
+  prospect: "Contact",
 }
 
 export const TRACK_LABELS: Record<StudentTrack, string> = {

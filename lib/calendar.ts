@@ -1,6 +1,7 @@
 import { isContact } from "@/lib/alerts"
 import { todayISO } from "@/lib/format"
-import type { PaymentRecord, PaymentStatus, Student } from "@/lib/types"
+import { buildPaymentSchedule, paymentSourceLabel } from "@/lib/schedule"
+import type { PaymentRecord, PaymentSource, PaymentStatus, Student } from "@/lib/types"
 
 export type CalendarRun = {
   date: string
@@ -8,6 +9,7 @@ export type CalendarRun = {
   amount: number | null
   label: string
   status: PaymentStatus
+  source: PaymentSource
 }
 
 function dayCells(year: number, month: number) {
@@ -45,39 +47,25 @@ function openStatus(status: PaymentStatus) {
 }
 
 export function calendarRuns(students: Student[], payments: PaymentRecord[]): CalendarRun[] {
-  const byStudent = new Map<string, Student>()
-  for (const student of students) byStudent.set(student.id, student)
-  const seen = new Set<string>()
   const runs: CalendarRun[] = []
 
-  for (const bill of payments) {
-    const student = byStudent.get(bill.studentId)
-    if (!student || isContact(student) || !bill.dueDate) continue
-    if (!openStatus(bill.status)) continue
-    const key = `${student.id}:${bill.dueDate}`
-    seen.add(key)
-    runs.push({
-      date: bill.dueDate.slice(0, 10),
-      student,
-      amount: bill.balance || bill.amount,
-      label: bill.itemName || (bill.source === "manual" ? "Desk schedule" : "Payment"),
-      status: bill.status,
-    })
-  }
-
   for (const student of students) {
-    if (isContact(student) || !student.nextPaymentDate) continue
-    const date = student.nextPaymentDate.slice(0, 10)
-    const key = `${student.id}:${date}`
-    if (seen.has(key)) continue
-    if (student.enrollmentStatus === "pif" || student.paymentPlan === "pif") continue
-    runs.push({
-      date,
-      student,
-      amount: student.nextPaymentAmount,
-      label: "Next payment",
-      status: student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined" ? "overdue" : "due",
-    })
+    if (isContact(student)) continue
+    const seen = new Set<string>()
+    for (const row of buildPaymentSchedule(student, payments)) {
+      if (!row.date || !openStatus(row.status)) continue
+      const date = row.date.slice(0, 10)
+      if (seen.has(`${student.id}:${date}`)) continue
+      seen.add(`${student.id}:${date}`)
+      runs.push({
+        date,
+        student,
+        amount: row.balance || row.amount,
+        label: `${paymentSourceLabel(row.source)} · ${row.label}`,
+        status: row.status,
+        source: row.source,
+      })
+    }
   }
 
   return runs.sort((a, b) => a.date.localeCompare(b.date) || a.student.lastName.localeCompare(b.student.lastName))

@@ -61,7 +61,7 @@ export default function PaymentsPage() {
       <PageHeader
         eyebrow="Payments"
         title="Payment tracker"
-        description="Tap Edit on a row to change item, amount, due date, or status. Dates opens that person’s payment calendar."
+        description="Tap Edit on a row to change item, amount, due date, or status. Dates opens their calendar — enrollment plan, Square invoices, and desk rows together."
       />
 
       <div className="mb-3 flex flex-wrap gap-2">

@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { PaymentBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, fullName, todayISO } from "@/lib/format"
-import { paymentItemLabel } from "@/lib/square"
+import { buildPaymentSchedule, paymentSourceLabel } from "@/lib/schedule"
 import type { PaymentRecord, PaymentStatus, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -40,7 +40,11 @@ export function PaymentMiniCalendar({
   onOpenChange: (open: boolean) => void
 }) {
   const today = todayISO()
-  const initial = payments.find((p) => p.dueDate)?.dueDate || today
+  const schedule = useMemo(
+    () => (student ? buildPaymentSchedule(student, payments) : []),
+    [student, payments],
+  )
+  const initial = schedule.find((row) => row.status !== "paid" && row.date)?.date || schedule.find((row) => row.date)?.date || today
   const [cursor, setCursor] = useState(() => {
     const [y, m] = (initial || today).slice(0, 7).split("-").map(Number)
     return { year: y || new Date().getFullYear(), month: (m || 1) - 1 }
@@ -59,20 +63,20 @@ export function PaymentMiniCalendar({
   }, [cursor])
 
   const byDay = useMemo(() => {
-    const map = new Map<string, PaymentRecord[]>()
-    for (const bill of payments) {
-      const key = (bill.dueDate || "").slice(0, 10)
+    const map = new Map<string, typeof schedule>()
+    for (const row of schedule) {
+      const key = (row.date || "").slice(0, 10)
       if (!key) continue
       const list = map.get(key) || []
-      list.push(bill)
+      list.push(row)
       map.set(key, list)
     }
     return map
-  }, [payments])
+  }, [schedule])
 
-  const monthBills = payments
-    .filter((p) => (p.dueDate || "").startsWith(`${cursor.year}-${String(cursor.month + 1).padStart(2, "0")}`))
-    .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
+  const monthBills = schedule
+    .filter((row) => (row.date || "").startsWith(`${cursor.year}-${String(cursor.month + 1).padStart(2, "0")}`))
+    .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
 
   if (!student) return null
 
@@ -81,7 +85,9 @@ export function PaymentMiniCalendar({
       <DialogContent className="sm:max-w-md" showCloseButton>
         <DialogHeader>
           <DialogTitle>{fullName(student)}</DialogTitle>
-          <DialogDescription>Payment dates on their schedule.</DialogDescription>
+          <DialogDescription>
+            Enrollment plan dates with Square invoices and any desk rows on the same calendar.
+          </DialogDescription>
         </DialogHeader>
         <div className="flex items-center justify-between">
           <Button
@@ -128,11 +134,11 @@ export function PaymentMiniCalendar({
                 {cell.day ? <span className="text-muted-foreground">{cell.day}</span> : null}
                 {bills.length ? (
                   <div className="mt-1 flex flex-wrap justify-center gap-0.5">
-                    {bills.map((bill) => (
+                    {bills.map((bill, index) => (
                       <span
-                        key={bill.id}
+                        key={`${bill.date}-${bill.source}-${index}`}
                         className={cn("size-1.5 rounded-full", DOT[bill.status])}
-                        title={`${formatMoney(bill.amount)} · ${bill.status}`}
+                        title={`${paymentSourceLabel(bill.source)} · ${formatMoney(bill.amount)} · ${bill.status}`}
                       />
                     ))}
                   </div>
@@ -141,17 +147,22 @@ export function PaymentMiniCalendar({
             )
           })}
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          Square invoices, enrollment next-payment dates, and desk rows share this month.
+        </p>
         {monthBills.length === 0 ? (
           <p className="text-xs text-muted-foreground">No payments dated this month.</p>
         ) : (
           <ul className="max-h-40 space-y-2 overflow-auto text-sm">
-            {monthBills.map((bill) => (
-              <li key={bill.id} className="flex items-center justify-between gap-2">
+            {monthBills.map((bill, index) => (
+              <li key={`${bill.date}-${bill.source}-${index}`} className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <p className="truncate">
-                    {formatDate(bill.dueDate)} · {formatMoney(bill.amount)}
+                    {formatDate(bill.date)} · {formatMoney(bill.amount)}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">{paymentItemLabel(student, bill)}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {paymentSourceLabel(bill.source)} · {bill.label}
+                  </p>
                 </div>
                 <PaymentBadge status={bill.status} />
               </li>

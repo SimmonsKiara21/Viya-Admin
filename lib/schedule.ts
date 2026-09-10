@@ -1,4 +1,4 @@
-import type { PaymentRecord, PaymentStatus, Student } from "./types"
+import type { PaymentRecord, PaymentSource, PaymentStatus, Student } from "./types"
 import { PLAN_LENGTH, remainingPayments } from "./alerts"
 import { todayISO } from "./format"
 
@@ -11,6 +11,13 @@ export type ScheduleRow = {
   label: string
   invoiceId: string
   fromSquare: boolean
+  source: PaymentSource
+}
+
+export function paymentSourceLabel(source: PaymentSource) {
+  if (source === "square") return "Square"
+  if (source === "manual") return "Desk"
+  return "Enrollment"
 }
 
 export function addMonthsISO(iso: string, months: number) {
@@ -57,7 +64,8 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
         status,
         label: match?.itemName || "Viya Talent Subscription",
         invoiceId: match?.squareInvoiceId || sub?.squareInvoiceId || "",
-        fromSquare: Boolean(match?.source === "square" || sub),
+        fromSquare: Boolean(match?.source === "square" || (sub && i === 0)),
+        source: match?.source || (sub && i === 0 ? "square" : "workbook"),
       })
     }
     return rows
@@ -74,6 +82,7 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
         label: bill.itemName || "Paid in full",
         invoiceId: bill.squareInvoiceId,
         fromSquare: bill.source === "square",
+        source: bill.source,
       }))
     }
     return [
@@ -86,13 +95,14 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
         label: "Paid in full",
         invoiceId: "",
         fromSquare: false,
+        source: "workbook",
       },
     ]
   }
 
   const start = student.startDate || bills[0]?.dueDate
   if (!start) {
-    return bills.map((bill) => ({
+    const rows: ScheduleRow[] = bills.map((bill) => ({
       date: bill.dueDate,
       amount: bill.amount,
       paidAmount: bill.paidAmount,
@@ -101,7 +111,29 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
       label: bill.itemName || "Square invoice",
       invoiceId: bill.squareInvoiceId,
       fromSquare: bill.source === "square",
+      source: bill.source,
     }))
+    if (student.nextPaymentDate && !rows.some((row) => row.date.slice(0, 10) === student.nextPaymentDate.slice(0, 10))) {
+      const amount = student.nextPaymentAmount || 104
+      const past = student.nextPaymentDate < today
+      rows.push({
+        date: student.nextPaymentDate,
+        amount,
+        paidAmount: 0,
+        balance: amount,
+        status:
+          student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
+            ? "overdue"
+            : past
+              ? "due"
+              : "scheduled",
+        label: "Enrollment next payment",
+        invoiceId: "",
+        fromSquare: false,
+        source: "workbook",
+      })
+    }
+    return rows.sort((a, b) => a.date.localeCompare(b.date))
   }
 
   const left = remainingPayments(student)
@@ -129,6 +161,7 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
       label: match?.itemName || sq?.itemName || "VA101 Modelling & Acting Training",
       invoiceId: match?.squareInvoiceId || "",
       fromSquare: match?.source === "square",
+      source: match?.source || "workbook",
     })
   }
 
@@ -137,6 +170,7 @@ export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]
     if (nextOpen) {
       nextOpen.invoiceId = sq.squareInvoiceId
       nextOpen.fromSquare = true
+      nextOpen.source = "square"
       nextOpen.label = sq.itemName || nextOpen.label
       nextOpen.status = sq.status
       nextOpen.date = sq.dueDate || nextOpen.date

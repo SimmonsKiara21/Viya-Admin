@@ -5,7 +5,7 @@ import { Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NativeSelect } from "@/components/ui-helpers"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS, GOOGLE_CONTACT_TAGS } from "@/lib/constants"
-import { categoryFromLabels, hasGoogleTag, sameGoogleTag } from "@/lib/contacts-labels"
+import { categoryFromLabels, hasGoogleTag, isNewsletterRecipient, sameGoogleTag } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import { useStore } from "@/lib/store"
 import type { EnrollmentStatus, Student } from "@/lib/types"
@@ -18,16 +18,34 @@ function applyGoogleTags(nextLabels: string[]): Partial<Student> {
   }
 }
 
-export function ContactTagEditor({ student }: { student: Student }) {
+export function toggleStudentList(student: Student, tag: string): Partial<Student> {
+  const labels = student.labels || []
+  const removed = student.removedLabels || []
+  const on = sameGoogleTag(tag, "Newsletter") ? isNewsletterRecipient(student) : hasGoogleTag(labels, tag)
+  if (on) {
+    return {
+      ...applyGoogleTags(labels.filter((label) => !sameGoogleTag(label, tag))),
+      removedLabels: removed.some((label) => sameGoogleTag(label, tag)) ? removed : [...removed, tag],
+    }
+  }
+  return {
+    ...applyGoogleTags([...labels, tag]),
+    removedLabels: removed.filter((label) => !sameGoogleTag(label, tag)),
+  }
+}
+
+export function ContactTagEditor({
+  student,
+  alwaysOpen = false,
+}: {
+  student: Student
+  alwaysOpen?: boolean
+}) {
   const { updateStudent } = useStore()
-  const [editing, setEditing] = useState(false)
+  const [editing, setEditing] = useState(alwaysOpen)
 
   function toggle(tag: string) {
-    const labels = student.labels || []
-    const next = hasGoogleTag(labels, tag)
-      ? labels.filter((label) => !sameGoogleTag(label, tag))
-      : [...labels, tag]
-    updateStudent(student.id, applyGoogleTags(next))
+    updateStudent(student.id, toggleStudentList(student, tag))
   }
 
   if (!editing) {
@@ -42,7 +60,7 @@ export function ContactTagEditor({ student }: { student: Student }) {
   return (
     <div className="flex max-w-xl flex-wrap items-center gap-1.5">
       {GOOGLE_CONTACT_TAGS.map((tag) => {
-        const on = hasGoogleTag(student.labels, tag.label)
+        const on = tag.category === "newsletter" ? isNewsletterRecipient(student) : hasGoogleTag(student.labels, tag.label)
         return (
           <button
             key={tag.category}
@@ -59,9 +77,11 @@ export function ContactTagEditor({ student }: { student: Student }) {
           </button>
         )
       })}
-      <Button type="button" variant="ghost" size="xs" onClick={() => setEditing(false)}>
-        Done
-      </Button>
+      {alwaysOpen ? null : (
+        <Button type="button" variant="ghost" size="xs" onClick={() => setEditing(false)}>
+          Done
+        </Button>
+      )}
     </div>
   )
 }
@@ -106,5 +126,5 @@ export function EnrollmentTagEditor({ student }: { student: Student }) {
 }
 
 export function ProfileCategoryEditor({ student }: { student: Student }) {
-  return <ContactTagEditor student={student} />
+  return <ContactTagEditor student={student} alwaysOpen />
 }

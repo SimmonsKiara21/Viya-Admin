@@ -27,14 +27,14 @@ npm start
 - **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
-- **Payments** on a talent file is their payment schedule from Square (and any extra rows you add). The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens a mini calendar of that person’s payments.
+- **Payments** on a talent file is their payment calendar: enrollment next-payment dates, Square invoices, and any extra desk rows. The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens that calendar.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
-- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. **Newsletter** is subscribers only — leftover Newsletter labels on other people do not put them on that tab. People with no list stay under All contacts.
-- **Calendar** lists who is supposed to run on each Phoenix date. On a talent file (Payments tab) add the whole schedule as multiple date + amount rows. Those dates show on Calendar and on Alerts when late.
+- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**, plus **Newsletter**. Open a profile to add or remove Newsletter. Contact files say Contact, not Prospect. People with no list stay under All contacts.
+- **Calendar** lists who is supposed to run on each Phoenix date, using the enrollment plan and Square invoices together. Desk rows you add on a talent file show here too.
 - **Photoshoots** is monthly. Headshots, Refresh, and Received stack together; Scheduled and Full sit beside them. Prior months sit under Prior shoots.
 - **Alerts** lists overdue, collections, pending, wrapping up, and paid in full. Texts go out from the separate messaging site, not this desk.
-- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Light is white with dark text. Sepia is tan paper, espresso ink, and a darker walnut sidebar.
+- **Themes:** Dark, Forest, and Light from the switcher in the bottom right. Light is white with dark text. Forest is oatmeal paper, espresso ink, moss chrome, and a pine sidebar.
 - **Times** on Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.
 
 ## Alerts

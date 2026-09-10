@@ -16,7 +16,7 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
   subscriberOverdue:
     "bg-orange-500/14 ring-1 ring-orange-400/40 hover:bg-orange-500/20 sepia:bg-[#e8a05a] sepia:ring-2 sepia:ring-[#8a4b12] sepia:hover:bg-[#de8c3c]",
   collections:
-    "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20 sepia:bg-[#e6c15a] sepia:ring-2 sepia:ring-[#7a5a10] sepia:hover:bg-[#d9b040]",
+    "bg-amber-500/14 ring-1 ring-amber-400/40 hover:bg-amber-500/20 sepia:bg-[#c9b48a] sepia:ring-2 sepia:ring-[#5c4a28] sepia:hover:bg-[#bfa878]",
   paused:
     "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18 sepia:bg-[#c4a4e0] sepia:ring-2 sepia:ring-[#5a2d8a] sepia:hover:bg-[#b48ed6]",
   pending:

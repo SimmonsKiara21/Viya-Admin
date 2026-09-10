@@ -32,7 +32,7 @@ export default function CalendarPage() {
       <PageHeader
         eyebrow="Schedule"
         title="Calendar"
-        description="Phoenix dates. People who are supposed to run that day sit on the right. Add a date and amount on a talent file to put them here."
+        description="Phoenix dates from the enrollment plan and Square invoices. Desk schedule rows you add on a talent file show here too."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">

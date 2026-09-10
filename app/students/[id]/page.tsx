@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import {
   ArrowLeft,
+  CalendarDays,
   Mail,
   MessageSquare,
   Phone,
@@ -28,7 +29,8 @@ import {
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
-import { ProfileCategoryEditor } from "@/components/student-tag-editor"
+import { ProfileCategoryEditor, toggleStudentList } from "@/components/student-tag-editor"
+import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
 import {
   PaymentAmountInput,
   PaymentDateInput,
@@ -48,7 +50,7 @@ import {
   telHref,
   todayISO,
 } from "@/lib/format"
-import { addMonthsISO } from "@/lib/schedule"
+import { addMonthsISO, buildPaymentSchedule, paymentSourceLabel } from "@/lib/schedule"
 import {
   highlightTone,
   isAcademyOverdue,
@@ -62,7 +64,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { uniqueContactLabels } from "@/lib/contacts-labels"
+import { uniqueContactLabels, isNewsletterRecipient } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
@@ -119,6 +121,7 @@ export default function StudentProfilePage() {
   const [noteClass, setNoteClass] = useState<ClassType | "">("modeling")
   const [draftRows, setDraftRows] = useState<ScheduleDraft[]>(() => blankScheduleDraft())
   const [editingPayment, setEditingPayment] = useState<string | null>(null)
+  const [calendarOpen, setCalendarOpen] = useState(false)
 
   const records = useMemo(
     () => attendance.filter((a) => a.studentId === id).sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt)),
@@ -134,6 +137,10 @@ export default function StudentProfilePage() {
         .filter((p) => p.studentId === id)
         .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || "")),
     [payments, id],
+  )
+  const schedule = useMemo(
+    () => (student ? buildPaymentSchedule(student, bills) : []),
+    [student, bills],
   )
   const counts = countsFor(records)
   const tone = student ? highlightTone(student) : "none"
@@ -302,7 +309,7 @@ export default function StudentProfilePage() {
               {fullName(student)}
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              <ProgramBadge program={student.program} track={student.track} />
+              {isContact(student) ? null : <ProgramBadge program={student.program} track={student.track} />}
               {student.enrollmentStatus !== "contact" ? (
                 <EnrollmentBadge
                   status={student.enrollmentStatus}
@@ -335,6 +342,8 @@ export default function StudentProfilePage() {
                 <dt className="text-xs text-muted-foreground uppercase">Age</dt>
                 <dd>{student.age ?? "—"}</dd>
               </div>
+              {isContact(student) ? null : (
+                <>
               <div>
                 <dt className="text-xs text-muted-foreground uppercase">Start date</dt>
                 <dd>{formatDate(student.startDate)}</dd>
@@ -351,6 +360,8 @@ export default function StudentProfilePage() {
                   {formatMoney(student.nextPaymentAmount)} · {formatDate(student.nextPaymentDate)}
                 </dd>
               </div>
+                </>
+              )}
             </dl>
             <div className="mt-4 flex flex-wrap gap-2">
               {student.phone ? (
@@ -385,6 +396,7 @@ export default function StudentProfilePage() {
       <Tabs defaultValue={initialTab}>
         <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
           <TabsTrigger value="docusign">DocuSign</TabsTrigger>
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
@@ -414,11 +426,7 @@ export default function StudentProfilePage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Panel className="grid gap-3">
               <h2 className="font-heading text-xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
-              {isContact(student) ? (
-                <Field label="Tag">
-                  <ProfileCategoryEditor student={student} />
-                </Field>
-              ) : (
+              {isContact(student) ? null : (
                 <>
                   <Field label="Status">
                     <NativeSelect
@@ -483,9 +491,10 @@ export default function StudentProfilePage() {
                   <option value="modeling">Modeling</option>
                   <option value="acting">Acting</option>
                   <option value="subscriber">Subscriber</option>
-                  <option value="prospect">Prospect</option>
+                  <option value="prospect">Contact</option>
                 </NativeSelect>
               </Field>
+              {isContact(student) ? null : (
               <Field label="Plan">
                 <NativeSelect
                   value={student.paymentPlan}
@@ -499,6 +508,10 @@ export default function StudentProfilePage() {
                     </option>
                   ))}
                 </NativeSelect>
+              </Field>
+              )}
+              <Field label="Lists">
+                <ProfileCategoryEditor student={student} />
               </Field>
               <Field label="Tags">
                 <LabelsEditor
@@ -517,6 +530,32 @@ export default function StudentProfilePage() {
               />
             </Panel>
           </div>
+        </TabsContent>
+
+        <TabsContent value="newsletter">
+          <Panel className="grid gap-4">
+            <div>
+              <h2 className="font-heading text-xl">Newsletter</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                People on this list appear on Contacts → Newsletter. Subscribers are included until you take them off.
+                Add anyone else you want on the send list.
+              </p>
+            </div>
+            <p className="text-sm">
+              {isNewsletterRecipient(student)
+                ? `${student.firstName} is on the newsletter.`
+                : `${student.firstName} is not on the newsletter.`}
+            </p>
+            <div>
+              <Button
+                type="button"
+                variant={isNewsletterRecipient(student) ? "outline" : "default"}
+                onClick={() => updateStudent(student.id, toggleStudentList(student, "Newsletter"))}
+              >
+                {isNewsletterRecipient(student) ? "Remove from newsletter" : "Add to newsletter"}
+              </Button>
+            </div>
+          </Panel>
         </TabsContent>
 
         <TabsContent value="attendance">
@@ -553,12 +592,18 @@ export default function StudentProfilePage() {
 
         <TabsContent value="payments">
           <Panel>
-            <div className="mb-6">
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+              <div>
               <h2 className="mb-1 font-heading text-xl">Add payment schedule</h2>
               <p className="mb-3 text-xs text-muted-foreground">
-                Add every remaining run date at once. Each row is one payment. They show on this tab, Calendar, and
-                Alerts when due.
+                Enrollment next-payment dates and Square invoices already sit on the calendar. Add extra desk rows here if a run date is missing.
               </p>
+              </div>
+              <Button type="button" variant="outline" size="sm" onClick={() => setCalendarOpen(true)}>
+                <CalendarDays className="size-3.5" />
+                Dates
+              </Button>
+            </div>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full min-w-[420px] text-left text-sm">
                   <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
@@ -684,7 +729,6 @@ export default function StudentProfilePage() {
                   Save schedule
                 </Button>
               </div>
-            </div>
             <div className="mb-4 grid gap-3 sm:grid-cols-2">
               <Field label="Amount due">
                 <Input
@@ -705,11 +749,45 @@ export default function StudentProfilePage() {
                 />
               </Field>
             </div>
+            {schedule.length > 0 ? (
+              <div className="mb-4">
+                <h2 className="mb-2 font-heading text-xl">Payment calendar</h2>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  Enrollment plan, Square invoices, and desk rows on one schedule.
+                </p>
+                <div className="overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full min-w-[520px] text-left text-sm">
+                    <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
+                      <tr>
+                        <th className="px-3 py-2 font-medium">Date</th>
+                        <th className="px-3 py-2 font-medium">Source</th>
+                        <th className="px-3 py-2 font-medium">Item</th>
+                        <th className="px-3 py-2 font-medium">Amount</th>
+                        <th className="px-3 py-2 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schedule.map((row, index) => (
+                        <tr key={`${row.date}-${row.source}-${index}`} className="border-b border-border last:border-0">
+                          <td className="px-3 py-2 tabular-nums">{formatShortDate(row.date)}</td>
+                          <td className="px-3 py-2 text-muted-foreground">{paymentSourceLabel(row.source)}</td>
+                          <td className="px-3 py-2">{row.label}</td>
+                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.amount)}</td>
+                          <td className="px-3 py-2">
+                            <PaymentBadge status={row.status} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : null}
             {bills.length > 0 ? (
               <div>
-                <h2 className="mb-2 font-heading text-xl">Payment schedule</h2>
+                <h2 className="mb-2 font-heading text-xl">Edit invoices</h2>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  Dates and amounts from Square, plus any rows you add above.
+                  Change a Square or desk row without losing the enrollment dates above.
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full min-w-[640px] text-left text-sm">
@@ -791,10 +869,16 @@ export default function StudentProfilePage() {
                   </table>
                 </div>
               </div>
-            ) : (
+            ) : schedule.length === 0 ? (
               <p className="text-sm text-muted-foreground">No payments on the schedule yet.</p>
-            )}
+            ) : null}
           </Panel>
+          <PaymentMiniCalendar
+            student={student}
+            payments={bills}
+            open={calendarOpen}
+            onOpenChange={setCalendarOpen}
+          />
         </TabsContent>
 
         <TabsContent value="docusign">

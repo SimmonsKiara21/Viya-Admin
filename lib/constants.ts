@@ -66,18 +66,24 @@ export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
 export const SUGGESTED_LABELS = [
   "Current Student",
   "Active Subscribers",
-  "September photoshoot",
-  "LA Model Source 2026",
-  "Model Source November",
-  "Newsletter",
+  "SEPTEMBER PHOTOSHOOT LIST",
+  "MODEL SOURCE NOVEMBER",
+]
+
+/** Exact Google Contacts list names from the live export. */
+export const GOOGLE_CONTACT_TAGS: Array<{ category: ContactCategory; label: string }> = [
+  { category: "current-student", label: "Current Student" },
+  { category: "subscriber", label: "Active Subscribers" },
+  { category: "photoshoot", label: "SEPTEMBER PHOTOSHOOT LIST" },
+  { category: "model-source-nov", label: "MODEL SOURCE NOVEMBER" },
 ]
 
 export const CONTACT_LABELS: Record<ContactCategory, string> = {
   "current-student": "Current Student",
   subscriber: "Active Subscribers",
-  photoshoot: "September photoshoot",
+  photoshoot: "SEPTEMBER PHOTOSHOOT LIST",
   "model-source-la": "LA Model Source 2026",
-  "model-source-nov": "Model Source November",
+  "model-source-nov": "MODEL SOURCE NOVEMBER",
   newsletter: "Newsletter",
   new: "Unlabeled",
   inquiry: "Inquiry",
@@ -90,23 +96,11 @@ export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
   "current-student",
   "subscriber",
   "photoshoot",
-  "model-source-la",
   "model-source-nov",
-  "newsletter",
   "new",
-  "inquiry",
-  "follow-up",
-  "not-interested",
 ]
 
-export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = [
-  "current-student",
-  "subscriber",
-  "photoshoot",
-  "model-source-la",
-  "model-source-nov",
-  "newsletter",
-]
+export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = GOOGLE_CONTACT_TAGS.map((tag) => tag.category)
 
 export const PROGRAM_LABELS: Record<Program, string> = {
   academy: "Academy",

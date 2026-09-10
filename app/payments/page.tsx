@@ -3,37 +3,30 @@
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { CalendarDays } from "lucide-react"
-import { EmptyState, NativeSelect, PageHeader } from "@/components/ui-helpers"
+import { EmptyState, PageHeader } from "@/components/ui-helpers"
 import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
+import {
+  PaymentAmountInput,
+  PaymentDateInput,
+  PaymentEditToggle,
+  PaymentItemSelect,
+  PaymentStatusSelect,
+  paymentItemKind,
+} from "@/components/payment-row-edit"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { PaymentBadge } from "@/components/status-badge"
 import { useStore } from "@/lib/store"
-import { formatDate, formatMoney, fullName, todayISO } from "@/lib/format"
+import { formatDate, formatMoney, fullName } from "@/lib/format"
 import { PAYMENT_LABELS } from "@/lib/constants"
 import { displayPaymentNotes, paymentItemLabel } from "@/lib/square"
-import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "@/lib/types"
+import type { PaymentRecord, PaymentStatus, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type KindFilter = "all" | "training" | "sub" | "collections"
 
 function kindFor(student: Student | undefined, bill: PaymentRecord): Exclude<KindFilter, "all"> {
-  const label = paymentItemLabel(student, bill)
-  if (label === "Collections") return "collections"
-  if (label === "Sub") return "sub"
-  return "training"
-}
-
-function kindPatch(kind: Exclude<KindFilter, "all">): Partial<PaymentRecord> {
-  if (kind === "collections") return { itemKind: "fee" as SquareItemKind, itemId: "cancellation" }
-  if (kind === "sub") return { itemKind: "subscriber" as SquareItemKind }
-  return { itemKind: "academy" as SquareItemKind, itemId: "va101" }
-}
-
-function statusPatch(bill: PaymentRecord, status: PaymentStatus): Partial<PaymentRecord> {
-  if (status === "paid") {
-    return { status, paidAmount: bill.amount, balance: 0, paidDate: bill.paidDate || todayISO() }
-  }
-  return { status, balance: Math.max(bill.amount - bill.paidAmount, 0) }
+  return paymentItemKind(student, bill)
 }
 
 export default function PaymentsPage() {
@@ -41,6 +34,7 @@ export default function PaymentsPage() {
   const [filter, setFilter] = useState<PaymentStatus | "all">("all")
   const [kindFilter, setKindFilter] = useState<KindFilter>("all")
   const [calendarId, setCalendarId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   const enrollmentIds = useMemo(() => new Set(students.map((s) => s.id)), [students])
 
@@ -67,7 +61,7 @@ export default function PaymentsPage() {
       <PageHeader
         eyebrow="Payments"
         title="Payment tracker"
-        description="Edit status or item on any row. Open the calendar to see that person’s payment dates."
+        description="Tap Edit on a row to change item, amount, due date, or status. Dates opens that person’s payment calendar."
       />
 
       <div className="mb-3 flex flex-wrap gap-2">
@@ -128,12 +122,13 @@ export default function PaymentsPage() {
                 <th className="px-4 py-3 font-medium">Due</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Notes</th>
-                <th className="px-4 py-3 font-medium">Calendar</th>
+                <th className="px-4 py-3 font-medium"> </th>
               </tr>
             </thead>
             <tbody>
               {rows.map((bill) => {
                 const student = students.find((s) => s.id === bill.studentId)
+                const editing = editingId === bill.id
                 return (
                   <tr key={bill.id} className="border-b border-border last:border-0 align-top">
                     <td className="px-4 py-3">
@@ -146,36 +141,24 @@ export default function PaymentsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <NativeSelect
-                        className="h-8 min-w-[12rem] text-xs"
-                        value={kindFor(student, bill)}
-                        onChange={(e) =>
-                          updatePayment(bill.id, kindPatch(e.target.value as Exclude<KindFilter, "all">))
-                        }
-                      >
-                        <option value="training">Modeling and acting training</option>
-                        <option value="sub">Sub</option>
-                        <option value="collections">Collections</option>
-                      </NativeSelect>
+                      {editing ? (
+                        <PaymentItemSelect student={student} bill={bill} />
+                      ) : (
+                        paymentItemLabel(student, bill)
+                      )}
                     </td>
-                    <td className="px-4 py-3 tabular-nums">{formatMoney(bill.amount)}</td>
-                    <td className="px-4 py-3 tabular-nums">{formatMoney(bill.paidAmount)}</td>
+                    <td className="px-4 py-3 tabular-nums">
+                      {editing ? <PaymentAmountInput bill={bill} field="amount" /> : formatMoney(bill.amount)}
+                    </td>
+                    <td className="px-4 py-3 tabular-nums">
+                      {editing ? <PaymentAmountInput bill={bill} field="paidAmount" /> : formatMoney(bill.paidAmount)}
+                    </td>
                     <td className="px-4 py-3 tabular-nums">{formatMoney(bill.balance)}</td>
-                    <td className="px-4 py-3">{formatDate(bill.dueDate)}</td>
                     <td className="px-4 py-3">
-                      <NativeSelect
-                        className="h-8 w-[8.5rem] text-xs"
-                        value={bill.status}
-                        onChange={(e) =>
-                          updatePayment(bill.id, statusPatch(bill, e.target.value as PaymentStatus))
-                        }
-                      >
-                        {(Object.keys(PAYMENT_LABELS) as PaymentStatus[]).map((status) => (
-                          <option key={status} value={status}>
-                            {PAYMENT_LABELS[status]}
-                          </option>
-                        ))}
-                      </NativeSelect>
+                      {editing ? <PaymentDateInput bill={bill} /> : formatDate(bill.dueDate)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {editing ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={bill.status} />}
                     </td>
                     <td className="px-4 py-3 min-w-[12rem]">
                       <Input
@@ -190,15 +173,21 @@ export default function PaymentsPage() {
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="xs"
-                        onClick={() => setCalendarId(bill.studentId)}
-                      >
-                        <CalendarDays className="size-3.5" />
-                        Dates
-                      </Button>
+                      <div className="flex flex-wrap gap-1.5">
+                        <PaymentEditToggle
+                          editing={editing}
+                          onToggle={() => setEditingId(editing ? null : bill.id)}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="xs"
+                          onClick={() => setCalendarId(bill.studentId)}
+                        >
+                          <CalendarDays className="size-3.5" />
+                          Dates
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 )

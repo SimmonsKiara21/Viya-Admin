@@ -11,8 +11,8 @@ import { StudentRow } from "@/components/student-row"
 import { ContactTagEditor } from "@/components/student-tag-editor"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
-import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS } from "@/lib/constants"
-import { matchesContactFilter, onGoogleList } from "@/lib/contacts-labels"
+import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS, GOOGLE_CONTACT_TAGS } from "@/lib/constants"
+import { googleLabelForCategory, matchesContactFilter, onGoogleList } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -63,7 +63,7 @@ export default function ContactsPage() {
       subscriptionStatus: "none",
       photoshootStatus: "none",
       photoshootNotes: "",
-      labels: [],
+      labels: googleLabelForCategory(form.contactCategory) ? [googleLabelForCategory(form.contactCategory)] : [],
       removedLabels: [],
       deskLocks: {},
       classTime: "",
@@ -87,7 +87,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Everyone in the Google Contacts export. People with no list stay unlabeled — tap Edit to add a tag. There is no empty dropdown."
+        description="Lists match Google Contacts: Current Student, Active Subscribers, SEPTEMBER PHOTOSHOOT LIST, and MODEL SOURCE NOVEMBER. Unlabeled people only show Edit."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -112,15 +112,15 @@ export default function ContactsPage() {
             <Field label="Email">
               <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </Field>
-            <Field label="Category">
+            <Field label="Google list">
               <NativeSelect
                 value={form.contactCategory}
                 onChange={(e) => setForm({ ...form, contactCategory: e.target.value as ContactCategory | "" })}
               >
-                <option value="">Choose a tag</option>
-                {(Object.keys(CONTACT_LABELS) as ContactCategory[]).filter((key) => key !== "new").map((key) => (
-                  <option key={key} value={key}>
-                    {CONTACT_LABELS[key]}
+                <option value="">No list yet</option>
+                {GOOGLE_CONTACT_TAGS.map((tag) => (
+                  <option key={tag.category} value={tag.category}>
+                    {tag.label}
                   </option>
                 ))}
               </NativeSelect>
@@ -165,7 +165,7 @@ export default function ContactsPage() {
                   : "border-border text-muted-foreground hover:text-foreground",
               )}
             >
-              {item === "all" ? "All contacts" : CONTACT_LABELS[item]}
+              {item === "all" ? "All contacts" : item === "new" ? "Unlabeled" : CONTACT_LABELS[item]}
               {count ? ` · ${count}` : ""}
             </button>
             )

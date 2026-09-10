@@ -29,6 +29,13 @@ import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
 import { ProfileCategoryEditor } from "@/components/student-tag-editor"
+import {
+  PaymentAmountInput,
+  PaymentDateInput,
+  PaymentEditToggle,
+  PaymentItemSelect,
+  PaymentStatusSelect,
+} from "@/components/payment-row-edit"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -111,6 +118,7 @@ export default function StudentProfilePage() {
   const [note, setNote] = useState("")
   const [noteClass, setNoteClass] = useState<ClassType | "">("modeling")
   const [draftRows, setDraftRows] = useState<ScheduleDraft[]>(() => blankScheduleDraft())
+  const [editingPayment, setEditingPayment] = useState<string | null>(null)
 
   const records = useMemo(
     () => attendance.filter((a) => a.studentId === id).sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt)),
@@ -717,14 +725,32 @@ export default function StudentProfilePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {bills.map((bill) => (
+                      {bills.map((bill) => {
+                        const editing = editingPayment === bill.id
+                        return (
                         <tr key={bill.id} className="border-b border-border last:border-0">
-                          <td className="px-3 py-2 tabular-nums">{formatShortDate(bill.dueDate)}</td>
-                          <td className="px-3 py-2">{paymentItemLabel(student, bill)}</td>
-                          <td className="px-3 py-2 tabular-nums">{formatMoney(bill.amount)}</td>
-                          <td className="px-3 py-2 tabular-nums">{formatMoney(bill.paidAmount)}</td>
+                          <td className="px-3 py-2 tabular-nums">
+                            {editing ? <PaymentDateInput bill={bill} /> : formatShortDate(bill.dueDate)}
+                          </td>
                           <td className="px-3 py-2">
-                            <PaymentBadge status={bill.status} />
+                            {editing ? (
+                              <PaymentItemSelect student={student} bill={bill} />
+                            ) : (
+                              paymentItemLabel(student, bill)
+                            )}
+                          </td>
+                          <td className="px-3 py-2 tabular-nums">
+                            {editing ? <PaymentAmountInput bill={bill} field="amount" /> : formatMoney(bill.amount)}
+                          </td>
+                          <td className="px-3 py-2 tabular-nums">
+                            {editing ? (
+                              <PaymentAmountInput bill={bill} field="paidAmount" />
+                            ) : (
+                              formatMoney(bill.paidAmount)
+                            )}
+                          </td>
+                          <td className="px-3 py-2">
+                            {editing ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={bill.status} />}
                           </td>
                           <td className="px-2 py-1.5 min-w-[10rem]">
                             <Input
@@ -739,21 +765,28 @@ export default function StudentProfilePage() {
                             />
                           </td>
                           <td className="px-2 py-2">
-                            {bill.source === "manual" ? (
-                              <Button
-                                size="xs"
-                                variant="ghost"
-                                onClick={() => {
-                                  removePayment(bill.id)
-                                  toast.message("Payment removed from the schedule.")
-                                }}
-                              >
-                                Remove
-                              </Button>
-                            ) : null}
+                            <div className="flex flex-wrap gap-1">
+                              <PaymentEditToggle
+                                editing={editing}
+                                onToggle={() => setEditingPayment(editing ? null : bill.id)}
+                              />
+                              {bill.source === "manual" ? (
+                                <Button
+                                  size="xs"
+                                  variant="ghost"
+                                  onClick={() => {
+                                    removePayment(bill.id)
+                                    toast.message("Payment removed from the schedule.")
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              ) : null}
+                            </div>
                           </td>
                         </tr>
-                      ))}
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>

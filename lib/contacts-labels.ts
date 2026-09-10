@@ -57,12 +57,27 @@ export function displayContactLabel(label: string) {
   const key = label.trim()
   if (/^current student$/i.test(key)) return "Current Student"
   if (/^active subscribers$/i.test(key)) return "Active Subscribers"
-  if (/september photoshoot/i.test(key)) return "September photoshoot"
+  if (/september photoshoot/i.test(key)) return "SEPTEMBER PHOTOSHOOT LIST"
   if (/may photoshoot/i.test(key)) return "May photoshoot"
-  if (/model source november/i.test(key)) return "Model Source November"
+  if (/model source november/i.test(key)) return "MODEL SOURCE NOVEMBER"
   if (/la model source/i.test(key)) return "LA Model Source 2026"
   if (/^newsletter$/i.test(key)) return "Newsletter"
   return key
+}
+
+function foldTag(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+}
+
+export function sameGoogleTag(label: string, tag: string) {
+  const a = foldTag(displayContactLabel(label))
+  const b = foldTag(tag)
+  if (!a || !b) return false
+  return a === b || a.includes(b) || b.includes(a)
+}
+
+export function hasGoogleTag(labels: string[] | undefined, tag: string) {
+  return (labels || []).some((label) => sameGoogleTag(label, tag))
 }
 
 /** Drop Google / desk labels that repeat the enrollment or program badge. */

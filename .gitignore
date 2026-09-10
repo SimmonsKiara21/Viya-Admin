@@ -48,3 +48,7 @@ next-env.d.ts
 /agent-tools/
 **/__pycache__/
 *.pyc
+
+# GitHub upload zips (served locally only; do not commit)
+*.zip
+/public/download-for-github.html

@@ -95,6 +95,7 @@ export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
   "all",
   "current-student",
   "subscriber",
+  "newsletter",
   "photoshoot",
   "model-source-nov",
 ]

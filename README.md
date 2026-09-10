@@ -30,7 +30,7 @@ npm start
 - **Payments** on a talent file is their payment schedule from Square (and any extra rows you add). The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens a mini calendar of that person’s payments.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
-- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. People with no list stay under All contacts.
+- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. **Newsletter** is subscribers only — leftover Newsletter labels on other people do not put them on that tab. People with no list stay under All contacts.
 - **Calendar** lists who is supposed to run on each Phoenix date. On a talent file (Payments tab) add the whole schedule as multiple date + amount rows. Those dates show on Calendar and on Alerts when late.
 - **Photoshoots** is monthly. Headshots, Refresh, and Received stack together; Scheduled and Full sit beside them. Prior months sit under Prior shoots.
 - **Alerts** lists overdue, collections, pending, wrapping up, and paid in full. Texts go out from the separate messaging site, not this desk.
@@ -64,7 +64,7 @@ Status tags: **Current**, **Pending**, **Overdue**, **Paused**, **Collections**,
 
 The desk is the roster. Add and edit students here — including status tags and labels. Overdue is workbook OVERDUE plus declined-card notes. Collections and cancelling stay separate. Square invoices stay on Payments and do not flip a current student overdue.
 
-Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export — including Newsletter — is on **Contacts** with name, phone, email, and notes.
+Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export is on **Contacts** with name, phone, email, and notes. **Newsletter** on Contacts is subscribers only.
 
 Payments use Square invoices. Live API keys are optional — without them the desk still shows invoices from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices, including installment due dates, onto each talent file and the Payment tracker. Desk schedules (date + amount on a talent file) also land on Calendar and Alerts.
 

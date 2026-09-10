@@ -91,6 +91,7 @@ export function uniqueContactLabels(student: Student) {
     const value = displayContactLabel(label).toLowerCase().trim()
     if (value === enrollment || value === program) return false
     if (/current student|^current$/.test(value) && student.program === "academy") return false
+    if (/^newsletter$/.test(value)) return false
     if (/active subscribers|^subscriber$/.test(value) && subscriber) return false
     if (/overdue|declined/.test(value) && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
       return false
@@ -264,8 +265,20 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   if (/photoshoot/.test(text)) return "photoshoot"
   if (/current student/.test(text)) return "current-student"
   if (/active subscriber/.test(text)) return "subscriber"
-  if (/newsletter/.test(text)) return "newsletter"
   return ""
+}
+
+/** Newsletter is the subscriber list — leftover Newsletter Google labels do not count. */
+export function isNewsletterRecipient(student: Student) {
+  if (hasContactLabel(student, /active subscriber/i) || student.contactCategory === "subscriber") {
+    return true
+  }
+  if (student.subscriptionStatus === "cancelled") return false
+  return (
+    student.program === "subscriber" ||
+    student.paymentPlan === "subscription" ||
+    student.subscriptionStatus === "active"
+  )
 }
 
 export function isUnlabeledContact(student: Student) {
@@ -285,7 +298,7 @@ export function onGoogleList(student: Student, filter: ContactCategory | "all") 
   if (filter === "photoshoot") return hasContactLabel(student, /photoshoot/i)
   if (filter === "model-source-la") return hasContactLabel(student, /la model source/i)
   if (filter === "model-source-nov") return hasContactLabel(student, /model source november/i)
-  if (filter === "newsletter") return hasContactLabel(student, /newsletter/i)
+  if (filter === "newsletter") return isNewsletterRecipient(student)
   return false
 }
 
@@ -297,7 +310,7 @@ export function matchesContactFilter(student: Student, filter: ContactCategory |
   if (filter === "photoshoot") return student.contactCategory === "photoshoot"
   if (filter === "model-source-la") return student.contactCategory === "model-source-la"
   if (filter === "model-source-nov") return student.contactCategory === "model-source-nov"
-  if (filter === "newsletter") return student.contactCategory === "newsletter"
+  if (filter === "newsletter") return isNewsletterRecipient(student)
   if (filter === "new") return isUnlabeledContact(student) || student.contactCategory === "new"
   return student.contactCategory === filter
 }

@@ -12,7 +12,12 @@ import { ContactTagEditor } from "@/components/student-tag-editor"
 import { useStore } from "@/lib/store"
 import { matchesQuery, newId } from "@/lib/format"
 import { CONTACT_FILTERS, CONTACT_LABELS, GOOGLE_CONTACT_FILTERS, GOOGLE_CONTACT_TAGS } from "@/lib/constants"
-import { googleLabelForCategory, matchesContactFilter, onGoogleList } from "@/lib/contacts-labels"
+import {
+  googleLabelForCategory,
+  isNewsletterRecipient,
+  matchesContactFilter,
+  onGoogleList,
+} from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -29,11 +34,16 @@ export default function ContactsPage() {
     return students
       .filter((s) => {
         if (category === "all") return isContact(s) || onGoogleList(s, "all")
+        if (category === "newsletter") return isNewsletterRecipient(s)
         if (googleList) return onGoogleList(s, category)
         return isContact(s)
       })
       .filter((s) => matchesQuery(s, query))
-      .filter((s) => (googleList || category === "all" ? true : matchesContactFilter(s, category)))
+      .filter((s) =>
+        googleList || category === "all" || category === "newsletter"
+          ? true
+          : matchesContactFilter(s, category),
+      )
       .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
   }, [students, query, category])
 
@@ -87,7 +97,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Lists match Google Contacts: Current Student, Active Subscribers, SEPTEMBER PHOTOSHOOT LIST, and MODEL SOURCE NOVEMBER. People with no list stay on All contacts."
+        description="Lists match Google Contacts: Current Student, Active Subscribers, SEPTEMBER PHOTOSHOOT LIST, and MODEL SOURCE NOVEMBER. Newsletter is subscribers only. People with no list stay on All contacts."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -150,9 +160,11 @@ export default function ContactsPage() {
             const count =
               item === "all"
                 ? students.filter((s) => isContact(s) || onGoogleList(s, "all")).length
-                : GOOGLE_CONTACT_FILTERS.includes(item)
-                  ? students.filter((s) => onGoogleList(s, item)).length
-                  : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length
+                : item === "newsletter"
+                  ? students.filter(isNewsletterRecipient).length
+                  : GOOGLE_CONTACT_FILTERS.includes(item)
+                    ? students.filter((s) => onGoogleList(s, item)).length
+                    : students.filter((s) => isContact(s) && matchesContactFilter(s, item)).length
             return (
             <button
               key={item}
@@ -176,7 +188,11 @@ export default function ContactsPage() {
       {contacts.length === 0 ? (
         <EmptyState
           title="No contacts in this filter"
-          description="Switch list or add a contact. Each Google list includes everyone with that label."
+          description={
+            category === "newsletter"
+              ? "Newsletter only includes subscribers (Active Subscribers and anyone on a subscriber plan)."
+              : "Switch list or add a contact. Each Google list includes everyone with that label."
+          }
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">

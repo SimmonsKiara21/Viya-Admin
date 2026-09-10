@@ -5,34 +5,11 @@ import { Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NativeSelect } from "@/components/ui-helpers"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS, GOOGLE_CONTACT_TAGS } from "@/lib/constants"
-import { categoryFromLabels, hasGoogleTag, isNewsletterRecipient, sameGoogleTag } from "@/lib/contacts-labels"
+import { hasGoogleTag, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import { useStore } from "@/lib/store"
 import type { EnrollmentStatus, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
-
-function applyGoogleTags(nextLabels: string[]): Partial<Student> {
-  return {
-    labels: nextLabels,
-    contactCategory: categoryFromLabels(nextLabels),
-  }
-}
-
-export function toggleStudentList(student: Student, tag: string): Partial<Student> {
-  const labels = student.labels || []
-  const removed = student.removedLabels || []
-  const on = sameGoogleTag(tag, "Newsletter") ? isNewsletterRecipient(student) : hasGoogleTag(labels, tag)
-  if (on) {
-    return {
-      ...applyGoogleTags(labels.filter((label) => !sameGoogleTag(label, tag))),
-      removedLabels: removed.some((label) => sameGoogleTag(label, tag)) ? removed : [...removed, tag],
-    }
-  }
-  return {
-    ...applyGoogleTags([...labels, tag]),
-    removedLabels: removed.filter((label) => !sameGoogleTag(label, tag)),
-  }
-}
 
 export function ContactTagEditor({
   student,

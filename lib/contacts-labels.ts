@@ -286,6 +286,26 @@ export function isNewsletterRecipient(student: Student) {
   )
 }
 
+export function toggleStudentList(student: Student, tag: string): Partial<Student> {
+  const labels = student.labels || []
+  const removed = student.removedLabels || []
+  const on = sameGoogleTag(tag, "Newsletter") ? isNewsletterRecipient(student) : hasGoogleTag(labels, tag)
+  if (on) {
+    const next = labels.filter((label) => !sameGoogleTag(label, tag))
+    return {
+      labels: next,
+      contactCategory: categoryFromLabels(next),
+      removedLabels: removed.some((label) => sameGoogleTag(label, tag)) ? removed : [...removed, tag],
+    }
+  }
+  const next = [...labels, tag]
+  return {
+    labels: next,
+    contactCategory: categoryFromLabels(next),
+    removedLabels: removed.filter((label) => !sameGoogleTag(label, tag)),
+  }
+}
+
 export function isUnlabeledContact(student: Student) {
   if (student.program !== "prospect" && student.enrollmentStatus !== "contact") return false
   if (onGoogleList(student, "all")) return false

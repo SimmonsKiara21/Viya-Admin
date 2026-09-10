@@ -29,7 +29,7 @@ import {
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
-import { ProfileCategoryEditor, toggleStudentList } from "@/components/student-tag-editor"
+import { ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
 import {
   PaymentAmountInput,
@@ -64,7 +64,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { uniqueContactLabels, isNewsletterRecipient } from "@/lib/contacts-labels"
+import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,

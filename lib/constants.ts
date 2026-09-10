@@ -97,7 +97,6 @@ export const CONTACT_FILTERS: Array<ContactCategory | "all"> = [
   "subscriber",
   "photoshoot",
   "model-source-nov",
-  "new",
 ]
 
 export const GOOGLE_CONTACT_FILTERS: ContactCategory[] = GOOGLE_CONTACT_TAGS.map((tag) => tag.category)

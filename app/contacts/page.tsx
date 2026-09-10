@@ -87,7 +87,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Lists match Google Contacts: Current Student, Active Subscribers, SEPTEMBER PHOTOSHOOT LIST, and MODEL SOURCE NOVEMBER. Unlabeled people only show Edit."
+        description="Lists match Google Contacts: Current Student, Active Subscribers, SEPTEMBER PHOTOSHOOT LIST, and MODEL SOURCE NOVEMBER. People with no list stay on All contacts."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -165,7 +165,7 @@ export default function ContactsPage() {
                   : "border-border text-muted-foreground hover:text-foreground",
               )}
             >
-              {item === "all" ? "All contacts" : item === "new" ? "Unlabeled" : CONTACT_LABELS[item]}
+              {item === "all" ? "All contacts" : CONTACT_LABELS[item]}
               {count ? ` · ${count}` : ""}
             </button>
             )

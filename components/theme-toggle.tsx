@@ -1,12 +1,11 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
+import { useEffect, useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
 const THEMES = [
   { id: "dark", label: "Dark" },
-  { id: "sepia", label: "Sepia" },
   { id: "light", label: "Light" },
 ] as const
 
@@ -17,6 +16,11 @@ export function ThemeToggle() {
     () => false,
   )
   const { theme, setTheme } = useTheme()
+
+  useEffect(() => {
+    if (theme === "sepia") setTheme("dark")
+  }, [theme, setTheme])
+
   if (!mounted) return null
 
   return (

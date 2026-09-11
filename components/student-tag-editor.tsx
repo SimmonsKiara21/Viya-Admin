@@ -114,8 +114,7 @@ export function NewsletterPanel({ student }: { student: Student }) {
       <div>
         <h2 className="font-heading text-xl">Newsletter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Newsletter is subscriber accounts only. Current students and leftover Newsletter labels do not go on that
-          list.
+          Newsletter is the same list as Active Subscribers. Old Newsletter tags on current students are removed.
         </p>
       </div>
       <p className="text-sm">

@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["dark", "sepia", "light"]}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["dark", "light"]}>
       <StoreProvider>
         <TooltipProvider>
           <DeskGate>

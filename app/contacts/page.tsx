@@ -97,7 +97,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Lists match Google Contacts. Newsletter is subscriber accounts only — no one else."
+        description="Lists match Google Contacts. Newsletter is the same people as Active Subscribers."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />
@@ -190,7 +190,7 @@ export default function ContactsPage() {
           title="No contacts in this filter"
           description={
             category === "newsletter"
-              ? "Newsletter only includes subscribers. No one else can be added."
+              ? "Newsletter matches Active Subscribers. Leftover Newsletter tags are gone."
               : "Switch list or add a contact. Each Google list includes everyone with that label."
           }
         />

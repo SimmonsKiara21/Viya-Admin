@@ -40,7 +40,13 @@ import { JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
-import { applyContactLabels, categoryFromLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
+import {
+  applyContactLabels,
+  categoryFromLabels,
+  contactLabelsFingerprint,
+  withoutNewsletterLabels,
+  type ContactLabelRow,
+} from "./contacts-labels"
 import { mergeDuplicateStudents } from "./merge-duplicates"
 import { applyDrivePhotos } from "./photos-overlay"
 
@@ -203,13 +209,13 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       if (cat === "inquiry" || cat === "follow-up" || cat === "not-interested") return cat
       const fromLabels = categoryFromLabels(Array.isArray(s.labels) ? s.labels : [])
       if (fromLabels) return fromLabels
-      if (cat === "new") return ""
+      if (cat === "new" || cat === "newsletter") return ""
       return cat
     })(),
     subscriptionStatus: s.subscriptionStatus || "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
-    labels: Array.isArray(s.labels) ? s.labels.filter(Boolean) : [],
+    labels: withoutNewsletterLabels(Array.isArray(s.labels) ? s.labels.filter(Boolean) : []),
     removedLabels: Array.isArray(s.removedLabels) ? s.removedLabels.filter(Boolean) : [],
     deskLocks: { status: Boolean(s.deskLocks?.status) },
     classTime: s.classTime || "",

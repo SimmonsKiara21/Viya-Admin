@@ -34,8 +34,7 @@ function cleanLabels(raw: string) {
     .split(":::")
     .map((part) => part.trim())
     .filter((part) => part && !SKIP_LABELS.has(part.toLowerCase()))
-  const meaningful = parts.filter((part) => !/^newsletter$/i.test(part))
-  return meaningful.length ? meaningful : parts
+  return parts.filter((part) => !/^newsletter$/i.test(part))
 }
 
 function firstValue(raw: string) {
@@ -268,10 +267,17 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   return ""
 }
 
-/** Newsletter is enrolled subscribers only — Google labels do not add anyone else. */
+function isNewsletterLabel(label: string) {
+  return /^newsletter$/i.test(displayContactLabel(label).trim())
+}
+
+export function withoutNewsletterLabels(labels: string[] | undefined) {
+  return (labels || []).filter((label) => !isNewsletterLabel(label))
+}
+
+/** Newsletter is the Active Subscribers list — same people, no leftover Newsletter tags. */
 export function isNewsletterRecipient(student: Student) {
-  if (student.subscriptionStatus === "cancelled") return false
-  return student.program === "subscriber" || student.paymentPlan === "subscription"
+  return hasContactLabel(student, /active subscriber/i)
 }
 
 export function toggleStudentList(student: Student, tag: string): Partial<Student> {
@@ -487,7 +493,7 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
     const beforeSub = student.subscriptionStatus
     const beforePhoto = student.photoshootStatus + student.photoshootNotes
     const beforeCategory = student.contactCategory
-    student.labels = merged
+    student.labels = withoutNewsletterLabels(merged)
     applyLabelEffects(student, merged)
     if (
       merged.join("|") !== before ||

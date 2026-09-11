@@ -3,7 +3,6 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant sepia (&:is(.sepia *));
 @custom-variant light (&:is(.light *));
 
 @theme inline {
@@ -124,43 +123,6 @@ html.light,
   --sidebar-ring: #3d2a12;
 }
 
-/* Sepia — cream, sand, camel, walnut, espresso. */
-html.sepia,
-.sepia {
-  --background: #f5e9da;
-  --foreground: #3f2a1a;
-  --card: #e1c8a7;
-  --card-foreground: #3f2a1a;
-  --popover: #f5e9da;
-  --popover-foreground: #3f2a1a;
-  --primary: #8a6a3f;
-  --primary-foreground: #f5e9da;
-  --secondary: #e1c8a7;
-  --secondary-foreground: #3f2a1a;
-  --muted: #e1c8a7;
-  --muted-foreground: #8a6a3f;
-  --accent: #c49a6c;
-  --accent-foreground: #3f2a1a;
-  --destructive: #8a3228;
-  --border: #c49a6c;
-  --input: #c49a6c;
-  --ring: #8a6a3f;
-  --chart-1: #8a6a3f;
-  --chart-2: #c49a6c;
-  --chart-3: #3f2a1a;
-  --chart-4: #8a3228;
-  --chart-5: #e1c8a7;
-  --radius: 0.75rem;
-  --sidebar: #3f2a1a;
-  --sidebar-foreground: #f5e9da;
-  --sidebar-primary: #c49a6c;
-  --sidebar-primary-foreground: #3f2a1a;
-  --sidebar-accent: #8a6a3f;
-  --sidebar-accent-foreground: #f5e9da;
-  --sidebar-border: #3f2a1a;
-  --sidebar-ring: #c49a6c;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -169,8 +131,7 @@ html.sepia,
   .dark {
     color-scheme: dark;
   }
-  .light,
-  .sepia {
+  .light {
     color-scheme: light;
   }
   body {
@@ -185,37 +146,6 @@ html.sepia,
   .font-heading {
     font-family: var(--font-heading), ui-serif, Georgia, serif;
   }
-}
-
-/* Sepia: leftover pale/dark-theme text becomes espresso ink on cream */
-.sepia :is(
-  [class*="text-rose-100"],
-  [class*="text-rose-200"],
-  [class*="text-orange-100"],
-  [class*="text-orange-200"],
-  [class*="text-amber-100"],
-  [class*="text-amber-200"],
-  [class*="text-violet-100"],
-  [class*="text-violet-200"],
-  [class*="text-sky-100"],
-  [class*="text-sky-200"],
-  [class*="text-lime-100"],
-  [class*="text-lime-200"],
-  [class*="text-emerald-100"],
-  [class*="text-emerald-200"],
-  [class*="text-teal-200"],
-  [class*="text-zinc-100"],
-  [class*="text-zinc-200"],
-  [class*="text-zinc-300"]
-) {
-  color: #3f2a1a;
-}
-.sepia [class*="text-[oklch(0.7"],
-.sepia [class*="text-[oklch(0.78"],
-.sepia [class*="text-[oklch(0.8"],
-.sepia [class*="text-[oklch(0.86"],
-.sepia [class*="text-[oklch(0.9"] {
-  color: #3f2a1a;
 }
 
 /* Toast dismiss control — small X inside the card, top-right */
@@ -235,32 +165,3 @@ html.sepia,
   padding-right: 22px;
 }
 
-/* Sepia roster highlights on cream paper */
-html.sepia [data-highlight="overdue"] {
-  background-color: #e38b84;
-  box-shadow: inset 0 0 0 2px #8b1e1e;
-}
-html.sepia [data-highlight="subscriberOverdue"] {
-  background-color: #c49a6c;
-  box-shadow: inset 0 0 0 2px #8a6a3f;
-}
-html.sepia [data-highlight="collections"] {
-  background-color: #e1c8a7;
-  box-shadow: inset 0 0 0 2px #8a6a3f;
-}
-html.sepia [data-highlight="paused"] {
-  background-color: #c4a4e0;
-  box-shadow: inset 0 0 0 2px #5a2d8a;
-}
-html.sepia [data-highlight="pending"] {
-  background-color: #8ec8e8;
-  box-shadow: inset 0 0 0 2px #1d5f86;
-}
-html.sepia [data-highlight="finishing"] {
-  background-color: #a8c47a;
-  box-shadow: inset 0 0 0 2px #3d5220;
-}
-html.sepia [data-highlight="pif"] {
-  background-color: #86c4a0;
-  box-shadow: inset 0 0 0 2px #1f6b45;
-}

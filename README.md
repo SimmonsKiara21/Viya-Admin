@@ -30,11 +30,11 @@ npm start
 - **Payments** on a talent file is their payment calendar: enrollment next-payment dates, Square invoices, and any extra desk rows. The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens that calendar.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
-- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. **Newsletter** is subscriber accounts only. Duplicate contact/enrollment files for the same person are merged. Contact files say Contact, not Prospect. People with no list stay under All contacts.
+- **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. **Newsletter** is the same people as **Active Subscribers**. Old Newsletter tags on current students are stripped. Duplicate contact/enrollment files for the same person are merged. Contact files say Contact, not Prospect. People with no list stay under All contacts.
 - **Calendar** lists who is supposed to run on each Phoenix date, using the enrollment plan and Square invoices together. Desk rows you add on a talent file show here too.
 - **Photoshoots** is monthly. Headshots, Refresh, and Received stack together; Scheduled and Full sit beside them. Prior months sit under Prior shoots.
 - **Alerts** lists overdue, collections, pending, wrapping up, and paid in full. Texts go out from the separate messaging site, not this desk.
-- **Themes:** Dark, Sepia, and Light from the switcher in the bottom right. Light is white with dark text. Sepia is cream, sand, camel, walnut, and espresso.
+- **Themes:** Dark and Light from the switcher in the bottom right. Light is white with dark text.
 - **Times** on Attendance are **Arizona (Phoenix, MST)**. Arizona does not use daylight saving.
 
 ## Alerts

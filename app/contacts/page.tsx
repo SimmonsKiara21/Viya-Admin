@@ -97,7 +97,7 @@ export default function ContactsPage() {
       <PageHeader
         eyebrow="Leads"
         title="Contacts"
-        description="Lists match Google Contacts. Newsletter is every subscriber — no one else."
+        description="Lists match Google Contacts. Newsletter is subscriber accounts only — no one else."
         actions={
           <Button onClick={() => setAdding((v) => !v)}>
             <Plus className="size-4" />

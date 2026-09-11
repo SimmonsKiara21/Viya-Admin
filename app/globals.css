@@ -124,41 +124,41 @@ html.light,
   --sidebar-ring: #3d2a12;
 }
 
-/* Forest — coffee grounds, pine, moss. Cooler and less yellow than the old tan paper. */
+/* Sepia — cream, sand, camel, walnut, espresso. */
 html.sepia,
 .sepia {
-  --background: #e6e4d9;
-  --foreground: #1b1712;
-  --card: #f3f1e8;
-  --card-foreground: #1b1712;
-  --popover: #f3f1e8;
-  --popover-foreground: #1b1712;
-  --primary: #3e4a38;
-  --primary-foreground: #f3efe4;
-  --secondary: #d4d0c3;
-  --secondary-foreground: #1b1712;
-  --muted: #dbd7cb;
-  --muted-foreground: #4a463c;
-  --accent: #c5cbb8;
-  --accent-foreground: #1b1712;
+  --background: #f5e9da;
+  --foreground: #3f2a1a;
+  --card: #e1c8a7;
+  --card-foreground: #3f2a1a;
+  --popover: #f5e9da;
+  --popover-foreground: #3f2a1a;
+  --primary: #8a6a3f;
+  --primary-foreground: #f5e9da;
+  --secondary: #e1c8a7;
+  --secondary-foreground: #3f2a1a;
+  --muted: #e1c8a7;
+  --muted-foreground: #8a6a3f;
+  --accent: #c49a6c;
+  --accent-foreground: #3f2a1a;
   --destructive: #8a3228;
-  --border: #8a8478;
-  --input: #8a8478;
-  --ring: #3e4a38;
-  --chart-1: #4a3728;
-  --chart-2: #3e4a38;
-  --chart-3: #6b5344;
+  --border: #c49a6c;
+  --input: #c49a6c;
+  --ring: #8a6a3f;
+  --chart-1: #8a6a3f;
+  --chart-2: #c49a6c;
+  --chart-3: #3f2a1a;
   --chart-4: #8a3228;
-  --chart-5: #5c6b4a;
+  --chart-5: #e1c8a7;
   --radius: 0.75rem;
-  --sidebar: #243028;
-  --sidebar-foreground: #e8e4d6;
-  --sidebar-primary: #d4c4a8;
-  --sidebar-primary-foreground: #243028;
-  --sidebar-accent: #354338;
-  --sidebar-accent-foreground: #e8e4d6;
-  --sidebar-border: #1a221c;
-  --sidebar-ring: #d4c4a8;
+  --sidebar: #3f2a1a;
+  --sidebar-foreground: #f5e9da;
+  --sidebar-primary: #c49a6c;
+  --sidebar-primary-foreground: #3f2a1a;
+  --sidebar-accent: #8a6a3f;
+  --sidebar-accent-foreground: #f5e9da;
+  --sidebar-border: #3f2a1a;
+  --sidebar-ring: #c49a6c;
 }
 
 @layer base {
@@ -187,7 +187,7 @@ html.sepia,
   }
 }
 
-/* Forest: leftover pale/dark-theme text becomes espresso ink on oatmeal */
+/* Sepia: leftover pale/dark-theme text becomes espresso ink on cream */
 .sepia :is(
   [class*="text-rose-100"],
   [class*="text-rose-200"],
@@ -208,14 +208,14 @@ html.sepia,
   [class*="text-zinc-200"],
   [class*="text-zinc-300"]
 ) {
-  color: #2a1810;
+  color: #3f2a1a;
 }
 .sepia [class*="text-[oklch(0.7"],
 .sepia [class*="text-[oklch(0.78"],
 .sepia [class*="text-[oklch(0.8"],
 .sepia [class*="text-[oklch(0.86"],
 .sepia [class*="text-[oklch(0.9"] {
-  color: #3d2618;
+  color: #3f2a1a;
 }
 
 /* Toast dismiss control — small X inside the card, top-right */
@@ -235,18 +235,18 @@ html.sepia,
   padding-right: 22px;
 }
 
-/* Forest roster highlights — muted so they read on oatmeal, not yellow paper */
+/* Sepia roster highlights on cream paper */
 html.sepia [data-highlight="overdue"] {
   background-color: #e38b84;
   box-shadow: inset 0 0 0 2px #8b1e1e;
 }
 html.sepia [data-highlight="subscriberOverdue"] {
-  background-color: #d9a06c;
-  box-shadow: inset 0 0 0 2px #6b3f18;
+  background-color: #c49a6c;
+  box-shadow: inset 0 0 0 2px #8a6a3f;
 }
 html.sepia [data-highlight="collections"] {
-  background-color: #c9b48a;
-  box-shadow: inset 0 0 0 2px #5c4a28;
+  background-color: #e1c8a7;
+  box-shadow: inset 0 0 0 2px #8a6a3f;
 }
 html.sepia [data-highlight="paused"] {
   background-color: #c4a4e0;

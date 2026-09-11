@@ -41,6 +41,7 @@ import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, plac
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
 import { applyContactLabels, categoryFromLabels, contactLabelsFingerprint, type ContactLabelRow } from "./contacts-labels"
+import { mergeDuplicateStudents } from "./merge-duplicates"
 import { applyDrivePhotos } from "./photos-overlay"
 
 const STORAGE_KEY = "viya-academy-store-v9"
@@ -230,7 +231,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
   const photoshoots = mergePhotoshoots(raw.photoshoots)
   const basePlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
-  return {
+  return mergeDuplicateStudents({
     students,
     attendance: raw.attendance ?? [],
     feedback: raw.feedback ?? [],
@@ -239,7 +240,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
     groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
     photoshoots,
     photoshootPlacements: mergeLabelPlacements(basePlacements, students),
-  }
+  })
 }
 
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
@@ -520,13 +521,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ).students,
           )
           const applied = applySquareInvoices(roster, prev.payments, invoices)
-          return {
+          return mergeDuplicateStudents({
             ...prev,
             students: applied.students,
             payments: applied.payments,
             photoshoots: mergePhotoshoots(prev.photoshoots),
             photoshootPlacements: mergeLabelPlacements(prev.photoshootPlacements, applied.students),
-          }
+          })
         })
       } catch {
         /* keep last overlay */

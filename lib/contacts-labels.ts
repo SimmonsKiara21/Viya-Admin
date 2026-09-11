@@ -268,11 +268,10 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   return ""
 }
 
-/** Newsletter is subscribers only — leftover Newsletter labels do not count. */
+/** Newsletter is enrolled subscribers only — Google labels do not add anyone else. */
 export function isNewsletterRecipient(student: Student) {
-  const labeled = hasContactLabel(student, /active subscriber/i)
-  if (student.subscriptionStatus === "cancelled" && !labeled) return false
-  return student.program === "subscriber" || student.paymentPlan === "subscription" || labeled
+  if (student.subscriptionStatus === "cancelled") return false
+  return student.program === "subscriber" || student.paymentPlan === "subscription"
 }
 
 export function toggleStudentList(student: Student, tag: string): Partial<Student> {

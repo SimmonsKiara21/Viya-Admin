@@ -114,8 +114,8 @@ export function NewsletterPanel({ student }: { student: Student }) {
       <div>
         <h2 className="font-heading text-xl">Newsletter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Newsletter is subscribers only. A leftover Newsletter label does not put anyone else on Contacts →
-          Newsletter.
+          Newsletter is subscriber accounts only. Current students and leftover Newsletter labels do not go on that
+          list.
         </p>
       </div>
       <p className="text-sm">

@@ -453,7 +453,7 @@ export default function StudentProfilePage() {
                         updateStudent(student.id, { deskLocks: { ...student.deskLocks, status: false } })
                       }
                     >
-                      Desk tag — use workbook again
+                      Desk tag — keep this status
                     </button>
                   ) : null}
                 </>

@@ -99,22 +99,11 @@ export function StaffNotesEditor({ student }: { student: Student }) {
       />
       <p className="mt-2 text-xs text-muted-foreground">
         {dirty
-          ? "Unsaved notes — tap Save notes so the enrollment sheet cannot overwrite them."
+          ? "Unsaved notes — tap Save notes, or wait for the 5-minute auto-save."
           : student.deskLocks?.notes
-            ? "Saved on this desk. The enrollment sheet will not replace these notes."
-            : "Tap Save notes to keep this text. Saved notes stay on the desk through refresh and enrollment sync."}
+            ? "Saved on this desk. These notes stay on the website."
+            : "Tap Save notes to keep this text on the website."}
       </p>
-      {student.deskLocks?.notes ? (
-        <button
-          type="button"
-          className="mt-1 text-left text-xs text-muted-foreground underline hover:text-foreground"
-          onClick={() =>
-            updateStudent(student.id, { deskLocks: { ...student.deskLocks, notes: false } })
-          }
-        >
-          Let the workbook update notes again
-        </button>
-      ) : null}
     </div>
   )
 }

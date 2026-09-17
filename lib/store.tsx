@@ -36,7 +36,7 @@ import {
   replaceAttendanceFromTracker,
   type JotformCheckIn,
 } from "./jotform"
-import { JOTFORM_ATTENDANCE_URL } from "./constants"
+import { ENROLLMENT_FREEZE_ID, JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
@@ -60,9 +60,11 @@ const LEGACY_KEYS = [
 ]
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const SAVED_AT_KEY = "viya-academy-saved-at-v9"
+const ENROLLMENT_FREEZE_KEY = "viya-academy-enrollment-frozen-v1"
 export const DESK_SAVE_EVENT = "viya-desk-save"
 const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
+const AUTO_SAVE_MS = 5 * 60_000
 
 function attendanceKey(rows: AttendanceRecord[]) {
   return rows
@@ -256,6 +258,16 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
 
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
 
+function applyNativeEnrollmentFreeze(local: AppData): AppData {
+  const merged = mergeEnrollmentStudents(local.students, seedData.students, { updateExisting: true })
+  return mergeDuplicateStudents({
+    ...local,
+    students: applyDrivePhotos(merged.students),
+    photoshoots: mergePhotoshoots(local.photoshoots),
+    photoshootPlacements: mergeLabelPlacements(local.photoshootPlacements, merged.students),
+  })
+}
+
 type JotformMeta = {
   fetchedAt: string
   source: string
@@ -357,15 +369,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ? null
           : LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
         const raw = fromCurrent ?? fromLegacy
+        let next = cloneSeed()
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) {
-            const base = fromLegacy
+            next = fromLegacy
               ? { ...parsed, attendance: seedData.attendance, photoshoots: mergePhotoshoots(parsed.photoshoots) }
               : parsed
-            setData(withPhotos(base))
+            next = withPhotos(next)
           }
         }
+        const frozen = localStorage.getItem(ENROLLMENT_FREEZE_KEY) === ENROLLMENT_FREEZE_ID
+        if (!frozen) {
+          next = applyNativeEnrollmentFreeze(next)
+          localStorage.setItem(ENROLLMENT_FREEZE_KEY, ENROLLMENT_FREEZE_ID)
+        }
+        setData(next)
         const savedAt = localStorage.getItem(SAVED_AT_KEY) || ""
         if (savedAt) setLastSavedAt(savedAt)
       } catch {
@@ -422,6 +441,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("pagehide", flush)
     }
   }, [ready])
+
+  useEffect(() => {
+    if (!ready) return
+    const timer = window.setInterval(() => {
+      window.dispatchEvent(new Event(DESK_SAVE_EVENT))
+      persistNow()
+    }, AUTO_SAVE_MS)
+    return () => window.clearInterval(timer)
+  }, [ready, persistNow])
 
   useEffect(() => {
     if (!ready) return
@@ -501,6 +529,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           message?: string
           connected?: boolean
           fetchedAt?: string
+          frozen?: boolean
           contactLabels?: ContactLabelRow[]
         }
         const squarePayload = (await squareRes.json()) as {
@@ -512,10 +541,48 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
         if (cancelled) return
 
+        const frozen = Boolean(enrollPayload.frozen) || enrollPayload.source === "workbook"
+        const invoices = squarePayload.invoices ?? []
+        const fp = squareFingerprint(invoices)
+        const invoicesChanged = Boolean(fp) && fp !== squareFp.current
+        if (fp) squareFp.current = fp
+
+        const preview = applySquareInvoices(dataRef.current.students, dataRef.current.payments, invoices)
+        setEnrollment({
+          fetchedAt: enrollPayload.fetchedAt || new Date().toISOString(),
+          source: frozen ? "workbook" : enrollPayload.source || "workbook",
+          message:
+            enrollPayload.message ||
+            "Enrollment is native on this desk. The Google Sheet is no longer used.",
+          connected: true,
+        })
+        setSquare({
+          fetchedAt: squarePayload.syncedAt || new Date().toISOString(),
+          source: squarePayload.source || "",
+          message: squarePayload.message || "",
+          connected: Boolean(squarePayload.connected),
+          matched: preview.matched,
+          skipped: preview.skipped.length,
+        })
+
+        if (frozen) {
+          if (!invoicesChanged) return
+          setData((prev) => {
+            const applied = applySquareInvoices(prev.students, prev.payments, invoices)
+            const next = mergeDuplicateStudents({
+              ...prev,
+              students: applied.students,
+              payments: applied.payments,
+            })
+            dataRef.current = next
+            return next
+          })
+          return
+        }
+
         const workbook = (enrollPayload.students ?? []).map((s) =>
           normalizeStudent(s as Student & Pick<Student, "id" | "firstName" | "lastName">),
         )
-        const liveSheet = enrollPayload.source !== "workbook"
         const labelRows = enrollPayload.contactLabels ?? []
         const nextEnrollFp = enrollmentFingerprint(workbook)
         const nextLabelsFp = contactLabelsFingerprint(labelRows)
@@ -524,7 +591,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (nextEnrollFp) enrollFp.current = nextEnrollFp
         if (nextLabelsFp) labelsFp.current = nextLabelsFp
         const merged = mergeEnrollmentStudents(dataRef.current.students, workbook, {
-          updateExisting: liveSheet,
+          updateExisting: true,
         })
         const labeled = applyContactLabels(merged.students, labelRows)
         setEnrollment({
@@ -534,21 +601,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           connected: Boolean(enrollPayload.connected),
           added: merged.added + labeled.added,
           updated: merged.updated + labeled.updated,
-        })
-
-        const invoices = squarePayload.invoices ?? []
-        const fp = squareFingerprint(invoices)
-        const invoicesChanged = Boolean(fp) && fp !== squareFp.current
-        if (fp) squareFp.current = fp
-
-        const preview = applySquareInvoices(labeled.students, dataRef.current.payments, invoices)
-        setSquare({
-          fetchedAt: squarePayload.syncedAt || new Date().toISOString(),
-          source: squarePayload.source || "",
-          message: squarePayload.message || "",
-          connected: Boolean(squarePayload.connected),
-          matched: preview.matched,
-          skipped: preview.skipped.length,
         })
 
         if (
@@ -565,7 +617,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setData((prev) => {
           const roster = applyDrivePhotos(
             applyContactLabels(
-              mergeEnrollmentStudents(prev.students, workbook, { updateExisting: liveSheet }).students,
+              mergeEnrollmentStudents(prev.students, workbook, { updateExisting: true }).students,
               labelRows,
             ).students,
           )
@@ -794,6 +846,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(PHOTOS_KEY)
         localStorage.removeItem(SAVED_AT_KEY)
+        localStorage.setItem(ENROLLMENT_FREEZE_KEY, ENROLLMENT_FREEZE_ID)
         setLastSavedAt("")
       },
     }

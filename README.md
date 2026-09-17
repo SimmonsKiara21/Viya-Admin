@@ -2,7 +2,7 @@
 
 Staff desk for **Viya Academy + Agency** in Phoenix, branded as **ViyaAdmin.com**. Look up talent, see their photo and file, take class check-in, and track Square balances — without bouncing between spreadsheets.
 
-The 2026 enrollment workbook, subscriber list, photoshoot flags, and the August 26 Jotform attendance tracker are loaded as the starting roster. Attendance after that comes from Jotform.
+The 2026 enrollment roster is native on the desk (notes, due dates, and payment plans included). Attendance after August 26 comes from Jotform. Square invoices still refresh in the background.
 
 ## Run locally
 
@@ -13,7 +13,7 @@ npm run dev
 
 Open [http://localhost:43147](http://localhost:43147).
 
-Photos, Jotform, Square, and enrollment sync in the background without rewriting the whole roster on every poll. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name; those portraits live in `public/photos` so they load on the desk without a Drive login. Only people already on the enrollment list get a portrait.
+Photos, Jotform, and Square sync in the background. Enrollment is already on the website and is not re-pulled from Google. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name; those portraits live in `public/photos` so they load on the desk without a Drive login. Only people already on the enrollment list get a portrait.
 
 ```bash
 npm run build
@@ -24,7 +24,7 @@ npm start
 
 - **Add talent** as **Academy**, **Modeling**, or **Acting**, with their **DocuSign**. Subscribers stay on **Subscriptions**. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
-- **Save updates** in the header writes the current desk to this browser right away (Ctrl/Cmd+S does the same). Staff notes on a talent file have their own **Save notes** button — saved notes stay put when the enrollment sheet refreshes.
+- **Save updates** in the header writes the current desk to this browser right away (Ctrl/Cmd+S does the same). The desk also auto-saves every 5 minutes. Staff notes on a talent file have their own **Save notes** button. Enrollment lives on the website now — unlinking the Google Sheet does not wipe notes, due dates, or payment plans.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
 - **Payments** on a talent file is their payment calendar: enrollment next-payment dates, Square invoices, and any extra desk rows. The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens that calendar.
@@ -62,7 +62,7 @@ Status tags: **Current**, **Pending**, **Overdue**, **Paused**, **Collections**,
 
 ## Square, enrollment, Gmail, and texts
 
-The desk is the roster. Add and edit students here — including status tags and labels. Overdue is workbook OVERDUE plus declined-card notes. Collections and cancelling stay separate. Square invoices stay on Payments and do not flip a current student overdue.
+The desk is the roster. Add and edit students here — including status tags, notes, due dates, and labels. The 2026 enrollment Google Sheet was pulled in once and saved natively; the site no longer reads that doc. Overdue is the saved OVERDUE status plus declined-card notes. Collections and cancelling stay separate. Square invoices stay on Payments and do not flip a current student overdue.
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export is on **Contacts** with name, phone, email, and notes. **Newsletter** on Contacts is subscribers only.
 
@@ -73,7 +73,7 @@ The desk works without API keys. Copy `.env.example` to `.env.local` and add cre
 | Service | Variables |
 | --- | --- |
 | Square invoices | `SQUARE_ACCESS_TOKEN`, `SQUARE_LOCATION_ID`, `SQUARE_ENVIRONMENT=production` |
-| Enrollment sheet | `ENROLLMENT_CSV_URL` (published Google Sheet CSV), optional `ENROLLMENT_WEBHOOK_SECRET` |
+| Enrollment sheet | No longer used — the roster is native in `data/seed.json` |
 | Textla texts | `TEXTLA_WEBHOOK_URL` (Zapier Catch Hook → Textla Send Message), `TEXTLA_FROM_NUMBER` |
 | Jotform attendance | `JOTFORM_API_KEY` (or a webhook to `/api/jotform/webhook`) |
 | Gmail | `GMAIL_USER`, `GMAIL_APP_PASSWORD` |

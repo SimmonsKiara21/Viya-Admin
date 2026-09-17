@@ -24,7 +24,7 @@ npm start
 
 - **Add talent** as **Academy**, **Modeling**, or **Acting**, with their **DocuSign**. Subscribers stay on **Subscriptions**. Open **DocuSign** in the sidebar to see who still needs to sign.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
-- **Upload a photo** on the profile (tap the portrait). Staff uploads stay in this browser. Matching portraits from the Season 1–5 Drive photoshoot folders are already on the roster.
+- **Save updates** in the header writes the current desk to this browser right away (Ctrl/Cmd+S does the same). Staff notes on a talent file have their own **Save notes** button — saved notes stay put when the enrollment sheet refreshes.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
 - **Payments** on a talent file is their payment calendar: enrollment next-payment dates, Square invoices, and any extra desk rows. The Payment tracker uses the same short labels — modeling and acting training, sub, or collections. Tap **Edit** on a row to change item, amount, date, or status. **Dates** opens that calendar.

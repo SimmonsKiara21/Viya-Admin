@@ -59,6 +59,8 @@ const LEGACY_KEYS = [
   "viya-academy-store-v4",
 ]
 const PHOTOS_KEY = "viya-academy-photos-v1"
+const SAVED_AT_KEY = "viya-academy-saved-at-v9"
+export const DESK_SAVE_EVENT = "viya-desk-save"
 const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
 
@@ -217,7 +219,10 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     photoshootNotes: s.photoshootNotes || "",
     labels: withoutNewsletterLabels(Array.isArray(s.labels) ? s.labels.filter(Boolean) : []),
     removedLabels: Array.isArray(s.removedLabels) ? s.removedLabels.filter(Boolean) : [],
-    deskLocks: { status: Boolean(s.deskLocks?.status) },
+    deskLocks: {
+      status: Boolean(s.deskLocks?.status),
+      notes: Boolean(s.deskLocks?.notes),
+    },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",
     docusignStatus: s.docusignStatus || "none",
@@ -271,8 +276,10 @@ const EMPTY_JOTFORM: JotformMeta = {
 
 type StoreContextValue = AppData & {
   ready: boolean
+  lastSavedAt: string
   groups: NotifyGroup[]
   customGroups: NotifyGroup[]
+  saveDesk: () => boolean
   updateStudent: (id: string, patch: Partial<Student>) => void
   addStudent: (student: Student) => void
   checkIn: (studentId: string, classType: ClassType, notes?: string) => AttendanceRecord
@@ -318,6 +325,7 @@ function cloneSeed(): AppData {
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(cloneSeed)
   const [ready, setReady] = useState(false)
+  const [lastSavedAt, setLastSavedAt] = useState("")
   const [jotform, setJotform] = useState<JotformMeta>(EMPTY_JOTFORM)
   const [square, setSquare] = useState<SyncContextValue["square"]>({
     fetchedAt: "",
@@ -358,6 +366,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             setData(withPhotos(base))
           }
         }
+        const savedAt = localStorage.getItem(SAVED_AT_KEY) || ""
+        if (savedAt) setLastSavedAt(savedAt)
       } catch {
         /* keep seed */
       }
@@ -366,19 +376,52 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer)
   }, [])
 
+  const persistNow = useCallback((snapshot?: AppData) => {
+    const next = snapshot ?? dataRef.current
+    window.clearTimeout(persistTimer.current)
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(next)))
+      savePhotos(next.students)
+      const at = new Date().toISOString()
+      localStorage.setItem(SAVED_AT_KEY, at)
+      setLastSavedAt(at)
+      return true
+    } catch {
+      return false
+    }
+  }, [])
+
+  const saveDesk = useCallback(() => {
+    window.dispatchEvent(new Event(DESK_SAVE_EVENT))
+    return persistNow()
+  }, [persistNow])
+
   useEffect(() => {
     if (!ready) return
     window.clearTimeout(persistTimer.current)
     persistTimer.current = window.setTimeout(() => {
+      persistNow(data)
+    }, 400)
+    return () => window.clearTimeout(persistTimer.current)
+  }, [data, ready, persistNow])
+
+  useEffect(() => {
+    if (!ready) return
+    const flush = () => {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(data)))
-        savePhotos(data.students)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(dataRef.current)))
+        savePhotos(dataRef.current.students)
       } catch {
         /* quota */
       }
-    }, 400)
-    return () => window.clearTimeout(persistTimer.current)
-  }, [data, ready])
+    }
+    window.addEventListener("beforeunload", flush)
+    window.addEventListener("pagehide", flush)
+    return () => {
+      window.removeEventListener("beforeunload", flush)
+      window.removeEventListener("pagehide", flush)
+    }
+  }, [ready])
 
   useEffect(() => {
     if (!ready) return
@@ -527,13 +570,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ).students,
           )
           const applied = applySquareInvoices(roster, prev.payments, invoices)
-          return mergeDuplicateStudents({
+          const next = mergeDuplicateStudents({
             ...prev,
             students: applied.students,
             payments: applied.payments,
             photoshoots: mergePhotoshoots(prev.photoshoots),
             photoshootPlacements: mergeLabelPlacements(prev.photoshootPlacements, applied.students),
           })
+          dataRef.current = next
+          return next
         })
       } catch {
         /* keep last overlay */
@@ -552,7 +597,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [ready])
 
   const mutate = useCallback((fn: (prev: AppData) => AppData) => {
-    setData((prev) => fn(prev))
+    setData((prev) => {
+      const next = fn(prev)
+      dataRef.current = next
+      return next
+    })
   }, [])
 
   const customGroups = useMemo(() => data.groups ?? [], [data.groups])
@@ -567,14 +616,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       groups,
       customGroups,
       ready,
+      lastSavedAt,
+      saveDesk,
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
           students: prev.students.map((s) => {
             if (s.id !== id) return s
             const next: Student = { ...s, ...patch }
+            next.deskLocks = { ...s.deskLocks, ...patch.deskLocks }
             if (patch.enrollmentStatus && patch.enrollmentStatus !== s.enrollmentStatus) {
-              next.deskLocks = { ...s.deskLocks, ...patch.deskLocks, status: true }
+              next.deskLocks = { ...next.deskLocks, status: true }
+            }
+            if (patch.notes !== undefined && patch.deskLocks?.notes !== false) {
+              next.deskLocks = { ...next.deskLocks, notes: true }
             }
             if (patch.labels) {
               const labels = [...new Set(patch.labels.map((label) => label.trim()).filter(Boolean))]
@@ -590,7 +645,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           }),
         })),
       addStudent: (student) =>
-        mutate((prev) => ({ ...prev, students: [normalizeStudent(student), ...prev.students] })),
+        mutate((prev) => ({
+          ...prev,
+          students: [
+            normalizeStudent({
+              ...student,
+              deskLocks: {
+                ...student.deskLocks,
+                notes: Boolean(student.deskLocks?.notes) || Boolean(student.notes?.trim()),
+              },
+            }),
+            ...prev.students,
+          ],
+        })),
       checkIn: (studentId, classType, notes = "") => {
         const record: AttendanceRecord = {
           id: newId("att"),
@@ -722,12 +789,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       },
       resetRoster: () => {
         const next = cloneSeed()
+        dataRef.current = next
         setData(next)
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(PHOTOS_KEY)
+        localStorage.removeItem(SAVED_AT_KEY)
+        setLastSavedAt("")
       },
     }
-  }, [data, mutate, ready, groups, customGroups])
+  }, [data, mutate, ready, groups, customGroups, lastSavedAt, saveDesk])
 
   const syncValue = useMemo<SyncContextValue>(
     () => ({ jotform, square, enrollment }),

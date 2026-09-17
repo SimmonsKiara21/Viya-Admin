@@ -26,6 +26,7 @@ import {
   ProgramBadge,
   SubscriptionBadge,
 } from "@/components/status-badge"
+import { StaffNotesEditor } from "@/components/staff-notes-editor"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
@@ -521,13 +522,7 @@ export default function StudentProfilePage() {
               </Field>
             </Panel>
             <Panel>
-              <h2 className="mb-3 font-heading text-xl">Staff notes</h2>
-              <Textarea
-                value={student.notes}
-                onChange={(e) => updateStudent(student.id, { notes: e.target.value })}
-                rows={8}
-                placeholder="Payment history, parent contacts, absences…"
-              />
+              <StaffNotesEditor student={student} />
             </Panel>
           </div>
         </TabsContent>

@@ -62,6 +62,7 @@ export function mergeEnrollmentStudents(
     for (const field of WORKBOOK_FIELDS) {
       if (keepNames && (field === "firstName" || field === "lastName")) continue
       if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
+      if (field === "notes" && existing.deskLocks?.notes) continue
       if (field === "labels") {
         const labels = Array.isArray(row.labels) ? row.labels.filter(Boolean) : []
         if (!labels.length) continue
@@ -207,6 +208,7 @@ export function applyWorkbookRows(
       for (const field of WORKBOOK_FIELDS) {
         if (keepNames && (field === "firstName" || field === "lastName")) continue
         if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
+        if (field === "notes" && existing.deskLocks?.notes) continue
         if (lockAcademy && ACADEMY_LOCKED_FIELDS.has(field)) continue
         if (field === "notes") {
           const nextNotes = typeof row.notes === "string" ? row.notes.trim() : ""

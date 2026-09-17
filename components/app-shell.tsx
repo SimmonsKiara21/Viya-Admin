@@ -21,6 +21,7 @@ import { StudentSearch } from "@/components/student-search"
 import { StaffAlertBanner } from "@/components/staff-alert-banner"
 import { ColorKey } from "@/components/color-key"
 import { lockDesk } from "@/components/desk-gate"
+import { SaveDeskButton } from "@/components/save-desk-button"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -125,6 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <StudentSearch className="max-w-xl flex-1" />
+          <SaveDeskButton />
         </header>
         <StaffAlertBanner />
         <ColorKey />

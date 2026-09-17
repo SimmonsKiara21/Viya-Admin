@@ -397,6 +397,7 @@ function fillContactDetails(student: Student, row: ContactLabelRow) {
   if (!student.email && row.email) student.email = row.email
   if (!student.phone && row.phone) student.phone = row.phone
   if (!student.nickname && row.nickname) student.nickname = row.nickname
+  if (student.deskLocks?.notes) return
   const extra = sheetNotes(row)
   if (extra && !student.notes.includes(extra.split("\n")[0] || extra)) {
     student.notes = student.notes ? `${student.notes}\n${extra}` : extra

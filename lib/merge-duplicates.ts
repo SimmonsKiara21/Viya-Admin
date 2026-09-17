@@ -99,8 +99,9 @@ function pickKeeper(group: Student[]) {
 function mergeStudent(keeper: Student, extra: Student): Student {
   const labels = [...new Set([...(keeper.labels || []), ...(extra.labels || [])])]
   const removed = [...new Set([...(keeper.removedLabels || []), ...(extra.removedLabels || [])])]
-  const notes =
-    extra.notes && extra.notes !== keeper.notes && !keeper.notes.includes(extra.notes)
+  const notes = keeper.deskLocks?.notes
+    ? keeper.notes
+    : extra.notes && extra.notes !== keeper.notes && !keeper.notes.includes(extra.notes)
       ? [keeper.notes, extra.notes].filter(Boolean).join("\n")
       : keeper.notes
   return {
@@ -115,6 +116,10 @@ function mergeStudent(keeper: Student, extra: Student): Student {
     notes,
     labels,
     removedLabels: removed,
+    deskLocks: {
+      status: Boolean(keeper.deskLocks?.status || extra.deskLocks?.status),
+      notes: Boolean(keeper.deskLocks?.notes || extra.deskLocks?.notes),
+    },
     photoUrl: keeper.photoUrl || extra.photoUrl,
     classTime: keeper.classTime || extra.classTime,
     docusignStatus: keeper.docusignStatus !== "none" ? keeper.docusignStatus : extra.docusignStatus,

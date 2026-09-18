@@ -148,7 +148,7 @@ export function PaymentMiniCalendar({
           })}
         </div>
         <p className="text-[11px] text-muted-foreground">
-          Square invoices, enrollment next-payment dates, and desk rows share this month.
+          Square invoices and desk rows on this month. The next Friday is not added unless Square billed it.
         </p>
         {monthBills.length === 0 ? (
           <p className="text-xs text-muted-foreground">No payments dated this month.</p>

@@ -3,13 +3,7 @@
 import { useMemo, useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
-import {
-  ArrowLeft,
-  CalendarDays,
-  Mail,
-  MessageSquare,
-  Phone,
-} from "lucide-react"
+import { ArrowLeft, CalendarDays } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -47,11 +41,9 @@ import {
   formatPhone,
   formatShortDate,
   fullName,
-  smsHref,
-  telHref,
   todayISO,
 } from "@/lib/format"
-import { addMonthsISO, buildPaymentSchedule, paymentSourceLabel } from "@/lib/schedule"
+import { biweeklyFridays, buildPaymentSchedule, fillCountForStudent, paymentSourceLabel } from "@/lib/schedule"
 import {
   highlightTone,
   isAcademyOverdue,
@@ -65,7 +57,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { uniqueContactLabels } from "@/lib/contacts-labels"
+import { uniqueContactLabels, isNewsletterRecipient } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
@@ -74,7 +66,7 @@ import {
   PLAN_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
-import { catalogItemForStudent, displayPaymentNotes, paymentItemLabel, SUBSCRIPTION_ITEM } from "@/lib/square"
+import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
 import type {
   ClassType,
   EnrollmentStatus,
@@ -93,7 +85,7 @@ function newDraftKey() {
   return `row-${Math.random().toString(36).slice(2, 10)}`
 }
 
-function blankScheduleDraft(count = 6): ScheduleDraft[] {
+function blankScheduleDraft(count = 1): ScheduleDraft[] {
   return Array.from({ length: count }, () => ({ key: newDraftKey(), date: "", amount: "" }))
 }
 
@@ -352,7 +344,22 @@ export default function StudentProfilePage() {
               <div>
                 <dt className="text-xs text-muted-foreground uppercase">Payments left</dt>
                 <dd>
-                  {remainingPayments(student) == null ? "—" : remainingPayments(student)}
+                  {student.paymentPlan !== "pp" ? (
+                    remainingPayments(student) == null ? "—" : remainingPayments(student)
+                  ) : (
+                    <Input
+                      type="number"
+                      min={0}
+                      className="mt-1 h-8 w-24"
+                      value={student.installmentsLeft ?? ""}
+                      onChange={(e) => {
+                        const raw = e.target.value
+                        updateStudent(student.id, {
+                          installmentsLeft: raw === "" ? null : Math.max(0, Number(raw)),
+                        })
+                      }}
+                    />
+                  )}
                 </dd>
               </div>
               <div>
@@ -364,32 +371,6 @@ export default function StudentProfilePage() {
                 </>
               )}
             </dl>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {student.phone ? (
-                <>
-                  <a href={telHref(student.phone)} className={cn(buttonVariants({ size: "sm" }))}>
-                    <Phone className="size-3.5" />
-                    Call
-                  </a>
-                  <a
-                    href={smsHref(student.phone)}
-                    className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                  >
-                    <MessageSquare className="size-3.5" />
-                    Text
-                  </a>
-                </>
-              ) : null}
-              {student.email ? (
-                <a
-                  href={`mailto:${student.email}`}
-                  className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                >
-                  <Mail className="size-3.5" />
-                  Gmail
-                </a>
-              ) : null}
-            </div>
           </div>
         </div>
       </Panel>
@@ -397,7 +378,7 @@ export default function StudentProfilePage() {
       <Tabs defaultValue={initialTab}>
         <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
+          {isNewsletterRecipient(student) ? <TabsTrigger value="newsletter">Newsletter</TabsTrigger> : null}
           <TabsTrigger value="docusign">DocuSign</TabsTrigger>
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
@@ -511,6 +492,21 @@ export default function StudentProfilePage() {
                 </NativeSelect>
               </Field>
               )}
+              {isContact(student) || student.paymentPlan !== "pp" ? null : (
+                <Field label="Payments left">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={student.installmentsLeft ?? ""}
+                    onChange={(e) => {
+                      const raw = e.target.value
+                      updateStudent(student.id, {
+                        installmentsLeft: raw === "" ? null : Math.max(0, Number(raw)),
+                      })
+                    }}
+                  />
+                </Field>
+              )}
               <Field label="Lists">
                 <ProfileCategoryEditor student={student} />
               </Field>
@@ -527,11 +523,13 @@ export default function StudentProfilePage() {
           </div>
         </TabsContent>
 
+        {isNewsletterRecipient(student) ? (
         <TabsContent value="newsletter">
           <Panel>
             <NewsletterPanel student={student} />
           </Panel>
         </TabsContent>
+        ) : null}
 
         <TabsContent value="attendance">
           <Panel>
@@ -571,7 +569,7 @@ export default function StudentProfilePage() {
               <div>
               <h2 className="mb-1 font-heading text-xl">Add payment schedule</h2>
               <p className="mb-3 text-xs text-muted-foreground">
-                Enrollment next-payment dates and Square invoices already sit on the calendar. Add extra desk rows here if a run date is missing.
+                Square invoices already sit on the calendar. Add a desk row only if a Friday due date is missing. Academy invoices run every two weeks on Friday (9/18, then 10/02).
               </p>
               </div>
               <Button type="button" variant="outline" size="sm" onClick={() => setCalendarOpen(true)}>
@@ -647,19 +645,20 @@ export default function StudentProfilePage() {
                   onClick={() => {
                     const first = draftRows.find((r) => r.date && r.amount)
                     if (!first) {
-                      toast.error("Enter a date and amount on the first filled row, then fill the rest monthly.")
+                      toast.error("Enter a Friday date and amount on the first filled row, then fill every two weeks.")
                       return
                     }
+                    const count = fillCountForStudent(student)
                     setDraftRows(
-                      Array.from({ length: 6 }, (_, i) => ({
+                      biweeklyFridays(first.date, count).map((date) => ({
                         key: newDraftKey(),
-                        date: addMonthsISO(first.date, i),
+                        date,
                         amount: first.amount,
                       })),
                     )
                   }}
                 >
-                  Fill 6 monthly
+                  Fill every 2 weeks
                 </Button>
                 <Button
                   onClick={() => {
@@ -722,16 +721,19 @@ export default function StudentProfilePage() {
                   value={student.nextPaymentDate}
                   onChange={(e) => updateStudent(student.id, { nextPaymentDate: e.target.value })}
                 />
+                <span className="text-xs font-normal normal-case tracking-normal text-muted-foreground">
+                  Use the Square invoice Friday. Do not enter the following 2-week date unless Square has billed it.
+                </span>
               </Field>
             </div>
             {schedule.length > 0 ? (
               <div className="mb-4">
                 <h2 className="mb-2 font-heading text-xl">Payment calendar</h2>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  Enrollment plan, Square invoices, and desk rows on one schedule.
+                  Square invoices when we have them, otherwise the most recent payment due. Nothing is filled in for the next month unless Square has that Friday.
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full min-w-[520px] text-left text-sm">
+                  <table className="w-full min-w-[560px] text-left text-sm">
                     <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 font-medium">Date</th>
@@ -739,103 +741,53 @@ export default function StudentProfilePage() {
                         <th className="px-3 py-2 font-medium">Item</th>
                         <th className="px-3 py-2 font-medium">Amount</th>
                         <th className="px-3 py-2 font-medium">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {schedule.map((row, index) => (
-                        <tr key={`${row.date}-${row.source}-${index}`} className="border-b border-border last:border-0">
-                          <td className="px-3 py-2 tabular-nums">{formatShortDate(row.date)}</td>
-                          <td className="px-3 py-2 text-muted-foreground">{paymentSourceLabel(row.source)}</td>
-                          <td className="px-3 py-2">{row.label}</td>
-                          <td className="px-3 py-2 tabular-nums">{formatMoney(row.amount)}</td>
-                          <td className="px-3 py-2">
-                            <PaymentBadge status={row.status} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : null}
-            {bills.length > 0 ? (
-              <div>
-                <h2 className="mb-2 font-heading text-xl">Edit invoices</h2>
-                <p className="mb-3 text-xs text-muted-foreground">
-                  Change a Square or desk row without losing the enrollment dates above.
-                </p>
-                <div className="overflow-x-auto rounded-xl border border-border">
-                  <table className="w-full min-w-[640px] text-left text-sm">
-                    <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
-                      <tr>
-                        <th className="px-3 py-2 font-medium">Date</th>
-                        <th className="px-3 py-2 font-medium">Item</th>
-                        <th className="px-3 py-2 font-medium">Amount</th>
-                        <th className="px-3 py-2 font-medium">Paid</th>
-                        <th className="px-3 py-2 font-medium">Status</th>
-                        <th className="px-3 py-2 font-medium">Notes</th>
                         <th className="w-10 px-2 py-2" />
                       </tr>
                     </thead>
                     <tbody>
-                      {bills.map((bill) => {
-                        const editing = editingPayment === bill.id
+                      {schedule.map((row, index) => {
+                        const bill = row.paymentId ? bills.find((item) => item.id === row.paymentId) : undefined
+                        const editing = Boolean(bill && editingPayment === bill.id)
                         return (
-                        <tr key={bill.id} className="border-b border-border last:border-0">
+                        <tr key={`${row.date}-${row.source}-${row.paymentId || index}`} className="border-b border-border last:border-0">
                           <td className="px-3 py-2 tabular-nums">
-                            {editing ? <PaymentDateInput bill={bill} /> : formatShortDate(bill.dueDate)}
+                            {editing && bill ? <PaymentDateInput bill={bill} /> : formatShortDate(row.date)}
                           </td>
+                          <td className="px-3 py-2 text-muted-foreground">{paymentSourceLabel(row.source)}</td>
                           <td className="px-3 py-2">
-                            {editing ? (
+                            {editing && bill ? (
                               <PaymentItemSelect student={student} bill={bill} />
                             ) : (
-                              paymentItemLabel(student, bill)
+                              row.label
                             )}
                           </td>
                           <td className="px-3 py-2 tabular-nums">
-                            {editing ? <PaymentAmountInput bill={bill} field="amount" /> : formatMoney(bill.amount)}
-                          </td>
-                          <td className="px-3 py-2 tabular-nums">
-                            {editing ? (
-                              <PaymentAmountInput bill={bill} field="paidAmount" />
-                            ) : (
-                              formatMoney(bill.paidAmount)
-                            )}
+                            {editing && bill ? <PaymentAmountInput bill={bill} field="amount" /> : formatMoney(row.amount)}
                           </td>
                           <td className="px-3 py-2">
-                            {editing ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={bill.status} />}
-                          </td>
-                          <td className="px-2 py-1.5 min-w-[10rem]">
-                            <Input
-                              className="h-8 text-xs"
-                              placeholder="Notes"
-                              defaultValue={displayPaymentNotes(bill.notes)}
-                              onBlur={(e) => {
-                                const next = e.target.value.trim()
-                                if (next === displayPaymentNotes(bill.notes)) return
-                                updatePayment(bill.id, { notes: next })
-                              }}
-                            />
+                            {bill ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={row.status} />}
                           </td>
                           <td className="px-2 py-2">
-                            <div className="flex flex-wrap gap-1">
-                              <PaymentEditToggle
-                                editing={editing}
-                                onToggle={() => setEditingPayment(editing ? null : bill.id)}
-                              />
-                              {bill.source === "manual" ? (
-                                <Button
-                                  size="xs"
-                                  variant="ghost"
-                                  onClick={() => {
-                                    removePayment(bill.id)
-                                    toast.message("Payment removed from the schedule.")
-                                  }}
-                                >
-                                  Remove
-                                </Button>
-                              ) : null}
-                            </div>
+                            {bill ? (
+                              <div className="flex flex-wrap gap-1">
+                                <PaymentEditToggle
+                                  editing={editing}
+                                  onToggle={() => setEditingPayment(editing ? null : bill.id)}
+                                />
+                                {bill.source === "manual" ? (
+                                  <Button
+                                    size="xs"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      removePayment(bill.id)
+                                      toast.message("Payment removed from the schedule.")
+                                    }}
+                                  >
+                                    Remove
+                                  </Button>
+                                ) : null}
+                              </div>
+                            ) : null}
                           </td>
                         </tr>
                         )
@@ -844,9 +796,9 @@ export default function StudentProfilePage() {
                   </table>
                 </div>
               </div>
-            ) : schedule.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No payments on the schedule yet.</p>
-            ) : null}
+            ) : (
+              <p className="text-sm text-muted-foreground">No Square invoice or payment due on file.</p>
+            )}
           </Panel>
           <PaymentMiniCalendar
             student={student}

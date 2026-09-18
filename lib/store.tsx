@@ -224,6 +224,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     deskLocks: {
       status: Boolean(s.deskLocks?.status),
       notes: Boolean(s.deskLocks?.notes),
+      installments: Boolean(s.deskLocks?.installments),
     },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",
@@ -682,6 +683,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             }
             if (patch.notes !== undefined && patch.deskLocks?.notes !== false) {
               next.deskLocks = { ...next.deskLocks, notes: true }
+            }
+            if (patch.installmentsLeft !== undefined && patch.deskLocks?.installments !== false) {
+              next.deskLocks = { ...next.deskLocks, installments: true }
             }
             if (patch.labels) {
               const labels = [...new Set(patch.labels.map((label) => label.trim()).filter(Boolean))]

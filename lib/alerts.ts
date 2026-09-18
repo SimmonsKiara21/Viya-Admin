@@ -127,7 +127,7 @@ export function remainingPayments(student: Student) {
   if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") return 0
   if (student.paymentPlan !== "pp") return null
   if (typeof student.installmentsLeft === "number") return Math.max(0, student.installmentsLeft)
-  return Math.max(0, PLAN_LENGTH - monthsElapsed(student.startDate))
+  return null
 }
 
 export function attendanceMonthCount(records: AttendanceRecord[], studentId: string) {

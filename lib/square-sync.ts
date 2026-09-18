@@ -2,7 +2,6 @@ import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./ty
 import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
 import { newId, todayISO } from "./format"
-import { PLAN_LENGTH } from "./alerts"
 
 export type SquareInvoiceRow = {
   name: string
@@ -206,19 +205,20 @@ function refreshStudentsFromPayments(
     if (!matchedIds.has(student.id)) continue
     const rows = payments.filter((p) => p.studentId === student.id)
     const open = rows
-      .filter((p) => ["due", "overdue", "declined", "scheduled"].includes(p.status))
+      .filter((p) => p.source === "square" && ["due", "overdue", "declined", "scheduled"].includes(p.status))
       .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
     const next = open[0]
     if (next) {
       student.nextPaymentDate = next.dueDate || student.nextPaymentDate
       student.nextPaymentAmount = next.balance || next.amount
     }
-    const academy = rows.filter((p) => isAcademyItem(p.itemId, p.itemKind))
+    const academy = rows.filter((p) => isAcademyItem(p.itemId, p.itemKind) && p.source === "square")
     const plan = academy.find((p) => p.amount >= 400) ?? academy[0]
-    if (plan && student.paymentPlan === "pp") {
-      const monthly = plan.amount / PLAN_LENGTH
-      student.installmentsLeft =
-        monthly > 0 ? Math.max(0, Math.ceil(Math.max(plan.balance, 0) / monthly - 1e-9)) : student.installmentsLeft
+    if (plan && student.paymentPlan === "pp" && !student.deskLocks?.installments) {
+      const installment = next?.amount || student.nextPaymentAmount || 0
+      if (installment > 0) {
+        student.installmentsLeft = Math.max(0, Math.ceil(Math.max(plan.balance, next?.balance ?? 0, 0) / installment - 1e-9))
+      }
     }
   }
 }

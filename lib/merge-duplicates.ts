@@ -119,6 +119,7 @@ function mergeStudent(keeper: Student, extra: Student): Student {
     deskLocks: {
       status: Boolean(keeper.deskLocks?.status || extra.deskLocks?.status),
       notes: Boolean(keeper.deskLocks?.notes || extra.deskLocks?.notes),
+      installments: Boolean(keeper.deskLocks?.installments || extra.deskLocks?.installments),
     },
     photoUrl: keeper.photoUrl || extra.photoUrl,
     classTime: keeper.classTime || extra.classTime,

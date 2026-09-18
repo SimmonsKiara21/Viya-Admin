@@ -1,5 +1,5 @@
 import type { PaymentRecord, PaymentSource, PaymentStatus, Student } from "./types"
-import { PLAN_LENGTH, remainingPayments } from "./alerts"
+import { remainingPayments } from "./alerts"
 import { todayISO } from "./format"
 
 export type ScheduleRow = {
@@ -12,6 +12,7 @@ export type ScheduleRow = {
   invoiceId: string
   fromSquare: boolean
   source: PaymentSource
+  paymentId?: string
 }
 
 export function paymentSourceLabel(source: PaymentSource) {
@@ -20,167 +21,140 @@ export function paymentSourceLabel(source: PaymentSource) {
   return "Enrollment"
 }
 
-export function addMonthsISO(iso: string, months: number) {
+export function addDaysISO(iso: string, days: number) {
   const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
   if (!y || !m || !d) return iso
-  const date = new Date(y, m - 1 + months, d)
-  const yy = date.getFullYear()
-  const mm = String(date.getMonth() + 1).padStart(2, "0")
-  const dd = String(date.getDate()).padStart(2, "0")
-  return `${yy}-${mm}-${dd}`
+  const date = new Date(Date.UTC(y, m - 1, d + days))
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`
 }
 
-function monthKey(iso: string) {
-  return iso.slice(0, 7)
+/** Academy invoices run every two weeks on Friday (9/18 then 10/02). */
+export function snapToFriday(iso: string) {
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
+  if (!y || !m || !d) return iso
+  const date = new Date(Date.UTC(y, m - 1, d))
+  const add = (5 - date.getUTCDay() + 7) % 7
+  date.setUTCDate(date.getUTCDate() + add)
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`
 }
 
-function billForMonth(bills: PaymentRecord[], date: string) {
-  return bills.find((b) => monthKey(b.dueDate) === monthKey(date))
+export function biweeklyFridays(start: string, count: number) {
+  const n = Math.max(0, Math.floor(count))
+  if (!start || !n) return []
+  let date = snapToFriday(start)
+  const out: string[] = []
+  for (let i = 0; i < n; i++) {
+    out.push(date)
+    date = addDaysISO(date, 14)
+  }
+  return out
 }
 
+function rowFromBill(bill: PaymentRecord): ScheduleRow {
+  return {
+    date: bill.dueDate,
+    amount: bill.amount,
+    paidAmount: bill.paidAmount,
+    balance: bill.balance,
+    status: bill.status,
+    label: bill.itemName || (bill.source === "square" ? "Square invoice" : "Payment"),
+    invoiceId: bill.squareInvoiceId,
+    fromSquare: bill.source === "square",
+    source: bill.source,
+    paymentId: bill.id,
+  }
+}
+
+function openStatuses(status: PaymentStatus) {
+  return status === "due" || status === "overdue" || status === "declined" || status === "scheduled"
+}
+
+function soonestOpen(bills: PaymentRecord[]) {
+  return [...bills]
+    .filter((bill) => openStatuses(bill.status))
+    .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))[0]
+}
+
+function latestBill(bills: PaymentRecord[]) {
+  return [...bills].sort((a, b) => (b.dueDate || "").localeCompare(a.dueDate || ""))[0]
+}
+
+function syntheticDue(student: Student): ScheduleRow {
+  const today = todayISO()
+  const date = student.nextPaymentDate
+  const amount = student.nextPaymentAmount || 0
+  const past = Boolean(date && date < today)
+  const overdue = student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
+  return {
+    date,
+    amount,
+    paidAmount: 0,
+    balance: amount,
+    status: overdue ? "overdue" : past ? "due" : "scheduled",
+    label: "Most recent payment due",
+    invoiceId: "",
+    fromSquare: false,
+    source: "workbook",
+  }
+}
+
+function pifRow(student: Student): ScheduleRow {
+  const today = todayISO()
+  return {
+    date: student.startDate || today,
+    amount: student.nextPaymentAmount || 0,
+    paidAmount: student.nextPaymentAmount || 0,
+    balance: 0,
+    status: "paid",
+    label: "Paid in full",
+    invoiceId: "",
+    fromSquare: false,
+    source: "workbook",
+  }
+}
+
+/** Square invoices when we have them; otherwise only the next real due — never a filled-in monthly plan. */
 export function buildPaymentSchedule(student: Student, payments: PaymentRecord[]): ScheduleRow[] {
   const bills = payments
     .filter((p) => p.studentId === student.id)
     .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
   const square = bills.filter((p) => p.source === "square")
-  const today = todayISO()
+  const desk = bills.filter((p) => p.source === "manual")
 
-  if (student.paymentPlan === "subscription" || student.program === "subscriber") {
-    const sub = square.find((p) => p.itemKind === "subscriber") ?? bills[0]
-    const amount = sub?.amount ?? student.nextPaymentAmount ?? 51.49
-    const anchor = student.nextPaymentDate || sub?.dueDate || today
-    const rows: ScheduleRow[] = []
-    for (let i = -2; i <= 3; i++) {
-      const date = addMonthsISO(anchor, i)
-      const match = billForMonth(bills, date)
-      const past = date < today
-      const status: PaymentStatus = match?.status
-        ?? (date === (student.nextPaymentDate || "") ? (student.enrollmentStatus === "overdue" ? "overdue" : "due") : past ? "paid" : "scheduled")
-      rows.push({
-        date: match?.dueDate || date,
-        amount: match?.amount ?? amount,
-        paidAmount: match?.paidAmount ?? (status === "paid" ? amount : 0),
-        balance: match?.balance ?? (status === "paid" ? 0 : amount),
-        status,
-        label: match?.itemName || "Viya Talent Subscription",
-        invoiceId: match?.squareInvoiceId || sub?.squareInvoiceId || "",
-        fromSquare: Boolean(match?.source === "square" || (sub && i === 0)),
-        source: match?.source || (sub && i === 0 ? "square" : "workbook"),
-      })
-    }
-    return rows
+  if (square.length) {
+    return [...square, ...desk]
+      .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
+      .map(rowFromBill)
   }
+
+  if (desk.length) {
+    return desk.sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || "")).map(rowFromBill)
+  }
+
+  const one = soonestOpen(bills) || latestBill(bills)
+  if (one) return [rowFromBill(one)]
 
   if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") {
-    if (bills.length) {
-      return bills.map((bill) => ({
-        date: bill.dueDate,
-        amount: bill.amount,
-        paidAmount: bill.paidAmount,
-        balance: bill.balance,
-        status: bill.status,
-        label: bill.itemName || "Paid in full",
-        invoiceId: bill.squareInvoiceId,
-        fromSquare: bill.source === "square",
-        source: bill.source,
-      }))
-    }
-    return [
-      {
-        date: student.startDate || today,
-        amount: student.nextPaymentAmount || 1850,
-        paidAmount: student.nextPaymentAmount || 1850,
-        balance: 0,
-        status: "paid",
-        label: "Paid in full",
-        invoiceId: "",
-        fromSquare: false,
-        source: "workbook",
-      },
-    ]
+    return [pifRow(student)]
   }
 
-  const start = student.startDate || bills[0]?.dueDate
-  if (!start) {
-    const rows: ScheduleRow[] = bills.map((bill) => ({
-      date: bill.dueDate,
-      amount: bill.amount,
-      paidAmount: bill.paidAmount,
-      balance: bill.balance,
-      status: bill.status,
-      label: bill.itemName || "Square invoice",
-      invoiceId: bill.squareInvoiceId,
-      fromSquare: bill.source === "square",
-      source: bill.source,
-    }))
-    if (student.nextPaymentDate && !rows.some((row) => row.date.slice(0, 10) === student.nextPaymentDate.slice(0, 10))) {
-      const amount = student.nextPaymentAmount || 104
-      const past = student.nextPaymentDate < today
-      rows.push({
-        date: student.nextPaymentDate,
-        amount,
-        paidAmount: 0,
-        balance: amount,
-        status:
-          student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
-            ? "overdue"
-            : past
-              ? "due"
-              : "scheduled",
-        label: "Enrollment next payment",
-        invoiceId: "",
-        fromSquare: false,
-        source: "workbook",
-      })
-    }
-    return rows.sort((a, b) => a.date.localeCompare(b.date))
-  }
+  if (student.nextPaymentDate) return [syntheticDue(student)]
+  return []
+}
 
+export function nextShownDue(student: Student, payments: PaymentRecord[]) {
+  const rows = buildPaymentSchedule(student, payments)
+  const today = todayISO()
+  return (
+    rows.find((row) => openStatuses(row.status) && row.date) ||
+    rows.find((row) => row.date && row.date >= today) ||
+    rows[rows.length - 1] ||
+    null
+  )
+}
+
+export function fillCountForStudent(student: Student) {
   const left = remainingPayments(student)
-  const installment = student.nextPaymentAmount || 104
-  const sq = square.find((p) => p.itemKind === "academy") ?? square[0]
-  const rows: ScheduleRow[] = []
-
-  for (let i = 0; i < PLAN_LENGTH; i++) {
-    const date = addMonthsISO(start, i)
-    const match = billForMonth(bills, date)
-    const past = date < today.slice(0, 10)
-    const remainingIndex = left == null ? null : PLAN_LENGTH - left
-    let status: PaymentStatus = match?.status ?? (past ? "paid" : "scheduled")
-    if (!match && remainingIndex != null && i === remainingIndex) {
-      status = student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined" ? "overdue" : "due"
-    }
-    if (!match && remainingIndex != null && i > remainingIndex && !past) status = "scheduled"
-
-    rows.push({
-      date: match?.dueDate || (i === remainingIndex ? student.nextPaymentDate || date : date),
-      amount: match?.amount ?? installment,
-      paidAmount: match?.paidAmount ?? (status === "paid" ? installment : 0),
-      balance: match?.balance ?? (status === "paid" ? 0 : installment),
-      status,
-      label: match?.itemName || sq?.itemName || "VA101 Modelling & Acting Training",
-      invoiceId: match?.squareInvoiceId || "",
-      fromSquare: match?.source === "square",
-      source: match?.source || "workbook",
-    })
-  }
-
-  if (sq) {
-    const nextOpen = rows.find((r) => r.status !== "paid")
-    if (nextOpen) {
-      nextOpen.invoiceId = sq.squareInvoiceId
-      nextOpen.fromSquare = true
-      nextOpen.source = "square"
-      nextOpen.label = sq.itemName || nextOpen.label
-      nextOpen.status = sq.status
-      nextOpen.date = sq.dueDate || nextOpen.date
-      if (sq.balance > 0 && (left ?? 1) <= 1) {
-        nextOpen.amount = sq.balance
-        nextOpen.balance = sq.balance
-        nextOpen.paidAmount = sq.paidAmount
-      }
-    }
-  }
-
-  return rows
+  if (left != null && left > 0) return Math.min(left, 12)
+  return 6
 }

@@ -565,34 +565,29 @@ export default function StudentProfilePage() {
 
         <TabsContent value="payments">
           <Panel>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
-              <div>
-              <h2 className="mb-1 font-heading text-xl">Add payment schedule</h2>
-              <p className="mb-3 text-xs text-muted-foreground">
-                Square invoices already sit on the calendar. Add a desk row only if a Friday due date is missing. Academy invoices run every two weeks on Friday (9/18, then 10/02).
-              </p>
-              </div>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-heading text-xl">Add payment schedule</h2>
               <Button type="button" variant="outline" size="sm" onClick={() => setCalendarOpen(true)}>
                 <CalendarDays className="size-3.5" />
                 Dates
               </Button>
             </div>
               <div className="overflow-x-auto rounded-xl border border-border">
-                <table className="w-full min-w-[420px] text-left text-sm">
+                <table className="w-full min-w-[420px] table-fixed text-left text-sm">
                   <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">
                     <tr>
-                      <th className="px-3 py-2 font-medium">Run date</th>
-                      <th className="px-3 py-2 font-medium">Amount</th>
-                      <th className="w-10 px-2 py-2" />
+                      <th className="w-[42%] px-3 py-2 font-medium">Run date</th>
+                      <th className="w-[42%] px-3 py-2 font-medium">Amount</th>
+                      <th className="w-[16%] px-2 py-2" />
                     </tr>
                   </thead>
                   <tbody>
                     {draftRows.map((row) => (
                       <tr key={row.key} className="border-b border-border last:border-0">
-                        <td className="px-2 py-1.5">
+                        <td className="px-3 py-2">
                           <Input
                             type="date"
-                            className="h-9"
+                            className="h-9 w-full"
                             value={row.date}
                             onChange={(e) =>
                               setDraftRows((rows) =>
@@ -601,12 +596,12 @@ export default function StudentProfilePage() {
                             }
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-3 py-2">
                           <Input
                             type="number"
                             min="0"
                             step="0.01"
-                            className="h-9"
+                            className="h-9 w-full"
                             placeholder="104.00"
                             value={row.amount}
                             onChange={(e) =>
@@ -616,7 +611,7 @@ export default function StudentProfilePage() {
                             }
                           />
                         </td>
-                        <td className="px-2 py-1.5">
+                        <td className="px-2 py-2">
                           <Button
                             size="xs"
                             variant="ghost"
@@ -703,35 +698,37 @@ export default function StudentProfilePage() {
                   Save schedule
                 </Button>
               </div>
-            <div className="mb-4 grid gap-3 sm:grid-cols-2">
-              <Field label="Amount due">
-                <Input
-                  type="number"
-                  value={student.nextPaymentAmount ?? ""}
-                  onChange={(e) =>
-                    updateStudent(student.id, {
-                      nextPaymentAmount: e.target.value ? Number(e.target.value) : null,
-                    })
-                  }
-                />
-              </Field>
-              <Field label="Next payment date">
-                <Input
-                  type="date"
-                  value={student.nextPaymentDate}
-                  onChange={(e) => updateStudent(student.id, { nextPaymentDate: e.target.value })}
-                />
-                <span className="text-xs font-normal normal-case tracking-normal text-muted-foreground">
-                  Use the Square invoice Friday. Do not enter the following 2-week date unless Square has billed it.
-                </span>
-              </Field>
+            <div className="mt-8 mb-6 overflow-hidden rounded-xl border border-border">
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                <div className="border-b border-border p-3 sm:border-b-0 sm:border-r">
+                  <Field label="Amount due">
+                    <Input
+                      type="number"
+                      className="h-9 w-full"
+                      value={student.nextPaymentAmount ?? ""}
+                      onChange={(e) =>
+                        updateStudent(student.id, {
+                          nextPaymentAmount: e.target.value ? Number(e.target.value) : null,
+                        })
+                      }
+                    />
+                  </Field>
+                </div>
+                <div className="p-3">
+                  <Field label="Next payment date">
+                    <Input
+                      type="date"
+                      className="h-9 w-full"
+                      value={student.nextPaymentDate}
+                      onChange={(e) => updateStudent(student.id, { nextPaymentDate: e.target.value })}
+                    />
+                  </Field>
+                </div>
+              </div>
             </div>
             {schedule.length > 0 ? (
               <div className="mb-4">
-                <h2 className="mb-2 font-heading text-xl">Payment calendar</h2>
-                <p className="mb-3 text-xs text-muted-foreground">
-                  Square invoices when we have them, otherwise the most recent payment due. Nothing is filled in for the next month unless Square has that Friday.
-                </p>
+                <h2 className="mb-3 font-heading text-xl">Payment calendar</h2>
                 <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full min-w-[560px] text-left text-sm">
                     <thead className="border-b border-border bg-muted/40 text-xs text-muted-foreground">

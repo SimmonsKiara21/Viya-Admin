@@ -46,7 +46,10 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
   if (tone === "pending") {
     return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
   }
-  if (tone === "pif") return " · no payments left"
+  if (tone === "pif") {
+    const start = student.startDate ? ` · started ${formatDate(student.startDate)}` : ""
+    return ` · no payments left${start}`
+  }
   return student.phone ? "" : ` · ${student.email || ""}`
 }
 

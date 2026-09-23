@@ -14,7 +14,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Field, NativeSelect } from "@/components/ui-helpers"
-import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
 import { useStore } from "@/lib/store"
 import { newId } from "@/lib/format"
@@ -116,18 +115,14 @@ export function StudentFormDialog({
       toast.error("That talent ID is already in use.")
       return
     }
-    const student = withDocusignDefaults({
+    const student = {
       ...form,
       id,
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
-    })
+    }
     addStudent(student)
-    toast.success(
-      student.docusignUrl || student.docusignEnvelopeId
-        ? `${student.firstName} ${student.lastName} was added with their DocuSign.`
-        : `${student.firstName} ${student.lastName} was added.`,
-    )
+    toast.success(`${student.firstName} ${student.lastName} was added.`)
     setForm(blank())
     onOpenChange(false)
   }
@@ -137,7 +132,7 @@ export function StudentFormDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Add talent</DialogTitle>
-          <DialogDescription>Name, status, tags, and DocuSign.</DialogDescription>
+          <DialogDescription>Name, status, and tags.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="First name">
@@ -162,12 +157,6 @@ export function StudentFormDialog({
           <Field label="Phone">
             <Input value={form.phone} onChange={(e) => patch({ phone: e.target.value })} />
           </Field>
-        </div>
-        <div className="rounded-2xl border border-[oklch(0.78_0.08_85/0.35)] bg-[oklch(0.78_0.08_85/0.08)] p-4">
-          <p className="mb-3 text-xs font-medium tracking-wide text-primary uppercase">
-            Their DocuSign
-          </p>
-          <DocusignFields value={form} onChange={patch} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Talent ID">

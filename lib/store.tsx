@@ -28,6 +28,7 @@ import type {
   StudentTrack,
 } from "./types"
 import { newId, todayISO } from "./format"
+import { paymentFromScheduleRow, type ScheduleRow } from "./schedule"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
 import {
@@ -130,7 +131,10 @@ function normalizePayment(p: Partial<PaymentRecord> & { studentId: string; amoun
   }
 }
 
-function applyManualPayments(prev: AppData, inputs: Omit<PaymentRecord, "id">[]): AppData {
+function applyManualPayments(
+  prev: AppData,
+  inputs: Array<Partial<PaymentRecord> & { studentId: string; amount: number }>,
+): AppData {
   if (!inputs.length) return prev
   const today = todayISO()
   let payments = prev.payments
@@ -301,6 +305,7 @@ type StoreContextValue = AppData & {
   addPayment: (payment: Omit<PaymentRecord, "id">) => void
   addPayments: (payments: Omit<PaymentRecord, "id">[]) => void
   updatePayment: (id: string, patch: Partial<PaymentRecord>) => void
+  ensureSchedulePayment: (student: Student, row: ScheduleRow, patch?: Partial<PaymentRecord>) => string
   removePayment: (id: string) => void
   addNotification: (note: Omit<NotificationRecord, "id" | "sentAt"> & { sentAt?: string }) => void
   addGroup: (name: string, studentIds: string[]) => NotifyGroup
@@ -767,6 +772,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ...prev,
           payments: prev.payments.map((p) => (p.id === id ? normalizePayment({ ...p, ...patch }) : p)),
         })),
+      ensureSchedulePayment: (student, row, patch) => {
+        const existing = row.paymentId
+          ? dataRef.current.payments.find((payment) => payment.id === row.paymentId)
+          : undefined
+        if (existing) {
+          if (patch) {
+            mutate((prev) => ({
+              ...prev,
+              payments: prev.payments.map((payment) =>
+                payment.id === existing.id ? normalizePayment({ ...payment, ...patch }) : payment,
+              ),
+            }))
+          }
+          return existing.id
+        }
+        const id = newId("pay")
+        mutate((prev) =>
+          applyManualPayments(prev, [{ ...paymentFromScheduleRow(student, row), ...patch, id, source: "manual" }]),
+        )
+        return id
+      },
       removePayment: (id) =>
         mutate((prev) => ({
           ...prev,

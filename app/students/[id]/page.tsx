@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { ArrowLeft, CalendarDays } from "lucide-react"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,23 +13,19 @@ import {
   ClassBadge,
   ContactBadge,
   ContactLabelBadge,
-  DocusignBadge,
   EnrollmentBadge,
-  PaymentBadge,
   PhotoshootBadge,
   ProgramBadge,
   SubscriptionBadge,
 } from "@/components/status-badge"
 import { StaffNotesEditor } from "@/components/staff-notes-editor"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
-import { DocusignFields, withDocusignDefaults } from "@/components/docusign-fields"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { PaymentMiniCalendar } from "@/components/payment-mini-calendar"
 import {
   PaymentAmountInput,
   PaymentDateInput,
-  PaymentEditToggle,
   PaymentItemSelect,
   PaymentStatusSelect,
 } from "@/components/payment-row-edit"
@@ -39,11 +35,16 @@ import {
   formatDateTime,
   formatMoney,
   formatPhone,
-  formatShortDate,
   fullName,
   todayISO,
 } from "@/lib/format"
-import { biweeklyFridays, buildPaymentSchedule, fillCountForStudent, paymentSourceLabel } from "@/lib/schedule"
+import {
+  biweeklyFridays,
+  buildPaymentSchedule,
+  fillCountForStudent,
+  paymentFromScheduleRow,
+  paymentSourceLabel,
+} from "@/lib/schedule"
 import {
   highlightTone,
   isAcademyOverdue,
@@ -77,7 +78,6 @@ import type {
   StudentTrack,
   SubscriptionStatus,
 } from "@/lib/types"
-import { cn } from "@/lib/utils"
 
 type ScheduleDraft = { key: string; date: string; amount: string }
 
@@ -102,7 +102,7 @@ export default function StudentProfilePage() {
     updateStudent,
     addFeedback,
     addPayments,
-    updatePayment,
+    ensureSchedulePayment,
     removePayment,
     removeAttendance,
     photoshoots,
@@ -113,7 +113,6 @@ export default function StudentProfilePage() {
   const [note, setNote] = useState("")
   const [noteClass, setNoteClass] = useState<ClassType | "">("modeling")
   const [draftRows, setDraftRows] = useState<ScheduleDraft[]>(() => blankScheduleDraft())
-  const [editingPayment, setEditingPayment] = useState<string | null>(null)
   const [calendarOpen, setCalendarOpen] = useState(false)
 
   const records = useMemo(
@@ -313,7 +312,6 @@ export default function StudentProfilePage() {
               (student.program !== "subscriber" || student.subscriptionStatus !== "active") ? (
                 <SubscriptionBadge status={student.subscriptionStatus} />
               ) : null}
-              <DocusignBadge status={student.docusignStatus} />
               {showContactBadge ? <ContactBadge category={student.contactCategory} /> : null}
               {student.photoshootStatus !== "none" ? (
                 <PhotoshootBadge status={student.photoshootStatus} />
@@ -379,7 +377,6 @@ export default function StudentProfilePage() {
         <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           {isNewsletterRecipient(student) ? <TabsTrigger value="newsletter">Newsletter</TabsTrigger> : null}
-          <TabsTrigger value="docusign">DocuSign</TabsTrigger>
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="notes">Feedback</TabsTrigger>
@@ -743,48 +740,56 @@ export default function StudentProfilePage() {
                     </thead>
                     <tbody>
                       {schedule.map((row, index) => {
-                        const bill = row.paymentId ? bills.find((item) => item.id === row.paymentId) : undefined
-                        const editing = Boolean(bill && editingPayment === bill.id)
+                        const bill =
+                          (row.paymentId ? bills.find((item) => item.id === row.paymentId) : undefined) ??
+                          ({ ...paymentFromScheduleRow(student, row), id: "" } as PaymentRecord)
+                        const save = (patch: Partial<PaymentRecord>) => {
+                          ensureSchedulePayment(student, row, patch)
+                          if (patch.dueDate !== undefined) {
+                            const isNext =
+                              !student.nextPaymentDate ||
+                              row.date === student.nextPaymentDate ||
+                              patch.dueDate <= (student.nextPaymentDate || patch.dueDate)
+                            if (isNext) {
+                              updateStudent(student.id, {
+                                nextPaymentDate: patch.dueDate,
+                                nextPaymentAmount:
+                                  patch.amount !== undefined ? patch.amount : student.nextPaymentAmount,
+                              })
+                            }
+                          }
+                        }
                         return (
                         <tr key={`${row.date}-${row.source}-${row.paymentId || index}`} className="border-b border-border last:border-0">
-                          <td className="px-3 py-2 tabular-nums">
-                            {editing && bill ? <PaymentDateInput bill={bill} /> : formatShortDate(row.date)}
+                          <td className="px-3 py-2">
+                            <PaymentDateInput bill={bill} onPatch={save} />
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">{paymentSourceLabel(row.source)}</td>
                           <td className="px-3 py-2">
-                            {editing && bill ? (
-                              <PaymentItemSelect student={student} bill={bill} />
-                            ) : (
-                              row.label
-                            )}
-                          </td>
-                          <td className="px-3 py-2 tabular-nums">
-                            {editing && bill ? <PaymentAmountInput bill={bill} field="amount" /> : formatMoney(row.amount)}
+                            <PaymentItemSelect student={student} bill={bill} onPatch={save} />
                           </td>
                           <td className="px-3 py-2">
-                            {bill ? <PaymentStatusSelect bill={bill} /> : <PaymentBadge status={row.status} />}
+                            <PaymentAmountInput bill={bill} field="amount" onPatch={save} />
+                          </td>
+                          <td className="px-3 py-2">
+                            <PaymentStatusSelect bill={bill} onPatch={save} />
                           </td>
                           <td className="px-2 py-2">
-                            {bill ? (
-                              <div className="flex flex-wrap gap-1">
-                                <PaymentEditToggle
-                                  editing={editing}
-                                  onToggle={() => setEditingPayment(editing ? null : bill.id)}
-                                />
-                                {bill.source === "manual" ? (
-                                  <Button
-                                    size="xs"
-                                    variant="ghost"
-                                    onClick={() => {
-                                      removePayment(bill.id)
-                                      toast.message("Payment removed from the schedule.")
-                                    }}
-                                  >
-                                    Remove
-                                  </Button>
-                                ) : null}
-                              </div>
-                            ) : null}
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => {
+                                if (bill.id) {
+                                  removePayment(bill.id)
+                                  toast.message("Payment removed from the schedule.")
+                                  return
+                                }
+                                updateStudent(student.id, { nextPaymentDate: "", nextPaymentAmount: null })
+                                toast.message("Payment removed from the schedule.")
+                              }}
+                            >
+                              Remove
+                            </Button>
                           </td>
                         </tr>
                         )
@@ -803,36 +808,6 @@ export default function StudentProfilePage() {
             open={calendarOpen}
             onOpenChange={setCalendarOpen}
           />
-        </TabsContent>
-
-        <TabsContent value="docusign">
-          <Panel className="grid gap-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="font-heading text-xl">DocuSign</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Store the envelope they were sent. Open the signing link or mark it signed when
-                  it comes back.
-                </p>
-              </div>
-              {student.docusignUrl ? (
-                <a
-                  href={student.docusignUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={cn(buttonVariants({ size: "sm" }))}
-                >
-                  Open DocuSign
-                </a>
-              ) : null}
-            </div>
-            <DocusignFields
-              value={student}
-              onChange={(patch) =>
-                updateStudent(student.id, withDocusignDefaults({ ...student, ...patch }))
-              }
-            />
-          </Panel>
         </TabsContent>
 
         <TabsContent value="notes">

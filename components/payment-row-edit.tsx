@@ -44,16 +44,19 @@ export function PaymentEditToggle({ editing, onToggle }: { editing: boolean; onT
 export function PaymentItemSelect({
   student,
   bill,
+  onPatch,
 }: {
   student: Student | undefined
   bill: PaymentRecord
+  onPatch?: (patch: Partial<PaymentRecord>) => void
 }) {
   const { updatePayment } = useStore()
+  const save = onPatch ?? ((patch: Partial<PaymentRecord>) => updatePayment(bill.id, patch))
   return (
     <NativeSelect
       className="h-8 min-w-[12rem] text-xs"
       value={paymentItemKind(student, bill)}
-      onChange={(e) => updatePayment(bill.id, paymentItemPatch(e.target.value as ItemKind))}
+      onChange={(e) => save(paymentItemPatch(e.target.value as ItemKind))}
     >
       <option value="training">Modeling and acting training</option>
       <option value="sub">Sub</option>
@@ -62,13 +65,20 @@ export function PaymentItemSelect({
   )
 }
 
-export function PaymentStatusSelect({ bill }: { bill: PaymentRecord }) {
+export function PaymentStatusSelect({
+  bill,
+  onPatch,
+}: {
+  bill: PaymentRecord
+  onPatch?: (patch: Partial<PaymentRecord>) => void
+}) {
   const { updatePayment } = useStore()
+  const save = onPatch ?? ((patch: Partial<PaymentRecord>) => updatePayment(bill.id, patch))
   return (
     <NativeSelect
       className="h-8 w-[8.5rem] text-xs"
       value={bill.status}
-      onChange={(e) => updatePayment(bill.id, paymentStatusPatch(bill, e.target.value as PaymentStatus))}
+      onChange={(e) => save(paymentStatusPatch(bill, e.target.value as PaymentStatus))}
     >
       {(Object.keys(PAYMENT_LABELS) as PaymentStatus[]).map((status) => (
         <option key={status} value={status}>
@@ -79,14 +89,21 @@ export function PaymentStatusSelect({ bill }: { bill: PaymentRecord }) {
   )
 }
 
-export function PaymentDateInput({ bill }: { bill: PaymentRecord }) {
+export function PaymentDateInput({
+  bill,
+  onPatch,
+}: {
+  bill: PaymentRecord
+  onPatch?: (patch: Partial<PaymentRecord>) => void
+}) {
   const { updatePayment } = useStore()
+  const save = onPatch ?? ((patch: Partial<PaymentRecord>) => updatePayment(bill.id, patch))
   return (
     <Input
       type="date"
       className="h-8 text-xs"
       value={(bill.dueDate || "").slice(0, 10)}
-      onChange={(e) => updatePayment(bill.id, { dueDate: e.target.value })}
+      onChange={(e) => save({ dueDate: e.target.value })}
     />
   )
 }
@@ -94,11 +111,14 @@ export function PaymentDateInput({ bill }: { bill: PaymentRecord }) {
 export function PaymentAmountInput({
   bill,
   field,
+  onPatch,
 }: {
   bill: PaymentRecord
   field: "amount" | "paidAmount"
+  onPatch?: (patch: Partial<PaymentRecord>) => void
 }) {
   const { updatePayment } = useStore()
+  const save = onPatch ?? ((patch: Partial<PaymentRecord>) => updatePayment(bill.id, patch))
   return (
     <Input
       type="number"
@@ -110,14 +130,14 @@ export function PaymentAmountInput({
         const value = e.target.value ? Number(e.target.value) : 0
         if (field === "amount") {
           const paid = Math.min(bill.paidAmount, value)
-          updatePayment(bill.id, {
+          save({
             amount: value,
             paidAmount: paid,
             balance: Math.max(value - paid, 0),
           })
           return
         }
-        updatePayment(bill.id, {
+        save({
           paidAmount: value,
           balance: Math.max(bill.amount - value, 0),
           status: value >= bill.amount && bill.amount > 0 ? "paid" : bill.status,

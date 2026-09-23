@@ -3,7 +3,7 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { ContactLabelBadge, DocusignBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
+import { ContactLabelBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
 import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import { uniqueContactLabels } from "@/lib/contacts-labels"
@@ -118,7 +118,6 @@ export const StudentRow = memo(function StudentRow({
             Wrapping up
           </span>
         ) : null}
-        {context === "roster" ? <DocusignBadge status={student.docusignStatus} /> : null}
       </div>
     </Link>
   )

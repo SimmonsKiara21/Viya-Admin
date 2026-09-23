@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google"
 import { Providers } from "@/components/providers"
 import "./globals.css"
@@ -22,10 +23,10 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: "ViyaAdmin.com",
   description:
-    "ViyaAdmin.com — staff desk for Viya Academy + Agency. Student lookup, contacts, DocuSign, Square payments, check-in, and notifications.",
+    "ViyaAdmin.com — staff desk for Viya Academy + Agency. Student lookup, contacts, Square payments, check-in, and notifications.",
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"

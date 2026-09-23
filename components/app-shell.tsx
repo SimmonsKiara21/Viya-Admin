@@ -6,7 +6,6 @@ import {
   Calendar,
   Camera,
   CreditCard,
-  FilePenLine,
   LayoutDashboard,
   Lock,
   Menu,
@@ -32,7 +31,6 @@ const NAV = [
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/payments", label: "Payments", icon: CreditCard },
-  { href: "/docusign", label: "DocuSign", icon: FilePenLine },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
   { href: "/photoshoots", label: "Photoshoots", icon: Camera },
 ]

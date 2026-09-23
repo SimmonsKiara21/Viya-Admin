@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge"
 import {
   CLASS_LABELS,
   CONTACT_LABELS,
-  DOCUSIGN_LABELS,
   ENROLLMENT_LABELS,
   PAYMENT_LABELS,
   PHOTO_LABELS,
@@ -14,7 +13,6 @@ import { cn } from "@/lib/utils"
 import type {
   ClassType,
   ContactCategory,
-  DocusignStatus,
   EnrollmentStatus,
   PaymentStatus,
   PhotoshootStatus,
@@ -164,17 +162,3 @@ export function ContactLabelBadge({ label }: { label: string }) {
   )
 }
 
-export function DocusignBadge({ status }: { status: DocusignStatus }) {
-  if (status === "none") return null
-  const cls =
-    status === "signed"
-      ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200"
-      : status === "declined" || status === "expired"
-        ? "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200"
-        : "border-sky-500/30 bg-sky-500/12 text-sky-800 dark:text-sky-200"
-  return (
-    <Badge variant="outline" className={cn("font-medium", cls)}>
-      DocuSign · {DOCUSIGN_LABELS[status]}
-    </Badge>
-  )
-}

@@ -76,8 +76,7 @@ export function DeskGate({ children }: { children: React.ReactNode }) {
             viyaadmin.com
           </p>
           <p className="mt-3 text-center text-sm text-muted-foreground">
-            Staff desk is locked. Enter the password to open the roster, contacts, Square tracker, and
-            DocuSign files.
+            Staff desk is locked. Enter the password to open the roster, contacts, and Square tracker.
           </p>
           <form onSubmit={onSubmit} className="mt-8 grid gap-3">
             <label className="grid gap-1.5">

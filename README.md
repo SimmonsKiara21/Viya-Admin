@@ -22,12 +22,12 @@ npm start
 
 ## What you can do
 
-- **Add talent** as **Academy**, **Modeling**, or **Acting**, with their **DocuSign**. Subscribers stay on **Subscriptions**. Open **DocuSign** in the sidebar to see who still needs to sign.
+- **Add talent** as **Academy**, **Modeling**, or **Acting**. Subscribers stay on **Subscriptions**.
 - **Welcome lock:** the desk opens on a locked welcome screen. Password is `viyatalent`. Use **Lock desk** in the sidebar when you leave the floor.
 - **Save updates** in the header writes the current desk to this browser right away (Ctrl/Cmd+S does the same). The desk also auto-saves every 5 minutes. Staff notes on a talent file have their own **Save notes** button. Enrollment lives on the website now — unlinking the Google Sheet does not wipe notes, due dates, or payment plans.
 - **Attendance** is check-in and the roll call in one place. Type a name to check in (Modeling, Acting, or Subscriber). Today and past nights sit on the same page. Staff check-ins post to the Jotform tracker; student-phone check-ins come back from that sheet.
 - **Home** is a summary: today’s Phoenix time plus counts for Talent, Overdue, Collections, Sub overdue, and Pending. The alert name lists live on **Alerts**.
-- **Payments** on a talent file is their payment calendar: Square invoices when we have them, otherwise the most recent payment due. Academy invoices run every two weeks on Friday (9/18, then 10/02). The next Friday is not added unless Square has billed it. **Payments left** can be edited on the profile. Tap **Edit** on a calendar row to change date, item, amount, or status. **Dates** opens that month.
+- **Payments** on a talent file is their payment calendar: Square invoices when we have them, otherwise the most recent payment due. Date, item, amount, and status can be edited on any row. **Payments left** can be edited on the profile. **Dates** opens that month.
 - **Subscriptions** has three Square plans: standard ($49.99), OG ($4.99), and the $100 plan (Scarlett Petroff). All three share the same Square description.
 - **Talent** is the academy roster (modeling and acting included). Subscribers are not counted here — they are on **Subscriptions**. **Pending** is academy starts that have not begun.
 - **Contacts** is everyone else. Tags match the Google Contacts lists: **Current Student**, **Active Subscribers**, **SEPTEMBER PHOTOSHOOT LIST**, and **MODEL SOURCE NOVEMBER**. **Newsletter** is the same people as **Active Subscribers**. Old Newsletter tags on current students are stripped. Duplicate contact/enrollment files for the same person are merged. Contact files say Contact, not Prospect. People with no list stay under All contacts.
@@ -43,7 +43,7 @@ npm start
 - **Sub overdue** — orange. Subscribers only.
 - **Collections / cancelling** — amber. Kept off the overdue list.
 - **Paused** — violet, so the desk does not check them in by accident.
-- **Pending** — blue, so DocuSign, deposit, and first class stay visible.
+- **Pending** — blue, so deposit and first class stay visible.
 - **Fewer than 3 payments** — lime, for current academy payment-plan students who **started May 2026 or earlier** and have **fewer than 3 installments left**. Remaining payments come from the Square invoice (balance vs plan) when we have one, otherwise from the 6-payment start date. May 2026 starters currently have 3 left until the next installment posts, so they highlight once they drop to 2.
 - **Paid in full** — emerald. The enrollment workbook usually leaves STATUS as Current and marks **PAYMENT PLAN = PIF**. The desk treats that as paid in full and highlights them. Pending or collections still keep those markers first.
 

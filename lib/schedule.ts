@@ -50,6 +50,26 @@ export function biweeklyFridays(start: string, count: number) {
   return out
 }
 
+export function paymentFromScheduleRow(student: Student, row: ScheduleRow): Omit<PaymentRecord, "id"> {
+  return {
+    studentId: student.id,
+    amount: row.amount,
+    paidAmount: row.paidAmount,
+    balance: row.balance,
+    dueDate: row.date,
+    paidDate: row.status === "paid" ? todayISO() : "",
+    status: row.status,
+    method: row.source === "square" ? "square" : "other",
+    squareInvoiceId: row.invoiceId || "",
+    notes: "",
+    itemId: "",
+    itemName: row.label || "Payment",
+    itemDescription: "",
+    itemKind: student.program === "subscriber" ? "subscriber" : "academy",
+    source: row.source === "square" ? "square" : "manual",
+  }
+}
+
 function rowFromBill(bill: PaymentRecord): ScheduleRow {
   return {
     date: bill.dueDate,

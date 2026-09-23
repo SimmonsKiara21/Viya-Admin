@@ -8,6 +8,7 @@ export function foldName(value: string) {
     .replace(/['.]/g, "")
     .replace(/[-]/g, " ")
     .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, "")
     .replace(/\s+/g, " ")
     .trim()
 }

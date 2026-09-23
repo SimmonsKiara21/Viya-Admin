@@ -8,7 +8,7 @@ function squareHost() {
 }
 
 function locationId() {
-  return process.env.SQUARE_LOCATION_ID || "LC790E490Z6B9"
+  return process.env.SQUARE_LOCATION_ID || "LC790E49DZ6B9"
 }
 
 async function squareGet(path: string, token: string, query?: Record<string, string>) {

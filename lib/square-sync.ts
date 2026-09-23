@@ -49,19 +49,13 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null
 }
 
-function mapInvoiceStatus(status: string, dueDate: string, paid: number, amount: number): PaymentStatus | null {
-  const key = (status || "").toUpperCase()
+function mapRequestStatus(invoiceStatus: string, dueDate: string, paid: number, amount: number): PaymentStatus | null {
+  const key = (invoiceStatus || "").toUpperCase()
   if (key === "DRAFT" || key === "CANCELED" || key === "CANCELLED") return null
-  if (key === "PAID") return "paid"
+  if (amount > 0 && paid >= amount) return "paid"
   if (key === "FAILED") return "declined"
-  if (key === "OVERDUE") return "overdue"
-  if (key === "SCHEDULED") return "scheduled"
-  if (paid > 0 && paid < amount) {
-    if (dueDate && dueDate < todayISO()) return "overdue"
-    return "due"
-  }
-  if (dueDate && dueDate < todayISO() && key !== "PAID") return "overdue"
-  if (key === "UNPAID" || key === "PARTIALLY_PAID" || key === "PAYMENT_PENDING") return "due"
+  if (dueDate && dueDate < todayISO()) return "overdue"
+  if (dueDate && dueDate > todayISO()) return "scheduled"
   return "due"
 }
 
@@ -78,22 +72,24 @@ export function invoicesFromSquareApi(raw: unknown[], customerNames: Record<stri
     if (!name) continue
     const requests = Array.isArray(invoice.payment_requests) ? invoice.payment_requests : []
     const title = String(invoice.title || invoice.description || "")
-    const invoiceNumber = String(invoice.invoice_number || invoice.id || "")
+    const invoiceId = String(invoice.id || invoice.invoice_number || "")
     const itemId = guessItemId(title)
     const requestList = requests.length ? requests : [null]
     for (const entryReq of requestList) {
       const request = asRecord(entryReq) ?? {}
-      const amount = money(request.computed_amount_money) || money(request.total_completed_amount_money)
+      const amount =
+        money(request.computed_amount_money) ||
+        money(request.fixed_amount_requested_money) ||
+        money(request.total_completed_amount_money)
       const paid = money(request.total_completed_amount_money)
       const dueDate = typeof request.due_date === "string" ? request.due_date : ""
       const uid = typeof request.uid === "string" && request.uid ? request.uid : dueDate
-      let status = mapInvoiceStatus(String(invoice.status || ""), dueDate, paid, amount)
+      if (!amount && !paid) continue
+      const status = mapRequestStatus(String(invoice.status || ""), dueDate, paid, amount)
       if (!status) continue
-      if (amount > 0 && paid >= amount) status = "paid"
-      else if (dueDate && dueDate < todayISO() && status !== "paid") status = "overdue"
       rows.push({
         name,
-        invoiceId: requestList.length > 1 && uid ? `${invoiceNumber}:${uid}` : invoiceNumber,
+        invoiceId: uid ? `${invoiceId}:${uid}` : invoiceId,
         itemId,
         amount: amount || paid,
         paid,
@@ -128,11 +124,10 @@ export function applySquareInvoices(students: Student[], payments: PaymentRecord
   }
 
   const pruned = nextPayments.filter((p) => {
+    if (p.source !== "square") return true
+    if (!matchedIds.has(p.studentId)) return true
     const ids = incomingByStudent.get(p.studentId)
-    if (!ids || p.source !== "square") return true
-    if (ids.has(p.squareInvoiceId)) return true
-    if (p.status === "paid") return true
-    return false
+    return Boolean(ids?.has(p.squareInvoiceId))
   })
 
   refreshStudentsFromPayments(nextStudents, pruned, matchedIds)
@@ -211,13 +206,17 @@ function refreshStudentsFromPayments(
     if (next) {
       student.nextPaymentDate = next.dueDate || student.nextPaymentDate
       student.nextPaymentAmount = next.balance || next.amount
+    } else if (rows.some((p) => p.source === "square")) {
+      student.nextPaymentDate = ""
+      student.nextPaymentAmount = null
     }
     const academy = rows.filter((p) => isAcademyItem(p.itemId, p.itemKind) && p.source === "square")
-    const plan = academy.find((p) => p.amount >= 400) ?? academy[0]
-    if (plan && student.paymentPlan === "pp" && !student.deskLocks?.installments) {
-      const installment = next?.amount || student.nextPaymentAmount || 0
-      if (installment > 0) {
-        student.installmentsLeft = Math.max(0, Math.ceil(Math.max(plan.balance, next?.balance ?? 0, 0) / installment - 1e-9))
+    const openAcademy = academy.filter((p) => ["due", "overdue", "declined", "scheduled"].includes(p.status))
+    if (student.paymentPlan === "pp" && !student.deskLocks?.installments) {
+      if (openAcademy.length) {
+        student.installmentsLeft = openAcademy.length
+      } else if (academy.length) {
+        student.installmentsLeft = 0
       }
     }
   }

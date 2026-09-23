@@ -66,7 +66,7 @@ The desk is the roster. Add and edit students here — including status tags, no
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export is on **Contacts** with name, phone, email, and notes. **Newsletter** on Contacts is subscribers only.
 
-Payments use Square invoices. Live API keys are optional — without them the desk still shows invoices from `data/square.json`. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk pulls production invoices, including installment due dates, onto each talent file and the Payment tracker. Desk schedules (date + amount on a talent file) also land on Calendar and Alerts.
+Payments use Square invoices. The current installment due dates are baked into `data/square.json` and `data/seed.json` from a production pull (location `LC790E49DZ6B9`). Live API keys are optional — without them the desk still shows that snapshot. With `SQUARE_ACCESS_TOKEN` (Invoices Read + Customers Read) the desk refreshes production invoices onto each talent file. Desk schedules (date + amount on a talent file) also land on Calendar and Alerts.
 
 The desk works without API keys. Copy `.env.example` to `.env.local` and add credentials when you want live send/sync:
 

@@ -80,11 +80,24 @@ export function isCurrentlyEnrolled(student: Student) {
   if (!isAcademyTalent(student)) return false
   if (isCollectionsStudent(student) || isOverdueFollowUp(student)) return false
   if (student.enrollmentStatus === "paused" || student.enrollmentStatus === "pending") return false
-  return (
-    student.enrollmentStatus === "current" ||
-    student.enrollmentStatus === "pif" ||
-    student.paymentPlan === "pif"
-  )
+  return student.enrollmentStatus === "current" || student.enrollmentStatus === "pif"
+}
+
+/** Chose the lump-sum PIF plan — not the same as tuition being paid. */
+export function isPifPlan(student: Student) {
+  return student.paymentPlan === "pif"
+}
+
+/** Deposit or installments still outstanding. $50-range amounts are subscriptions, not academy tuition. */
+export function hasOpenAcademyTuition(student: Student) {
+  const amount = student.nextPaymentAmount ?? 0
+  if (student.enrollmentStatus === "pending" && amount > 0) return true
+  if (isPifPlan(student)) {
+    if (student.enrollmentStatus === "pif") return false
+    return amount >= 75
+  }
+  if ((student.installmentsLeft ?? 0) > 0) return true
+  return false
 }
 
 export function isSubscriberOverdue(student: Student) {
@@ -103,7 +116,8 @@ export function isPaidInFull(student: Student) {
   if (!isAcademyTalent(student)) return false
   if (isCollectionsStudent(student) || isPausedStudent(student) || isPendingStudent(student)) return false
   if (isOverdueStudent(student)) return false
-  return student.paymentPlan === "pif" || student.enrollmentStatus === "pif"
+  if (hasOpenAcademyTuition(student)) return false
+  return student.enrollmentStatus === "pif" || isPifPlan(student)
 }
 
 export type HighlightTone =
@@ -124,9 +138,14 @@ export function monthsElapsed(startDate: string, asOf = new Date()) {
 }
 
 export function remainingPayments(student: Student) {
-  if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") return 0
-  if (student.paymentPlan !== "pp") return null
-  if (typeof student.installmentsLeft === "number") return Math.max(0, student.installmentsLeft)
+  if (student.paymentPlan === "pp") {
+    if (typeof student.installmentsLeft === "number") return Math.max(0, student.installmentsLeft)
+    return null
+  }
+  if (isPifPlan(student) || student.enrollmentStatus === "pif") {
+    if (!hasOpenAcademyTuition(student)) return 0
+    return typeof student.installmentsLeft === "number" ? Math.max(0, student.installmentsLeft) : 1
+  }
   return null
 }
 

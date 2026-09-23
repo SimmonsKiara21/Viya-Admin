@@ -172,10 +172,11 @@ export function parseEnrollmentCsv(text: string, defaults: Partial<Student> = {}
   return rows.map(markPaidInFull)
 }
 
-/** Workbook STATUS often stays Current; PAYMENT PLAN = PIF is the paid-in-full marker. */
+/** Current + PIF plan and no remaining tuition → completed. Pending PIF stays pending. */
 export function markPaidInFull<T extends Partial<Student>>(row: T): T {
   if (row.paymentPlan !== "pif") return row
   if (row.enrollmentStatus && row.enrollmentStatus !== "current") return row
+  if ((row.nextPaymentAmount ?? 0) >= 75) return row
   return { ...row, enrollmentStatus: "pif" }
 }
 

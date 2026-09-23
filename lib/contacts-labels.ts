@@ -84,7 +84,7 @@ export function uniqueContactLabels(student: Student) {
   const enrollment = ENROLLMENT_LABELS[student.enrollmentStatus].toLowerCase()
   const program = programDisplayLabel(student.program, student.track).toLowerCase()
   const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
-  const paidInFull = student.enrollmentStatus === "pif" || student.paymentPlan === "pif"
+  const paidInFull = student.enrollmentStatus === "pif"
 
   return (student.labels || []).filter((label) => {
     const value = displayContactLabel(label).toLowerCase().trim()

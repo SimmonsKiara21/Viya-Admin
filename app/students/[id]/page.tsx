@@ -15,6 +15,7 @@ import {
   ContactLabelBadge,
   EnrollmentBadge,
   PhotoshootBadge,
+  PlanBadge,
   ProgramBadge,
   SubscriptionBadge,
 } from "@/components/status-badge"
@@ -306,6 +307,9 @@ export default function StudentProfilePage() {
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
               {isContact(student) ? null : <ProgramBadge program={student.program} track={student.track} />}
+              {isContact(student) || student.paymentPlan === "none" || student.paymentPlan === "subscription" ? null : (
+                <PlanBadge plan={student.paymentPlan} />
+              )}
               {student.enrollmentStatus !== "contact" ? (
                 <EnrollmentBadge
                   status={student.enrollmentStatus}

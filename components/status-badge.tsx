@@ -5,6 +5,7 @@ import {
   ENROLLMENT_LABELS,
   PAYMENT_LABELS,
   PHOTO_LABELS,
+  PLAN_LABELS,
   programDisplayLabel,
   SUB_LABELS,
 } from "@/lib/constants"
@@ -14,6 +15,7 @@ import type {
   ClassType,
   ContactCategory,
   EnrollmentStatus,
+  PaymentPlan,
   PaymentStatus,
   PhotoshootStatus,
   Program,
@@ -87,6 +89,21 @@ export function PaymentBadge({ status }: { status: PaymentStatus }) {
   return (
     <Badge variant="outline" className={cn("font-medium", paymentClass[status])}>
       {PAYMENT_LABELS[status]}
+    </Badge>
+  )
+}
+
+export function PlanBadge({ plan }: { plan: PaymentPlan | "" }) {
+  if (!plan || plan === "none") return null
+  const cls =
+    plan === "pif"
+      ? "border-[oklch(0.78_0.08_85/0.45)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
+      : plan === "pp"
+        ? "border-border text-muted-foreground"
+        : "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
+  return (
+    <Badge variant="outline" className={cn("font-medium", cls)}>
+      {PLAN_LABELS[plan]}
     </Badge>
   )
 }

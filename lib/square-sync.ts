@@ -1,4 +1,5 @@
 import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./types"
+import { isPaidInFull } from "./alerts"
 import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
 import { newId, todayISO } from "./format"
@@ -243,7 +244,7 @@ export function markMissedPaymentOverdue(student: Student, payments: PaymentReco
     student.enrollmentStatus = "overdue"
     return student
   }
-  if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") return student
+  if (isPaidInFull(student)) return student
   const academyMissed = rows.some((p) => isAcademyItem(p.itemId, p.itemKind) || p.source === "manual")
   if (academyMissed) student.enrollmentStatus = "overdue"
   return student

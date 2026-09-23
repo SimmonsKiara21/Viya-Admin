@@ -11,9 +11,9 @@ import { StudentRow } from "@/components/student-row"
 import { EnrollmentTagEditor } from "@/components/student-tag-editor"
 import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
-import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent } from "@/lib/alerts"
+import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent, isPaidInFull } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
-import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
+import { ENROLLMENT_LABELS, PLAN_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
 import {
   isRosterSort,
   ROSTER_SORT_LABELS,
@@ -21,7 +21,7 @@ import {
   sortStudents,
   type RosterSort,
 } from "@/lib/roster-sort"
-import type { EnrollmentStatus } from "@/lib/types"
+import type { EnrollmentStatus, PaymentPlan } from "@/lib/types"
 
 const STATUSES: Array<EnrollmentStatus | "all"> = [
   "all",
@@ -41,12 +41,18 @@ const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting"> = [
   "acting",
 ]
 
+const PLANS: Array<"all" | Extract<PaymentPlan, "pp" | "pif">> = ["all", "pp", "pif"]
+
 function isStatus(value: string | null): value is EnrollmentStatus | "all" {
   return Boolean(value && (STATUSES as readonly string[]).includes(value))
 }
 
 function isProgram(value: string | null): value is (typeof PROGRAMS)[number] {
   return Boolean(value && (PROGRAMS as readonly string[]).includes(value))
+}
+
+function isPlan(value: string | null): value is (typeof PLANS)[number] {
+  return Boolean(value && (PLANS as readonly string[]).includes(value))
 }
 
 export default function StudentsPage() {
@@ -59,9 +65,11 @@ export default function StudentsPage() {
 
   const statusParam = searchParams.get("status")
   const programParam = searchParams.get("program")
+  const planParam = searchParams.get("plan")
   const sortParam = searchParams.get("sort")
   const status = isStatus(statusParam) ? statusParam : "all"
   const program = isProgram(programParam) ? programParam : "all"
+  const plan = isPlan(planParam) ? planParam : "all"
   const sort: RosterSort = isRosterSort(sortParam) ? sortParam : "az"
 
   function setParam(key: string, value: string, fallback: string) {
@@ -78,7 +86,7 @@ export default function StudentsPage() {
       .filter((s) => matchesQuery(s, query))
       .filter((s) => {
         if (status === "all") return true
-        if (status === "pif") return s.enrollmentStatus === "pif" || s.paymentPlan === "pif"
+        if (status === "pif") return isPaidInFull(s)
         if (status === "overdue") return isOverdueTalent(s)
         if (status === "current") return isCurrentlyEnrolled(s)
         return s.enrollmentStatus === status
@@ -92,8 +100,9 @@ export default function StudentsPage() {
         }
         return s.program === program
       })
+      .filter((s) => (plan === "all" ? true : s.paymentPlan === plan))
     return sortStudents(rows, sort)
-  }, [students, query, status, program, sort])
+  }, [students, query, status, program, plan, sort])
 
   const showStartDate = sort === "start-new" || sort === "start-old"
 
@@ -122,6 +131,13 @@ export default function StudentsPage() {
           {PROGRAMS.map((p) => (
             <FilterChip key={p} active={program === p} onClick={() => setParam("program", p, "all")}>
               {p === "all" ? "All programs" : p === "modeling" || p === "acting" ? TRACK_LABELS[p] : PROGRAM_LABELS[p]}
+            </FilterChip>
+          ))}
+        </FilterGroup>
+        <FilterGroup label="Plan">
+          {PLANS.map((p) => (
+            <FilterChip key={p} active={plan === p} onClick={() => setParam("plan", p, "all")}>
+              {p === "all" ? "All plans" : PLAN_LABELS[p]}
             </FilterChip>
           ))}
         </FilterGroup>

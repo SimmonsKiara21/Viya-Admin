@@ -44,7 +44,7 @@ export const COLOR_KEY = [
   {
     id: "pif",
     label: "Paid in full",
-    meaning: "Academy plan is paid in full",
+    meaning: "Academy tuition is paid — a PIF plan is not enough until that deposit is in",
     swatch: "bg-emerald-500",
     text: "text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950",
   },

@@ -3,11 +3,11 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { ContactLabelBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
+import { ContactLabelBadge, EnrollmentBadge, PlanBadge, ProgramBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
 import { useStore } from "@/lib/store"
-import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, isContact, isPifPlan, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -38,16 +38,19 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 }
 
 function detail(student: Student, tone: HighlightTone, left: number | null) {
+  const plan = isPifPlan(student) && tone !== "pif" ? " · PIF" : ""
   if (tone === "overdue" || tone === "subscriberOverdue" || tone === "collections") {
-    return ` · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
+    return `${plan} · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
   }
-  if (tone === "finishing") return ` · ${left} payment${left === 1 ? "" : "s"} left`
-  if (tone === "paused") return " · not on the floor"
+  if (tone === "finishing") return `${plan} · ${left} payment${left === 1 ? "" : "s"} left`
+  if (tone === "paused") return `${plan} · not on the floor`
   if (tone === "pending") {
-    return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
+    const start = student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
+    return `${plan}${start}`
   }
   if (tone === "pif") return student.startDate ? ` · started ${formatDate(student.startDate)}` : ""
-  return student.phone ? "" : ` · ${student.email || ""}`
+  const fallback = student.phone ? "" : ` · ${student.email || ""}`
+  return `${plan}${fallback}`
 }
 
 export const StudentRow = memo(function StudentRow({
@@ -128,9 +131,12 @@ export const StudentRow = memo(function StudentRow({
           </span>
         ) : null}
         {showProgram ? <ProgramBadge program={student.program} track={student.track} /> : null}
+        {context === "roster" && (student.paymentPlan === "pif" || student.paymentPlan === "pp") ? (
+          <PlanBadge plan={student.paymentPlan} />
+        ) : null}
         {showEnrollment ? (
           <EnrollmentBadge
-            status={student.enrollmentStatus === "pif" || student.paymentPlan === "pif" ? "pif" : student.enrollmentStatus}
+            status={student.enrollmentStatus}
             subscriber={student.program === "subscriber" || student.paymentPlan === "subscription"}
           />
         ) : null}

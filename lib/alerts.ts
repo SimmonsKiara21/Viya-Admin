@@ -1,5 +1,6 @@
-import { ACADEMY_TIMEZONE } from "./constants"
-import { academyDateISO } from "./format"
+import { ACADEMY_TIMEZONE, PAID_PIF_IDS, PAID_PIF_NAMES } from "./constants"
+import { academyDateISO, displayStudentId } from "./format"
+import { foldName } from "./match-name"
 import type { AttendanceRecord, Student } from "./types"
 
 export const PLAN_LENGTH = 6
@@ -113,10 +114,14 @@ export function isPendingStudent(student: Student) {
 }
 
 export function isPaidInFull(student: Student) {
-  if (!isAcademyTalent(student)) return false
+  if (!isAcademyTalent(student) || !isPifPlan(student)) return false
   if (isCollectionsStudent(student) || isPausedStudent(student) || isPendingStudent(student)) return false
   if (isOverdueStudent(student)) return false
-  return remainingPayments(student) === 0
+  if (hasOpenAcademyTuition(student)) return false
+  const shown = displayStudentId(student.id)
+  if (shown && PAID_PIF_IDS.includes(shown)) return true
+  if (PAID_PIF_IDS.includes(student.id)) return true
+  return PAID_PIF_NAMES.includes(foldName(`${student.firstName} ${student.lastName}`))
 }
 
 export type HighlightTone =

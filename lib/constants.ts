@@ -38,6 +38,31 @@ export const STUDENT_ID_ALIASES: Record<string, string> = {
   "0830": "0839",
   "0412": "0381",
 }
+/** Current enrollment PIF students whose lump sum is already in. Igrid and Thalia are pending, not this list. */
+export const PAID_PIF_IDS = [
+  "1101",
+  "1106",
+  "0845",
+  "1165",
+  "1166",
+  "1094",
+  "1093",
+  "1079",
+  "1091",
+  "1076",
+  "1090",
+  "1016",
+  "1020",
+  "1077",
+  "0923",
+  "0557",
+  "0523",
+  "0517",
+  "0910",
+  "0912",
+  "0914",
+]
+export const PAID_PIF_NAMES = ["minh thu nguyen"]
 /** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
 export const CONTACTS_LABELS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHzEdPAxtZVLF_qOGBK8Kd42PXfCnQGy2pmFRrIuXuLVLbqMrt76UMwIPmban9L8g1o3B3RU7eHY_9/pub?output=csv"

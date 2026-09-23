@@ -1,50 +1,50 @@
 STUDENT ID,PAYMENT PLAN,STATUS,NAME,,,PAYMNETS LEFT,AGE,NUMBER,EMAIL,START DATE,NOTES
-0938,PP,OVERDUE,Christian Barr,,$300.00,9,,575-654-5773,barrchristian75@gmail.com,7/8/2026,$104 due 09/08 payment declined 09/16
-1007,PP,OVERDUE,Kemontae Iyamu,,$300.00,6,23,480-359-8637,iyamukemontae39@gmail.com,7/15/2026,$104 due 09/11 payment declined 09/16
-1017,PP,OVERDUE,Liam St Spell,,,10,32,480-578-5560,liamstspell@gmail.com,7/29/2026,Cancelling - trying to collect at least the deposit.  deposit due 09/11 for cancellation payment declined 09/16
+0938,PP,OVERDUE,Christian Barr,,$300.00,9,,575-654-5773,barrchristian75@gmail.com,7/8/2026,$104 due 09/08 payment declined 09/21
+1007,PP,OVERDUE,Kemontae Iyamu,,$300.00,6,23,480-359-8637,iyamukemontae39@gmail.com,7/15/2026,$104 due 09/11 payment declined 09/21
+1017,PP,OVERDUE,Liam St Spell,,,10,32,480-578-5560,liamstspell@gmail.com,7/29/2026,Cancelling - trying to collect at least the deposit.  deposit due 09/11 for cancellation payment declined 09/21
+1078,PP,OVERDUE,Fernando Gutierrez,,,9,23,602-301-0195,fernando2003live@gmail.com,8/22/2026,$104 due 09/18 payment declined 09/21
+0917,PP,OVERDUE,Natalie Hanania,,$900.00,1,21,520-510-8005,nataliehtalent@gmail.com,7/1/2026,$156 due 09/18 payment declined 09/21
+0924,PP,OVERDUE,Jasondra Campbell,,$300.00,7,34,404-502-0282,bspgalz@gmail.com,7/11/2026,$104 due 09/18 payment declined 09/21
+1104,PP,OVERDUE,Hector Jimenez,,$150.00,13,17,6028137103,gracielaa711@gmail.com,09-19-2026,$150.00 deposit due 09/19 - $65.00 due 10/02 payment declined 09/21 Please remove him per Laura 09/22/2026
+1167,PP,OVERDUE,Platiny Nshimirimana,,$300.00,,,901-501-3413,platiny0511@gmail.com,09/20/2026,coming on the 20th 1:30-3:30pm has a special sch due to living out of state  - card did not work Deposit $300 due 09/19 - $104 due 10/02
 0471,PP,PAUSED,Randall Jubilee,5/6,xx,4,26,702-908-1361,randalljubileeiii@gmail.com,2/14/2026,PAUSED UNTIL $104 due 10/02
 0521,PP,PAUSED,Chad Broadie Jr,,,4,,619-381-2038,chadjr98@yahoo.com,5/23/2026,PAUSED UNTIL $104 due 10/30
+1173,PIF,PENDING,Igrid Vega,,$900.00,1,19,928-277-3190,ingridvegasalmeron@gmail.com,10-03-2026,Deposit $927 due 10/01
 1169,PP,PENDING,Jolene Martinez,,,10,27,623-324-7106,jkmartinez1109@yahoo.com,10/03/2026,Deposit $300 due 09/30 - $104 due 10/16
 1171,PP,PENDING,Olivia Oser,,,10,22,(812) 722-8658,leofoster04@gmail.com,09/30/2026,Deposit $300 due 10/03 - $104 due 10/16
 1170,PP,PENDING,Sofia Basile,,,10,30,(480) 710-2285,amber.sofia@yahoo.com,10/03/2026,Deposit $300 due 10/03 - $104 due 10/16
 1172,PIF,PENDING,Thalia Lopez,,,1,19,(520) 360-0229,thalialopez949@gmail.com,09/30/2026,Deposit $927 due 09/30
-1101,PIF,PENDING,Gavin Oelrich,,$900.00,1,17,6025456975,gavinoelrich3@gmail.com,09/19/2026,Deposit $927 due 09/19
-1106,PIF,PENDING,Chloe Haroldsen,,$900.00,1,27,6237345266,sharoldson@hotmail.com,09-19-2026,Deposit $927 due 09/19
-1167,PP,PENDING,Platiny Nshimirimana,,$300.00,,,901-501-3413,platiny0511@gmail.com,09/20/2026,coming on the 20th 1:30-3:30pm has a special sch due to living out of state  - card did not work Deposit $300 due 09/19 - $104 due 10/02
-1102,PP,PENDING,Giovanni Pera,,$300.00,13,,9289198068,giolp2411@gmail.com,09/19/2026,Deposit $300 due 09/19 - $104 due 10/02
-1104,PP,PENDING,Hector Jimenez,,$150.00,13,17,6028137103,gracielaa711@gmail.com,09-19-2026,$150.00 deposit due 09/19 - $65.00 due 10/02
-1095,PP,PENDING,Alexa Cruz Rosas,,$300.00,9,22,4803700624,fercrosas21@gmail.com,09/05/2026,$104 due 09/18
-1096,PP,Current,Almaz Lee,,$300,9,21,6024022260,maze.lee28@gmail.com,09/12/2026,$104 due 09/18
+1095,PP,PENDING,Alexa Cruz Rosas,,$300.00,8,22,4803700624,fercrosas21@gmail.com,09/05/2026,$75 due 10/02
+1101,PIF,Current,Gavin Oelrich,,$900.00,,17,6025456975,gavinoelrich3@gmail.com,09/19/2026,
+0522,PP,Current,Frederick Thompson,2/6,,2,,480-261-4045,tylerthmpsn@outlook.com,5/23/2026,$54 due 10/02
+1106,PIF,Current,Chloe Haroldsen,,$900.00,,27,6237345266,sharoldson@hotmail.com,09-19-2026,
+0845,PIF,Current,Genesis Soto,2/6,,,20,480-516-4607,hennessyvs75@gmail.com,6/6/2026,10/01 sub
+1102,PP,Current,Giovanni Pera,,$300.00,8,,9289198068,giolp2411@gmail.com,09/19/2026,$104 due 10/02
+0555,PP,Current,Kenia Cerna,1/6,,1,24,602-338-0433,kencerna15@gmail.com,6/6/2026,$104 due 10/16
+0842,PP,Current,Nyagach Thuok,,,3,24,507-213-3294,nthuok@gmail.com,5/23/2026,$104 due 10/02
+1096,PP,Current,Almaz Lee,,$300,8,21,6024022260,maze.lee28@gmail.com,09/12/2026,$104 due 10/02
 0918,PP,Current,Ivan Parker,,Waived,5,39,251-487-4948,ivanparker2k18@gmail.com,7/1/2026,$100 due 09/25
 1165,PIF,Current,Taylor Stanke,,$900.00,1,30,325-430-3727,taylortalksart@gmail.com,09/09/2026,
 1168,PP,Current,Angel Cotton ,,$300.00,9,24,602-872-2750,claracotton3@gmail.com,09/05/2026,$104 due 09/25
-0842,PP,Current,Nyagach Thuok,,,4,24,507-213-3294,nthuok@gmail.com,5/23/2026,$104 due 09/18
-0924,PP,Current,Jasondra Campbell,,$300.00,7,34,404-502-0282,bspgalz@gmail.com,7/11/2026,$104 due 09/18
 0749,PP,Current,Chayah Israel,1/6,,2,,602-813-6675,choks.subscriptions@gmail.com,,$50 due 09/27
 1166,PIF,Current,Ashleigh Byers,,$900.00,,31,360-840-8059,ashleigh.byers@icloud.com,09/16/2026,
 1094,PIF,Current,Hailee Bui,,$900.00,,15,6025497574,haileebui8@gmail.com,08/29/2026,
 1093,PIF,Current,Brian Neves,,$900.00,,28,7574042648,btaylorn98@gmail.com,08/29/2026,
-0917,PP,Current,Natalie Hanania,,$900.00,1,21,520-510-8005,nataliehtalent@gmail.com,7/1/2026,104.00 due 09/18 
 0935,PP,Current,James Strysko,,$300.00,6,,480-478-5751,jastrysko@gmail.com,7/11/2026,$104 due 09/25
-1078,PP,Current,Fernando Gutierrez,,,9,23,602-301-0195,fernando2003live@gmail.com,8/22/2026,$104 due 09/18
-0921,PP,Current,April Wilson,,Waived,3,54,520-342-4177,aprildionne3@gmail.com,6/27/2026,$103 due 09/18
+0921,PP,Current,April Wilson,,Waived,2,54,520-342-4177,aprildionne3@gmail.com,6/27/2026,$103 due 10/02
 1003,PP,Current,Picasso Dular,,,4,,773-960-7458,picassodular@gmail.com,7/8/2026,$103 due 09/25
 1080,PP,Current,Jamison Floyd,,,6,14,480-773-8688,floydfam2008@gmail.com,8/12/2026,$104 due 09/25
-1006,PP,Current,Tre Amparan,,Waived,5,25,602-769-7265,tre.amparan@gmail.com,7/22/2026,$103 due on 09/18
-1004,PP,Current,Orlando Orozco,,$300.00,5,23,308-325-2264,orozcoorlando904@gmail.com,7/11/2026,$104 due 09/18
-0929,PP,Current,Cuatro Fluker,,Waived,7,22,210-965-9902,cuatrofluker@gmail.com,7/11/2026,$60 due 09/18
+1006,PP,Current,Tre Amparan,,Waived,4,25,602-769-7265,tre.amparan@gmail.com,7/22/2026,$103 due on 10/02
+1004,PP,Current,Orlando Orozco,,$300.00,4,23,308-325-2264,orozcoorlando904@gmail.com,7/11/2026,$104 due 10/02
+0929,PP,Current,Cuatro Fluker,,Waived,7,22,210-965-9902,cuatrofluker@gmail.com,7/11/2026,$67 due 10/02
 0936,PP,Current,Jonathan Tanner,,$300.00,6,,623-236-6866,hansontaner150@gmail.com,7/8/2026,$104 due 09/25
-0730,PP,Current,Itati Alcantar,4/6,,1,25,520-280-3913,itati.a@yahoo.com,4/18/2026,$104 due 09/18 - 10/1 starts Subscrption 
-0627,PP,Current,Sadie Horsley,0/6,xxx,1,17,602-814-7874,horsley.sadie2008@gmail.com,4/1/2026,$100 due 09/25 - 10/1 starts Subscrption 
-1005,PP,Current,Ruth Brooks,,$300.00,5,22,702-929-1766,brooksruth2022@gmail.com,7/8/2026,$104 due 09/18
-1008,PP,Current,Steven Babcock,,$300.00,5,35,520-510-3340,steven.c.babcock789@gmail.com,7/8/2026,$104 due 09/18
+0627,PP,Current,Sadie Horsley,0/6,xxx,1,17,602-814-7874,horsley.sadie2008@gmail.com,4/1/2026,$100 due 09/25 - 10/1 starts Subscrption - NO TO SUBSCRIPTION 
+1005,PP,Current,Ruth Brooks,,$300.00,4,22,702-929-1766,brooksruth2022@gmail.com,7/8/2026,$104 due 10/02
+1008,PP,Current,Steven Babcock,,$300.00,4,35,520-510-3340,steven.c.babcock789@gmail.com,7/8/2026,$104 due 10/02
 0911,PP,Current,Marcus Baca ,,,3,21,505-948-1359,marcusbaca26@gmail.com,6/17/2026,$104 due 09/25
-0555,PP,Current,Kenia Cerna,1/6,,3,24,602-338-0433,kencerna15@gmail.com,6/6/2026,$104 due 09/18
-0556,PP,Current,Aylinn Fernandez,,,4,19,480-876-8840,aylinnf@icloud.com,6/13/2026,$104 due 09/18
-0522,PP,Current,Frederick Thompson,2/6,,2,,480-261-4045,tylerthmpsn@outlook.com,5/23/2026,$104 due 09/18
-0845,PP,Current,Genesis Soto,2/6,,1,20,480-516-4607,hennessyvs75@gmail.com,6/6/2026,$104 due 09/18 - 10/1 starts Subscrption 
+0556,PP,Current,Aylinn Fernandez,,,2,19,480-876-8840,aylinnf@icloud.com,6/13/2026,$104 due 10/02
 0735,PP,Current,Jacob Haskin,5/6,x,1,20,907-750-1994,haskinjacob72@gmail.com,4/22/2026,$124 due 09/25 - 10/1 starts subscription 
-0916,PP,Current,Gabriel Anderson,,$300.00,4,37,520-350-4455,gabby.anderson.89@gmail.com,6/20/2026,$104 due 09/18  Student is interested in subscription
+0916,PP,Current,Gabriel Anderson,,$300.00,3,37,520-350-4455,gabby.anderson.89@gmail.com,6/20/2026,$104 due 10/02  Student is interested in subscription
 1079,PIF,Current,Lilliana Fernandez,,,,15,562-313-1887,reyna_alcantar22@yahoo.com,8/15/2026,
 ,PIF,Current,Minh Thu Nguyen,,$900.00,,19,858-956-9078,mtnguyes2000@gmail.com,08/29/2026,
 1091,PIF,Current,Endy Dixon,,$900,,18,623-466-4222,endypd10@gmail.com,8/19/2026,

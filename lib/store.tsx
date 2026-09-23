@@ -264,7 +264,11 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
 
 function applyNativeEnrollmentFreeze(local: AppData): AppData {
-  const merged = mergeEnrollmentStudents(local.students, seedData.students, { updateExisting: true })
+  const merged = mergeEnrollmentStudents(local.students, seedData.students, {
+    updateExisting: true,
+    forceNotes: true,
+    forceStatus: true,
+  })
   return mergeDuplicateStudents({
     ...local,
     students: applyDrivePhotos(merged.students),

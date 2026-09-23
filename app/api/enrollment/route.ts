@@ -9,7 +9,7 @@ function seedStudents() {
 }
 
 const NATIVE_MESSAGE =
-  "Enrollment is native on this desk. The Google Sheet is no longer used — notes, due dates, and payment plans stay on the website."
+  "Enrollment is native on this desk (final workbook pull 2026-09-23). The Google Sheet is no longer used — notes, due dates, and payment plans stay on the website."
 
 export async function GET() {
   const students = seedStudents()

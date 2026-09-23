@@ -39,7 +39,7 @@ npm start
 
 ## Alerts
 
-- **Overdue** — red. Workbook OVERDUE plus notes that say a payment was declined. One list.
+- **Overdue** — red. Workbook OVERDUE, declined-card notes, or any unpaid Square/desk installment whose due date has already arrived (including 09/17–09/19). One list.
 - **Sub overdue** — orange. Subscribers only.
 - **Collections / cancelling** — amber. Kept off the overdue list.
 - **Paused** — violet, so the desk does not check them in by accident.
@@ -62,7 +62,7 @@ Status tags: **Current**, **Pending**, **Overdue**, **Paused**, **Collections**,
 
 ## Square, enrollment, Gmail, and texts
 
-The desk is the roster. Add and edit students here — including status tags, notes, due dates, and labels. The 2026 enrollment Google Sheet was pulled in once and saved natively; the site no longer reads that doc. Overdue is the saved OVERDUE status plus declined-card notes. Collections and cancelling stay separate. Square invoices stay on Payments and do not flip a current student overdue.
+The desk is the roster. Add and edit students here — including status tags, notes, due dates, and labels. The 2026 enrollment Google Sheet was pulled in a final time on 2026-09-23 (every tab) and saved natively; the site no longer reads that doc. Overdue is the saved OVERDUE status, declined-card notes, or a missed Square/desk payment on or before today. Collections and cancelling stay separate. Square installment dates stay on the calendar.
 
 Google Contacts lists land in their matching place: **Current Student** on Students, **Active Subscribers** on Subscriptions, and the photoshoot / Model Source lists on Photoshoots and Contacts. The full export is on **Contacts** with name, phone, email, and notes. **Newsletter** on Contacts is subscribers only.
 

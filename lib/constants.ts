@@ -29,7 +29,7 @@ export const ENROLLMENT_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
 /** Final enrollment pull is baked into seed.json. The Google Sheet is no longer polled. */
 export const ENROLLMENT_FROZEN = true
-export const ENROLLMENT_FREEZE_ID = "2026-09-17-native"
+export const ENROLLMENT_FREEZE_ID = "2026-09-23-final"
 /** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
 export const CONTACTS_LABELS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHzEdPAxtZVLF_qOGBK8Kd42PXfCnQGy2pmFRrIuXuLVLbqMrt76UMwIPmban9L8g1o3B3RU7eHY_9/pub?output=csv"

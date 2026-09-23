@@ -54,7 +54,7 @@ function mapRequestStatus(invoiceStatus: string, dueDate: string, paid: number, 
   if (key === "DRAFT" || key === "CANCELED" || key === "CANCELLED") return null
   if (amount > 0 && paid >= amount) return "paid"
   if (key === "FAILED") return "declined"
-  if (dueDate && dueDate < todayISO()) return "overdue"
+  if (dueDate && dueDate <= todayISO()) return "overdue"
   if (dueDate && dueDate > todayISO()) return "scheduled"
   return "due"
 }
@@ -219,7 +219,34 @@ function refreshStudentsFromPayments(
         student.installmentsLeft = 0
       }
     }
+    markMissedPaymentOverdue(student, rows)
   }
+}
+
+const PROTECTED_STATUS = new Set(["collections", "cancelling", "paused", "contact"])
+
+/** Unpaid Square/desk rows on or before today — including 09/17–09/19 — make the student overdue. */
+export function paymentIsMissed(payment: PaymentRecord, today = todayISO()) {
+  if (payment.status === "paid") return false
+  if (payment.source === "workbook") return false
+  const due = (payment.dueDate || "").slice(0, 10)
+  return Boolean(due) && due <= today
+}
+
+export function markMissedPaymentOverdue(student: Student, payments: PaymentRecord[], today = todayISO()) {
+  if (student.program === "prospect" || student.enrollmentStatus === "contact") return student
+  if (PROTECTED_STATUS.has(student.enrollmentStatus)) return student
+  const rows = payments.filter((p) => p.studentId === student.id && paymentIsMissed(p, today))
+  if (!rows.length) return student
+  const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
+  if (subscriber) {
+    student.enrollmentStatus = "overdue"
+    return student
+  }
+  if (student.paymentPlan === "pif" || student.enrollmentStatus === "pif") return student
+  const academyMissed = rows.some((p) => isAcademyItem(p.itemId, p.itemKind) || p.source === "manual")
+  if (academyMissed) student.enrollmentStatus = "overdue"
+  return student
 }
 
 export function squareFingerprint(invoices: SquareInvoiceRow[]) {

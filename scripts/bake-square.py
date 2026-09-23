@@ -87,7 +87,7 @@ def request_status(invoice_status: str, due: str, paid: float, amount: float) ->
         return "paid"
     if key == "FAILED":
         return "declined"
-    if due and due < TODAY:
+    if due and due <= TODAY:
         return "overdue"
     if due and due > TODAY:
         return "scheduled"

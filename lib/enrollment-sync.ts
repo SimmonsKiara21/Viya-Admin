@@ -35,7 +35,7 @@ const ACADEMY_LOCKED_FIELDS = new Set<(typeof WORKBOOK_FIELDS)[number]>([
 export function mergeEnrollmentStudents(
   current: Student[],
   workbook: Student[],
-  options: { updateExisting?: boolean } = {},
+  options: { updateExisting?: boolean; forceNotes?: boolean; forceStatus?: boolean } = {},
 ): { students: Student[]; added: number; updated: number } {
   const updateExisting = Boolean(options.updateExisting)
   const next = current.map((s) => ({ ...s }))
@@ -61,8 +61,8 @@ export function mergeEnrollmentStudents(
     )
     for (const field of WORKBOOK_FIELDS) {
       if (keepNames && (field === "firstName" || field === "lastName")) continue
-      if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
-      if (field === "notes" && existing.deskLocks?.notes) continue
+      if (field === "enrollmentStatus" && existing.deskLocks?.status && !options.forceStatus) continue
+      if (field === "notes" && existing.deskLocks?.notes && !options.forceNotes) continue
       if (field === "labels") {
         const labels = Array.isArray(row.labels) ? row.labels.filter(Boolean) : []
         if (!labels.length) continue
@@ -182,7 +182,7 @@ export function markPaidInFull<T extends Partial<Student>>(row: T): T {
 export function applyWorkbookRows(
   base: Student[],
   rows: Partial<Student>[],
-  options: { preserveAcademy?: boolean } = {},
+  options: { preserveAcademy?: boolean; forceNotes?: boolean; forceStatus?: boolean } = {},
 ): {
   students: Student[]
   added: number
@@ -207,8 +207,8 @@ export function applyWorkbookRows(
       const lockAcademy = Boolean(options.preserveAcademy && existing.program === "academy")
       for (const field of WORKBOOK_FIELDS) {
         if (keepNames && (field === "firstName" || field === "lastName")) continue
-        if (field === "enrollmentStatus" && existing.deskLocks?.status) continue
-        if (field === "notes" && existing.deskLocks?.notes) continue
+        if (field === "enrollmentStatus" && existing.deskLocks?.status && !options.forceStatus) continue
+        if (field === "notes" && existing.deskLocks?.notes && !options.forceNotes) continue
         if (lockAcademy && ACADEMY_LOCKED_FIELDS.has(field)) continue
         if (field === "notes") {
           const nextNotes = typeof row.notes === "string" ? row.notes.trim() : ""

@@ -43,6 +43,13 @@ export function displayStudentId(id: string) {
   return stripped.padStart(4, "0")
 }
 
+/** Digits from staff input or Square. Pads to 4 when the number is shorter. */
+export function parseStudentId(raw: string) {
+  const digits = (raw || "").replace(/\D/g, "")
+  if (!digits) return ""
+  return displayStudentId(digits)
+}
+
 export function formatStudentId(id: string) {
   const value = displayStudentId(id)
   return value ? `#${value}` : ""

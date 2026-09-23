@@ -16,7 +16,7 @@ import {
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { LabelsEditor } from "@/components/labels-editor"
 import { useStore } from "@/lib/store"
-import { newId } from "@/lib/format"
+import { displayStudentId, newId, parseStudentId } from "@/lib/format"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS } from "@/lib/constants"
 import type {
   EnrollmentStatus,
@@ -110,9 +110,17 @@ export function StudentFormDialog({
       toast.error("First and last name are required.")
       return
     }
-    const id = form.id.trim() || newId("VA").replace("VA-", "").toUpperCase()
-    if (students.some((s) => s.id === id)) {
-      toast.error("That talent ID is already in use.")
+    const typed = form.id.trim()
+    const parsed = parseStudentId(typed)
+    if (typed && !parsed) {
+      toast.error("Student ID must be numbers only — same as Square.")
+      return
+    }
+    const id = parsed || newId("VA")
+    if (
+      students.some((s) => s.id === id || (parsed && (s.id === parsed || displayStudentId(s.id) === parsed)))
+    ) {
+      toast.error("That student ID is already in use.")
       return
     }
     const student = {
@@ -159,9 +167,10 @@ export function StudentFormDialog({
           </Field>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Talent ID">
+          <Field label="Student ID">
             <Input
-              placeholder="Auto if blank"
+              inputMode="numeric"
+              placeholder="Same as Square — leave blank if unknown"
               value={form.id}
               onChange={(e) => patch({ id: e.target.value })}
             />

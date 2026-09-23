@@ -19,6 +19,7 @@ import {
   SubscriptionBadge,
 } from "@/components/status-badge"
 import { StaffNotesEditor } from "@/components/staff-notes-editor"
+import { StudentIdField } from "@/components/student-id-field"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
@@ -328,6 +329,13 @@ export default function StudentProfilePage() {
               ))}
             </div>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+              <StudentIdField
+                student={student}
+                onChanged={(nextId) => {
+                  const tab = searchParams.get("tab")
+                  router.replace(tab === "payments" ? `/students/${nextId}?tab=payments` : `/students/${nextId}`)
+                }}
+              />
               <div>
                 <dt className="text-xs text-muted-foreground uppercase">Email</dt>
                 <dd>{student.email || "—"}</dd>

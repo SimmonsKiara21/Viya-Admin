@@ -27,7 +27,7 @@ import type {
   Student,
   StudentTrack,
 } from "./types"
-import { newId, todayISO } from "./format"
+import { displayStudentId, newId, parseStudentId, todayISO } from "./format"
 import { paymentFromScheduleRow, type ScheduleRow } from "./schedule"
 import { allNotifyGroups } from "./groups"
 import { defaultItemForStudent } from "./square"
@@ -84,12 +84,40 @@ function remapStudentIds(data: AppData): AppData {
     attendance: data.attendance.map((row) => ({ ...row, studentId: map(row.studentId) })),
     feedback: data.feedback.map((row) => ({ ...row, studentId: map(row.studentId) })),
     photoshootPlacements: data.photoshootPlacements.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    notifications: data.notifications.map((note) => ({
+      ...note,
+      studentIds: note.studentIds.map(map),
+    })),
     groups: data.groups.map((group) => ({
       ...group,
       studentIds: group.studentIds.map(map),
     })),
   }
 }
+
+function reassignStudentId(data: AppData, fromId: string, toId: string): AppData {
+  if (!fromId || !toId || fromId === toId) return data
+  if (data.students.some((s) => s.id === toId)) return data
+  const map = (id: string) => (id === fromId ? toId : id)
+  return {
+    ...data,
+    students: data.students.map((s) => (s.id === fromId ? { ...s, id: toId } : s)),
+    payments: data.payments.map((p) => ({ ...p, studentId: map(p.studentId) })),
+    attendance: data.attendance.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    feedback: data.feedback.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    photoshootPlacements: data.photoshootPlacements.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    notifications: data.notifications.map((note) => ({
+      ...note,
+      studentIds: note.studentIds.map(map),
+    })),
+    groups: data.groups.map((group) => ({
+      ...group,
+      studentIds: group.studentIds.map(map),
+    })),
+  }
+}
+
+export type ChangeStudentIdResult = { ok: true; id: string } | { ok: false; error: string }
 
 function withoutDroppedStudents(data: AppData): AppData {
   const students = data.students.filter((s) => !isDroppedStudent(s))
@@ -361,6 +389,7 @@ type StoreContextValue = AppData & {
   customGroups: NotifyGroup[]
   saveDesk: () => boolean
   updateStudent: (id: string, patch: Partial<Student>) => void
+  changeStudentId: (fromId: string, nextId: string) => ChangeStudentIdResult
   addStudent: (student: Student) => void
   checkIn: (studentId: string, classType: ClassType, notes?: string) => AttendanceRecord
   removeAttendance: (id: string) => void
@@ -768,6 +797,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             return normalizeStudent(next)
           }),
         })),
+      changeStudentId: (fromId, rawNext) => {
+        const nextId = parseStudentId(rawNext)
+        if (!nextId) return { ok: false, error: "Student ID must be numbers only — same as Square." }
+        const current = dataRef.current
+        const student = current.students.find((s) => s.id === fromId)
+        if (!student) return { ok: false, error: "Talent not found." }
+        if (student.id === nextId || displayStudentId(student.id) === nextId) {
+          return { ok: true, id: student.id }
+        }
+        const taken = current.students.some(
+          (s) => s.id !== fromId && (s.id === nextId || displayStudentId(s.id) === nextId),
+        )
+        if (taken) return { ok: false, error: "That student ID is already on the roster." }
+        mutate((prev) => reassignStudentId(prev, fromId, nextId))
+        return { ok: true, id: nextId }
+      },
       addStudent: (student) =>
         mutate((prev) => ({
           ...prev,

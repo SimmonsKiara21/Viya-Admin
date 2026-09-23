@@ -306,7 +306,12 @@ export default function StudentProfilePage() {
               {fullName(student)}
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              {isContact(student) ? null : <ProgramBadge program={student.program} track={student.track} />}
+              {isContact(student) ? null : (
+                <ProgramBadge
+                  program={isSubscriberStudent(student) ? "subscriber" : student.program}
+                  track={isSubscriberStudent(student) ? "none" : student.track}
+                />
+              )}
               {isContact(student) || student.paymentPlan === "none" || student.paymentPlan === "subscription" ? null : (
                 <PlanBadge plan={student.paymentPlan} />
               )}

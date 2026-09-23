@@ -7,7 +7,7 @@ import { ContactLabelBadge, PlanBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
 import { useStore } from "@/lib/store"
-import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, isContact, isSubscriberStudent, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -68,7 +68,7 @@ export const StudentRow = memo(function StudentRow({
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)
   const contact = isContact(student)
-  const showCurrentStudent = context === "contacts" && !contact
+  const showCurrentStudent = context === "contacts" && !contact && !isSubscriberStudent(student)
   const showPlan = context === "roster" && (student.paymentPlan === "pif" || student.paymentPlan === "pp")
 
   return (

@@ -1,4 +1,5 @@
 import { ACADEMY_TIMEZONE, PAID_PIF_IDS, PAID_PIF_NAMES } from "./constants"
+import { isActiveSubscriber } from "./contacts-labels"
 import { academyDateISO, displayStudentId } from "./format"
 import { foldName } from "./match-name"
 import type { AttendanceRecord, Student } from "./types"
@@ -42,7 +43,7 @@ export function isCollectionsStudent(student: Student) {
 }
 
 export function isSubscriberStudent(student: Student) {
-  return student.program === "subscriber" || student.paymentPlan === "subscription"
+  return isActiveSubscriber(student)
 }
 
 /** Academy roster only — subscribers live on Subscriptions. */

@@ -79,17 +79,42 @@ export function hasGoogleTag(labels: string[] | undefined, tag: string) {
   return (labels || []).some((label) => sameGoogleTag(label, tag))
 }
 
+export function isActiveSubscriber(student: Pick<Student, "program" | "paymentPlan" | "subscriptionStatus" | "labels">) {
+  if (student.program === "subscriber" || student.paymentPlan === "subscription") return true
+  return hasContactLabel(student as Student, /active subscriber/i)
+}
+
+function isCurrentStudentLabel(label: string) {
+  return /current student/i.test(displayContactLabel(label))
+}
+
+/** Subscribers are not current students — drop that Google list so they stay on Subscriptions. */
+export function withoutCurrentStudentIfSubscriber<
+  T extends Pick<Student, "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
+>(student: T): T {
+  if (!isActiveSubscriber(student)) return student
+  const labels = (student.labels || []).filter((label) => !isCurrentStudentLabel(label))
+  const removed = student.removedLabels || []
+  const alreadyRemoved = removed.some((label) => isCurrentStudentLabel(label) || sameGoogleTag(label, "Current Student"))
+  return {
+    ...student,
+    labels,
+    removedLabels: alreadyRemoved ? removed : [...removed, "Current Student"],
+    contactCategory: student.contactCategory === "current-student" ? "subscriber" : student.contactCategory,
+  }
+}
+
 /** Drop Google / desk labels that repeat the enrollment or program badge. */
 export function uniqueContactLabels(student: Student) {
   const enrollment = ENROLLMENT_LABELS[student.enrollmentStatus].toLowerCase()
   const program = programDisplayLabel(student.program, student.track).toLowerCase()
-  const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
+  const subscriber = isActiveSubscriber(student)
   const paidInFull = student.enrollmentStatus === "pif"
 
   return (student.labels || []).filter((label) => {
     const value = displayContactLabel(label).toLowerCase().trim()
     if (value === enrollment || value === program) return false
-    if (/current student|^current$/.test(value) && student.program === "academy") return false
+    if (/current student|^current$/.test(value) && (student.program === "academy" || subscriber)) return false
     if (/^newsletter$/.test(value)) return false
     if (/active subscribers|^subscriber$/.test(value) && subscriber) return false
     if (/overdue|declined/.test(value) && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")) {
@@ -262,8 +287,8 @@ export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   if (/model source november/.test(text)) return "model-source-nov"
   if (/la model source/.test(text)) return "model-source-la"
   if (/photoshoot/.test(text)) return "photoshoot"
-  if (/current student/.test(text)) return "current-student"
   if (/active subscriber/.test(text)) return "subscriber"
+  if (/current student/.test(text)) return "current-student"
   return ""
 }
 
@@ -284,19 +309,24 @@ export function toggleStudentList(student: Student, tag: string): Partial<Studen
   const labels = student.labels || []
   const removed = student.removedLabels || []
   const on = sameGoogleTag(tag, "Newsletter") ? isNewsletterRecipient(student) : hasGoogleTag(labels, tag)
-  if (on) {
-    const next = labels.filter((label) => !sameGoogleTag(label, tag))
-    return {
-      labels: next,
-      contactCategory: categoryFromLabels(next),
-      removedLabels: removed.some((label) => sameGoogleTag(label, tag)) ? removed : [...removed, tag],
-    }
-  }
-  const next = [...labels, tag]
+  const nextLabels = on
+    ? labels.filter((label) => !sameGoogleTag(label, tag))
+    : [...labels, tag]
+  const nextRemoved = on
+    ? removed.some((label) => sameGoogleTag(label, tag))
+      ? removed
+      : [...removed, tag]
+    : removed.filter((label) => !sameGoogleTag(label, tag))
+  const cleaned = withoutCurrentStudentIfSubscriber({
+    ...student,
+    labels: nextLabels,
+    contactCategory: categoryFromLabels(nextLabels),
+    removedLabels: nextRemoved,
+  })
   return {
-    labels: next,
-    contactCategory: categoryFromLabels(next),
-    removedLabels: removed.filter((label) => !sameGoogleTag(label, tag)),
+    labels: cleaned.labels,
+    contactCategory: cleaned.contactCategory,
+    removedLabels: cleaned.removedLabels,
   }
 }
 
@@ -312,7 +342,9 @@ export function hasContactLabel(student: Student, pattern: RegExp) {
 
 export function onGoogleList(student: Student, filter: ContactCategory | "all") {
   if (filter === "all") return (student.labels || []).length > 0
-  if (filter === "current-student") return hasContactLabel(student, /current student/i)
+  if (filter === "current-student") {
+    return hasContactLabel(student, /current student/i) && !isActiveSubscriber(student)
+  }
   if (filter === "subscriber") return hasContactLabel(student, /active subscriber/i)
   if (filter === "photoshoot") return hasContactLabel(student, /photoshoot/i)
   if (filter === "model-source-la") return hasContactLabel(student, /la model source/i)
@@ -324,8 +356,10 @@ export function onGoogleList(student: Student, filter: ContactCategory | "all") 
 export function matchesContactFilter(student: Student, filter: ContactCategory | "all") {
   if (onGoogleList(student, filter)) return true
   if (filter === "all") return true
-  if (filter === "current-student") return student.contactCategory === "current-student"
-  if (filter === "subscriber") return student.contactCategory === "subscriber"
+  if (filter === "current-student") {
+    return student.contactCategory === "current-student" && !isActiveSubscriber(student)
+  }
+  if (filter === "subscriber") return student.contactCategory === "subscriber" || isActiveSubscriber(student)
   if (filter === "photoshoot") return student.contactCategory === "photoshoot"
   if (filter === "model-source-la") return student.contactCategory === "model-source-la"
   if (filter === "model-source-nov") return student.contactCategory === "model-source-nov"
@@ -346,6 +380,13 @@ function applyLabelEffects(student: Student, labels: string[]) {
     student.subscriptionStatus !== "cancelled"
   ) {
     student.subscriptionStatus = "active"
+  }
+  if (isActiveSubscriber(student) || text.includes("active subscriber")) {
+    student.labels = (student.labels || []).filter((label) => !isCurrentStudentLabel(label))
+    if (!(student.removedLabels || []).some((label) => isCurrentStudentLabel(label) || sameGoogleTag(label, "Current Student"))) {
+      student.removedLabels = [...(student.removedLabels || []), "Current Student"]
+    }
+    if (student.contactCategory === "current-student") student.contactCategory = "subscriber"
   }
   if (/photoshoot|model source/.test(text)) {
     if (student.photoshootStatus === "none") student.photoshootStatus = "received"
@@ -483,6 +524,15 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
         student.contactCategory = ""
         updated += 1
       }
+      if (isActiveSubscriber(student)) {
+        const cleaned = withoutCurrentStudentIfSubscriber(student)
+        if (cleaned.labels.join("|") !== (student.labels || []).join("|") || cleaned.contactCategory !== student.contactCategory) {
+          updated += 1
+        }
+        student.labels = cleaned.labels
+        student.removedLabels = cleaned.removedLabels
+        student.contactCategory = cleaned.contactCategory
+      }
       continue
     }
     const removed = student.removedLabels || []
@@ -497,6 +547,10 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
     const beforeCategory = student.contactCategory
     student.labels = withoutNewsletterLabels(merged)
     applyLabelEffects(student, merged)
+    const cleaned = withoutCurrentStudentIfSubscriber(student)
+    student.labels = cleaned.labels
+    student.removedLabels = cleaned.removedLabels
+    student.contactCategory = cleaned.contactCategory
     if (
       merged.join("|") !== before ||
       student.subscriptionStatus !== beforeSub ||

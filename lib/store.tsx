@@ -51,6 +51,7 @@ import {
   applyContactLabels,
   categoryFromLabels,
   contactLabelsFingerprint,
+  withoutCurrentStudentIfSubscriber,
   withoutNewsletterLabels,
   type ContactLabelRow,
 } from "./contacts-labels"
@@ -321,7 +322,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     docusignSignedAt: s.docusignSignedAt || "",
     docusignNotes: s.docusignNotes || "",
   }
-  return applyDrivePhotos([markPaidInFull(student)])[0]
+  return applyDrivePhotos([markPaidInFull(withoutCurrentStudentIfSubscriber(student))])[0]
 }
 
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {

@@ -6,7 +6,6 @@ import { StudentRow } from "@/components/student-row"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
 import { SUB_LABELS } from "@/lib/constants"
-import { hasContactLabel } from "@/lib/contacts-labels"
 import {
   catalogItemForStudent,
   SUBSCRIPTION_ITEM,
@@ -14,7 +13,7 @@ import {
   SUBSCRIPTION_PLUS_ITEM,
 } from "@/lib/square"
 import { formatMoney } from "@/lib/format"
-import { isContact } from "@/lib/alerts"
+import { isContact, isSubscriberStudent } from "@/lib/alerts"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
 import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
@@ -61,11 +60,11 @@ export default function SubscriptionsPage() {
 
   const list = useMemo(() => {
     const base = students.filter((s) => {
-      const labeled = hasContactLabel(s, /active subscriber/i)
-      if (filter === "all") {
-        return labeled || s.subscriptionStatus !== "none" || s.program === "subscriber"
+      if (!isSubscriberStudent(s)) return false
+      if (filter === "all") return true
+      if (filter === "active") {
+        return s.subscriptionStatus !== "paused" && s.subscriptionStatus !== "cancelled"
       }
-      if (filter === "active") return labeled || s.subscriptionStatus === "active"
       return s.subscriptionStatus === filter
     })
     return sortStudents(base, sort)

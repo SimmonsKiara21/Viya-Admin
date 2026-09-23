@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { FilterChip, FilterGroup } from "@/components/filter-chip"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -21,17 +22,19 @@ import {
 import { isContact } from "@/lib/alerts"
 import type { ContactCategory, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
 export default function ContactsPage() {
   const { students, addStudent } = useStore()
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<(typeof CONTACT_FILTERS)[number]>("all")
+  const [sort, setSort] = useState<RosterSort>("az")
   const [adding, setAdding] = useState(false)
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", notes: "", contactCategory: "" as ContactCategory | "" })
 
   const contacts = useMemo(() => {
     const googleList = category !== "all" && GOOGLE_CONTACT_FILTERS.includes(category)
-    return students
+    const rows = students
       .filter((s) => {
         if (category === "all") return isContact(s) || onGoogleList(s, "all")
         if (category === "newsletter") return isNewsletterRecipient(s)
@@ -44,8 +47,8 @@ export default function ContactsPage() {
           ? true
           : matchesContactFilter(s, category),
       )
-      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
-  }, [students, query, category])
+    return sortStudents(rows, sort)
+  }, [students, query, category, sort])
 
   function save() {
     if (!form.firstName.trim() || !form.lastName.trim()) {
@@ -155,7 +158,7 @@ export default function ContactsPage() {
           placeholder="Filter by name, phone, or email"
           className="h-11 max-w-xl rounded-full px-4"
         />
-        <div className="flex flex-wrap gap-2">
+        <FilterGroup label="List">
           {CONTACT_FILTERS.map((item) => {
             const count =
               item === "all"
@@ -182,7 +185,14 @@ export default function ContactsPage() {
             </button>
             )
           })}
-        </div>
+        </FilterGroup>
+        <FilterGroup label="Sort">
+          {ROSTER_SORTS.map((option) => (
+            <FilterChip key={option} active={sort === option} onClick={() => setSort(option)}>
+              {ROSTER_SORT_LABELS[option]}
+            </FilterChip>
+          ))}
+        </FilterGroup>
       </div>
 
       {contacts.length === 0 ? (
@@ -197,7 +207,7 @@ export default function ContactsPage() {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
           <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
-            {contacts.length} contact{contacts.length === 1 ? "" : "s"}
+            {contacts.length} contact{contacts.length === 1 ? "" : "s"} · {ROSTER_SORT_LABELS[sort]}
           </div>
           <div className="divide-y divide-border px-2 py-1">
             {contacts.map((student) => (

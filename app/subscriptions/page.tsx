@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { FilterChip, FilterGroup } from "@/components/filter-chip"
 import { StudentRow } from "@/components/student-row"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
@@ -15,7 +16,7 @@ import {
 import { formatMoney } from "@/lib/format"
 import { isContact } from "@/lib/alerts"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
 const PLAN_COPY =
   "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
@@ -56,6 +57,7 @@ function planIdForStudent(student: Student, payments: PaymentRecord[]) {
 export default function SubscriptionsPage() {
   const { students, payments } = useStore()
   const [filter, setFilter] = useState<SubscriptionStatus | "all">("all")
+  const [sort, setSort] = useState<RosterSort>("az")
 
   const list = useMemo(() => {
     const base = students.filter((s) => {
@@ -66,8 +68,8 @@ export default function SubscriptionsPage() {
       if (filter === "active") return labeled || s.subscriptionStatus === "active"
       return s.subscriptionStatus === filter
     })
-    return base.sort((a, b) => a.lastName.localeCompare(b.lastName))
-  }, [students, filter])
+    return sortStudents(base, sort)
+  }, [students, filter, sort])
 
   const byPlan = useMemo(() => {
     const groups: Record<string, Student[]> = {
@@ -104,22 +106,21 @@ export default function SubscriptionsPage() {
         ))}
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {(["all", "active", "interested", "paused", "cancelled"] as const).map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setFilter(s)}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium",
-              filter === s
-                ? "border-[oklch(0.78_0.08_85/0.5)] bg-[oklch(0.78_0.08_85/0.16)]"
-                : "border-border text-muted-foreground",
-            )}
-          >
-            {s === "all" ? "All with a sub" : SUB_LABELS[s]}
-          </button>
-        ))}
+      <div className="mb-4 flex flex-col gap-3">
+        <FilterGroup label="Status">
+          {(["all", "active", "interested", "paused", "cancelled"] as const).map((s) => (
+            <FilterChip key={s} active={filter === s} onClick={() => setFilter(s)}>
+              {s === "all" ? "All with a sub" : SUB_LABELS[s]}
+            </FilterChip>
+          ))}
+        </FilterGroup>
+        <FilterGroup label="Sort">
+          {ROSTER_SORTS.map((option) => (
+            <FilterChip key={option} active={sort === option} onClick={() => setSort(option)}>
+              {ROSTER_SORT_LABELS[option]}
+            </FilterChip>
+          ))}
+        </FilterGroup>
       </div>
 
       {list.length === 0 ? (

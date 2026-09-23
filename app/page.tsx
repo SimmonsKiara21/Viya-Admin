@@ -67,11 +67,11 @@ export default function HomePage() {
       </Panel>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard icon={Users} label="Talent" value={String(stats.current.length)} href="/students" />
+        <StatCard icon={Users} label="Talent" value={String(stats.current.length)} href="/students?status=current" />
         <StatCard icon={AlertTriangle} label="Overdue" value={String(stats.overdue.length)} href="/alerts" />
         <StatCard icon={FolderOpen} label="Collections" value={String(stats.collections.length)} href="/alerts" />
         <StatCard icon={AlertTriangle} label="Sub overdue" value={String(stats.subscriberOverdue.length)} href="/alerts" />
-        <StatCard icon={UserPlus} label="Pending" value={String(stats.pending.length)} href="/students" />
+        <StatCard icon={UserPlus} label="Pending" value={String(stats.pending.length)} href="/students?status=pending&sort=start-new" />
       </div>
 
       <p className="mt-10 text-center text-xs text-muted-foreground">

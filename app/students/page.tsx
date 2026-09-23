@@ -1,10 +1,12 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { EmptyState, PageHeader } from "@/components/ui-helpers"
+import { FilterChip, FilterGroup } from "@/components/filter-chip"
 import { StudentRow } from "@/components/student-row"
 import { EnrollmentTagEditor } from "@/components/student-tag-editor"
 import { StudentFormDialog } from "@/components/student-form-dialog"
@@ -12,8 +14,14 @@ import { useStore } from "@/lib/store"
 import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
 import { ENROLLMENT_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
+import {
+  isRosterSort,
+  ROSTER_SORT_LABELS,
+  ROSTER_SORTS,
+  sortStudents,
+  type RosterSort,
+} from "@/lib/roster-sort"
 import type { EnrollmentStatus } from "@/lib/types"
-import { cn } from "@/lib/utils"
 
 const STATUSES: Array<EnrollmentStatus | "all"> = [
   "all",
@@ -33,15 +41,39 @@ const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting"> = [
   "acting",
 ]
 
+function isStatus(value: string | null): value is EnrollmentStatus | "all" {
+  return Boolean(value && (STATUSES as readonly string[]).includes(value))
+}
+
+function isProgram(value: string | null): value is (typeof PROGRAMS)[number] {
+  return Boolean(value && (PROGRAMS as readonly string[]).includes(value))
+}
+
 export default function StudentsPage() {
   const { students } = useStore()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [query, setQuery] = useState("")
-  const [status, setStatus] = useState<EnrollmentStatus | "all">("all")
-  const [program, setProgram] = useState<(typeof PROGRAMS)[number]>("all")
   const [open, setOpen] = useState(false)
 
+  const statusParam = searchParams.get("status")
+  const programParam = searchParams.get("program")
+  const sortParam = searchParams.get("sort")
+  const status = isStatus(statusParam) ? statusParam : "all"
+  const program = isProgram(programParam) ? programParam : "all"
+  const sort: RosterSort = isRosterSort(sortParam) ? sortParam : "az"
+
+  function setParam(key: string, value: string, fallback: string) {
+    const next = new URLSearchParams(searchParams.toString())
+    if (!value || value === fallback) next.delete(key)
+    else next.set(key, value)
+    const qs = next.toString()
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+  }
+
   const filtered = useMemo(() => {
-    return students
+    const rows = students
       .filter(isAcademyTalent)
       .filter((s) => matchesQuery(s, query))
       .filter((s) => {
@@ -60,8 +92,10 @@ export default function StudentsPage() {
         }
         return s.program === program
       })
-      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
-  }, [students, query, status, program])
+    return sortStudents(rows, sort)
+  }, [students, query, status, program, sort])
+
+  const showStartDate = sort === "start-new" || sort === "start-old"
 
   return (
     <div>
@@ -84,20 +118,27 @@ export default function StudentsPage() {
           placeholder="Filter this list by name, ID, phone, or email"
           className="h-11 max-w-xl rounded-full px-4"
         />
-        <div className="flex flex-wrap gap-2">
+        <FilterGroup label="Program">
           {PROGRAMS.map((p) => (
-            <Chip key={p} active={program === p} onClick={() => setProgram(p)}>
+            <FilterChip key={p} active={program === p} onClick={() => setParam("program", p, "all")}>
               {p === "all" ? "All programs" : p === "modeling" || p === "acting" ? TRACK_LABELS[p] : PROGRAM_LABELS[p]}
-            </Chip>
+            </FilterChip>
           ))}
-        </div>
-        <div className="flex flex-wrap gap-2">
+        </FilterGroup>
+        <FilterGroup label="Status">
           {STATUSES.map((s) => (
-            <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
+            <FilterChip key={s} active={status === s} onClick={() => setParam("status", s, "all")}>
               {s === "all" ? "All statuses" : ENROLLMENT_LABELS[s]}
-            </Chip>
+            </FilterChip>
           ))}
-        </div>
+        </FilterGroup>
+        <FilterGroup label="Sort">
+          {ROSTER_SORTS.map((option) => (
+            <FilterChip key={option} active={sort === option} onClick={() => setParam("sort", option, "az")}>
+              {ROSTER_SORT_LABELS[option]}
+            </FilterChip>
+          ))}
+        </FilterGroup>
       </div>
 
       {filtered.length === 0 ? (
@@ -108,13 +149,13 @@ export default function StudentsPage() {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-border bg-card/60">
           <div className="border-b border-border px-4 py-2 text-xs text-muted-foreground">
-            {filtered.length} talent
+            {filtered.length} talent · {ROSTER_SORT_LABELS[sort]}
           </div>
           <div className="divide-y divide-border px-2 py-1">
             {filtered.map((student) => (
               <div key={student.id} className="flex flex-col gap-2 py-1 sm:flex-row sm:items-center">
                 <div className="min-w-0 flex-1">
-                  <StudentRow student={student} />
+                  <StudentRow student={student} showStartDate={showStartDate} />
                 </div>
                 <div className="flex items-center px-2 pb-2 sm:pb-0">
                   <EnrollmentTagEditor student={student} />
@@ -127,30 +168,5 @@ export default function StudentsPage() {
 
       <StudentFormDialog open={open} onOpenChange={setOpen} />
     </div>
-  )
-}
-
-function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-        active
-          ? "border-primary/50 bg-primary/16 text-primary"
-          : "border-border text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {children}
-    </button>
   )
 }

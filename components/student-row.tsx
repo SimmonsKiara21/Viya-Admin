@@ -53,9 +53,11 @@ function detail(student: Student, tone: HighlightTone, left: number | null) {
 export const StudentRow = memo(function StudentRow({
   student,
   context = "roster",
+  showStartDate = false,
 }: {
   student: Student
   context?: "roster" | "contacts"
+  showStartDate?: boolean
 }) {
   const { updateStudent } = useStore()
   const tone = highlightTone(student)
@@ -88,6 +90,13 @@ export const StudentRow = memo(function StudentRow({
             .filter(Boolean)
             .join(" · ")}
           {context === "roster" ? detail(student, tone, left) : ""}
+          {context === "roster" &&
+          showStartDate &&
+          student.startDate &&
+          tone !== "pending" &&
+          tone !== "pif"
+            ? ` · start ${formatDate(student.startDate)}`
+            : ""}
         </p>
         {context === "roster" && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">

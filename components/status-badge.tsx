@@ -25,7 +25,7 @@ import type {
 
 const enrollmentClass: Record<EnrollmentStatus, string> = {
   current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200 sepia:border-emerald-800 sepia:bg-emerald-400/75 sepia:text-emerald-950",
-  pending: "border-sky-500/40 bg-sky-500/12 text-sky-800 dark:text-sky-200 sepia:border-sky-800 sepia:bg-sky-400/75 sepia:text-sky-950",
+  pending: "border-fuchsia-500/40 bg-fuchsia-500/14 text-fuchsia-900 dark:text-fuchsia-100",
   declined: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:border-rose-800 sepia:bg-rose-400/75 sepia:text-rose-950",
   pif: "border-emerald-500/40 bg-emerald-500/16 text-emerald-900 dark:text-emerald-100 sepia:border-emerald-800 sepia:bg-emerald-400/80 sepia:text-emerald-950",
   overdue: "border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200 sepia:border-rose-800 sepia:bg-rose-400/75 sepia:text-rose-950",
@@ -94,15 +94,9 @@ export function PaymentBadge({ status }: { status: PaymentStatus }) {
 }
 
 export function PlanBadge({ plan }: { plan: PaymentPlan | "" }) {
-  if (!plan || plan === "none") return null
-  const cls =
-    plan === "pif"
-      ? "border-[oklch(0.78_0.08_85/0.45)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
-      : plan === "pp"
-        ? "border-border text-muted-foreground"
-        : "border-teal-500/30 bg-teal-500/12 text-teal-800 dark:text-teal-200"
+  if (plan !== "pp" && plan !== "pif") return null
   return (
-    <Badge variant="outline" className={cn("font-medium", cls)}>
+    <Badge variant="outline" className="font-medium">
       {PLAN_LABELS[plan]}
     </Badge>
   )

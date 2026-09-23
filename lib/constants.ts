@@ -131,7 +131,7 @@ export function programDisplayLabel(program: Program, track?: StudentTrack) {
 }
 
 export const PLAN_LABELS: Record<PaymentPlan, string> = {
-  pp: "Payment Plan",
+  pp: "PP",
   pif: "PIF",
   subscription: "Subscription",
   none: "None",

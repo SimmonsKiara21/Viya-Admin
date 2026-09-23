@@ -116,8 +116,7 @@ export function isPaidInFull(student: Student) {
   if (!isAcademyTalent(student)) return false
   if (isCollectionsStudent(student) || isPausedStudent(student) || isPendingStudent(student)) return false
   if (isOverdueStudent(student)) return false
-  if (hasOpenAcademyTuition(student)) return false
-  return student.enrollmentStatus === "pif" || isPifPlan(student)
+  return remainingPayments(student) === 0
 }
 
 export type HighlightTone =
@@ -170,7 +169,7 @@ export function isFinishingSoon(student: Student) {
   if (student.paymentPlan !== "pp") return false
   if (!startedByMay2026(student)) return false
   const left = remainingPayments(student)
-  return left != null && left < 3
+  return left != null && left > 0 && left < 3
 }
 
 export function highlightTone(student: Student): HighlightTone {

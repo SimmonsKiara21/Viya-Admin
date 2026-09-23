@@ -3,11 +3,11 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { ContactLabelBadge, EnrollmentBadge, PlanBadge, ProgramBadge } from "@/components/status-badge"
+import { ContactLabelBadge, PlanBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
 import { useStore } from "@/lib/store"
-import { highlightTone, isContact, isPifPlan, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -21,7 +21,7 @@ const ROW: Record<Exclude<HighlightTone, "none">, string> = {
   paused:
     "bg-violet-500/12 ring-1 ring-violet-400/35 hover:bg-violet-500/18 sepia:bg-[#c4a4e0] sepia:ring-2 sepia:ring-[#5a2d8a] sepia:hover:bg-[#b48ed6]",
   pending:
-    "bg-sky-500/12 ring-1 ring-sky-400/35 hover:bg-sky-500/18 sepia:bg-[#8ec8e8] sepia:ring-2 sepia:ring-[#1d5f86] sepia:hover:bg-[#74b7de]",
+    "bg-fuchsia-500/14 ring-1 ring-fuchsia-400/45 hover:bg-fuchsia-500/20",
   finishing:
     "bg-lime-500/16 ring-1 ring-lime-400/45 hover:bg-lime-500/22 sepia:bg-[#b8d96a] sepia:ring-2 sepia:ring-[#4a6b14] sepia:hover:bg-[#a6cc4e]",
   pif: "bg-emerald-500/14 ring-1 ring-emerald-400/40 hover:bg-emerald-500/20 sepia:bg-[#86d4a8] sepia:ring-2 sepia:ring-[#1f6b45] sepia:hover:bg-[#6cc894]",
@@ -32,25 +32,22 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   subscriberOverdue: "text-orange-900 dark:text-orange-100 sepia:text-[#4a2408]",
   collections: "text-amber-900 dark:text-amber-200 sepia:text-[#3d2e08]",
   paused: "text-violet-900 dark:text-violet-200 sepia:text-[#2e1050]",
-  pending: "text-sky-900 dark:text-sky-200 sepia:text-[#0c3a58]",
+  pending: "text-fuchsia-900 dark:text-fuchsia-100",
   finishing: "text-lime-800 dark:text-lime-100 sepia:text-[#243808]",
   pif: "text-emerald-900 dark:text-emerald-100 sepia:text-[#0c3d28]",
 }
 
 function detail(student: Student, tone: HighlightTone, left: number | null) {
-  const plan = isPifPlan(student) && tone !== "pif" ? " · PIF" : ""
   if (tone === "overdue" || tone === "subscriberOverdue" || tone === "collections") {
-    return `${plan} · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
+    return ` · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
   }
-  if (tone === "finishing") return `${plan} · ${left} payment${left === 1 ? "" : "s"} left`
-  if (tone === "paused") return `${plan} · not on the floor`
+  if (tone === "finishing") return ` · ${left} payment${left === 1 ? "" : "s"} left`
+  if (tone === "paused") return " · not on the floor"
   if (tone === "pending") {
-    const start = student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
-    return `${plan}${start}`
+    return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
   }
-  if (tone === "pif") return student.startDate ? ` · started ${formatDate(student.startDate)}` : ""
-  const fallback = student.phone ? "" : ` · ${student.email || ""}`
-  return `${plan}${fallback}`
+  if (tone === "pif") return " · no payments left"
+  return student.phone ? "" : ` · ${student.email || ""}`
 }
 
 export const StudentRow = memo(function StudentRow({
@@ -68,11 +65,8 @@ export const StudentRow = memo(function StudentRow({
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)
   const contact = isContact(student)
-  const showProgram = student.track === "modeling" || student.track === "acting"
-  const showWrapUp = context === "roster" && tone === "finishing"
-  const showEnrollment =
-    context === "roster" && !contact && student.enrollmentStatus !== "contact" && !showWrapUp
   const showCurrentStudent = context === "contacts" && !contact
+  const showPlan = context === "roster" && (student.paymentPlan === "pif" || student.paymentPlan === "pp")
 
   return (
     <Link
@@ -130,21 +124,7 @@ export const StudentRow = memo(function StudentRow({
             Current Student
           </span>
         ) : null}
-        {showProgram ? <ProgramBadge program={student.program} track={student.track} /> : null}
-        {context === "roster" && (student.paymentPlan === "pif" || student.paymentPlan === "pp") ? (
-          <PlanBadge plan={student.paymentPlan} />
-        ) : null}
-        {showEnrollment ? (
-          <EnrollmentBadge
-            status={student.enrollmentStatus}
-            subscriber={student.program === "subscriber" || student.paymentPlan === "subscription"}
-          />
-        ) : null}
-        {showWrapUp ? (
-          <span className="inline-flex h-5 items-center rounded-full bg-lime-500/25 px-2 text-[11px] leading-none font-semibold text-lime-900 dark:text-lime-100">
-            Wrapping up
-          </span>
-        ) : null}
+        {showPlan ? <PlanBadge plan={student.paymentPlan} /> : null}
       </div>
     </Link>
   )

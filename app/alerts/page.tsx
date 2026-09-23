@@ -139,9 +139,9 @@ const TONE = {
     divide: "divide-violet-400/20",
   },
   pending: {
-    panel: "ring-1 ring-sky-400/30",
-    title: "text-sky-900 dark:text-sky-100",
-    divide: "divide-sky-400/20",
+    panel: "ring-1 ring-fuchsia-400/35",
+    title: "text-fuchsia-900 dark:text-fuchsia-100",
+    divide: "divide-fuchsia-400/20",
   },
   finishing: {
     panel: "ring-1 ring-lime-400/30",

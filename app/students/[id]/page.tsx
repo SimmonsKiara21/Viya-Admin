@@ -235,11 +235,11 @@ export default function StudentProfilePage() {
       ) : null}
 
       {isPendingStudent(student) ? (
-        <div className="mb-4 rounded-2xl border border-sky-400/40 bg-sky-100/80 p-4 dark:bg-sky-950/40 sepia:bg-sky-200">
-          <p className="font-heading text-xl text-sky-900 dark:text-sky-100 sepia:text-sky-950">
+        <div className="mb-4 rounded-2xl border border-fuchsia-400/45 bg-fuchsia-100/80 p-4 dark:bg-fuchsia-950/40">
+          <p className="font-heading text-xl text-fuchsia-900 dark:text-fuchsia-100">
             Pending
           </p>
-          <p className="mt-1 text-sm text-sky-800 dark:text-sky-50/90 sepia:text-sky-950">
+          <p className="mt-1 text-sm text-fuchsia-800 dark:text-fuchsia-50/90">
             {student.startDate ? `Starts ${formatDate(student.startDate)}.` : "No start date yet."}
           </p>
         </div>
@@ -295,7 +295,7 @@ export default function StudentProfilePage() {
                     : tone === "paused"
                       ? "text-violet-900 dark:text-violet-200"
                       : tone === "pending"
-                        ? "text-sky-900 dark:text-sky-200"
+                        ? "text-fuchsia-900 dark:text-fuchsia-100"
                         : tone === "finishing"
                           ? "text-lime-800 dark:text-lime-100"
                           : tone === "pif"
@@ -310,7 +310,12 @@ export default function StudentProfilePage() {
               {isContact(student) || student.paymentPlan === "none" || student.paymentPlan === "subscription" ? null : (
                 <PlanBadge plan={student.paymentPlan} />
               )}
-              {student.enrollmentStatus !== "contact" ? (
+              {student.enrollmentStatus === "pending" ||
+              student.enrollmentStatus === "overdue" ||
+              student.enrollmentStatus === "declined" ||
+              student.enrollmentStatus === "paused" ||
+              student.enrollmentStatus === "collections" ||
+              student.enrollmentStatus === "cancelling" ? (
                 <EnrollmentBadge
                   status={student.enrollmentStatus}
                   subscriber={isSubscriberStudent(student)}

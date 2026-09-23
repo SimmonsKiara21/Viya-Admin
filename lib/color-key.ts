@@ -31,8 +31,8 @@ export const COLOR_KEY = [
     id: "pending",
     label: "Pending",
     meaning: "Has not started yet",
-    swatch: "bg-sky-500",
-    text: "text-sky-900 dark:text-sky-100 sepia:text-sky-950",
+    swatch: "bg-fuchsia-500",
+    text: "text-fuchsia-900 dark:text-fuchsia-100",
   },
   {
     id: "finishing",
@@ -44,7 +44,7 @@ export const COLOR_KEY = [
   {
     id: "pif",
     label: "Paid in full",
-    meaning: "Academy tuition is paid — a PIF plan is not enough until that deposit is in",
+    meaning: "No academy payments left",
     swatch: "bg-emerald-500",
     text: "text-emerald-900 dark:text-emerald-100 sepia:text-emerald-950",
   },

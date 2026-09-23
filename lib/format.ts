@@ -37,7 +37,10 @@ export function displayName(student: Pick<Student, "firstName" | "lastName" | "n
 /** Square / enrollment student numbers only. Hide ENR, GC, VA, PS, and other synthetic ids. */
 export function displayStudentId(id: string) {
   const raw = (id || "").trim()
-  return /^\d+$/.test(raw) ? raw : ""
+  if (!/^\d+$/.test(raw)) return ""
+  const stripped = raw.replace(/^0+/, "") || "0"
+  if (stripped.length > 4) return stripped
+  return stripped.padStart(4, "0")
 }
 
 export function formatStudentId(id: string) {

@@ -33,6 +33,11 @@ export const ENROLLMENT_FREEZE_ID = "2026-09-23-drop-lerma"
 /** Dropped after a Square + enrollment check — canceled invoice, not on the workbook. */
 export const DROPPED_ROSTER_IDS = ["1103"]
 export const DROPPED_ROSTER_NAMES = ["noah lerma"]
+/** Old website ids → Square academy / enrollment student numbers. */
+export const STUDENT_ID_ALIASES: Record<string, string> = {
+  "0830": "0839",
+  "0412": "0381",
+}
 /** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
 export const CONTACTS_LABELS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHzEdPAxtZVLF_qOGBK8Kd42PXfCnQGy2pmFRrIuXuLVLbqMrt76UMwIPmban9L8g1o3B3RU7eHY_9/pub?output=csv"

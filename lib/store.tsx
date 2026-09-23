@@ -37,7 +37,13 @@ import {
   replaceAttendanceFromTracker,
   type JotformCheckIn,
 } from "./jotform"
-import { DROPPED_ROSTER_IDS, DROPPED_ROSTER_NAMES, ENROLLMENT_FREEZE_ID, JOTFORM_ATTENDANCE_URL } from "./constants"
+import {
+  DROPPED_ROSTER_IDS,
+  DROPPED_ROSTER_NAMES,
+  ENROLLMENT_FREEZE_ID,
+  JOTFORM_ATTENDANCE_URL,
+  STUDENT_ID_ALIASES,
+} from "./constants"
 import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
@@ -58,6 +64,31 @@ const DROPPED_NAMES = new Set(DROPPED_ROSTER_NAMES)
 function isDroppedStudent(student: Pick<Student, "id" | "firstName" | "lastName">) {
   if (DROPPED_IDS.has(student.id)) return true
   return DROPPED_NAMES.has(foldName(`${student.firstName} ${student.lastName}`))
+}
+
+function remapStudentIds(data: AppData): AppData {
+  const aliases = STUDENT_ID_ALIASES
+  const used = new Set(data.students.map((s) => s.id))
+  const students = data.students.map((s) => {
+    const next = aliases[s.id]
+    if (!next || next === s.id || used.has(next)) return s
+    used.delete(s.id)
+    used.add(next)
+    return { ...s, id: next }
+  })
+  const map = (id: string) => aliases[id] && students.some((s) => s.id === aliases[id]) ? aliases[id] : id
+  return {
+    ...data,
+    students,
+    payments: data.payments.map((p) => ({ ...p, studentId: map(p.studentId) })),
+    attendance: data.attendance.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    feedback: data.feedback.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    photoshootPlacements: data.photoshootPlacements.map((row) => ({ ...row, studentId: map(row.studentId) })),
+    groups: data.groups.map((group) => ({
+      ...group,
+      studentIds: group.studentIds.map(map),
+    })),
+  }
 }
 
 function withoutDroppedStudents(data: AppData): AppData {
@@ -272,16 +303,18 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
   const basePlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
   return withoutDroppedStudents(
-    mergeDuplicateStudents({
-      students,
-      attendance: raw.attendance ?? [],
-      feedback: raw.feedback ?? [],
-      payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
-      notifications: raw.notifications ?? [],
-      groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
-      photoshoots,
-      photoshootPlacements: mergeLabelPlacements(basePlacements, students),
-    }),
+    remapStudentIds(
+      mergeDuplicateStudents({
+        students,
+        attendance: raw.attendance ?? [],
+        feedback: raw.feedback ?? [],
+        payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
+        notifications: raw.notifications ?? [],
+        groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
+        photoshoots,
+        photoshootPlacements: mergeLabelPlacements(basePlacements, students),
+      }),
+    ),
   )
 }
 

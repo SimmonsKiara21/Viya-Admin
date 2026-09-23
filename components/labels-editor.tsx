@@ -1,12 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ContactLabelBadge } from "@/components/status-badge"
 import { SUGGESTED_LABELS } from "@/lib/constants"
-import { displayContactLabel } from "@/lib/contacts-labels"
 import { cn } from "@/lib/utils"
 
 export function LabelsEditor({
@@ -40,21 +38,11 @@ export function LabelsEditor({
       {current.length ? (
         <div className="flex flex-wrap gap-1.5">
           {current.map((label) => (
-            <span key={label} className="inline-flex items-center gap-1">
-              <ContactLabelBadge label={label} />
-              <button
-                type="button"
-                onClick={() => remove(label)}
-                className="rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                aria-label={`Remove ${displayContactLabel(label)}`}
-              >
-                <X className="size-3.5" />
-              </button>
-            </span>
+            <ContactLabelBadge key={label} label={label} onRemove={() => remove(label)} />
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No tags yet.</p>
+        <p className="text-sm text-muted-foreground">No tags yet. Add one below or tap a suggestion.</p>
       )}
       <div className="flex gap-2">
         <Input

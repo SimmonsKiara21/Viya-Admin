@@ -485,9 +485,10 @@ export function applyContactLabels(students: Student[], rows: ContactLabelRow[])
       }
       continue
     }
-    const removed = new Set(student.removedLabels || [])
-    const extras = (student.labels || []).filter((label) => !labels.includes(label) && !removed.has(label))
-    const merged = [...new Set([...labels.filter((label) => !removed.has(label)), ...extras])].sort((a, b) =>
+    const removed = student.removedLabels || []
+    const wasRemoved = (label: string) => removed.some((item) => sameGoogleTag(item, label))
+    const extras = (student.labels || []).filter((label) => !labels.includes(label) && !wasRemoved(label))
+    const merged = [...new Set([...labels.filter((label) => !wasRemoved(label)), ...extras])].sort((a, b) =>
       displayContactLabel(a).localeCompare(displayContactLabel(b)),
     )
     const before = (student.labels || []).join("|")

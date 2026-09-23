@@ -37,7 +37,7 @@ import {
   replaceAttendanceFromTracker,
   type JotformCheckIn,
 } from "./jotform"
-import { ENROLLMENT_FREEZE_ID, JOTFORM_ATTENDANCE_URL } from "./constants"
+import { DROPPED_ROSTER_IDS, DROPPED_ROSTER_NAMES, ENROLLMENT_FREEZE_ID, JOTFORM_ATTENDANCE_URL } from "./constants"
 import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
@@ -50,6 +50,28 @@ import {
 } from "./contacts-labels"
 import { mergeDuplicateStudents } from "./merge-duplicates"
 import { applyDrivePhotos } from "./photos-overlay"
+import { foldName } from "./match-name"
+
+const DROPPED_IDS = new Set(DROPPED_ROSTER_IDS)
+const DROPPED_NAMES = new Set(DROPPED_ROSTER_NAMES)
+
+function isDroppedStudent(student: Pick<Student, "id" | "firstName" | "lastName">) {
+  if (DROPPED_IDS.has(student.id)) return true
+  return DROPPED_NAMES.has(foldName(`${student.firstName} ${student.lastName}`))
+}
+
+function withoutDroppedStudents(data: AppData): AppData {
+  const students = data.students.filter((s) => !isDroppedStudent(s))
+  const keep = new Set(students.map((s) => s.id))
+  return {
+    ...data,
+    students,
+    payments: data.payments.filter((p) => keep.has(p.studentId)),
+    attendance: data.attendance.filter((row) => keep.has(row.studentId)),
+    feedback: data.feedback.filter((row) => keep.has(row.studentId)),
+    photoshootPlacements: data.photoshootPlacements.filter((row) => keep.has(row.studentId)),
+  }
+}
 
 const STORAGE_KEY = "viya-academy-store-v9"
 const LEGACY_KEYS = [
@@ -249,16 +271,18 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
   const photoshoots = mergePhotoshoots(raw.photoshoots)
   const basePlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
-  return mergeDuplicateStudents({
-    students,
-    attendance: raw.attendance ?? [],
-    feedback: raw.feedback ?? [],
-    payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
-    notifications: raw.notifications ?? [],
-    groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
-    photoshoots,
-    photoshootPlacements: mergeLabelPlacements(basePlacements, students),
-  })
+  return withoutDroppedStudents(
+    mergeDuplicateStudents({
+      students,
+      attendance: raw.attendance ?? [],
+      feedback: raw.feedback ?? [],
+      payments: (raw.payments ?? []).map((p) => normalizePayment(p)),
+      notifications: raw.notifications ?? [],
+      groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
+      photoshoots,
+      photoshootPlacements: mergeLabelPlacements(basePlacements, students),
+    }),
+  )
 }
 
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
@@ -269,12 +293,14 @@ function applyNativeEnrollmentFreeze(local: AppData): AppData {
     forceNotes: true,
     forceStatus: true,
   })
-  return mergeDuplicateStudents({
-    ...local,
-    students: applyDrivePhotos(merged.students),
-    photoshoots: mergePhotoshoots(local.photoshoots),
-    photoshootPlacements: mergeLabelPlacements(local.photoshootPlacements, merged.students),
-  })
+  return withoutDroppedStudents(
+    mergeDuplicateStudents({
+      ...local,
+      students: applyDrivePhotos(merged.students.filter((s) => !isDroppedStudent(s))),
+      photoshoots: mergePhotoshoots(local.photoshoots),
+      photoshootPlacements: mergeLabelPlacements(local.photoshootPlacements, merged.students),
+    }),
+  )
 }
 
 type JotformMeta = {

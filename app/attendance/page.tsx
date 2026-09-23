@@ -13,6 +13,7 @@ import { countsFor, useStore, useSync } from "@/lib/store"
 import {
   academyDateISO,
   formatShortDate,
+  formatStudentId,
   formatTime,
   fullName,
   isSameDay,
@@ -133,7 +134,9 @@ export default function AttendancePage() {
                 <StudentPhoto student={picked} size="lg" />
                 <div>
                   <p className="font-heading text-2xl">{fullName(picked)}</p>
-                  <p className="text-sm text-muted-foreground">#{picked.id}</p>
+                  {formatStudentId(picked.id) ? (
+                    <p className="text-sm text-muted-foreground">{formatStudentId(picked.id)}</p>
+                  ) : null}
                 </div>
               </div>
               <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -168,7 +171,9 @@ export default function AttendancePage() {
                     <StudentPhoto student={student} size="md" />
                     <span>
                       <span className="block font-medium">{fullName(student)}</span>
-                      <span className="text-xs text-muted-foreground">#{student.id}</span>
+                      {formatStudentId(student.id) ? (
+                        <span className="text-xs text-muted-foreground">{formatStudentId(student.id)}</span>
+                      ) : null}
                     </span>
                   </button>
                 </li>

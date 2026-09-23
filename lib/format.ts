@@ -34,6 +34,17 @@ export function displayName(student: Pick<Student, "firstName" | "lastName" | "n
   return student.nickname || student.firstName
 }
 
+/** Square / enrollment student numbers only. Hide ENR, GC, VA, PS, and other synthetic ids. */
+export function displayStudentId(id: string) {
+  const raw = (id || "").trim()
+  return /^\d+$/.test(raw) ? raw : ""
+}
+
+export function formatStudentId(id: string) {
+  const value = displayStudentId(id)
+  return value ? `#${value}` : ""
+}
+
 export function initials(student: Pick<Student, "firstName" | "lastName">) {
   const a = student.firstName?.[0] ?? ""
   const b = student.lastName?.[0] ?? ""

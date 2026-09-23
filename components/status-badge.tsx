@@ -143,7 +143,13 @@ export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
   )
 }
 
-export function ContactLabelBadge({ label }: { label: string }) {
+export function ContactLabelBadge({
+  label,
+  onRemove,
+}: {
+  label: string
+  onRemove?: () => void
+}) {
   const text = displayContactLabel(label)
   const key = label.toLowerCase()
   const cls = key.includes("current student")
@@ -156,8 +162,22 @@ export function ContactLabelBadge({ label }: { label: string }) {
         ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]"
         : "border-border text-muted-foreground"
   return (
-    <Badge variant="outline" className={cn("font-medium", cls)}>
+    <Badge variant="outline" className={cn("inline-flex items-center gap-1 font-medium", cls)}>
       {text}
+      {onRemove ? (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            onRemove()
+          }}
+          className="rounded-full p-0.5 leading-none hover:bg-black/10 dark:hover:bg-white/10"
+          aria-label={`Remove ${text}`}
+        >
+          ×
+        </button>
+      ) : null}
     </Badge>
   )
 }

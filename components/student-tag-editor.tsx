@@ -44,13 +44,15 @@ export function ContactTagEditor({
             type="button"
             onClick={() => toggle(tag.label)}
             className={cn(
-              "rounded-full border px-2.5 py-0.5 text-[11px] font-medium",
+              "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium",
               on
                 ? "border-primary/50 bg-primary/16 text-primary"
                 : "border-border text-muted-foreground hover:text-foreground",
             )}
+            aria-pressed={on}
           >
             {tag.label}
+            {on ? <span aria-hidden="true">×</span> : null}
           </button>
         )
       })}

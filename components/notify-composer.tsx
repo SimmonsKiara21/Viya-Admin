@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { MESSAGE_TEMPLATES } from "@/lib/constants"
-import { fillTemplate, formatMoney, formatPhone, fullName, matchesQuery, smsHref } from "@/lib/format"
+import { fillTemplate, formatMoney, formatPhone, formatStudentId, fullName, matchesQuery, smsHref } from "@/lib/format"
 import { SYSTEM_GROUP_DEFS } from "@/lib/groups"
 import { useStore } from "@/lib/store"
 import type { NotifyChannel, Student } from "@/lib/types"
@@ -292,7 +292,9 @@ export function NotifyComposer({
                       {on ? "✓" : ""}
                     </span>
                     <span className="min-w-0 flex-1 truncate">{fullName(s)}</span>
-                    <span className="text-xs text-muted-foreground">#{s.id}</span>
+                    {formatStudentId(s.id) ? (
+                      <span className="text-xs text-muted-foreground">{formatStudentId(s.id)}</span>
+                    ) : null}
                   </button>
                 </li>
               )

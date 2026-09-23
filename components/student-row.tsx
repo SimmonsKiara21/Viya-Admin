@@ -4,9 +4,10 @@ import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
 import { ContactLabelBadge, EnrollmentBadge, ProgramBadge } from "@/components/status-badge"
-import { formatDate, formatMoney, formatPhone, fullName } from "@/lib/format"
+import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
+import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
+import { useStore } from "@/lib/store"
 import { highlightTone, isContact, remainingPayments, type HighlightTone } from "@/lib/alerts"
-import { uniqueContactLabels } from "@/lib/contacts-labels"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -56,9 +57,11 @@ export const StudentRow = memo(function StudentRow({
   student: Student
   context?: "roster" | "contacts"
 }) {
+  const { updateStudent } = useStore()
   const tone = highlightTone(student)
   const left = remainingPayments(student)
   const labels = uniqueContactLabels(student)
+  const idLabel = formatStudentId(student.id)
   const contact = isContact(student)
   const showProgram = student.track === "modeling" || student.track === "acting"
   const showWrapUp = context === "roster" && tone === "finishing"
@@ -81,21 +84,30 @@ export const StudentRow = memo(function StudentRow({
           {fullName(student)}
         </p>
         <p className="truncate text-[13px] leading-snug text-muted-foreground">
-          #{student.id}
-          {student.phone ? ` · ${formatPhone(student.phone)}` : ""}
+          {[idLabel, student.phone ? formatPhone(student.phone) : ""]
+            .filter(Boolean)
+            .join(" · ")}
           {context === "roster" ? detail(student, tone, left) : ""}
         </p>
         {context === "roster" && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">
             {labels.map((label) => (
-              <ContactLabelBadge key={label} label={label} />
+              <ContactLabelBadge
+                key={label}
+                label={label}
+                onRemove={() => updateStudent(student.id, toggleStudentList(student, label))}
+              />
             ))}
           </div>
         ) : null}
-        {context === "contacts" && contact && labels.length ? (
+        {context === "contacts" && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">
             {labels.map((label) => (
-              <ContactLabelBadge key={label} label={label} />
+              <ContactLabelBadge
+                key={label}
+                label={label}
+                onRemove={() => updateStudent(student.id, toggleStudentList(student, label))}
+              />
             ))}
           </div>
         ) : null}

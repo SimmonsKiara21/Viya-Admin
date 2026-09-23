@@ -206,7 +206,7 @@ export default function ContactsPage() {
                   <StudentRow student={student} context="contacts" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 px-2 pb-2 sm:pb-0">
-                  <ContactTagEditor student={student} />
+                  <ContactTagEditor student={student} alwaysOpen />
                 </div>
               </div>
             ))}

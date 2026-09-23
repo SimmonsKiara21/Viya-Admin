@@ -35,6 +35,7 @@ import {
   formatDateTime,
   formatMoney,
   formatPhone,
+  formatStudentId,
   fullName,
   todayISO,
 } from "@/lib/format"
@@ -58,7 +59,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
 } from "@/lib/alerts"
-import { uniqueContactLabels, isNewsletterRecipient } from "@/lib/contacts-labels"
+import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   ENROLLMENT_LABELS,
@@ -276,9 +277,11 @@ export default function StudentProfilePage() {
             }}
           />
           <div className="min-w-0 flex-1">
-            <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-              #{student.id}
-            </p>
+            {formatStudentId(student.id) ? (
+              <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                {formatStudentId(student.id)}
+              </p>
+            ) : null}
             <h1
               className={`font-heading text-2xl leading-tight md:text-3xl ${
                 tone === "overdue"
@@ -317,7 +320,11 @@ export default function StudentProfilePage() {
                 <PhotoshootBadge status={student.photoshootStatus} />
               ) : null}
               {labels.map((label) => (
-                <ContactLabelBadge key={label} label={label} />
+                <ContactLabelBadge
+                  key={label}
+                  label={label}
+                  onRemove={() => updateStudent(student.id, toggleStudentList(student, label))}
+                />
               ))}
             </div>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">

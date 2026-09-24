@@ -2,10 +2,11 @@ import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./ty
 import { isPaidInFull } from "./alerts"
 import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
-import { newId, todayISO } from "./format"
+import { displayStudentId, newId, parseStudentId, todayISO } from "./format"
 
 export type SquareInvoiceRow = {
   name: string
+  studentId?: string
   invoiceId: string
   itemId: string
   amount: number
@@ -69,8 +70,9 @@ export function invoicesFromSquareApi(raw: unknown[], customerNames: Record<stri
     const customerId = typeof recipient?.customer_id === "string" ? recipient.customer_id : ""
     const given = typeof recipient?.given_name === "string" ? recipient.given_name : ""
     const family = typeof recipient?.family_name === "string" ? recipient.family_name : ""
+    const number = String(invoice.invoice_number || "").trim()
     const name = `${given} ${family}`.trim() || customerNames[customerId] || ""
-    if (!name) continue
+    if (!name && !number) continue
     const requests = Array.isArray(invoice.payment_requests) ? invoice.payment_requests : []
     const title = String(invoice.title || invoice.description || "")
     const invoiceId = String(invoice.id || invoice.invoice_number || "")
@@ -89,7 +91,8 @@ export function invoicesFromSquareApi(raw: unknown[], customerNames: Record<stri
       const status = mapRequestStatus(String(invoice.status || ""), dueDate, paid, amount)
       if (!status) continue
       rows.push({
-        name,
+        name: name || number,
+        studentId: number,
         invoiceId: uid ? `${invoiceId}:${uid}` : invoiceId,
         itemId,
         amount: amount || paid,
@@ -111,7 +114,7 @@ export function applySquareInvoices(students: Student[], payments: PaymentRecord
   let matched = 0
 
   for (const inv of invoices) {
-    const student = matchStudentByName(inv.name, nextStudents)
+    const student = matchInvoiceStudent(inv, nextStudents)
     if (!student) {
       skipped.push(inv.name)
       continue
@@ -133,6 +136,15 @@ export function applySquareInvoices(students: Student[], payments: PaymentRecord
 
   refreshStudentsFromPayments(nextStudents, pruned, matchedIds)
   return { students: nextStudents, payments: pruned, matched, skipped: [...new Set(skipped)] }
+}
+
+function matchInvoiceStudent(inv: SquareInvoiceRow, students: Student[]): Student | undefined {
+  const sid = parseStudentId(inv.studentId || "")
+  if (sid) {
+    const hit = students.find((student) => displayStudentId(student.id) === sid || student.id === inv.studentId)
+    if (hit) return hit
+  }
+  return matchStudentByName(inv.name, students)
 }
 
 function overlayInvoice(payments: PaymentRecord[], student: Student, inv: SquareInvoiceRow) {

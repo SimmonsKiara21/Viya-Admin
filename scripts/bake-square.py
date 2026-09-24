@@ -11,6 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TODAY = date.today().isoformat()
+DROPPED_IDS = {"1103", "CK-01", "1104"}
+DROPPED_NAMES = {"noah lerma", "sierra swider", "hector jimenez"}
 
 
 def fold(value: str) -> str:
@@ -21,7 +23,13 @@ def fold(value: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def match_student(name: str, students: list[dict]) -> dict | None:
+def match_student(name: str, students: list[dict], student_id: str = "") -> dict | None:
+    sid = (student_id or "").strip()
+    if sid:
+        padded = sid.zfill(4) if sid.isdigit() else sid
+        hit = next((s for s in students if s.get("id") in {sid, padded, sid.lstrip("0")}), None)
+        if hit:
+            return hit
     needle = fold(name)
     if not needle:
         return None
@@ -100,10 +108,11 @@ def map_invoices(raw: list, names: dict) -> list[dict]:
         recipient = invoice.get("primary_recipient") or {}
         cid = recipient.get("customer_id") or ""
         name = f"{recipient.get('given_name') or ''} {recipient.get('family_name') or ''}".strip() or names.get(cid) or ""
-        if not name:
-            continue
+        number = str(invoice.get("invoice_number") or "").strip()
         title = invoice.get("title") or invoice.get("description") or ""
-        invoice_id = invoice.get("id") or invoice.get("invoice_number") or ""
+        if not name and not number:
+            continue
+        invoice_id = invoice.get("id") or number or ""
         item_id = guess_item(title)
         requests = invoice.get("payment_requests") or [None]
         for req in requests:
@@ -121,7 +130,8 @@ def map_invoices(raw: list, names: dict) -> list[dict]:
                 continue
             rows.append(
                 {
-                    "name": name,
+                    "name": name or number,
+                    "studentId": number,
                     "invoiceId": f"{invoice_id}:{uid}" if uid else invoice_id,
                     "itemId": item_id,
                     "amount": amount or paid,
@@ -153,9 +163,18 @@ def main() -> None:
     seed = json.loads((ROOT / "data" / "seed.json").read_text())
     square = json.loads((ROOT / "data" / "square.json").read_text())
     items = {item["id"]: item for item in square["items"]}
-    students = seed["students"]
-    payments = seed["payments"]
+    students = [
+        student
+        for student in seed["students"]
+        if student.get("id") not in DROPPED_IDS and fold(f"{student.get('firstName','')} {student.get('lastName','')}") not in DROPPED_NAMES
+    ]
+    payments = [payment for payment in seed["payments"] if payment.get("studentId") not in DROPPED_IDS]
     mapped = map_invoices(raw.get("invoices") or [], raw.get("names") or {})
+    canceled_ids = {
+        invoice.get("id")
+        for invoice in raw.get("invoices") or []
+        if (invoice.get("status") or "").upper() in {"CANCELED", "CANCELLED"} and invoice.get("id")
+    }
 
     incoming_by_student: dict[str, set[str]] = {}
     roster_rows = []
@@ -165,7 +184,7 @@ def main() -> None:
     pay_n = 1
 
     for row in mapped:
-        student = match_student(row["name"], students)
+        student = match_student(row["name"], students, row.get("studentId") or "")
         if not student:
             if row["name"] not in seen_skip:
                 seen_skip.add(row["name"])
@@ -207,9 +226,13 @@ def main() -> None:
     payments = [
         p
         for p in payments
-        if p.get("source") != "square"
-        or p["studentId"] not in matched_students
-        or p.get("squareInvoiceId") in incoming_by_student.get(p["studentId"], set())
+        if p.get("studentId") not in DROPPED_IDS
+        and not any(str(p.get("squareInvoiceId") or "").startswith(f"{cid}:") or p.get("squareInvoiceId") == cid for cid in canceled_ids)
+        and (
+            p.get("source") != "square"
+            or p["studentId"] not in matched_students
+            or p.get("squareInvoiceId") in incoming_by_student.get(p["studentId"], set())
+        )
     ]
 
     open_status = {"due", "overdue", "declined", "scheduled"}
@@ -239,6 +262,7 @@ def main() -> None:
             elif any(is_academy(p.get("itemId") or "", items) for p in rows):
                 student["installmentsLeft"] = 0
 
+    seed["students"] = students
     seed["payments"] = payments
     square["invoices"] = roster_rows
     square["skipped"] = skipped_names
@@ -259,7 +283,11 @@ def main() -> None:
                 "matchedStudents": len(matched_students),
                 "skippedPeople": len(skipped_names),
                 "seedPayments": len(payments),
+                "droppedIds": sorted(DROPPED_IDS),
+                "canceledInvoices": len(canceled_ids),
                 "christian": [f"{r['dueDate']} {r['status']} {r['amount']}" for r in christian],
+                "liam": [f"{r['dueDate']} {r['status']} {r['amount']}" for r in roster_rows if r.get("studentId") in {"1017", "017"}],
+                "hectorLeft": any(s.get("id") == "1104" for s in students),
             },
             indent=2,
         )

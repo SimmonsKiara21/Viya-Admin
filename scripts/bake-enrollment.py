@@ -12,6 +12,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TODAY = date.today().isoformat()
+DROPPED_IDS = {"1103", "CK-01", "1104"}
+DROPPED_NAMES = {"noah lerma", "sierra swider", "hector jimenez"}
+FORMER_SUBSCRIBER_IDS = {
+    "0730",
+    "0625",
+    "0839",
+    "0381",
+    "0621",
+    "0733",
+    "0719",
+    "0620",
+    "0624",
+    "0617",
+    "0583",
+    "0517",
+}
 CURRENT_HEADERS = [
     "STUDENT ID",
     "PAYMENT PLAN",
@@ -466,6 +482,21 @@ def main() -> None:
         updated += u
 
     flipped = mark_overdue(students, payments)
+    students = [
+        student
+        for student in students
+        if student.get("id") not in DROPPED_IDS
+        and fold(f"{student.get('firstName', '')} {student.get('lastName', '')}") not in DROPPED_NAMES
+    ]
+    keep = {student["id"] for student in students}
+    payments = [payment for payment in payments if payment.get("studentId") in keep]
+    for student in students:
+        if student.get("id") not in FORMER_SUBSCRIBER_IDS:
+            continue
+        labels = [label for label in (student.get("labels") or []) if "current student" not in label.lower()]
+        if not any("active subscriber" in label.lower() for label in labels):
+            labels.append("Active Subscribers")
+        student["labels"] = labels
     seed["students"] = students
     seed["payments"] = payments
     (ROOT / "data" / "seed.json").write_text(json.dumps(seed, indent=2) + "\n")
@@ -483,6 +514,8 @@ def main() -> None:
         "0917",
         "0924",
         "1104",
+        "1017",
+        "0517",
         "1167",
         "1173",
         "1101",

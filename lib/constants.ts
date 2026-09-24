@@ -29,10 +29,10 @@ export const ENROLLMENT_SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vR23K76ce3E9rb5dY3VuP6UgZwtu6k0BgDcg942tyZV5wQ4wTenhnmYLrmQbpSesA/pub?output=csv"
 /** Final enrollment pull is baked into seed.json. The Google Sheet is no longer polled. */
 export const ENROLLMENT_FROZEN = true
-export const ENROLLMENT_FREEZE_ID = "2026-09-23-drop-lerma"
+export const ENROLLMENT_FREEZE_ID = "2026-09-24-collections-cancel"
 /** Dropped after a Square + enrollment check — canceled invoice, not on the workbook. */
-export const DROPPED_ROSTER_IDS = ["1103", "CK-01"]
-export const DROPPED_ROSTER_NAMES = ["noah lerma", "sierra swider"]
+export const DROPPED_ROSTER_IDS = ["1103", "CK-01", "1104"]
+export const DROPPED_ROSTER_NAMES = ["noah lerma", "sierra swider", "hector jimenez"]
 /**
  * Finished academy or already rolling into a sub — still in seed, but not on the
  * 2026 enrollment workbook. They belong on Subscriptions, not Talent.
@@ -49,6 +49,7 @@ export const FORMER_STUDENT_SUBSCRIBER_IDS = [
   "0624", // Jordyn Vasquez
   "0617", // Gabriel Garcia
   "0583", // Melissa Flores
+  "0517", // Allyson Ceron — now an active subscriber
 ]
 /** Old website ids → Square academy / enrollment student numbers. */
 export const STUDENT_ID_ALIASES: Record<string, string> = {
@@ -74,7 +75,6 @@ export const PAID_PIF_IDS = [
   "0923",
   "0557",
   "0523",
-  "0517",
   "0910",
   "0912",
   "0914",

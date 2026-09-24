@@ -349,6 +349,12 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
 
 const seedData = normalizeData(seed as unknown as Partial<AppData>) ?? (seed as unknown as AppData)
 
+function overlayFrozenPayments(local: AppData): PaymentRecord[] {
+  const seedIds = new Set(seedData.payments.map((payment) => payment.id))
+  const extras = local.payments.filter((payment) => payment.source === "manual" && !seedIds.has(payment.id))
+  return [...seedData.payments, ...extras]
+}
+
 function applyNativeEnrollmentFreeze(local: AppData): AppData {
   const merged = mergeEnrollmentStudents(local.students, seedData.students, {
     updateExisting: true,
@@ -359,6 +365,7 @@ function applyNativeEnrollmentFreeze(local: AppData): AppData {
     mergeDuplicateStudents({
       ...local,
       students: applyDrivePhotos(merged.students.filter((s) => !isDroppedStudent(s))),
+      payments: overlayFrozenPayments(local),
       photoshoots: mergePhotoshoots(local.photoshoots),
       photoshootPlacements: mergeLabelPlacements(local.photoshootPlacements, merged.students),
     }),

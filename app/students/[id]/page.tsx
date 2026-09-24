@@ -22,6 +22,7 @@ import {
 } from "@/components/status-badge"
 import { StaffNotesEditor } from "@/components/staff-notes-editor"
 import { StudentIdField } from "@/components/student-id-field"
+import { StudentProfileEdit } from "@/components/student-profile-edit"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
@@ -268,32 +269,37 @@ export default function StudentProfilePage() {
             }}
           />
           <div className="min-w-0 flex-1">
-            {formatStudentId(student.id) ? (
-              <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                {formatStudentId(student.id)}
-              </p>
-            ) : null}
-            <h1
-              className={`font-heading text-2xl leading-tight md:text-3xl ${
-                tone === "overdue"
-                  ? "text-rose-800 dark:text-rose-200"
-                  : tone === "subscriberOverdue"
-                    ? "text-orange-900 dark:text-orange-100"
-                    : tone === "collections"
-                    ? "text-amber-900 dark:text-amber-200"
-                    : tone === "paused"
-                      ? "text-violet-900 dark:text-violet-200"
-                      : tone === "pending"
-                        ? "text-fuchsia-900 dark:text-fuchsia-100"
-                        : tone === "finishing"
-                          ? "text-lime-800 dark:text-lime-100"
-                          : tone === "pif"
-                            ? "text-emerald-900 dark:text-emerald-100"
-                          : ""
-              }`}
-            >
-              {fullName(student)}
-            </h1>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                {formatStudentId(student.id) ? (
+                  <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                    {formatStudentId(student.id)}
+                  </p>
+                ) : null}
+                <h1
+                  className={`font-heading text-2xl leading-tight md:text-3xl ${
+                    tone === "overdue"
+                      ? "text-rose-800 dark:text-rose-200"
+                      : tone === "subscriberOverdue"
+                        ? "text-orange-900 dark:text-orange-100"
+                        : tone === "collections"
+                          ? "text-amber-900 dark:text-amber-200"
+                          : tone === "paused"
+                            ? "text-violet-900 dark:text-violet-200"
+                            : tone === "pending"
+                              ? "text-fuchsia-900 dark:text-fuchsia-100"
+                              : tone === "finishing"
+                                ? "text-lime-800 dark:text-lime-100"
+                                : tone === "pif"
+                                  ? "text-emerald-900 dark:text-emerald-100"
+                                  : ""
+                  }`}
+                >
+                  {fullName(student)}
+                </h1>
+              </div>
+              <StudentProfileEdit student={student} />
+            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {isContact(student) ? null : (
                 <ProgramBadge
@@ -349,6 +355,14 @@ export default function StudentProfilePage() {
               <div>
                 <dt className="text-xs text-muted-foreground uppercase">Age</dt>
                 <dd>{student.age ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground uppercase">Nickname</dt>
+                <dd>{student.nickname || "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground uppercase">Class time</dt>
+                <dd>{student.classTime || "—"}</dd>
               </div>
               {isContact(student) ? null : (
                 <>

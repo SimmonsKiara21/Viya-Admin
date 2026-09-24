@@ -22,7 +22,7 @@ const PLAN_COPY =
   "Your Potential Unlocked - Anytime, All the Time. As a subscriber, you're not just staying connected - you're staying ahead. Get Unlimited training, exclusive access to master classes, private training, our full facility, members-only discounts, and a growing community of passionate talent. This is your all-access pass to keep growing, creating, and leveling up - because the journey never stops."
 
 const PLANS = [
-  { item: SUBSCRIPTION_ITEM, blurb: "Standard Square subscription." },
+  { item: SUBSCRIPTION_ITEM, blurb: "Standard Square subscription, $51.49 with tax." },
   { item: SUBSCRIPTION_OG_ITEM, blurb: "Grandfathered OG rate. Live Square invoices often show $5.14 with tax." },
   { item: SUBSCRIPTION_PLUS_ITEM, blurb: "Square $100 subscription. One person is on this plan." },
 ] as const
@@ -89,7 +89,7 @@ export default function SubscriptionsPage() {
       <PageHeader
         eyebrow="Members"
         title="Subscriptions"
-        description="Three Square plans: $49.99, OG $4.99, and the $100 plan (one subscriber)."
+        description="Three Square plans: $51.49 with tax, OG $4.99, and the $100 plan (one subscriber)."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-3">

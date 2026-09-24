@@ -51,7 +51,7 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
       deskLocks: { ...student.deskLocks, subscription: true },
     })
     if (paid) {
-      const paidAmount = nextAmount ?? bill.amount ?? SUBSCRIPTION_ITEM.price ?? 49.99
+      const paidAmount = nextAmount ?? bill.amount ?? SUBSCRIPTION_ITEM.price ?? 51.49
       const existing = payments.find(
         (payment) => payment.studentId === student.id && payment.notes === DESK_SUB_PAID,
       )

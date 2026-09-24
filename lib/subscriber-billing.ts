@@ -40,6 +40,15 @@ function monthDayToIso(value: string) {
   return `${year}-${match[1].padStart(2, "0")}-${match[2].padStart(2, "0")}`
 }
 
+/** Square $49.99 plus tax — what actually charges on the standard plan. */
+export const STANDARD_SUB_WITH_TAX = 51.49
+
+export function withSubscriptionTax(amount: number | null | undefined) {
+  if (amount == null || !Number.isFinite(amount)) return null
+  if (Math.abs(amount - 49.99) < 0.011 || Math.abs(amount - 49) < 0.011) return STANDARD_SUB_WITH_TAX
+  return amount
+}
+
 export type SubscriberBilling = {
   lastPaidDate: string
   nextDue: string
@@ -80,9 +89,11 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     return {
       lastPaidDate,
       nextDue: due,
-      amount: typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : amount ?? null,
+      amount: withSubscriptionTax(
+        typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : amount,
+      ),
       overdueSince: due && due <= today ? due : "",
     }
   }
-  return { lastPaidDate, nextDue, amount: amount ?? null, overdueSince }
+  return { lastPaidDate, nextDue, amount: withSubscriptionTax(amount), overdueSince }
 }

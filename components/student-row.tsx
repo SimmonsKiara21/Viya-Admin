@@ -6,6 +6,7 @@ import { StudentPhoto } from "@/components/student-photo"
 import { ContactLabelBadge, OverdueSinceBadge, PlanBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
+import { subscriberBilling } from "@/lib/subscriber-billing"
 import { useStore } from "@/lib/store"
 import {
   highlightTone,
@@ -16,7 +17,7 @@ import {
   showsOverdueSince,
   type HighlightTone,
 } from "@/lib/alerts"
-import type { Student } from "@/lib/types"
+import type { PaymentRecord, Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const ROW: Record<Exclude<HighlightTone, "none">, string> = {
@@ -64,20 +65,56 @@ function paymentsLine(student: Student, tone: HighlightTone, left: number | null
   return bits.join(" · ")
 }
 
+function subscriberPaymentsLine(
+  student: Student,
+  payments: PaymentRecord[],
+  tone: HighlightTone,
+): { copy: string; since: string } {
+  if (student.subscriptionStatus === "paused" || tone === "paused") {
+    return { copy: "Paused", since: "" }
+  }
+  const bill = subscriberBilling(student, payments)
+  const bits: string[] = []
+  if (bill.lastPaidDate) bits.push(`paid ${formatDate(bill.lastPaidDate)}`)
+  if (bill.overdueSince) bits.push(`overdue since ${formatDate(bill.overdueSince)}`)
+  else if (bill.nextDue) bits.push(`due ${formatDate(bill.nextDue)}`)
+  if (bill.amount != null) bits.push(formatMoney(bill.amount))
+  return { copy: bits.join(" · "), since: bill.overdueSince }
+}
+
 export const StudentRow = memo(function StudentRow({
   student,
   context = "roster",
   showStartDate = false,
 }: {
   student: Student
-  context?: "roster" | "contacts"
+  context?: "roster" | "contacts" | "subscribers"
   showStartDate?: boolean
 }) {
   const { updateStudent, payments } = useStore()
-  const tone = highlightTone(student)
+  const rosterTone = highlightTone(student)
+  const subBill = context === "subscribers" ? subscriberPaymentsLine(student, payments, rosterTone) : null
+  const tone: HighlightTone =
+    context === "subscribers"
+      ? student.subscriptionStatus === "paused"
+        ? "paused"
+        : subBill?.since
+          ? "subscriberOverdue"
+          : "none"
+      : rosterTone
   const left = remainingPayments(student)
-  const since = showsOverdueSince(student) ? overdueSinceDate(student, payments) : ""
-  const paymentCopy = context === "roster" ? paymentsLine(student, tone, left, since) : ""
+  const since =
+    context === "subscribers"
+      ? subBill?.since || ""
+      : showsOverdueSince(student)
+        ? overdueSinceDate(student, payments)
+        : ""
+  const paymentCopy =
+    context === "subscribers"
+      ? subBill?.copy || ""
+      : context === "roster"
+        ? paymentsLine(student, tone, left, since)
+        : ""
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)
   const contact = isContact(student)

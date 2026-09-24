@@ -13,7 +13,7 @@ import {
   SUBSCRIPTION_PLUS_ITEM,
 } from "@/lib/square"
 import { formatMoney } from "@/lib/format"
-import { isContact, isSubscriberStudent } from "@/lib/alerts"
+import { isSubscriberStudent } from "@/lib/alerts"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
 import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
@@ -139,21 +139,9 @@ export default function SubscriptionsPage() {
                   {item.price != null ? ` · ${formatMoney(item.price)}` : ""} · {people.length}
                 </div>
                 <div className="divide-y divide-border px-2 py-1">
-                  {people.map((student) => {
-                    const billed = catalogItemForStudent(student, payments)
-                    return (
-                      <div key={student.id}>
-                        <StudentRow student={student} />
-                        <p className="px-4 pb-3 text-xs text-muted-foreground">
-                          {isContact(student)
-                            ? "Active Subscribers"
-                            : billed.price != null
-                              ? `${billed.name} · ${formatMoney(billed.price)}`
-                              : billed.name}
-                        </p>
-                      </div>
-                    )
-                  })}
+                  {people.map((student) => (
+                    <StudentRow key={student.id} student={student} context="subscribers" />
+                  ))}
                 </div>
               </div>
             )

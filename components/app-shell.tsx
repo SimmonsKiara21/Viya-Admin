@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 import {
   Calendar,
   Camera,
-  CreditCard,
   LayoutDashboard,
   Lock,
   Menu,
@@ -30,7 +29,6 @@ const NAV = [
   { href: "/contacts", label: "Contacts", icon: BookUser },
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/calendar", label: "Calendar", icon: Calendar },
-  { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
   { href: "/photoshoots", label: "Photoshoots", icon: Camera },
 ]

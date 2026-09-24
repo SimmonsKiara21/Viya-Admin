@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,7 @@ import { StudentIdField } from "@/components/student-id-field"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
+import { StudentPaymentsTab } from "@/components/student-payments-tab"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -72,6 +73,8 @@ import type {
 export default function StudentProfilePage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const initialTab = searchParams.get("tab") === "payments" ? "payments" : "overview"
   const {
     students,
     attendance,
@@ -332,7 +335,7 @@ export default function StudentProfilePage() {
               <StudentIdField
                 student={student}
                 onChanged={(nextId) => {
-                  router.replace(`/students/${nextId}`)
+                  router.replace(initialTab === "payments" ? `/students/${nextId}?tab=payments` : `/students/${nextId}`)
                 }}
               />
               <div>
@@ -387,11 +390,12 @@ export default function StudentProfilePage() {
         </div>
       </Panel>
 
-      <Tabs defaultValue="overview">
+      <Tabs defaultValue={initialTab}>
         <TabsList variant="line" className="mb-4 h-auto min-h-8 w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           {isNewsletterRecipient(student) ? <TabsTrigger value="newsletter">Newsletter</TabsTrigger> : null}
           <TabsTrigger value="attendance">Attendance</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="notes">Feedback</TabsTrigger>
           <TabsTrigger value="subscription">Subscription</TabsTrigger>
           <TabsTrigger value="photoshoot">Photoshoot</TabsTrigger>
@@ -564,6 +568,10 @@ export default function StudentProfilePage() {
               </ul>
             )}
           </Panel>
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <StudentPaymentsTab student={student} />
         </TabsContent>
 
         <TabsContent value="notes">

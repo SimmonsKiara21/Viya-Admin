@@ -66,6 +66,7 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
   if (!nextDue && !overdueSince && lastPaidDate) nextDue = addCalendarMonth(lastPaidDate)
   if (!nextDue && noteStart && noteStart > today) nextDue = noteStart
   if (!nextDue && overdueSince) nextDue = overdueSince
+  if (!overdueSince && nextDue && nextDue <= today) overdueSince = nextDue
   const amount =
     missed[0]?.balance ??
     missed[0]?.amount ??

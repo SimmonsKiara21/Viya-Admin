@@ -78,7 +78,6 @@ import type {
   PaymentRecord,
   PhotoshootStatus,
   Student,
-  StudentTrack,
   SubscriptionStatus,
 } from "@/lib/types"
 
@@ -309,7 +308,6 @@ export default function StudentProfilePage() {
               {isContact(student) ? null : (
                 <ProgramBadge
                   program={isSubscriberStudent(student) ? "subscriber" : student.program}
-                  track={isSubscriberStudent(student) ? "none" : student.track}
                 />
               )}
               {isContact(student) || student.paymentPlan === "none" || student.paymentPlan === "subscription" ? null : (
@@ -472,11 +470,7 @@ export default function StudentProfilePage() {
                       ? "subscriber"
                       : student.program === "prospect"
                         ? "prospect"
-                        : student.track === "modeling"
-                          ? "modeling"
-                          : student.track === "acting"
-                            ? "acting"
-                            : "academy"
+                        : "academy"
                   }
                   onChange={(e) => {
                     const value = e.target.value
@@ -488,16 +482,13 @@ export default function StudentProfilePage() {
                       updateStudent(student.id, { program: "prospect", track: "none" })
                       return
                     }
-                    const track = value as StudentTrack
                     updateStudent(student.id, {
                       program: "academy",
-                      track: track === "modeling" || track === "acting" ? track : "academy",
+                      track: student.track === "none" ? "academy" : student.track,
                     })
                   }}
                 >
                   <option value="academy">Academy</option>
-                  <option value="modeling">Modeling</option>
-                  <option value="acting">Acting</option>
                   <option value="subscriber">Subscriber</option>
                   <option value="prospect">Contact</option>
                 </NativeSelect>

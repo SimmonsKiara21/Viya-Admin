@@ -13,7 +13,7 @@ import { StudentFormDialog } from "@/components/student-form-dialog"
 import { useStore } from "@/lib/store"
 import { isAcademyTalent, isCurrentlyEnrolled, isOverdueTalent, isPaidInFull } from "@/lib/alerts"
 import { matchesQuery } from "@/lib/format"
-import { ENROLLMENT_LABELS, PLAN_LABELS, TRACK_LABELS, PROGRAM_LABELS } from "@/lib/constants"
+import { ENROLLMENT_LABELS, PLAN_LABELS } from "@/lib/constants"
 import {
   isRosterSort,
   ROSTER_SORT_LABELS,
@@ -34,21 +34,10 @@ const STATUSES: Array<EnrollmentStatus | "all"> = [
   "pif",
 ]
 
-const PROGRAMS: Array<"all" | "academy" | "modeling" | "acting"> = [
-  "all",
-  "academy",
-  "modeling",
-  "acting",
-]
-
 const PLANS: Array<"all" | Extract<PaymentPlan, "pp" | "pif">> = ["all", "pp", "pif"]
 
 function isStatus(value: string | null): value is EnrollmentStatus | "all" {
   return Boolean(value && (STATUSES as readonly string[]).includes(value))
-}
-
-function isProgram(value: string | null): value is (typeof PROGRAMS)[number] {
-  return Boolean(value && (PROGRAMS as readonly string[]).includes(value))
 }
 
 function isPlan(value: string | null): value is (typeof PLANS)[number] {
@@ -64,11 +53,9 @@ export default function StudentsPage() {
   const [open, setOpen] = useState(false)
 
   const statusParam = searchParams.get("status")
-  const programParam = searchParams.get("program")
   const planParam = searchParams.get("plan")
   const sortParam = searchParams.get("sort")
   const status = isStatus(statusParam) ? statusParam : "all"
-  const program = isProgram(programParam) ? programParam : "all"
   const plan = isPlan(planParam) ? planParam : "all"
   const sort: RosterSort = isRosterSort(sortParam) ? sortParam : "az"
 
@@ -91,18 +78,9 @@ export default function StudentsPage() {
         if (status === "current") return isCurrentlyEnrolled(s)
         return s.enrollmentStatus === status
       })
-      .filter((s) => {
-        if (program === "all") return true
-        if (program === "modeling") return s.track === "modeling"
-        if (program === "acting") return s.track === "acting"
-        if (program === "academy") {
-          return s.program === "academy" && s.track !== "modeling" && s.track !== "acting"
-        }
-        return s.program === program
-      })
       .filter((s) => (plan === "all" ? true : s.paymentPlan === plan))
     return sortStudents(rows, sort)
-  }, [students, query, status, program, plan, sort])
+  }, [students, query, status, plan, sort])
 
   const showStartDate = sort === "start-new" || sort === "start-old"
 
@@ -111,7 +89,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Talent"
-        description="Academy, modeling, and acting. Subscribers are on Subscriptions."
+        description="Academy talent. Subscribers are on Subscriptions."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />
@@ -127,13 +105,6 @@ export default function StudentsPage() {
           placeholder="Filter this list by name, ID, phone, or email"
           className="h-11 max-w-xl rounded-full px-4"
         />
-        <FilterGroup label="Program">
-          {PROGRAMS.map((p) => (
-            <FilterChip key={p} active={program === p} onClick={() => setParam("program", p, "all")}>
-              {p === "all" ? "All programs" : p === "modeling" || p === "acting" ? TRACK_LABELS[p] : PROGRAM_LABELS[p]}
-            </FilterChip>
-          ))}
-        </FilterGroup>
         <FilterGroup label="Plan">
           {PLANS.map((p) => (
             <FilterChip key={p} active={plan === p} onClick={() => setParam("plan", p, "all")}>

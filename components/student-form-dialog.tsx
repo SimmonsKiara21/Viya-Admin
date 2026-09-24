@@ -24,7 +24,7 @@ import type {
   Student,
 } from "@/lib/types"
 
-type AddKind = "academy" | "modeling" | "acting" | "subscriber" | "prospect"
+type AddKind = "academy" | "subscriber" | "prospect"
 
 function applyKind(kind: AddKind): Partial<Student> {
   if (kind === "subscriber") {
@@ -39,20 +39,12 @@ function applyKind(kind: AddKind): Partial<Student> {
       contactCategory: "",
     }
   }
-  if (kind === "modeling") {
-    return { program: "academy", track: "modeling", paymentPlan: "pp" }
-  }
-  if (kind === "acting") {
-    return { program: "academy", track: "acting", paymentPlan: "pp" }
-  }
   return { program: "academy", track: "academy", paymentPlan: "pp" }
 }
 
 function kindOf(student: Student): AddKind {
   if (student.program === "subscriber") return "subscriber"
   if (student.program === "prospect") return "prospect"
-  if (student.track === "modeling") return "modeling"
-  if (student.track === "acting") return "acting"
   return "academy"
 }
 
@@ -188,8 +180,6 @@ export function StudentFormDialog({
               onChange={(e) => patch(applyKind(e.target.value as AddKind))}
             >
               <option value="academy">Academy</option>
-              <option value="modeling">Modeling</option>
-              <option value="acting">Acting</option>
               <option value="subscriber">Subscriber</option>
               <option value="prospect">Contact</option>
             </NativeSelect>

@@ -19,7 +19,6 @@ import type {
   PaymentStatus,
   PhotoshootStatus,
   Program,
-  StudentTrack,
   SubscriptionStatus,
 } from "@/lib/types"
 
@@ -102,17 +101,10 @@ export function PlanBadge({ plan }: { plan: PaymentPlan | "" }) {
   )
 }
 
-export function ProgramBadge({ program, track }: { program: Program; track?: StudentTrack }) {
-  const label = programDisplayLabel(program, track)
-  const cls =
-    track === "modeling"
-      ? "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.45_0.08_85)] dark:text-[oklch(0.9_0.06_85)]"
-      : track === "acting"
-        ? "border-violet-500/30 bg-violet-500/12 text-violet-800 dark:text-violet-200"
-        : ""
+export function ProgramBadge({ program }: { program: Program }) {
   return (
-    <Badge variant={cls ? "outline" : "secondary"} className={cn("font-medium", cls)}>
-      {label}
+    <Badge variant="secondary" className="font-medium">
+      {programDisplayLabel(program)}
     </Badge>
   )
 }

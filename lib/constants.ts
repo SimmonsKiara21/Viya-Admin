@@ -150,8 +150,7 @@ export const TRACK_LABELS: Record<StudentTrack, string> = {
   none: "None",
 }
 
-export function programDisplayLabel(program: Program, track?: StudentTrack) {
-  if (track === "modeling" || track === "acting") return TRACK_LABELS[track]
+export function programDisplayLabel(program: Program, _track?: StudentTrack) {
   return PROGRAM_LABELS[program]
 }
 

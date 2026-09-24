@@ -31,8 +31,25 @@ export const ENROLLMENT_SHEET_URL =
 export const ENROLLMENT_FROZEN = true
 export const ENROLLMENT_FREEZE_ID = "2026-09-23-drop-lerma"
 /** Dropped after a Square + enrollment check — canceled invoice, not on the workbook. */
-export const DROPPED_ROSTER_IDS = ["1103"]
-export const DROPPED_ROSTER_NAMES = ["noah lerma"]
+export const DROPPED_ROSTER_IDS = ["1103", "CK-01"]
+export const DROPPED_ROSTER_NAMES = ["noah lerma", "sierra swider"]
+/**
+ * Finished academy or already rolling into a sub — still in seed, but not on the
+ * 2026 enrollment workbook. They belong on Subscriptions, not Talent.
+ */
+export const FORMER_STUDENT_SUBSCRIBER_IDS = [
+  "0730", // Itati Alcantar — 10/1 starts subscription
+  "0625", // Ellie Harris — 10/1 starts subscription
+  "0839", // Abril Becerra — last academy invoice paid
+  "0381", // Megan Sherrard
+  "0621", // Emmanuel Harrison
+  "0733", // Jessica Lee
+  "0719", // Elizabeth Call
+  "0620", // Thea Cartier
+  "0624", // Jordyn Vasquez
+  "0617", // Gabriel Garcia
+  "0583", // Melissa Flores
+]
 /** Old website ids → Square academy / enrollment student numbers. */
 export const STUDENT_ID_ALIASES: Record<string, string> = {
   "0830": "0839",

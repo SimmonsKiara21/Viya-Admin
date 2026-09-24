@@ -89,7 +89,7 @@ export default function StudentsPage() {
       <PageHeader
         eyebrow="Roster"
         title="Talent"
-        description="Academy talent. Subscribers are on Subscriptions."
+        description="Academy students from the enrollment workbook. Subscribers are on Subscriptions."
         actions={
           <Button onClick={() => setOpen(true)}>
             <Plus className="size-4" />

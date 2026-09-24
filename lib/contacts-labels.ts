@@ -1,7 +1,7 @@
 import type { ContactCategory, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
-import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, programDisplayLabel } from "./constants"
+import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, FORMER_STUDENT_SUBSCRIBER_IDS, programDisplayLabel } from "./constants"
 
 const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
@@ -79,8 +79,13 @@ export function hasGoogleTag(labels: string[] | undefined, tag: string) {
   return (labels || []).some((label) => sameGoogleTag(label, tag))
 }
 
-export function isActiveSubscriber(student: Pick<Student, "program" | "paymentPlan" | "subscriptionStatus" | "labels">) {
+const FORMER_SUBS = new Set(FORMER_STUDENT_SUBSCRIBER_IDS)
+
+export function isActiveSubscriber(
+  student: Pick<Student, "id" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,
+) {
   if (student.program === "subscriber" || student.paymentPlan === "subscription") return true
+  if (student.id && FORMER_SUBS.has(student.id)) return true
   return hasContactLabel(student as Student, /active subscriber/i)
 }
 
@@ -90,7 +95,7 @@ function isCurrentStudentLabel(label: string) {
 
 /** Subscribers are not current students — drop that Google list so they stay on Subscriptions. */
 export function withoutCurrentStudentIfSubscriber<
-  T extends Pick<Student, "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
+  T extends Pick<Student, "id" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
 >(student: T): T {
   if (!isActiveSubscriber(student)) return student
   const labels = (student.labels || []).filter((label) => !isCurrentStudentLabel(label))
@@ -376,7 +381,7 @@ function applyLabelEffects(student: Student, labels: string[]) {
   const text = labels.join(" | ").toLowerCase()
   if (
     !isDeskContact(student) &&
-    text.includes("active subscriber") &&
+    (text.includes("active subscriber") || isActiveSubscriber(student)) &&
     student.subscriptionStatus !== "cancelled"
   ) {
     student.subscriptionStatus = "active"

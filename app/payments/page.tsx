@@ -133,7 +133,7 @@ export default function PaymentsPage() {
                   <tr key={bill.id} className="border-b border-border last:border-0 align-top">
                     <td className="px-4 py-3">
                       {student ? (
-                        <Link href={`/students/${student.id}?tab=payments`} className="font-medium hover:underline">
+                        <Link href={`/students/${student.id}`} className="font-medium hover:underline">
                           {fullName(student)}
                         </Link>
                       ) : (

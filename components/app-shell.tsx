@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   Calendar,
-  Camera,
   LayoutDashboard,
   Lock,
   Menu,
@@ -30,7 +29,6 @@ const NAV = [
   { href: "/attendance", label: "Attendance", icon: CalendarDays },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/subscriptions", label: "Subscriptions", icon: Sparkles },
-  { href: "/photoshoots", label: "Photoshoots", icon: Camera },
 ]
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {

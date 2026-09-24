@@ -15,7 +15,6 @@ import {
   ContactLabelBadge,
   EnrollmentBadge,
   OverdueSinceBadge,
-  PhotoshootBadge,
   PlanBadge,
   ProgramBadge,
   SubscriptionBadge,
@@ -58,7 +57,6 @@ import {
   DESK_SUB_STATUSES,
   ENROLLMENT_LABELS,
   CONTACT_LABELS,
-  PHOTO_LABELS,
   PLAN_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
@@ -74,7 +72,6 @@ import type {
   EnrollmentStatus,
   PaymentPlan,
   PaymentRecord,
-  PhotoshootStatus,
   Student,
   SubscriptionPlan,
   SubscriptionStatus,
@@ -93,14 +90,10 @@ export default function StudentProfilePage() {
     updateStudent,
     addFeedback,
     removeAttendance,
-    photoshoots,
-    photoshootPlacements,
-    setPhotoshootPlacement,
   } = useStore()
   const student = students.find((s) => s.id === id)
   const [note, setNote] = useState("")
   const [noteClass, setNoteClass] = useState<ClassType | "">("modeling")
-  const [photoshootId, setPhotoshootId] = useState("")
 
   const records = useMemo(
     () => attendance.filter((a) => a.studentId === id).sort((a, b) => b.checkedInAt.localeCompare(a.checkedInAt)),
@@ -143,13 +136,6 @@ export default function StudentProfilePage() {
 
   const missedSince = overdueSinceDate(student, payments)
   const paymentsLeft = remainingPayments(student)
-  const selectedShoot =
-    photoshoots.find((s) => s.id === photoshootId) ??
-    photoshoots.find((s) => !s.archived) ??
-    photoshoots[0]
-  const selectedPlacement = selectedShoot
-    ? photoshootPlacements.find((p) => p.studentId === student.id && p.shootId === selectedShoot.id)
-    : undefined
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -335,9 +321,6 @@ export default function StudentProfilePage() {
                 <SubscriptionBadge status={student.subscriptionStatus} />
               ) : null}
               {showContactBadge ? <ContactBadge category={student.contactCategory} /> : null}
-              {student.photoshootStatus !== "none" ? (
-                <PhotoshootBadge status={student.photoshootStatus} />
-              ) : null}
               {labels.map((label) => (
                 <ContactLabelBadge
                   key={label}
@@ -439,7 +422,6 @@ export default function StudentProfilePage() {
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="notes">Feedback</TabsTrigger>
           <TabsTrigger value="subscription">Subscription</TabsTrigger>
-          <TabsTrigger value="photoshoot">Photoshoot</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="grid gap-4">
@@ -710,121 +692,6 @@ export default function StudentProfilePage() {
               </NativeSelect>
             </Field>
             <SquareSubscriptionCopy student={student} payments={payments} />
-          </Panel>
-        </TabsContent>
-
-        <TabsContent value="photoshoot">
-          <Panel className="grid gap-3">
-            <p className="text-sm text-muted-foreground">
-              Pick one shoot, set their placement, then measurements and notes.
-            </p>
-            {photoshoots.length ? (
-              <>
-                <Field label="Photoshoot">
-                  <NativeSelect
-                    value={selectedShoot?.id || ""}
-                    onChange={(e) => setPhotoshootId(e.target.value)}
-                  >
-                    {photoshoots.some((s) => !s.archived) ? (
-                      <optgroup label="Open">
-                        {photoshoots
-                          .filter((s) => !s.archived)
-                          .map((shoot) => {
-                            const row = photoshootPlacements.find(
-                              (p) => p.studentId === student.id && p.shootId === shoot.id,
-                            )
-                            return (
-                              <option key={shoot.id} value={shoot.id}>
-                                {shoot.label}
-                                {row ? ` · ${PHOTO_LABELS[row.status]}` : ""}
-                              </option>
-                            )
-                          })}
-                      </optgroup>
-                    ) : null}
-                    {photoshoots.some((s) => s.archived) ? (
-                      <optgroup label="Prior">
-                        {photoshoots
-                          .filter((s) => s.archived)
-                          .map((shoot) => {
-                            const row = photoshootPlacements.find(
-                              (p) => p.studentId === student.id && p.shootId === shoot.id,
-                            )
-                            return (
-                              <option key={shoot.id} value={shoot.id}>
-                                {shoot.label}
-                                {row ? ` · ${PHOTO_LABELS[row.status]}` : ""}
-                              </option>
-                            )
-                          })}
-                      </optgroup>
-                    ) : null}
-                  </NativeSelect>
-                </Field>
-                {selectedShoot ? (
-                  <>
-                    <Field label="Placement">
-                      <NativeSelect
-                        value={selectedPlacement?.status || "none"}
-                        onChange={(e) =>
-                          setPhotoshootPlacement(
-                            student.id,
-                            selectedShoot.id,
-                            e.target.value as PhotoshootStatus,
-                          )
-                        }
-                      >
-                        {Object.entries(PHOTO_LABELS).map(([k, label]) => (
-                          <option key={k} value={k}>
-                            {label}
-                          </option>
-                        ))}
-                      </NativeSelect>
-                    </Field>
-                    {selectedShoot.notes ? (
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{selectedShoot.notes}</p>
-                    ) : null}
-                  </>
-                ) : null}
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">No photoshoots yet.</p>
-            )}
-            <div className="grid gap-3 border-t border-border pt-3">
-              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Measurements</p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {(
-                  [
-                    ["height", "Height", "5'8\""],
-                    ["bust", "Bust", "34"],
-                    ["waist", "Waist", "25"],
-                    ["hips", "Hips", "36"],
-                    ["dress", "Dress", "4"],
-                    ["shoe", "Shoe", "8"],
-                  ] as const
-                ).map(([key, label, placeholder]) => (
-                  <Field key={key} label={label}>
-                    <Input
-                      value={student.measurements[key]}
-                      placeholder={placeholder}
-                      onChange={(e) =>
-                        updateStudent(student.id, {
-                          measurements: { ...student.measurements, [key]: e.target.value },
-                        })
-                      }
-                    />
-                  </Field>
-                ))}
-              </div>
-            </div>
-            <Field label="Photoshoot notes">
-              <Textarea
-                value={student.photoshootNotes}
-                onChange={(e) => updateStudent(student.id, { photoshootNotes: e.target.value })}
-                placeholder="Looks, wardrobe, what we want next…"
-                rows={4}
-              />
-            </Field>
           </Panel>
         </TabsContent>
       </Tabs>

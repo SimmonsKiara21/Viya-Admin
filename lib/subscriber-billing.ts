@@ -60,7 +60,7 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""))
   const missed = open.filter((payment) => (payment.dueDate || "") && payment.dueDate <= today)
   const upcoming = open.find((payment) => (payment.dueDate || "") > today)
-  const overdueSince = (missed[0]?.dueDate || "").slice(0, 10)
+  let overdueSince = (missed[0]?.dueDate || "").slice(0, 10)
   const noteStart = dateFromNotes(student.notes || "")
   let nextDue = (upcoming?.dueDate || "").slice(0, 10)
   if (!nextDue && !overdueSince && lastPaidDate) nextDue = addCalendarMonth(lastPaidDate)

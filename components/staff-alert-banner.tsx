@@ -69,7 +69,7 @@ export function StaffAlertBanner() {
     { count: academyOverdue.length, label: "overdue", className: "text-rose-800 dark:text-rose-100" },
     { count: subscriberOverdue.length, label: "sub overdue", className: "text-orange-900 dark:text-orange-100" },
     { count: collections.length, label: "collections", className: "text-amber-900 dark:text-amber-200" },
-    { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },
+    { count: paused.length, label: "on hold", className: "text-violet-900 dark:text-violet-200" },
     { count: pending.length, label: "pending", className: "text-fuchsia-900 dark:text-fuchsia-200" },
     { count: finishing.length, label: "wrapping up", className: "text-lime-800 dark:text-lime-100" },
   ].filter((bit) => bit.count > 0)

@@ -99,7 +99,7 @@ export const ENROLLMENT_LABELS: Record<EnrollmentStatus, string> = {
   declined: "Overdue",
   pif: "Paid in full",
   overdue: "Overdue",
-  paused: "Paused",
+  paused: "On hold",
   collections: "Collections",
   cancelling: "Cancelling",
   contact: "Contact",

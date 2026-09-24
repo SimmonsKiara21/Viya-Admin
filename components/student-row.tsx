@@ -37,20 +37,20 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   pif: "text-emerald-900 dark:text-emerald-100 sepia:text-[#0c3d28]",
 }
 
-function detail(student: Student, tone: HighlightTone, left: number | null) {
-  if (tone === "overdue" || tone === "subscriberOverdue" || tone === "collections") {
-    return ` · due ${formatDate(student.nextPaymentDate)} · ${formatMoney(student.nextPaymentAmount)}`
-  }
-  if (tone === "finishing") return ` · ${left} payment${left === 1 ? "" : "s"} left`
-  if (tone === "paused") return " · not on the floor"
+function paymentsLine(student: Student, tone: HighlightTone, left: number | null) {
+  if (tone === "paused") return "On hold — not on the floor."
+  const bits: string[] = []
   if (tone === "pending") {
-    return student.startDate ? ` · start ${formatDate(student.startDate)}` : " · start date not set"
+    bits.push(student.startDate ? `start ${formatDate(student.startDate)}` : "start date not set")
   }
-  if (tone === "pif") {
-    const start = student.startDate ? ` · started ${formatDate(student.startDate)}` : ""
-    return ` · no payments left${start}`
+  if (left === 0) bits.push("no payments left")
+  else if (left != null) bits.push(`${left} payment${left === 1 ? "" : "s"} left`)
+  if (student.nextPaymentDate) {
+    const due = `due ${formatDate(student.nextPaymentDate)}`
+    bits.push(student.nextPaymentAmount != null ? `${due} · ${formatMoney(student.nextPaymentAmount)}` : due)
   }
-  return student.phone ? "" : ` · ${student.email || ""}`
+  if (tone === "pif" && student.startDate) bits.push(`started ${formatDate(student.startDate)}`)
+  return bits.join(" · ")
 }
 
 export const StudentRow = memo(function StudentRow({
@@ -65,6 +65,7 @@ export const StudentRow = memo(function StudentRow({
   const { updateStudent } = useStore()
   const tone = highlightTone(student)
   const left = remainingPayments(student)
+  const paymentCopy = context === "roster" ? paymentsLine(student, tone, left) : ""
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)
   const contact = isContact(student)
@@ -86,18 +87,26 @@ export const StudentRow = memo(function StudentRow({
           {fullName(student)}
         </p>
         <p className="truncate text-[13px] leading-snug text-muted-foreground">
-          {[idLabel, student.phone ? formatPhone(student.phone) : ""]
+          {[
+            idLabel,
+            student.phone ? formatPhone(student.phone) : "",
+            context === "roster" &&
+            showStartDate &&
+            student.startDate &&
+            tone !== "pending" &&
+            tone !== "pif" &&
+            tone !== "paused"
+              ? `start ${formatDate(student.startDate)}`
+              : "",
+          ]
             .filter(Boolean)
             .join(" · ")}
-          {context === "roster" ? detail(student, tone, left) : ""}
-          {context === "roster" &&
-          showStartDate &&
-          student.startDate &&
-          tone !== "pending" &&
-          tone !== "pif"
-            ? ` · start ${formatDate(student.startDate)}`
-            : ""}
         </p>
+        {context === "roster" && (paymentCopy || (!student.phone && student.email)) ? (
+          <p className="truncate text-[13px] leading-snug text-muted-foreground">
+            {paymentCopy || student.email}
+          </p>
+        ) : null}
         {context === "roster" && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">
             {labels.map((label) => (

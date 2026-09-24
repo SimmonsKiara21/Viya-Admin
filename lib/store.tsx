@@ -312,6 +312,10 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       return cat
     })(),
     subscriptionStatus: s.subscriptionStatus || "none",
+    subscriptionPlan:
+      s.subscriptionPlan === "standard" || s.subscriptionPlan === "og" || s.subscriptionPlan === "plus"
+        ? s.subscriptionPlan
+        : "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
     measurements: normalizeMeasurements(s.measurements),

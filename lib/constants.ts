@@ -201,6 +201,9 @@ export const SUB_LABELS: Record<SubscriptionStatus, string> = {
   cancelled: "Cancelled",
 }
 
+/** Workbook statuses staff set on a talent file. */
+export const DESK_SUB_STATUSES: SubscriptionStatus[] = ["active", "interested", "paused"]
+
 export const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   paid: "Paid",
   due: "Due",

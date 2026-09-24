@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Field, NativeSelect } from "@/components/ui-helpers"
-import { SUB_LABELS } from "@/lib/constants"
+import { DESK_SUB_STATUSES, SUB_LABELS } from "@/lib/constants"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
 import { SUBSCRIPTION_ITEM } from "@/lib/square"
@@ -103,9 +103,12 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
           <div className="grid gap-3">
             <Field label="Status">
               <NativeSelect value={status} onChange={(e) => setStatus(e.target.value as SubscriptionStatus)}>
-                {Object.entries(SUB_LABELS).map(([key, label]) => (
+                {status === "none" || status === "cancelled" ? (
+                  <option value={status}>{SUB_LABELS[status]}</option>
+                ) : null}
+                {DESK_SUB_STATUSES.map((key) => (
                   <option key={key} value={key}>
-                    {label}
+                    {SUB_LABELS[key]}
                   </option>
                 ))}
               </NativeSelect>

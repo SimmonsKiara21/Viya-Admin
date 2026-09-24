@@ -282,6 +282,7 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     contactCategory: "",
     subscriptionStatus:
       row.subscriptionStatus || (row.program === "subscriber" ? "active" : "none"),
+    subscriptionPlan: "none",
     photoshootStatus: row.photoshootStatus || "none",
     labels: [],
     removedLabels: [],

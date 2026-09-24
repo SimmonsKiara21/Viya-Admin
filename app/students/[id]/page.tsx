@@ -54,13 +54,20 @@ import {
 import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
+  DESK_SUB_STATUSES,
   ENROLLMENT_LABELS,
   CONTACT_LABELS,
   PHOTO_LABELS,
   PLAN_LABELS,
   SUB_LABELS,
 } from "@/lib/constants"
-import { catalogItemForStudent, SUBSCRIPTION_ITEM } from "@/lib/square"
+import {
+  catalogItemForStudent,
+  itemForSubscriptionPlan,
+  subscriptionPlanFromItem,
+  SUBSCRIPTION_ITEM,
+  SUBSCRIPTION_PLANS,
+} from "@/lib/square"
 import type {
   ClassType,
   EnrollmentStatus,
@@ -68,6 +75,7 @@ import type {
   PaymentRecord,
   PhotoshootStatus,
   Student,
+  SubscriptionPlan,
   SubscriptionStatus,
 } from "@/lib/types"
 
@@ -642,21 +650,47 @@ export default function StudentProfilePage() {
                 onChange={(e) =>
                   updateStudent(student.id, {
                     subscriptionStatus: e.target.value as SubscriptionStatus,
+                    deskLocks: { ...student.deskLocks, subscription: true },
                   })
                 }
               >
-                {Object.entries(SUB_LABELS).map(([k, label]) => (
-                  <option key={k} value={k}>
-                    {label}
+                {student.subscriptionStatus === "none" || student.subscriptionStatus === "cancelled" ? (
+                  <option value={student.subscriptionStatus}>
+                    {SUB_LABELS[student.subscriptionStatus]}
+                  </option>
+                ) : null}
+                {DESK_SUB_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {SUB_LABELS[status]}
+                  </option>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label="Subscription plan">
+              <NativeSelect
+                value={
+                  (student.subscriptionPlan !== "none"
+                    ? student.subscriptionPlan
+                    : subscriptionPlanFromItem(catalogItemForStudent(student, payments))) || "standard"
+                }
+                onChange={(e) => {
+                  const plan = e.target.value as SubscriptionPlan
+                  const item = itemForSubscriptionPlan(plan)
+                  updateStudent(student.id, {
+                    subscriptionPlan: plan,
+                    nextPaymentAmount: item?.price ?? student.nextPaymentAmount,
+                    deskLocks: { ...student.deskLocks, subscription: true },
+                  })
+                }}
+              >
+                {SUBSCRIPTION_PLANS.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.label}
                   </option>
                 ))}
               </NativeSelect>
             </Field>
             <SquareSubscriptionCopy student={student} payments={payments} />
-            <p className="text-sm text-muted-foreground">
-              Use Interested when someone on a payment plan wants the subscriber track — several
-              academy talent already have that flag from the workbook.
-            </p>
           </Panel>
         </TabsContent>
 

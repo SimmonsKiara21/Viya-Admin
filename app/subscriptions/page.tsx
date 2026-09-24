@@ -46,6 +46,9 @@ function isHundredDollarPlan(student: Student, payments: PaymentRecord[]) {
 }
 
 function planIdForStudent(student: Student, payments: PaymentRecord[]) {
+  if (student.subscriptionPlan === "plus") return SUBSCRIPTION_PLUS_ITEM.id
+  if (student.subscriptionPlan === "og") return SUBSCRIPTION_OG_ITEM.id
+  if (student.subscriptionPlan === "standard") return SUBSCRIPTION_ITEM.id
   if (isHundredDollarPlan(student, payments)) return SUBSCRIPTION_PLUS_ITEM.id
   const item = catalogItemForStudent(student, payments)
   if (item.id === SUBSCRIPTION_OG_ITEM.id) return SUBSCRIPTION_OG_ITEM.id

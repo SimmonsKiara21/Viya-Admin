@@ -476,6 +476,7 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
     notes: sheetNotes(row),
     contactCategory: categoryFromLabels(labels),
     subscriptionStatus: "none",
+    subscriptionPlan: "none",
     photoshootStatus: /photoshoot|model source/i.test(labels.join(" ")) ? "received" : "none",
     photoshootNotes: labels
       .filter((label) => /photoshoot|model source/i.test(label))

@@ -127,6 +127,7 @@ function mergeStudent(keeper: Student, extra: Student): Student {
     docusignStatus: keeper.docusignStatus !== "none" ? keeper.docusignStatus : extra.docusignStatus,
     docusignUrl: keeper.docusignUrl || extra.docusignUrl,
     docusignEnvelopeId: keeper.docusignEnvelopeId || extra.docusignEnvelopeId,
+    subscriptionPlan: keeper.subscriptionPlan !== "none" ? keeper.subscriptionPlan : extra.subscriptionPlan,
     photoshootStatus: keeper.photoshootStatus !== "none" ? keeper.photoshootStatus : extra.photoshootStatus,
     photoshootNotes: keeper.photoshootNotes || extra.photoshootNotes,
     measurements: mergeMeasurements(keeper.measurements, extra.measurements),

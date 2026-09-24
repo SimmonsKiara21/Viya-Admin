@@ -32,6 +32,7 @@ export type PhotoshootStatus =
   | "refresh"
   | "received"
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
+export type SubscriptionPlan = "none" | "standard" | "og" | "plus"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
 export type PaymentSource = "square" | "workbook" | "manual"
 export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
@@ -60,6 +61,7 @@ export interface Student {
   notes: string
   contactCategory: ContactCategory | ""
   subscriptionStatus: SubscriptionStatus
+  subscriptionPlan: SubscriptionPlan
   photoshootStatus: PhotoshootStatus
   photoshootNotes: string
   measurements: StudentMeasurements

@@ -51,7 +51,7 @@ import {
   overdueSinceDate,
   showsOverdueSince,
 } from "@/lib/alerts"
-import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
+import { uniqueContactLabels, enrollmentTagPatch, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
   DESK_STATUS_OPTIONS,
   DESK_SUB_STATUSES,
@@ -346,6 +346,23 @@ export default function StudentProfilePage() {
               ))}
             </div>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+              <Field label="Status">
+                <NativeSelect
+                  value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
+                  onChange={(e) =>
+                    updateStudent(student.id, enrollmentTagPatch(student, e.target.value as EnrollmentStatus))
+                  }
+                >
+                  {student.enrollmentStatus === "contact" ? (
+                    <option value="contact">{ENROLLMENT_LABELS.contact}</option>
+                  ) : null}
+                  {DESK_STATUS_OPTIONS.map((status) => (
+                    <option key={status} value={status}>
+                      {ENROLLMENT_LABELS[status]}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </Field>
               <StudentIdField
                 student={student}
                 onChanged={(nextId) => {
@@ -450,9 +467,7 @@ export default function StudentProfilePage() {
                     <NativeSelect
                       value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
                       onChange={(e) =>
-                        updateStudent(student.id, {
-                          enrollmentStatus: e.target.value as EnrollmentStatus,
-                        })
+                        updateStudent(student.id, enrollmentTagPatch(student, e.target.value as EnrollmentStatus))
                       }
                     >
                       {DESK_STATUS_OPTIONS.map((status) => (

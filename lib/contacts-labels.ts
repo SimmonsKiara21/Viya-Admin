@@ -1,4 +1,4 @@
-import type { ContactCategory, Student } from "./types"
+import type { ContactCategory, EnrollmentStatus, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
 import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, FORMER_STUDENT_SUBSCRIBER_IDS, programDisplayLabel } from "./constants"
@@ -80,6 +80,42 @@ export function hasGoogleTag(labels: string[] | undefined, tag: string) {
 }
 
 const FORMER_SUBS = new Set(FORMER_STUDENT_SUBSCRIBER_IDS)
+
+/** Desk change of the enrollment tag — Pending to Current after a deposit, etc. */
+export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): Partial<Student> {
+  const labels = [...(student.labels || [])]
+  const removed = (student.removedLabels || []).filter((label) => !isCurrentStudentLabel(label))
+  const withoutPending = labels.filter((label) => !/^pending$/i.test(displayContactLabel(label)))
+  const patch: Partial<Student> = {
+    enrollmentStatus: status,
+    deskLocks: { ...student.deskLocks, status: true },
+    labels: withoutPending,
+    removedLabels: removed,
+  }
+
+  if (status === "contact") {
+    return {
+      ...patch,
+      program: "prospect",
+      track: "none",
+    }
+  }
+
+  if (student.program === "prospect" || student.enrollmentStatus === "contact") {
+    patch.program = "academy"
+    patch.track = student.track === "none" || !student.track ? "academy" : student.track
+    if (student.paymentPlan === "none") patch.paymentPlan = "pp"
+  }
+
+  const next = { ...student, ...patch }
+  if ((status === "current" || status === "pif") && !isActiveSubscriber(next)) {
+    if (!withoutPending.some((label) => isCurrentStudentLabel(label))) {
+      patch.labels = [...withoutPending, "Current Student"]
+    }
+  }
+
+  return patch
+}
 
 export function isActiveSubscriber(
   student: Pick<Student, "id" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,

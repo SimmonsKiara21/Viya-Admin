@@ -13,10 +13,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Field } from "@/components/ui-helpers"
+import { Field, NativeSelect } from "@/components/ui-helpers"
+import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS } from "@/lib/constants"
+import { enrollmentTagPatch } from "@/lib/contacts-labels"
 import { useStore } from "@/lib/store"
 import { fullName } from "@/lib/format"
-import type { Student } from "@/lib/types"
+import type { EnrollmentStatus, Student } from "@/lib/types"
 
 type PersonalForm = {
   firstName: string
@@ -27,6 +29,7 @@ type PersonalForm = {
   age: string
   startDate: string
   classTime: string
+  enrollmentStatus: EnrollmentStatus
 }
 
 function fromStudent(student: Student): PersonalForm {
@@ -39,6 +42,7 @@ function fromStudent(student: Student): PersonalForm {
     age: student.age != null ? String(student.age) : "",
     startDate: student.startDate || "",
     classTime: student.classTime || "",
+    enrollmentStatus: student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus,
   }
 }
 
@@ -69,6 +73,7 @@ export function StudentProfileEdit({ student }: { student: Student }) {
       return
     }
     updateStudent(student.id, {
+      ...enrollmentTagPatch(student, form.enrollmentStatus),
       firstName,
       lastName,
       nickname: form.nickname.trim(),
@@ -92,7 +97,7 @@ export function StudentProfileEdit({ student }: { student: Student }) {
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg" showCloseButton>
           <DialogHeader>
             <DialogTitle>Edit {fullName(student)}</DialogTitle>
-            <DialogDescription>Name, age, and contact details on this file.</DialogDescription>
+            <DialogDescription>Name, tag status, and contact details on this file.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="First name">
@@ -135,6 +140,21 @@ export function StudentProfileEdit({ student }: { student: Student }) {
                 placeholder="Sat 11:00"
                 onChange={(e) => patch({ classTime: e.target.value })}
               />
+            </Field>
+            <Field label="Status" className="sm:col-span-2">
+              <NativeSelect
+                value={form.enrollmentStatus}
+                onChange={(e) => patch({ enrollmentStatus: e.target.value as EnrollmentStatus })}
+              >
+                {form.enrollmentStatus === "contact" ? (
+                  <option value="contact">{ENROLLMENT_LABELS.contact}</option>
+                ) : null}
+                {DESK_STATUS_OPTIONS.map((status) => (
+                  <option key={status} value={status}>
+                    {ENROLLMENT_LABELS[status]}
+                  </option>
+                ))}
+              </NativeSelect>
             </Field>
           </div>
           <DialogFooter>

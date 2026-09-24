@@ -14,6 +14,7 @@ import {
   ContactBadge,
   ContactLabelBadge,
   EnrollmentBadge,
+  OverdueSinceBadge,
   PhotoshootBadge,
   PlanBadge,
   ProgramBadge,
@@ -60,6 +61,7 @@ import {
   isSubscriberOverdue,
   isSubscriberStudent,
   remainingPayments,
+  overdueSinceDate,
 } from "@/lib/alerts"
 import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
@@ -184,7 +186,8 @@ export default function StudentProfilePage() {
             Overdue
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
-            {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
+            Overdue since {formatDate(overdueSinceDate(student, payments))}
+            {student.nextPaymentAmount != null ? ` · ${formatMoney(student.nextPaymentAmount)}` : ""}.
           </p>
         </div>
       ) : null}
@@ -320,6 +323,9 @@ export default function StudentProfilePage() {
                   status={student.enrollmentStatus}
                   subscriber={isSubscriberStudent(student)}
                 />
+              ) : null}
+              {isAcademyOverdue(student) || isSubscriberOverdue(student) ? (
+                <OverdueSinceBadge date={overdueSinceDate(student, payments)} />
               ) : null}
               {student.subscriptionStatus !== "none" &&
               (student.program !== "subscriber" || student.subscriptionStatus !== "active") ? (

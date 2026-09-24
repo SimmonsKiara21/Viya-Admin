@@ -2,7 +2,7 @@ import { ACADEMY_TIMEZONE, PAID_PIF_IDS, PAID_PIF_NAMES } from "./constants"
 import { isActiveSubscriber } from "./contacts-labels"
 import { academyDateISO, displayStudentId } from "./format"
 import { foldName } from "./match-name"
-import type { AttendanceRecord, Student } from "./types"
+import type { AttendanceRecord, PaymentRecord, Student } from "./types"
 
 export const PLAN_LENGTH = 6
 export const TIMEZONE = ACADEMY_TIMEZONE
@@ -72,6 +72,17 @@ export function isOverdueTalent(student: Student) {
 
 export function isAcademyOverdue(student: Student) {
   return isOverdueTalent(student)
+}
+
+/** First missed installment — the date they have not paid since. */
+export function overdueSinceDate(student: Student, payments: PaymentRecord[] = []) {
+  const today = academyDateISO()
+  const missed = payments
+    .filter((p) => p.studentId === student.id && p.status !== "paid" && p.status !== "scheduled")
+    .map((p) => (p.dueDate || "").slice(0, 10))
+    .filter((due) => due && due <= today)
+    .sort()
+  return missed[0] || (student.nextPaymentDate || "").slice(0, 10)
 }
 
 export function isDeclinedStudent(student: Student) {

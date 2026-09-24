@@ -10,6 +10,7 @@ import {
   SUB_LABELS,
 } from "@/lib/constants"
 import { displayContactLabel } from "@/lib/contacts-labels"
+import { formatDate } from "@/lib/format"
 import { cn } from "@/lib/utils"
 import type {
   ClassType,
@@ -97,6 +98,18 @@ export function PlanBadge({ plan }: { plan: PaymentPlan | "" }) {
   return (
     <Badge variant="outline" className="font-medium">
       {PLAN_LABELS[plan]}
+    </Badge>
+  )
+}
+
+export function OverdueSinceBadge({ date }: { date: string }) {
+  if (!date) return null
+  return (
+    <Badge
+      variant="outline"
+      className="font-medium border-rose-500/35 bg-rose-500/15 text-rose-800 dark:text-rose-200"
+    >
+      Overdue since {formatDate(date)}
     </Badge>
   )
 }

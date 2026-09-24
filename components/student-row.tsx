@@ -3,11 +3,18 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { ContactLabelBadge, PlanBadge } from "@/components/status-badge"
+import { ContactLabelBadge, OverdueSinceBadge, PlanBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
 import { useStore } from "@/lib/store"
-import { highlightTone, isContact, isSubscriberStudent, remainingPayments, type HighlightTone } from "@/lib/alerts"
+import {
+  highlightTone,
+  isContact,
+  isSubscriberStudent,
+  overdueSinceDate,
+  remainingPayments,
+  type HighlightTone,
+} from "@/lib/alerts"
 import type { Student } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -37,7 +44,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
   pif: "text-emerald-900 dark:text-emerald-100 sepia:text-[#0c3d28]",
 }
 
-function paymentsLine(student: Student, tone: HighlightTone, left: number | null) {
+function paymentsLine(student: Student, tone: HighlightTone, left: number | null, since: string) {
   if (tone === "paused") return "Paused"
   const bits: string[] = []
   if (tone === "pending") {
@@ -45,7 +52,10 @@ function paymentsLine(student: Student, tone: HighlightTone, left: number | null
   }
   if (left === 0) bits.push("no payments left")
   else if (left != null) bits.push(`${left} payment${left === 1 ? "" : "s"} left`)
-  if (student.nextPaymentDate) {
+  if (tone === "overdue" || tone === "subscriberOverdue") {
+    if (since) bits.push(`overdue since ${formatDate(since)}`)
+    if (student.nextPaymentAmount != null) bits.push(formatMoney(student.nextPaymentAmount))
+  } else if (student.nextPaymentDate) {
     const due = `due ${formatDate(student.nextPaymentDate)}`
     bits.push(student.nextPaymentAmount != null ? `${due} · ${formatMoney(student.nextPaymentAmount)}` : due)
   }
@@ -62,10 +72,12 @@ export const StudentRow = memo(function StudentRow({
   context?: "roster" | "contacts"
   showStartDate?: boolean
 }) {
-  const { updateStudent } = useStore()
+  const { updateStudent, payments } = useStore()
   const tone = highlightTone(student)
   const left = remainingPayments(student)
-  const paymentCopy = context === "roster" ? paymentsLine(student, tone, left) : ""
+  const since =
+    tone === "overdue" || tone === "subscriberOverdue" ? overdueSinceDate(student, payments) : ""
+  const paymentCopy = context === "roster" ? paymentsLine(student, tone, left, since) : ""
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)
   const contact = isContact(student)
@@ -137,6 +149,7 @@ export const StudentRow = memo(function StudentRow({
           </span>
         ) : null}
         {showPlan ? <PlanBadge plan={student.paymentPlan} /> : null}
+        {since ? <OverdueSinceBadge date={since} /> : null}
       </div>
     </Link>
   )

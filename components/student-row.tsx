@@ -38,7 +38,7 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 }
 
 function paymentsLine(student: Student, tone: HighlightTone, left: number | null) {
-  if (tone === "paused") return "On hold — not on the floor."
+  if (tone === "paused") return "Paused"
   const bits: string[] = []
   if (tone === "pending") {
     bits.push(student.startDate ? `start ${formatDate(student.startDate)}` : "start date not set")

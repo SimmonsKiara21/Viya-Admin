@@ -216,7 +216,7 @@ export default function StudentProfilePage() {
       {isPausedStudent(student) ? (
         <div className="mb-4 rounded-2xl border border-violet-400/40 bg-violet-100/80 p-4 dark:bg-violet-950/40 sepia:bg-violet-200">
           <p className="font-heading text-xl text-violet-900 dark:text-violet-100 sepia:text-violet-950">
-            On hold — not on the floor.
+            Paused
           </p>
         </div>
       ) : null}

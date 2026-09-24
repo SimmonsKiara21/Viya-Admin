@@ -85,9 +85,9 @@ export default function AlertsPage() {
           students={collections}
         />
         <AlertList
-          title="On hold"
+          title="Paused"
           count={paused.length}
-          empty="Nobody is on hold."
+          empty="Nobody is paused."
           tone="paused"
           students={paused}
         />

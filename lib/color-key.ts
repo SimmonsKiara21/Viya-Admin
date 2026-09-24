@@ -22,8 +22,8 @@ export const COLOR_KEY = [
   },
   {
     id: "paused",
-    label: "On hold",
-    meaning: "On hold — not on the floor.",
+    label: "Paused",
+    meaning: "Paused",
     swatch: "bg-violet-500",
     text: "text-violet-900 dark:text-violet-100 sepia:text-violet-950",
   },

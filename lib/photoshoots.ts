@@ -49,10 +49,13 @@ export function normalizePhotoshoot(shoot: Partial<Photoshoot> & Pick<Photoshoot
   }
 }
 
-export function mergePhotoshoots(existing?: Photoshoot[]) {
-  const source = existing?.length ? existing : DEFAULT_PHOTO_SHOOTS
+export function mergePhotoshoots(existing?: Photoshoot[], removedIds: string[] = []) {
+  const removed = new Set(removedIds)
+  const source = (existing?.length ? existing : DEFAULT_PHOTO_SHOOTS).filter((s) => !removed.has(s.id))
   const byId = new Map(source.map((s) => [s.id, normalizePhotoshoot(s)]))
+  for (const id of removed) byId.delete(id)
   for (const shoot of DEFAULT_PHOTO_SHOOTS) {
+    if (removed.has(shoot.id)) continue
     const prev = byId.get(shoot.id)
     if (!prev) {
       byId.set(shoot.id, normalizePhotoshoot(shoot))
@@ -76,11 +79,17 @@ export function mergePhotoshoots(existing?: Photoshoot[]) {
   })
 }
 
-export function mergeLabelPlacements(existing: PhotoshootPlacement[], students: Student[]) {
-  const next = existing.map((row) => ({ ...row }))
+export function mergeLabelPlacements(
+  existing: PhotoshootPlacement[],
+  students: Student[],
+  removedIds: string[] = [],
+) {
+  const removed = new Set(removedIds)
+  const next = existing.filter((row) => !removed.has(row.shootId)).map((row) => ({ ...row }))
   const have = new Set(next.map((row) => `${row.shootId}:${row.studentId}`))
   for (const student of students) {
     for (const shoot of LABEL_SHOOTS) {
+      if (removed.has(shoot.id)) continue
       if (!hasContactLabel(student, shoot.match)) continue
       const key = `${shoot.id}:${student.id}`
       if (have.has(key)) continue
@@ -138,6 +147,25 @@ export function shootIdFromLabel(label: string, existing: Photoshoot[]) {
   let n = 2
   while (taken.has(`${slug}-${n}`)) n += 1
   return `${slug}-${n}`
+}
+
+export function copyPhotoshootLabel(label: string, existing: Photoshoot[]) {
+  const base = label.replace(/\s+copy(?:\s+\d+)?$/i, "").trim() || "Photoshoot"
+  const first = `${base} copy`
+  if (!existing.some((s) => s.label === first)) return first
+  let n = 2
+  while (existing.some((s) => s.label === `${first} ${n}`)) n += 1
+  return `${first} ${n}`
+}
+
+export function duplicatePhotoshoot(existing: Photoshoot[], source: Photoshoot): Photoshoot {
+  const label = copyPhotoshootLabel(source.label, existing)
+  return {
+    id: shootIdFromLabel(label, existing),
+    label,
+    archived: false,
+    notes: source.notes || "",
+  }
 }
 
 export function createPhotoshoot(existing: Photoshoot[], label: string, notes = ""): Photoshoot {

@@ -175,4 +175,6 @@ export interface AppData {
   groups: NotifyGroup[]
   photoshoots: Photoshoot[]
   photoshootPlacements: PhotoshootPlacement[]
+  /** Default month shoots staff deleted — merge will not put them back. */
+  removedPhotoshootIds: string[]
 }

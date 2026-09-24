@@ -2,13 +2,21 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ChevronDown, Pencil, X } from "lucide-react"
+import { ChevronDown, Copy, Pencil, Trash2, X } from "lucide-react"
 import { toast } from "sonner"
 import { PhotoshootEditor } from "@/components/photoshoot-editor"
 import { StudentPhoto } from "@/components/student-photo"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { useStore } from "@/lib/store"
 import { fullName, matchesQuery } from "@/lib/format"
 import { PHOTO_LABELS } from "@/lib/constants"
@@ -23,6 +31,8 @@ export default function PhotoshootsPage() {
     setPhotoshootPlacement,
     addPhotoshoot,
     updatePhotoshoot,
+    duplicatePhotoshoot,
+    deletePhotoshoot,
   } = useStore()
   const [editing, setEditing] = useState<Partial<Record<(typeof PHOTO_COLUMNS)[number], boolean>>>({})
   const openShoots = photoshoots.filter((s) => !s.archived)
@@ -31,6 +41,7 @@ export default function PhotoshootsPage() {
   const [priorOpen, setPriorOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const shoot = photoshoots.find((s) => s.id === shootId) ?? openShoots[0]
   const currentId = shoot?.id || shootId
@@ -61,7 +72,7 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="Name the next shoot whatever you want, write what you need for that day, and move people on or off each list."
+        description="Rename a month or shoot, duplicate a list, or delete one you no longer need."
         actions={
           <Button variant="outline" onClick={() => setAddOpen(true)}>
             Add photoshoot
@@ -71,18 +82,16 @@ export default function PhotoshootsPage() {
 
       <div className="mb-4 flex flex-wrap gap-2">
         {openShoots.map((item) => (
-          <button
+          <ShootChip
             key={item.id}
-            type="button"
-            onClick={() => setShootId(item.id)}
-            className={
-              currentId === item.id
-                ? "rounded-full border border-primary/50 bg-primary/16 px-3 py-1 text-xs font-medium text-primary"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
-            }
-          >
-            {item.label}
-          </button>
+            label={item.label}
+            active={currentId === item.id}
+            onSelect={() => setShootId(item.id)}
+            onEdit={() => {
+              setShootId(item.id)
+              setEditOpen(true)
+            }}
+          />
         ))}
       </div>
 
@@ -110,18 +119,17 @@ export default function PhotoshootsPage() {
                 {priorShoots.map((item) => {
                   const count = photoshootPlacements.filter((row) => row.shootId === item.id).length
                   return (
-                    <button
+                    <ShootChip
                       key={item.id}
-                      type="button"
-                      onClick={() => setShootId(item.id)}
-                      className={
-                        currentId === item.id
-                          ? "rounded-full border border-primary/50 bg-primary/16 px-3 py-1 text-xs font-medium text-primary"
-                          : "rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
-                      }
-                    >
-                      {item.label} · {count}
-                    </button>
+                      label={`${item.label} · ${count}`}
+                      active={currentId === item.id}
+                      onSelect={() => setShootId(item.id)}
+                      onEdit={() => {
+                        setShootId(item.id)
+                        setPriorOpen(true)
+                        setEditOpen(true)
+                      }}
+                    />
                   )
                 })}
               </div>
@@ -145,10 +153,29 @@ export default function PhotoshootsPage() {
           ) : null}
         </div>
         {shoot ? (
-          <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}>
-            <Pencil className="size-3" />
-            Edit shoot
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}>
+              <Pencil className="size-3" />
+              Edit name
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                const copy = duplicatePhotoshoot(shoot.id)
+                if (!copy) return
+                setShootId(copy.id)
+                toast.success(`${copy.label} is a copy of ${shoot.label}.`)
+              }}
+            >
+              <Copy className="size-3" />
+              Duplicate
+            </Button>
+            <Button size="sm" variant="destructive" onClick={() => setDeleteOpen(true)}>
+              <Trash2 className="size-3" />
+              Delete
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -169,15 +196,36 @@ export default function PhotoshootsPage() {
         onOpenChange={setEditOpen}
         shoot={shoot}
         title="Edit photoshoot"
-        description="Change the name, what we want, or move this shoot to Prior."
-        submitLabel="Save shoot"
+        description="Rename this month or shoot, change what we want, or move it to Prior."
+        submitLabel="Save name"
         onSave={({ label, notes, archived }) => {
           if (!shoot) return
           updatePhotoshoot(shoot.id, { label, notes, archived })
           toast.success(`Saved ${label}.`)
         }}
       />
+      <DeleteShootDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        label={shoot?.label || "this shoot"}
+        onConfirm={() => {
+          if (!shoot) return
+          const leftover = photoshoots.filter((s) => s.id !== shoot.id)
+          const next = leftover.find((s) => !s.archived) || leftover[0]
+          deletePhotoshoot(shoot.id)
+          setShootId(next?.id || "")
+          setDeleteOpen(false)
+          toast.success(`${shoot.label} was deleted.`)
+        }}
+      />
 
+      {photoshoots.length === 0 ? (
+        <Panel>
+          <p className="text-sm text-muted-foreground">No photoshoots yet. Add one and name it whatever you want.</p>
+        </Panel>
+      ) : null}
+
+      {shoot ? (
       <div className="grid items-start gap-4 lg:grid-cols-3">
         <PhotoColumn
           status="scheduled"
@@ -222,7 +270,75 @@ export default function PhotoshootsPage() {
           onSetStatus={setStatus}
         />
       </div>
+      ) : null}
     </div>
+  )
+}
+
+function ShootChip({
+  label,
+  active,
+  onSelect,
+  onEdit,
+}: {
+  label: string
+  active: boolean
+  onSelect: () => void
+  onEdit: () => void
+}) {
+  return (
+    <div
+      className={
+        active
+          ? "flex items-center gap-0.5 rounded-full border border-primary/50 bg-primary/16 pl-3 pr-1 py-0.5 text-xs font-medium text-primary"
+          : "flex items-center gap-0.5 rounded-full border border-border pl-3 pr-1 py-0.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+      }
+    >
+      <button type="button" onClick={onSelect} className="max-w-48 truncate py-0.5">
+        {label}
+      </button>
+      <button
+        type="button"
+        className="rounded-full p-1 hover:bg-background/60 hover:text-foreground"
+        title={`Rename ${label}`}
+        onClick={onEdit}
+      >
+        <Pencil className="size-3" />
+      </button>
+    </div>
+  )
+}
+
+function DeleteShootDialog({
+  open,
+  onOpenChange,
+  label,
+  onConfirm,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  label: string
+  onConfirm: () => void
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md" showCloseButton>
+        <DialogHeader>
+          <DialogTitle>Delete {label}?</DialogTitle>
+          <DialogDescription>
+            People on this list are removed from it. Duplicate first if you still need the names.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            Keep it
+          </Button>
+          <Button type="button" variant="destructive" onClick={onConfirm}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

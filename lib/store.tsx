@@ -44,7 +44,14 @@ import {
   JOTFORM_ATTENDANCE_URL,
   STUDENT_ID_ALIASES,
 } from "./constants"
-import { createPhotoshoot, mergeLabelPlacements, mergePhotoshoots, newPlacement, placementsFromStudents } from "./photoshoots"
+import {
+  createPhotoshoot,
+  duplicatePhotoshoot as buildPhotoshootCopy,
+  mergeLabelPlacements,
+  mergePhotoshoots,
+  newPlacement,
+  placementsFromStudents,
+} from "./photoshoots"
 import { normalizeMeasurements } from "./measurements"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
@@ -332,7 +339,8 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
 function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null {
   if (!raw?.students?.length) return null
   const students = raw.students.map((s) => normalizeStudent(s))
-  const photoshoots = mergePhotoshoots(raw.photoshoots)
+  const removedPhotoshootIds = [...new Set((raw.removedPhotoshootIds || []).filter(Boolean))]
+  const photoshoots = mergePhotoshoots(raw.photoshoots, removedPhotoshootIds)
   const basePlacements =
     raw.photoshootPlacements?.length ? raw.photoshootPlacements : placementsFromStudents(students)
   return withoutDroppedStudents(
@@ -345,7 +353,8 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
         notifications: raw.notifications ?? [],
         groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
         photoshoots,
-        photoshootPlacements: mergeLabelPlacements(basePlacements, students),
+        photoshootPlacements: mergeLabelPlacements(basePlacements, students, removedPhotoshootIds),
+        removedPhotoshootIds,
       }),
     ),
   )
@@ -370,8 +379,13 @@ function applyNativeEnrollmentFreeze(local: AppData): AppData {
       ...local,
       students: applyDrivePhotos(merged.students.filter((s) => !isDroppedStudent(s))),
       payments: overlayFrozenPayments(local),
-      photoshoots: mergePhotoshoots(local.photoshoots),
-      photoshootPlacements: mergeLabelPlacements(local.photoshootPlacements, merged.students),
+      photoshoots: mergePhotoshoots(local.photoshoots, local.removedPhotoshootIds),
+      photoshootPlacements: mergeLabelPlacements(
+        local.photoshootPlacements,
+        merged.students,
+        local.removedPhotoshootIds,
+      ),
+      removedPhotoshootIds: local.removedPhotoshootIds || [],
     }),
   )
 }
@@ -422,6 +436,8 @@ type StoreContextValue = AppData & {
   ) => void
   addPhotoshoot: (label?: string, notes?: string) => Photoshoot
   updatePhotoshoot: (id: string, patch: Partial<Pick<Photoshoot, "label" | "notes" | "archived">>) => void
+  duplicatePhotoshoot: (id: string) => Photoshoot | null
+  deletePhotoshoot: (id: string) => void
   resetRoster: () => void
 }
 
@@ -485,7 +501,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) {
             next = fromLegacy
-              ? { ...parsed, attendance: seedData.attendance, photoshoots: mergePhotoshoots(parsed.photoshoots) }
+              ? {
+                  ...parsed,
+                  attendance: seedData.attendance,
+                  photoshoots: mergePhotoshoots(parsed.photoshoots, parsed.removedPhotoshootIds),
+                }
               : parsed
             next = withPhotos(next)
           }
@@ -737,8 +757,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ...prev,
             students: applied.students,
             payments: applied.payments,
-            photoshoots: mergePhotoshoots(prev.photoshoots),
-            photoshootPlacements: mergeLabelPlacements(prev.photoshootPlacements, applied.students),
+            photoshoots: mergePhotoshoots(prev.photoshoots, prev.removedPhotoshootIds),
+            photoshootPlacements: mergeLabelPlacements(
+              prev.photoshootPlacements,
+              applied.students,
+              prev.removedPhotoshootIds,
+            ),
           })
           dataRef.current = next
           return next
@@ -1002,6 +1026,29 @@ export function StoreProvider({ children }: { children: ReactNode }) {
                 }
               : s,
           ),
+        })),
+      duplicatePhotoshoot: (id) => {
+        const source = data.photoshoots.find((s) => s.id === id)
+        if (!source) return null
+        const copy = buildPhotoshootCopy(data.photoshoots, source)
+        mutate((prev) => ({
+          ...prev,
+          photoshoots: [...prev.photoshoots, copy],
+          photoshootPlacements: [
+            ...prev.photoshootPlacements,
+            ...prev.photoshootPlacements
+              .filter((row) => row.shootId === id)
+              .map((row) => newPlacement(copy.id, row.studentId, row.status)),
+          ],
+        }))
+        return copy
+      },
+      deletePhotoshoot: (id) =>
+        mutate((prev) => ({
+          ...prev,
+          photoshoots: prev.photoshoots.filter((s) => s.id !== id),
+          photoshootPlacements: prev.photoshootPlacements.filter((row) => row.shootId !== id),
+          removedPhotoshootIds: [...new Set([...(prev.removedPhotoshootIds || []), id])],
         })),
       resetRoster: () => {
         const next = cloneSeed()

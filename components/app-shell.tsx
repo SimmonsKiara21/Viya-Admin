@@ -19,6 +19,7 @@ import { StaffAlertBanner } from "@/components/staff-alert-banner"
 import { ColorKey } from "@/components/color-key"
 import { lockDesk } from "@/components/desk-gate"
 import { SaveDeskButton } from "@/components/save-desk-button"
+import { UndoRedoButtons } from "@/components/undo-redo-buttons"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -120,6 +121,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <StudentSearch className="max-w-xl flex-1" />
+          <UndoRedoButtons />
           <SaveDeskButton />
         </header>
         <StaffAlertBanner />

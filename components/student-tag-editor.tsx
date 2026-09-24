@@ -5,7 +5,7 @@ import { Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NativeSelect } from "@/components/ui-helpers"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS, GOOGLE_CONTACT_TAGS } from "@/lib/constants"
-import { hasGoogleTag, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
+import { enrollmentTagPatch, hasGoogleTag, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import { isContact } from "@/lib/alerts"
 import { useStore } from "@/lib/store"
 import type { EnrollmentStatus, Student } from "@/lib/types"
@@ -87,10 +87,13 @@ export function EnrollmentTagEditor({ student }: { student: Student }) {
         autoFocus
         value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
         onChange={(e) => {
-          updateStudent(student.id, { enrollmentStatus: e.target.value as EnrollmentStatus })
+          updateStudent(student.id, enrollmentTagPatch(student, e.target.value as EnrollmentStatus))
           setEditing(false)
         }}
       >
+        {student.enrollmentStatus === "contact" ? (
+          <option value="contact">{ENROLLMENT_LABELS.contact}</option>
+        ) : null}
         {DESK_STATUS_OPTIONS.map((status) => (
           <option key={status} value={status}>
             {ENROLLMENT_LABELS[status]}

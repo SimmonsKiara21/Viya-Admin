@@ -414,12 +414,22 @@ const EMPTY_JOTFORM: JotformMeta = {
   formUrl: JOTFORM_ATTENDANCE_URL,
 }
 
+const HISTORY_LIMIT = 25
+
+function cloneDesk(data: AppData): AppData {
+  return structuredClone(data)
+}
+
 type StoreContextValue = AppData & {
   ready: boolean
   lastSavedAt: string
+  canUndo: boolean
+  canRedo: boolean
   groups: NotifyGroup[]
   customGroups: NotifyGroup[]
   saveDesk: () => boolean
+  undoDesk: () => boolean
+  redoDesk: () => boolean
   updateStudent: (id: string, patch: Partial<Student>) => void
   changeStudentId: (fromId: string, nextId: string) => ChangeStudentIdResult
   addStudent: (student: Student) => void
@@ -485,6 +495,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     connected: false,
   })
   const dataRef = useRef(data)
+  const pastRef = useRef<AppData[]>([])
+  const futureRef = useRef<AppData[]>([])
+  const [canUndo, setCanUndo] = useState(false)
+  const [canRedo, setCanRedo] = useState(false)
   const squareFp = useRef("")
   const enrollFp = useRef("")
   const labelsFp = useRef("")
@@ -789,12 +803,49 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [ready])
 
-  const mutate = useCallback((fn: (prev: AppData) => AppData) => {
+  const mutate = useCallback((fn: (prev: AppData) => AppData, record = true) => {
+    let recorded = false
     setData((prev) => {
       const next = fn(prev)
+      if (next === prev) return prev
+      if (record) {
+        pastRef.current = [...pastRef.current, cloneDesk(prev)].slice(-HISTORY_LIMIT)
+        futureRef.current = []
+        recorded = true
+      }
       dataRef.current = next
       return next
     })
+    if (recorded) {
+      setCanUndo(true)
+      setCanRedo(false)
+    }
+  }, [])
+
+  const undoDesk = useCallback(() => {
+    const past = pastRef.current
+    if (!past.length) return false
+    const prev = past[past.length - 1]
+    pastRef.current = past.slice(0, -1)
+    futureRef.current = [cloneDesk(dataRef.current), ...futureRef.current].slice(0, HISTORY_LIMIT)
+    dataRef.current = prev
+    setData(prev)
+    setCanUndo(pastRef.current.length > 0)
+    setCanRedo(true)
+    return true
+  }, [])
+
+  const redoDesk = useCallback(() => {
+    const future = futureRef.current
+    if (!future.length) return false
+    const next = future[0]
+    futureRef.current = future.slice(1)
+    pastRef.current = [...pastRef.current, cloneDesk(dataRef.current)].slice(-HISTORY_LIMIT)
+    dataRef.current = next
+    setData(next)
+    setCanUndo(true)
+    setCanRedo(futureRef.current.length > 0)
+    return true
   }, [])
 
   const customGroups = useMemo(() => data.groups ?? [], [data.groups])
@@ -810,7 +861,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       customGroups,
       ready,
       lastSavedAt,
+      canUndo,
+      canRedo,
       saveDesk,
+      undoDesk,
+      redoDesk,
       updateStudent: (id, patch) =>
         mutate((prev) => ({
           ...prev,
@@ -1061,8 +1116,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         })),
       resetRoster: () => {
         const next = cloneSeed()
+        pastRef.current = []
+        futureRef.current = []
         dataRef.current = next
         setData(next)
+        setCanUndo(false)
+        setCanRedo(false)
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(PHOTOS_KEY)
         localStorage.removeItem(SAVED_AT_KEY)
@@ -1070,7 +1129,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setLastSavedAt("")
       },
     }
-  }, [data, mutate, ready, groups, customGroups, lastSavedAt, saveDesk])
+  }, [data, mutate, ready, groups, customGroups, lastSavedAt, saveDesk, canUndo, canRedo, undoDesk, redoDesk])
 
   const syncValue = useMemo<SyncContextValue>(
     () => ({ jotform, square, enrollment }),

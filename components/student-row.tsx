@@ -13,6 +13,7 @@ import {
   isSubscriberStudent,
   overdueSinceDate,
   remainingPayments,
+  showsOverdueSince,
   type HighlightTone,
 } from "@/lib/alerts"
 import type { Student } from "@/lib/types"
@@ -52,8 +53,8 @@ function paymentsLine(student: Student, tone: HighlightTone, left: number | null
   }
   if (left === 0) bits.push("no payments left")
   else if (left != null) bits.push(`${left} payment${left === 1 ? "" : "s"} left`)
-  if (tone === "overdue" || tone === "subscriberOverdue") {
-    if (since) bits.push(`overdue since ${formatDate(since)}`)
+  if (since) {
+    bits.push(`overdue since ${formatDate(since)}`)
     if (student.nextPaymentAmount != null) bits.push(formatMoney(student.nextPaymentAmount))
   } else if (student.nextPaymentDate) {
     const due = `due ${formatDate(student.nextPaymentDate)}`
@@ -75,8 +76,7 @@ export const StudentRow = memo(function StudentRow({
   const { updateStudent, payments } = useStore()
   const tone = highlightTone(student)
   const left = remainingPayments(student)
-  const since =
-    tone === "overdue" || tone === "subscriberOverdue" ? overdueSinceDate(student, payments) : ""
+  const since = showsOverdueSince(student) ? overdueSinceDate(student, payments) : ""
   const paymentCopy = context === "roster" ? paymentsLine(student, tone, left, since) : ""
   const labels = uniqueContactLabels(student)
   const idLabel = formatStudentId(student.id)

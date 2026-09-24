@@ -74,6 +74,11 @@ export function isAcademyOverdue(student: Student) {
   return isOverdueTalent(student)
 }
 
+/** Overdue and collections both show the first missed installment. */
+export function showsOverdueSince(student: Student) {
+  return isCollectionsStudent(student) || isOverdueFollowUp(student)
+}
+
 /** First missed installment — the date they have not paid since. */
 export function overdueSinceDate(student: Student, payments: PaymentRecord[] = []) {
   const today = academyDateISO()

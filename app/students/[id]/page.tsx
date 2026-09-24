@@ -62,6 +62,7 @@ import {
   isSubscriberStudent,
   remainingPayments,
   overdueSinceDate,
+  showsOverdueSince,
 } from "@/lib/alerts"
 import { uniqueContactLabels, isNewsletterRecipient, toggleStudentList } from "@/lib/contacts-labels"
 import {
@@ -169,6 +170,9 @@ export default function StudentProfilePage() {
     toast.success("Feedback saved on their profile.")
   }
 
+  const missedSince = overdueSinceDate(student, payments)
+  const paymentsLeft = remainingPayments(student)
+
   return (
     <div className="mx-auto max-w-5xl">
       <button
@@ -186,8 +190,18 @@ export default function StudentProfilePage() {
             Overdue
           </p>
           <p className="mt-1 text-sm text-rose-800 dark:text-rose-50/90 sepia:text-rose-950">
-            Overdue since {formatDate(overdueSinceDate(student, payments))}
-            {student.nextPaymentAmount != null ? ` · ${formatMoney(student.nextPaymentAmount)}` : ""}.
+            {[
+              `Overdue since ${formatDate(missedSince)}`,
+              student.nextPaymentAmount != null ? formatMoney(student.nextPaymentAmount) : "",
+              paymentsLeft === 0
+                ? "no payments left"
+                : paymentsLeft != null
+                  ? `${paymentsLeft} payment${paymentsLeft === 1 ? "" : "s"} left`
+                  : "",
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+            .
           </p>
         </div>
       ) : null}
@@ -209,9 +223,17 @@ export default function StudentProfilePage() {
             {student.enrollmentStatus === "cancelling" ? "Cancelling" : "Collections"}
           </p>
           <p className="mt-1 text-sm text-amber-800 dark:text-amber-50/90 sepia:text-amber-950">
-            {student.nextPaymentAmount
-              ? `${formatMoney(student.nextPaymentAmount)} due ${formatDate(student.nextPaymentDate)}.`
-              : "Not mixed with overdue."}
+            {[
+              missedSince ? `Overdue since ${formatDate(missedSince)}` : "",
+              student.nextPaymentAmount != null ? formatMoney(student.nextPaymentAmount) : "",
+              paymentsLeft === 0
+                ? "no payments left"
+                : paymentsLeft != null
+                  ? `${paymentsLeft} payment${paymentsLeft === 1 ? "" : "s"} left`
+                  : "",
+            ]
+              .filter(Boolean)
+              .join(" · ") || "Not mixed with overdue."}
           </p>
         </div>
       ) : null}
@@ -324,9 +346,7 @@ export default function StudentProfilePage() {
                   subscriber={isSubscriberStudent(student)}
                 />
               ) : null}
-              {isAcademyOverdue(student) || isSubscriberOverdue(student) ? (
-                <OverdueSinceBadge date={overdueSinceDate(student, payments)} />
-              ) : null}
+              {showsOverdueSince(student) ? <OverdueSinceBadge date={missedSince} /> : null}
               {student.subscriptionStatus !== "none" &&
               (student.program !== "subscriber" || student.subscriptionStatus !== "active") ? (
                 <SubscriptionBadge status={student.subscriptionStatus} />

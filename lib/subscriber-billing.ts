@@ -75,5 +75,14 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     (typeof student.nextPaymentAmount === "number" && student.nextPaymentAmount > 0 && student.nextPaymentAmount <= 120
       ? student.nextPaymentAmount
       : null)
+  if (student.deskLocks?.subscription) {
+    const due = (student.nextPaymentDate || nextDue || "").slice(0, 10)
+    return {
+      lastPaidDate,
+      nextDue: due,
+      amount: typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : amount ?? null,
+      overdueSince: due && due <= today ? due : "",
+    }
+  }
   return { lastPaidDate, nextDue, amount: amount ?? null, overdueSince }
 }

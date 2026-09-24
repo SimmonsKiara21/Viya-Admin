@@ -67,7 +67,7 @@ export interface Student {
   /** Labels staff removed on the desk — contact sync will not put them back. */
   removedLabels: string[]
   /** Desk tag and notes edits that should not be overwritten by the workbook. */
-  deskLocks: { status?: boolean; notes?: boolean; installments?: boolean }
+  deskLocks: { status?: boolean; notes?: boolean; installments?: boolean; subscription?: boolean }
   classTime: string
   photoUrl: string
   docusignStatus: DocusignStatus

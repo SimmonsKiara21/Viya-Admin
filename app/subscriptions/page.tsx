@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import { FilterChip, FilterGroup } from "@/components/filter-chip"
 import { StudentRow } from "@/components/student-row"
+import { SubscriberQuickEdit } from "@/components/subscriber-edit"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
 import { SUB_LABELS } from "@/lib/constants"
@@ -140,7 +141,14 @@ export default function SubscriptionsPage() {
                 </div>
                 <div className="divide-y divide-border px-2 py-1">
                   {people.map((student) => (
-                    <StudentRow key={student.id} student={student} context="subscribers" />
+                    <div key={student.id} className="flex flex-col gap-2 py-1 sm:flex-row sm:items-center">
+                      <div className="min-w-0 flex-1">
+                        <StudentRow student={student} context="subscribers" />
+                      </div>
+                      <div className="flex items-center px-2 pb-2 sm:pb-0">
+                        <SubscriberQuickEdit student={student} />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

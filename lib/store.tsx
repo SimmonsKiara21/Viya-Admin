@@ -235,9 +235,10 @@ function applyManualPayments(
     payments = [nextPay, ...payments]
     students = students.map((s) => {
       if (s.id !== nextPay.studentId) return s
+      if (nextPay.status === "paid") return s
       const due = nextPay.dueDate.slice(0, 10)
       const sooner = !s.nextPaymentDate || due <= s.nextPaymentDate.slice(0, 10)
-      const pastDue = due < today && nextPay.status !== "paid"
+      const pastDue = due < today
       const canMarkOverdue =
         pastDue &&
         s.program === "academy" &&
@@ -311,6 +312,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       status: Boolean(s.deskLocks?.status),
       notes: Boolean(s.deskLocks?.notes),
       installments: Boolean(s.deskLocks?.installments),
+      subscription: Boolean(s.deskLocks?.subscription),
     },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",

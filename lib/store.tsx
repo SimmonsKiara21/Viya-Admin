@@ -506,6 +506,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     dataRef.current = data
+    setCanUndo(pastRef.current.length > 0)
+    setCanRedo(futureRef.current.length > 0)
   }, [data])
 
   useEffect(() => {
@@ -804,22 +806,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [ready])
 
   const mutate = useCallback((fn: (prev: AppData) => AppData, record = true) => {
-    let recorded = false
     setData((prev) => {
       const next = fn(prev)
       if (next === prev) return prev
       if (record) {
         pastRef.current = [...pastRef.current, cloneDesk(prev)].slice(-HISTORY_LIMIT)
         futureRef.current = []
-        recorded = true
       }
       dataRef.current = next
       return next
     })
-    if (recorded) {
-      setCanUndo(true)
-      setCanRedo(false)
-    }
   }, [])
 
   const undoDesk = useCallback(() => {
@@ -830,8 +826,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     futureRef.current = [cloneDesk(dataRef.current), ...futureRef.current].slice(0, HISTORY_LIMIT)
     dataRef.current = prev
     setData(prev)
-    setCanUndo(pastRef.current.length > 0)
-    setCanRedo(true)
     return true
   }, [])
 
@@ -843,8 +837,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     pastRef.current = [...pastRef.current, cloneDesk(dataRef.current)].slice(-HISTORY_LIMIT)
     dataRef.current = next
     setData(next)
-    setCanUndo(true)
-    setCanRedo(futureRef.current.length > 0)
     return true
   }, [])
 

@@ -14,11 +14,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Field, NativeSelect } from "@/components/ui-helpers"
+import { overdueSinceValue, showsOverdueSinceField } from "@/components/overdue-since-field"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS } from "@/lib/constants"
 import { enrollmentTagPatch } from "@/lib/contacts-labels"
+import { overdueSincePatch } from "@/lib/alerts"
 import { useStore } from "@/lib/store"
 import { fullName } from "@/lib/format"
-import type { EnrollmentStatus, Student } from "@/lib/types"
+import type { EnrollmentStatus, PaymentRecord, Student } from "@/lib/types"
 
 type PersonalForm = {
   firstName: string
@@ -30,9 +32,10 @@ type PersonalForm = {
   startDate: string
   classTime: string
   enrollmentStatus: EnrollmentStatus
+  overdueSince: string
 }
 
-function fromStudent(student: Student): PersonalForm {
+function fromStudent(student: Student, payments: PaymentRecord[]): PersonalForm {
   return {
     firstName: student.firstName,
     lastName: student.lastName,
@@ -43,18 +46,26 @@ function fromStudent(student: Student): PersonalForm {
     startDate: student.startDate || "",
     classTime: student.classTime || "",
     enrollmentStatus: student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus,
+    overdueSince: overdueSinceValue(student, payments),
   }
 }
 
+function statusNeedsSince(status: EnrollmentStatus) {
+  return status === "overdue" || status === "collections" || status === "cancelling" || status === "declined"
+}
+
 export function StudentProfileEdit({ student }: { student: Student }) {
-  const { updateStudent } = useStore()
+  const { payments, updateStudent } = useStore()
   const [open, setOpen] = useState(false)
-  const [form, setForm] = useState<PersonalForm>(() => fromStudent(student))
+  const [form, setForm] = useState<PersonalForm>(() => fromStudent(student, payments))
+  const showSince =
+    showsOverdueSinceField(student, payments) ||
+    statusNeedsSince(form.enrollmentStatus)
 
   useEffect(() => {
     if (!open) return
-    setForm(fromStudent(student))
-  }, [open, student])
+    setForm(fromStudent(student, payments))
+  }, [open, student, payments])
 
   function patch(next: Partial<PersonalForm>) {
     setForm((prev) => ({ ...prev, ...next }))
@@ -72,8 +83,12 @@ export function StudentProfileEdit({ student }: { student: Student }) {
       toast.error("Age must be a number.")
       return
     }
+    const sinceChanged = form.overdueSince !== overdueSinceValue(student, payments)
     updateStudent(student.id, {
       ...enrollmentTagPatch(student, form.enrollmentStatus),
+      ...(showSince && (sinceChanged || student.deskLocks?.overdueSince)
+        ? overdueSincePatch(student, form.overdueSince)
+        : {}),
       firstName,
       lastName,
       nickname: form.nickname.trim(),
@@ -97,7 +112,7 @@ export function StudentProfileEdit({ student }: { student: Student }) {
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg" showCloseButton>
           <DialogHeader>
             <DialogTitle>Edit {fullName(student)}</DialogTitle>
-            <DialogDescription>Name, tag status, and contact details on this file.</DialogDescription>
+            <DialogDescription>Name, tag status, overdue since, and contact details on this file.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="First name">
@@ -141,7 +156,7 @@ export function StudentProfileEdit({ student }: { student: Student }) {
                 onChange={(e) => patch({ classTime: e.target.value })}
               />
             </Field>
-            <Field label="Status" className="sm:col-span-2">
+            <Field label="Status">
               <NativeSelect
                 value={form.enrollmentStatus}
                 onChange={(e) => patch({ enrollmentStatus: e.target.value as EnrollmentStatus })}
@@ -156,6 +171,15 @@ export function StudentProfileEdit({ student }: { student: Student }) {
                 ))}
               </NativeSelect>
             </Field>
+            {showSince ? (
+              <Field label="Overdue since">
+                <Input
+                  type="date"
+                  value={form.overdueSince}
+                  onChange={(e) => patch({ overdueSince: e.target.value })}
+                />
+              </Field>
+            ) : null}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { DESK_SUB_STATUSES, SUB_LABELS } from "@/lib/constants"
+import { overdueSincePatch } from "@/lib/alerts"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
 import { SUBSCRIPTION_ITEM } from "@/lib/square"
@@ -30,6 +31,7 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
   const [status, setStatus] = useState<SubscriptionStatus>(student.subscriptionStatus)
   const [paid, setPaid] = useState(bill.lastPaidDate)
   const [due, setDue] = useState(bill.nextDue)
+  const [since, setSince] = useState(bill.overdueSince)
   const [amount, setAmount] = useState(bill.amount != null ? String(bill.amount) : "")
 
   function openEditor() {
@@ -37,6 +39,7 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
     setStatus(student.subscriptionStatus)
     setPaid(next.lastPaidDate)
     setDue(next.nextDue)
+    setSince(next.overdueSince)
     setAmount(next.amount != null ? String(next.amount) : "")
     setOpen(true)
   }
@@ -48,7 +51,8 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
       subscriptionStatus: status,
       nextPaymentDate: due,
       nextPaymentAmount: nextAmount,
-      deskLocks: { ...student.deskLocks, subscription: true },
+      ...overdueSincePatch(student, since),
+      deskLocks: { ...student.deskLocks, subscription: true, overdueSince: Boolean(since) },
     })
     if (paid) {
       const paidAmount = nextAmount ?? bill.amount ?? SUBSCRIPTION_ITEM.price ?? 51.49
@@ -119,6 +123,9 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
               </Field>
               <Field label="Next due">
                 <Input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+              </Field>
+              <Field label="Overdue since" className="sm:col-span-2">
+                <Input type="date" value={since} onChange={(e) => setSince(e.target.value)} />
               </Field>
             </div>
             <Field label="Monthly amount">

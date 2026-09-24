@@ -71,6 +71,7 @@ export default function ContactsPage() {
       nextPaymentDate: "",
       nextPaymentAmount: null,
       installmentsLeft: null,
+      overdueSince: "",
       notes: form.notes.trim(),
       contactCategory: form.contactCategory,
       subscriptionStatus: "none",

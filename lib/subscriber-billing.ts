@@ -1,3 +1,4 @@
+import { deskOverdueSince } from "./alerts"
 import { academyDateISO } from "./format"
 import type { PaymentRecord, Student } from "./types"
 
@@ -84,6 +85,7 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     (typeof student.nextPaymentAmount === "number" && student.nextPaymentAmount > 0 && student.nextPaymentAmount <= 120
       ? student.nextPaymentAmount
       : null)
+  const lockedSince = deskOverdueSince(student)
   if (student.deskLocks?.subscription) {
     const due = (student.nextPaymentDate || nextDue || "").slice(0, 10)
     return {
@@ -92,8 +94,13 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
       amount: withSubscriptionTax(
         typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : amount,
       ),
-      overdueSince: due && due <= today ? due : "",
+      overdueSince: lockedSince || (due && due <= today ? due : ""),
     }
   }
-  return { lastPaidDate, nextDue, amount: withSubscriptionTax(amount), overdueSince }
+  return {
+    lastPaidDate,
+    nextDue,
+    amount: withSubscriptionTax(amount),
+    overdueSince: lockedSince || overdueSince,
+  }
 }

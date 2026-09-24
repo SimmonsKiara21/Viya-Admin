@@ -509,6 +509,7 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
     nextPaymentDate: "",
     nextPaymentAmount: null,
     installmentsLeft: null,
+    overdueSince: "",
     notes: sheetNotes(row),
     contactCategory: categoryFromLabels(labels),
     subscriptionStatus: "none",

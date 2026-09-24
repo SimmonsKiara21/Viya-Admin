@@ -278,6 +278,7 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     nextPaymentDate: row.nextPaymentDate || "",
     nextPaymentAmount: row.nextPaymentAmount ?? null,
     installmentsLeft: row.installmentsLeft ?? null,
+    overdueSince: "",
     notes: row.notes || "",
     contactCategory: "",
     subscriptionStatus:

@@ -64,6 +64,7 @@ const blank = (): Student => ({
   nextPaymentDate: "",
   nextPaymentAmount: 104,
   installmentsLeft: null,
+  overdueSince: "",
   notes: "",
   subscriptionStatus: "none",
   subscriptionPlan: "none",

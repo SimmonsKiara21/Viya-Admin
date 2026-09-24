@@ -79,8 +79,16 @@ export function showsOverdueSince(student: Student) {
   return isCollectionsStudent(student) || isOverdueFollowUp(student)
 }
 
+/** Staff set this date on the file — keep it instead of the Square / calendar guess. */
+export function deskOverdueSince(student: Pick<Student, "overdueSince" | "deskLocks">) {
+  if (!student.deskLocks?.overdueSince) return ""
+  return (student.overdueSince || "").slice(0, 10)
+}
+
 /** First missed installment — the date they have not paid since. */
 export function overdueSinceDate(student: Student, payments: PaymentRecord[] = []) {
+  const locked = deskOverdueSince(student)
+  if (locked) return locked
   const today = academyDateISO()
   const missed = payments
     .filter((p) => p.studentId === student.id && p.status !== "paid" && p.status !== "scheduled")
@@ -88,6 +96,21 @@ export function overdueSinceDate(student: Student, payments: PaymentRecord[] = [
     .filter((due) => due && due <= today)
     .sort()
   return missed[0] || (student.nextPaymentDate || "").slice(0, 10)
+}
+
+/** Save or clear the overdue-since date on the open file. */
+export function overdueSincePatch(student: Student, date: string): Partial<Student> {
+  const value = (date || "").slice(0, 10)
+  if (!value) {
+    return {
+      overdueSince: "",
+      deskLocks: { ...student.deskLocks, overdueSince: false },
+    }
+  }
+  return {
+    overdueSince: value,
+    deskLocks: { ...student.deskLocks, overdueSince: true },
+  }
 }
 
 export function isDeclinedStudent(student: Student) {

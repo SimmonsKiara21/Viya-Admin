@@ -301,6 +301,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     nextPaymentDate: s.nextPaymentDate || "",
     nextPaymentAmount: s.nextPaymentAmount ?? null,
     installmentsLeft: s.installmentsLeft ?? null,
+    overdueSince: (s.overdueSince || "").slice(0, 10),
     notes: s.notes || "",
     contactCategory: (() => {
       const cat = (s.contactCategory || "") as ContactCategory | ""
@@ -326,6 +327,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       notes: Boolean(s.deskLocks?.notes),
       installments: Boolean(s.deskLocks?.installments),
       subscription: Boolean(s.deskLocks?.subscription),
+      overdueSince: Boolean(s.deskLocks?.overdueSince),
     },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",
@@ -824,6 +826,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             }
             if (patch.installmentsLeft !== undefined && patch.deskLocks?.installments !== false) {
               next.deskLocks = { ...next.deskLocks, installments: true }
+            }
+            if (patch.overdueSince !== undefined && patch.deskLocks?.overdueSince !== false) {
+              next.deskLocks = { ...next.deskLocks, overdueSince: Boolean(next.overdueSince) }
             }
             if (patch.labels) {
               const labels = [...new Set(patch.labels.map((label) => label.trim()).filter(Boolean))]

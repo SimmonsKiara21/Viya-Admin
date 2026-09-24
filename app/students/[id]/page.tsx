@@ -23,6 +23,7 @@ import {
 import { StaffNotesEditor } from "@/components/staff-notes-editor"
 import { StudentIdField } from "@/components/student-id-field"
 import { StudentProfileEdit } from "@/components/student-profile-edit"
+import { OverdueSinceField } from "@/components/overdue-since-field"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
@@ -363,6 +364,7 @@ export default function StudentProfilePage() {
                   ))}
                 </NativeSelect>
               </Field>
+              <OverdueSinceField student={student} />
               <StudentIdField
                 student={student}
                 onChanged={(nextId) => {
@@ -488,6 +490,7 @@ export default function StudentProfilePage() {
                       Desk tag — keep this status
                     </button>
                   ) : null}
+                  <OverdueSinceField student={student} />
                 </>
               )}
               <Field label="Program">
@@ -681,6 +684,7 @@ export default function StudentProfilePage() {
                 ))}
               </NativeSelect>
             </Field>
+            <OverdueSinceField student={student} />
             <Field label="Subscription plan">
               <NativeSelect
                 value={

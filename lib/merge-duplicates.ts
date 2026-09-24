@@ -114,6 +114,11 @@ function mergeStudent(keeper: Student, extra: Student): Student {
     startDate: keeper.startDate || extra.startDate,
     nextPaymentDate: keeper.nextPaymentDate || extra.nextPaymentDate,
     nextPaymentAmount: keeper.nextPaymentAmount ?? extra.nextPaymentAmount,
+    overdueSince: keeper.deskLocks?.overdueSince
+      ? keeper.overdueSince
+      : extra.deskLocks?.overdueSince
+        ? extra.overdueSince
+        : keeper.overdueSince || extra.overdueSince,
     notes,
     labels,
     removedLabels: removed,
@@ -121,6 +126,8 @@ function mergeStudent(keeper: Student, extra: Student): Student {
       status: Boolean(keeper.deskLocks?.status || extra.deskLocks?.status),
       notes: Boolean(keeper.deskLocks?.notes || extra.deskLocks?.notes),
       installments: Boolean(keeper.deskLocks?.installments || extra.deskLocks?.installments),
+      subscription: Boolean(keeper.deskLocks?.subscription || extra.deskLocks?.subscription),
+      overdueSince: Boolean(keeper.deskLocks?.overdueSince || extra.deskLocks?.overdueSince),
     },
     photoUrl: keeper.photoUrl || extra.photoUrl,
     classTime: keeper.classTime || extra.classTime,

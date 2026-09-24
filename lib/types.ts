@@ -58,6 +58,8 @@ export interface Student {
   nextPaymentDate: string
   nextPaymentAmount: number | null
   installmentsLeft: number | null
+  /** Desk override for the first missed installment. Empty = use Square / calendar. */
+  overdueSince: string
   notes: string
   contactCategory: ContactCategory | ""
   subscriptionStatus: SubscriptionStatus
@@ -70,7 +72,13 @@ export interface Student {
   /** Labels staff removed on the desk — contact sync will not put them back. */
   removedLabels: string[]
   /** Desk tag and notes edits that should not be overwritten by the workbook. */
-  deskLocks: { status?: boolean; notes?: boolean; installments?: boolean; subscription?: boolean }
+  deskLocks: {
+    status?: boolean
+    notes?: boolean
+    installments?: boolean
+    subscription?: boolean
+    overdueSince?: boolean
+  }
   classTime: string
   photoUrl: string
   docusignStatus: DocusignStatus

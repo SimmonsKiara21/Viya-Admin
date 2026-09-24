@@ -120,11 +120,12 @@ export const StudentRow = memo(function StudentRow({
   const contact = isContact(student)
   const showCurrentStudent = context === "contacts" && !contact && !isSubscriberStudent(student)
   const showPlan = context === "roster" && (student.paymentPlan === "pif" || student.paymentPlan === "pp")
+  const showRosterCopy = context === "roster" || context === "subscribers"
 
   return (
     <Link
       href={`/students/${student.id}`}
-      data-highlight={context === "roster" && tone !== "none" ? tone : undefined}
+      data-highlight={showRosterCopy && tone !== "none" ? tone : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors",
         tone === "none" || context === "contacts" ? "hover:bg-muted/60" : ROW[tone],
@@ -132,7 +133,7 @@ export const StudentRow = memo(function StudentRow({
     >
       <StudentPhoto student={student} size="sm" />
       <div className="min-w-0 flex-1">
-        <p className={cn("truncate text-[15px] leading-tight font-medium", context === "roster" && tone !== "none" && NAME[tone])}>
+        <p className={cn("truncate text-[15px] leading-tight font-medium", showRosterCopy && tone !== "none" && NAME[tone])}>
           {fullName(student)}
         </p>
         <p className="truncate text-[13px] leading-snug text-muted-foreground">
@@ -151,12 +152,12 @@ export const StudentRow = memo(function StudentRow({
             .filter(Boolean)
             .join(" · ")}
         </p>
-        {context === "roster" && (paymentCopy || (!student.phone && student.email)) ? (
+        {showRosterCopy && (paymentCopy || (!student.phone && student.email)) ? (
           <p className="truncate text-[13px] leading-snug text-muted-foreground">
             {paymentCopy || student.email}
           </p>
         ) : null}
-        {context === "roster" && labels.length ? (
+        {showRosterCopy && labels.length ? (
           <div className="mt-1 flex flex-wrap gap-1">
             {labels.map((label) => (
               <ContactLabelBadge

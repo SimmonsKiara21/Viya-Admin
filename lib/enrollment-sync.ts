@@ -287,6 +287,7 @@ export function studentFromCsvRow(row: Partial<Student>): Student | null {
     removedLabels: [],
     deskLocks: {},
     photoshootNotes: "",
+    measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
     classTime: row.classTime || "",
     photoUrl: "",
     docusignStatus: "none",

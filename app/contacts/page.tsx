@@ -76,6 +76,7 @@ export default function ContactsPage() {
       subscriptionStatus: "none",
       photoshootStatus: "none",
       photoshootNotes: "",
+      measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
       labels: googleLabelForCategory(form.contactCategory) ? [googleLabelForCategory(form.contactCategory)] : [],
       removedLabels: [],
       deskLocks: {},

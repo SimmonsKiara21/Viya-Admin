@@ -11,14 +11,14 @@ export const PHOTO_COLUMNS: Exclude<PhotoshootStatus, "none">[] = [
 ]
 
 export const DEFAULT_PHOTO_SHOOTS: Photoshoot[] = [
-  { id: "2026-09", label: "September photoshoot", archived: false },
-  { id: "model-source-nov-2026", label: "Model Source November", archived: false },
-  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false },
-  { id: "2026-10", label: "October 2026", archived: false },
-  { id: "2026-05", label: "May photoshoot", archived: true },
-  { id: "2026-06", label: "June 2026", archived: true },
-  { id: "2026-07", label: "July 2026", archived: true },
-  { id: "2026-08", label: "August 2026", archived: true },
+  { id: "2026-09", label: "September photoshoot", archived: false, notes: "" },
+  { id: "model-source-nov-2026", label: "Model Source November", archived: false, notes: "" },
+  { id: "la-model-source-2026", label: "LA Model Source 2026", archived: false, notes: "" },
+  { id: "2026-10", label: "October 2026", archived: false, notes: "" },
+  { id: "2026-05", label: "May photoshoot", archived: true, notes: "" },
+  { id: "2026-06", label: "June 2026", archived: true, notes: "" },
+  { id: "2026-07", label: "July 2026", archived: true, notes: "" },
+  { id: "2026-08", label: "August 2026", archived: true, notes: "" },
 ]
 
 const LABEL_SHOOTS: { id: string; label: string; archived: boolean; match: RegExp }[] = [
@@ -40,17 +40,33 @@ export function shootForNotes(notes: string) {
   return "2026-09"
 }
 
+export function normalizePhotoshoot(shoot: Partial<Photoshoot> & Pick<Photoshoot, "id">): Photoshoot {
+  return {
+    id: shoot.id,
+    label: (shoot.label || "").trim() || shoot.id,
+    archived: Boolean(shoot.archived),
+    notes: shoot.notes || "",
+  }
+}
+
 export function mergePhotoshoots(existing?: Photoshoot[]) {
-  const byId = new Map((existing?.length ? existing : DEFAULT_PHOTO_SHOOTS).map((s) => [s.id, { ...s }]))
+  const source = existing?.length ? existing : DEFAULT_PHOTO_SHOOTS
+  const byId = new Map(source.map((s) => [s.id, normalizePhotoshoot(s)]))
   for (const shoot of DEFAULT_PHOTO_SHOOTS) {
     const prev = byId.get(shoot.id)
     if (!prev) {
-      byId.set(shoot.id, { ...shoot })
+      byId.set(shoot.id, normalizePhotoshoot(shoot))
       continue
     }
-    if (LABEL_SHOOTS.some((row) => row.id === shoot.id)) {
-      byId.set(shoot.id, { ...prev, label: shoot.label, archived: shoot.archived })
-    }
+    byId.set(
+      shoot.id,
+      normalizePhotoshoot({
+        ...shoot,
+        ...prev,
+        label: prev.label || shoot.label,
+        notes: prev.notes || shoot.notes || "",
+      }),
+    )
   }
   const order = DEFAULT_PHOTO_SHOOTS.map((s) => s.id)
   return [...byId.values()].sort((a, b) => {
@@ -107,6 +123,35 @@ export function nextShootId(existing: Photoshoot[]) {
   const id = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
   const label = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(date)
   return { id, label }
+}
+
+export function shootIdFromLabel(label: string, existing: Photoshoot[]) {
+  const slug =
+    label
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 48) || "photoshoot"
+  const taken = new Set(existing.map((s) => s.id))
+  if (!taken.has(slug)) return slug
+  let n = 2
+  while (taken.has(`${slug}-${n}`)) n += 1
+  return `${slug}-${n}`
+}
+
+export function createPhotoshoot(existing: Photoshoot[], label: string, notes = ""): Photoshoot {
+  const trimmed = label.trim()
+  if (!trimmed) {
+    const next = nextShootId(existing)
+    return { id: next.id, label: next.label, archived: false, notes: notes.trim() }
+  }
+  return {
+    id: shootIdFromLabel(trimmed, existing),
+    label: trimmed,
+    archived: false,
+    notes: notes.trim(),
+  }
 }
 
 export function newPlacement(

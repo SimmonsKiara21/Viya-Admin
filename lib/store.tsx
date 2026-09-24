@@ -44,7 +44,8 @@ import {
   JOTFORM_ATTENDANCE_URL,
   STUDENT_ID_ALIASES,
 } from "./constants"
-import { mergeLabelPlacements, mergePhotoshoots, newPlacement, nextShootId, placementsFromStudents } from "./photoshoots"
+import { createPhotoshoot, mergeLabelPlacements, mergePhotoshoots, newPlacement, placementsFromStudents } from "./photoshoots"
+import { normalizeMeasurements } from "./measurements"
 import { applySquareInvoices, squareFingerprint, type SquareInvoiceRow } from "./square-sync"
 import { enrollmentFingerprint, markPaidInFull, mergeEnrollmentStudents } from "./enrollment-sync"
 import {
@@ -306,6 +307,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     subscriptionStatus: s.subscriptionStatus || "none",
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
+    measurements: normalizeMeasurements(s.measurements),
     labels: withoutNewsletterLabels(Array.isArray(s.labels) ? s.labels.filter(Boolean) : []),
     removedLabels: Array.isArray(s.removedLabels) ? s.removedLabels.filter(Boolean) : [],
     deskLocks: {
@@ -418,7 +420,8 @@ type StoreContextValue = AppData & {
     shootId: string,
     status: PhotoshootStatus,
   ) => void
-  addPhotoshoot: () => Photoshoot
+  addPhotoshoot: (label?: string, notes?: string) => Photoshoot
+  updatePhotoshoot: (id: string, patch: Partial<Pick<Photoshoot, "label" | "notes" | "archived">>) => void
   resetRoster: () => void
 }
 
@@ -978,15 +981,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ),
           }
         }),
-      addPhotoshoot: () => {
-        const next = nextShootId(data.photoshoots)
-        const shoot: Photoshoot = { ...next, archived: false }
+      addPhotoshoot: (label, notes) => {
+        const shoot = createPhotoshoot(data.photoshoots, label || "", notes || "")
         mutate((prev) => {
           if (prev.photoshoots.some((s) => s.id === shoot.id)) return prev
           return { ...prev, photoshoots: [...prev.photoshoots, shoot] }
         })
         return shoot
       },
+      updatePhotoshoot: (id, patch) =>
+        mutate((prev) => ({
+          ...prev,
+          photoshoots: prev.photoshoots.map((s) =>
+            s.id === id
+              ? {
+                  ...s,
+                  label: patch.label !== undefined ? patch.label.trim() || s.label : s.label,
+                  notes: patch.notes !== undefined ? patch.notes : s.notes,
+                  archived: patch.archived !== undefined ? patch.archived : s.archived,
+                }
+              : s,
+          ),
+        })),
       resetRoster: () => {
         const next = cloneSeed()
         dataRef.current = next

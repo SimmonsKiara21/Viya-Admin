@@ -5,7 +5,7 @@ import type { Student } from "@/lib/types"
 export const runtime = "nodejs"
 
 function seedStudents() {
-  return ((seed.students as Student[]) ?? []).map((s) => ({ ...s }))
+  return ((seed.students as unknown as Student[]) ?? []).map((s) => ({ ...s }))
 }
 
 const NATIVE_MESSAGE =

@@ -68,6 +68,7 @@ const blank = (): Student => ({
   subscriptionStatus: "none",
   photoshootStatus: "none",
   photoshootNotes: "",
+  measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
   labels: [],
   removedLabels: [],
   deskLocks: {},

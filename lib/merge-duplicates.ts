@@ -1,5 +1,6 @@
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
+import { mergeMeasurements } from "./measurements"
 import type { AppData, Student } from "./types"
 
 function tokensOf(student: Student) {
@@ -128,6 +129,7 @@ function mergeStudent(keeper: Student, extra: Student): Student {
     docusignEnvelopeId: keeper.docusignEnvelopeId || extra.docusignEnvelopeId,
     photoshootStatus: keeper.photoshootStatus !== "none" ? keeper.photoshootStatus : extra.photoshootStatus,
     photoshootNotes: keeper.photoshootNotes || extra.photoshootNotes,
+    measurements: mergeMeasurements(keeper.measurements, extra.measurements),
   }
 }
 

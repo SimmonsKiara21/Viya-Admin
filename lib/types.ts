@@ -62,6 +62,7 @@ export interface Student {
   subscriptionStatus: SubscriptionStatus
   photoshootStatus: PhotoshootStatus
   photoshootNotes: string
+  measurements: StudentMeasurements
   /** Google Contacts labels (Current Student, Active Subscribers, photoshoot lists). */
   labels: string[]
   /** Labels staff removed on the desk — contact sync will not put them back. */
@@ -142,10 +143,20 @@ export interface NotificationRecord {
   status: NotifyStatus
 }
 
+export interface StudentMeasurements {
+  height: string
+  bust: string
+  waist: string
+  hips: string
+  dress: string
+  shoe: string
+}
+
 export interface Photoshoot {
   id: string
   label: string
   archived: boolean
+  notes: string
 }
 
 export interface PhotoshootPlacement {

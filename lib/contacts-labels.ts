@@ -481,6 +481,7 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
       .filter((label) => /photoshoot|model source/i.test(label))
       .map(displayContactLabel)
       .join(" · "),
+    measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
     labels,
     removedLabels: [],
     deskLocks: {},

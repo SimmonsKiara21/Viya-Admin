@@ -633,7 +633,7 @@ export default function StudentProfilePage() {
         <TabsContent value="photoshoot">
           <Panel className="grid gap-3">
             <p className="text-sm text-muted-foreground">
-              Pick a month, then Scheduled / Headshots / Full / Refresh / Received for that shoot only.
+              Placement for each shoot, measurements, and notes for the next look.
             </p>
             {photoshoots.map((shoot) => {
               const row = photoshootPlacements.find(
@@ -653,13 +653,46 @@ export default function StudentProfilePage() {
                       </option>
                     ))}
                   </NativeSelect>
+                  {shoot.notes ? (
+                    <span className="text-xs font-normal normal-case tracking-normal text-muted-foreground">
+                      {shoot.notes}
+                    </span>
+                  ) : null}
                 </Field>
               )
             })}
-            <Field label="Shoot notes">
+            <div className="grid gap-3 border-t border-border pt-3">
+              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Measurements</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {(
+                  [
+                    ["height", "Height", "5'8\""],
+                    ["bust", "Bust", "34"],
+                    ["waist", "Waist", "25"],
+                    ["hips", "Hips", "36"],
+                    ["dress", "Dress", "4"],
+                    ["shoe", "Shoe", "8"],
+                  ] as const
+                ).map(([key, label, placeholder]) => (
+                  <Field key={key} label={label}>
+                    <Input
+                      value={student.measurements[key]}
+                      placeholder={placeholder}
+                      onChange={(e) =>
+                        updateStudent(student.id, {
+                          measurements: { ...student.measurements, [key]: e.target.value },
+                        })
+                      }
+                    />
+                  </Field>
+                ))}
+              </div>
+            </div>
+            <Field label="Photoshoot notes">
               <Textarea
                 value={student.photoshootNotes}
                 onChange={(e) => updateStudent(student.id, { photoshootNotes: e.target.value })}
+                placeholder="Looks, wardrobe, what we want next…"
                 rows={4}
               />
             </Field>

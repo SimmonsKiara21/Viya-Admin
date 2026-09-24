@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { ChevronDown, Pencil, X } from "lucide-react"
 import { toast } from "sonner"
+import { PhotoshootEditor } from "@/components/photoshoot-editor"
 import { StudentPhoto } from "@/components/student-photo"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { Input } from "@/components/ui/input"
@@ -15,12 +16,21 @@ import { PHOTO_COLUMNS } from "@/lib/photoshoots"
 import type { PhotoshootStatus, Student } from "@/lib/types"
 
 export default function PhotoshootsPage() {
-  const { students, photoshoots, photoshootPlacements, setPhotoshootPlacement, addPhotoshoot } = useStore()
+  const {
+    students,
+    photoshoots,
+    photoshootPlacements,
+    setPhotoshootPlacement,
+    addPhotoshoot,
+    updatePhotoshoot,
+  } = useStore()
   const [editing, setEditing] = useState<Partial<Record<(typeof PHOTO_COLUMNS)[number], boolean>>>({})
   const openShoots = photoshoots.filter((s) => !s.archived)
   const priorShoots = photoshoots.filter((s) => s.archived)
   const [shootId, setShootId] = useState(openShoots[0]?.id || photoshoots[0]?.id || "2026-09")
   const [priorOpen, setPriorOpen] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
 
   const shoot = photoshoots.find((s) => s.id === shootId) ?? openShoots[0]
   const currentId = shoot?.id || shootId
@@ -51,17 +61,10 @@ export default function PhotoshootsPage() {
       <PageHeader
         eyebrow="Portfolio"
         title="Photoshoots"
-        description="September photoshoot and Model Source November fill from Google Contacts. October stays open for the next month. May–August sit under Prior shoots."
+        description="Name the next shoot whatever you want, write what you need for that day, and move people on or off each list."
         actions={
-          <Button
-            variant="outline"
-            onClick={() => {
-              const created = addPhotoshoot()
-              setShootId(created.id)
-              toast.success(`${created.label} is ready.`)
-            }}
-          >
-            Add next month
+          <Button variant="outline" onClick={() => setAddOpen(true)}>
+            Add photoshoot
           </Button>
         }
       />
@@ -127,12 +130,53 @@ export default function PhotoshootsPage() {
         </Panel>
       ) : null}
 
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <h2 className="font-heading text-xl">{shoot?.label || "This month"}</h2>
-        {shoot?.archived ? (
-          <span className="text-xs text-muted-foreground">Archived month — view or copy names into a new shoot.</span>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-heading text-xl">{shoot?.label || "This shoot"}</h2>
+          {shoot?.notes ? (
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground whitespace-pre-wrap">{shoot.notes}</p>
+          ) : (
+            <p className="mt-1 text-sm text-muted-foreground">
+              No notes yet — add what you want for this shoot.
+            </p>
+          )}
+          {shoot?.archived ? (
+            <p className="mt-1 text-xs text-muted-foreground">Prior shoot — view or copy names into a new one.</p>
+          ) : null}
+        </div>
+        {shoot ? (
+          <Button size="sm" variant="outline" onClick={() => setEditOpen(true)}>
+            <Pencil className="size-3" />
+            Edit shoot
+          </Button>
         ) : null}
       </div>
+
+      <PhotoshootEditor
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        title="Next photoshoot"
+        description="Call it what it is — holiday mini, Model Source, a specific date — and write what you want."
+        submitLabel="Add shoot"
+        onSave={({ label, notes }) => {
+          const created = addPhotoshoot(label, notes)
+          setShootId(created.id)
+          toast.success(`${created.label} is ready.`)
+        }}
+      />
+      <PhotoshootEditor
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        shoot={shoot}
+        title="Edit photoshoot"
+        description="Change the name, what we want, or move this shoot to Prior."
+        submitLabel="Save shoot"
+        onSave={({ label, notes, archived }) => {
+          if (!shoot) return
+          updatePhotoshoot(shoot.id, { label, notes, archived })
+          toast.success(`Saved ${label}.`)
+        }}
+      />
 
       <div className="grid items-start gap-4 lg:grid-cols-3">
         <PhotoColumn

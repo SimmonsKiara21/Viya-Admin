@@ -904,6 +904,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             if (patch.enrollmentStatus && patch.enrollmentStatus !== s.enrollmentStatus) {
               next.deskLocks = { ...next.deskLocks, status: true }
             }
+            if (patch.enrollmentStatus === "current") {
+              next.overdueSince = patch.overdueSince ?? ""
+              if (patch.deskLocks?.overdueSince !== true) {
+                next.deskLocks = { ...next.deskLocks, overdueSince: false }
+              }
+            }
             if (patch.notes !== undefined && patch.deskLocks?.notes !== false) {
               next.deskLocks = { ...next.deskLocks, notes: true }
             }

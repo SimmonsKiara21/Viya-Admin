@@ -95,7 +95,19 @@ export function overdueSinceDate(student: Student, payments: PaymentRecord[] = [
     .map((p) => (p.dueDate || "").slice(0, 10))
     .filter((due) => due && due <= today)
     .sort()
-  return missed[0] || (student.nextPaymentDate || "").slice(0, 10)
+  if (missed[0]) return missed[0]
+  const next = (student.nextPaymentDate || "").slice(0, 10)
+  if (
+    next &&
+    next <= today &&
+    (student.enrollmentStatus === "overdue" ||
+      student.enrollmentStatus === "declined" ||
+      student.enrollmentStatus === "collections" ||
+      student.enrollmentStatus === "cancelling")
+  ) {
+    return next
+  }
+  return ""
 }
 
 /** Save or clear the overdue-since date on the open file. */

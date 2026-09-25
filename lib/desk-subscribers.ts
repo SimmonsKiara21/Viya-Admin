@@ -1,8 +1,8 @@
 import { foldName, matchStudentByName } from "./match-name"
-import { newId } from "./format"
+import { academyDateISO, newId } from "./format"
 import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-current"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-25-scarlett-oct1"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -254,7 +254,16 @@ export function moveStudentToContact(student: Student): Partial<Student> {
   }
 }
 
+function nextFirstOfMonth(from = academyDateISO()) {
+  const [year, month] = from.slice(0, 10).split("-").map(Number)
+  if (!year || !month) return "2026-10-01"
+  const nextMonth = month === 12 ? 1 : month + 1
+  const nextYear = month === 12 ? year + 1 : year
+  return `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`
+}
+
 export function markSubscriberCurrent(student: Student): Partial<Student> {
+  const due = nextFirstOfMonth()
   return {
     enrollmentStatus: "current",
     subscriptionStatus:
@@ -262,6 +271,7 @@ export function markSubscriberCurrent(student: Student): Partial<Student> {
         ? "active"
         : student.subscriptionStatus,
     overdueSince: "",
+    nextPaymentDate: due,
     deskLocks: { ...student.deskLocks, status: true, overdueSince: false, subscription: true },
   }
 }
@@ -301,7 +311,9 @@ function applyNamedDeskFixes(students: Student[]) {
       return {
         ...student,
         ...markSubscriberCurrent(student),
-        subscriptionPlan: student.subscriptionPlan === "none" ? "plus" : student.subscriptionPlan,
+        nextPaymentDate: "2026-10-01",
+        nextPaymentAmount: 100,
+        subscriptionPlan: "plus" as const,
       }
     }
     return student

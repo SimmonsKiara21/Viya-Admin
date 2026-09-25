@@ -377,6 +377,18 @@ export default function StudentProfilePage() {
                     </option>
                   ))}
                 </NativeSelect>
+                {isSubscriberStudent(student) && student.enrollmentStatus !== "current" ? (
+                  <button
+                    type="button"
+                    className="mt-1 text-left text-xs text-muted-foreground underline hover:text-foreground"
+                    onClick={() => {
+                      updateStudent(student.id, markSubscriberCurrent(student))
+                      toast.success(`${student.firstName} is current again.`)
+                    }}
+                  >
+                    Make current
+                  </button>
+                ) : null}
               </Field>
               <OverdueSinceField student={student} />
               <StudentIdField

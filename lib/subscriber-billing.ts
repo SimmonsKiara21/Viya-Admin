@@ -119,6 +119,18 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
       : null)
   const amount = amountForPlan(student, rawAmount)
   const lockedSince = deskOverdueSince(student)
+  const staffCurrent = student.deskLocks?.status && student.enrollmentStatus === "current"
+  if (staffCurrent) {
+    return {
+      lastPaidDate,
+      nextDue: (student.nextPaymentDate || nextDue || cycleDueAfter(student, lastPaidDate, today)).slice(0, 10),
+      amount: amountForPlan(
+        student,
+        typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : rawAmount,
+      ),
+      overdueSince: "",
+    }
+  }
   if (student.deskLocks?.subscription) {
     const due = (student.nextPaymentDate || nextDue || "").slice(0, 10)
     return {

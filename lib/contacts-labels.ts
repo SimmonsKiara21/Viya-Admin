@@ -184,6 +184,7 @@ export function uniqueContactLabels(student: Student) {
     if (/^paused$/.test(value) && student.enrollmentStatus === "paused") return false
     if (/paid\s*in\s*full|^pif$/.test(value) && paidInFull) return false
     if (/^contact$/.test(value) && student.enrollmentStatus === "contact") return false
+    if (/photoshoot|model source/.test(value)) return false
     if (/^(pending|overdue|collections|cancelling|paused|current|current student|paid in full|pif|declined)$/.test(value)) {
       return false
     }
@@ -341,9 +342,6 @@ const STAFF_CONTACT_CATEGORIES = new Set<ContactCategory>(["inquiry", "follow-up
 
 export function categoryFromLabels(labels: string[]): ContactCategory | "" {
   const text = labels.join(" | ").toLowerCase()
-  if (/model source november/.test(text)) return "model-source-nov"
-  if (/la model source/.test(text)) return "model-source-la"
-  if (/photoshoot/.test(text)) return "photoshoot"
   if (/active subscriber/.test(text)) return "subscriber"
   if (/current student/.test(text)) return "current-student"
   return ""
@@ -353,8 +351,12 @@ function isNewsletterLabel(label: string) {
   return /^newsletter$/i.test(displayContactLabel(label).trim())
 }
 
+function isPhotoshootLabel(label: string) {
+  return /photoshoot|model source/i.test(displayContactLabel(label))
+}
+
 export function withoutNewsletterLabels(labels: string[] | undefined) {
-  return (labels || []).filter((label) => !isNewsletterLabel(label))
+  return (labels || []).filter((label) => !isNewsletterLabel(label) && !isPhotoshootLabel(label))
 }
 
 /** Newsletter is the Active Subscribers list — same people, no leftover Newsletter tags. */

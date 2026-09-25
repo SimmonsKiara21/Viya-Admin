@@ -317,6 +317,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
     notes: s.notes || "",
     contactCategory: (() => {
       const cat = (s.contactCategory || "") as ContactCategory | ""
+      if (cat === "photoshoot" || cat === "model-source-nov" || cat === "model-source-la") return ""
       if (!prospect) return cat
       if (cat === "inquiry" || cat === "follow-up" || cat === "not-interested") return cat
       const fromLabels = categoryFromLabels(Array.isArray(s.labels) ? s.labels : [])

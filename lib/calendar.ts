@@ -1,6 +1,8 @@
 import { isContact } from "@/lib/alerts"
+import { isActiveSubscriber } from "@/lib/contacts-labels"
 import { todayISO } from "@/lib/format"
 import { buildPaymentSchedule, paymentSourceLabel } from "@/lib/schedule"
+import { subscriberBilling } from "@/lib/subscriber-billing"
 import type { PaymentRecord, PaymentSource, PaymentStatus, Student } from "@/lib/types"
 
 export type CalendarRun = {
@@ -48,6 +50,7 @@ function openStatus(status: PaymentStatus) {
 
 export function calendarRuns(students: Student[], payments: PaymentRecord[]): CalendarRun[] {
   const runs: CalendarRun[] = []
+  const today = todayISO()
 
   for (const student of students) {
     if (isContact(student)) continue
@@ -64,6 +67,24 @@ export function calendarRuns(students: Student[], payments: PaymentRecord[]): Ca
         label: `${paymentSourceLabel(row.source)} · ${row.label}`,
         status: row.status,
         source: row.source,
+      })
+    }
+
+    if (!isActiveSubscriber(student)) continue
+    const bill = subscriberBilling(student, payments)
+    const due = (bill.nextDue || "").slice(0, 10)
+    const overdue = (bill.overdueSince || "").slice(0, 10)
+    for (const date of [due, overdue]) {
+      if (!date || seen.has(`${student.id}:${date}`)) continue
+      seen.add(`${student.id}:${date}`)
+      const missed = Boolean(overdue && date === overdue)
+      runs.push({
+        date,
+        student,
+        amount: bill.amount,
+        label: missed ? "Subscription · Overdue" : "Subscription · Monthly",
+        status: missed ? "overdue" : date <= today ? "due" : "scheduled",
+        source: "square",
       })
     }
   }

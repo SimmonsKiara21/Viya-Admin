@@ -57,7 +57,7 @@ export default function CalendarPage() {
       <PageHeader
         eyebrow="Schedule"
         title="Calendar"
-        description="Phoenix dates from Square, desk payment rows, and dates you create here. Reminders only go out for dates you mark."
+        description="Phoenix dates from Square, subscriber monthly dues, desk payment rows, and dates you create here. Reminders only go out for dates you mark."
         actions={
           <Button onClick={openCreate}>
             <Plus className="size-4" />
@@ -191,7 +191,7 @@ export default function CalendarPage() {
 
           {dayRuns.length === 0 && dayEvents.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Create a date, or add a payment date on a talent file.
+              Create a date, or add a payment date on a talent or subscriber file.
             </p>
           ) : dayRuns.length ? (
             <ul className="divide-y divide-border">

@@ -28,7 +28,7 @@ import { HighlightPicker } from "@/components/highlight-picker"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { StudentPaymentsTab } from "@/components/student-payments-tab"
-import { clearStudentTags, moveStudentToContact, removeFromSubscribers } from "@/lib/desk-subscribers"
+import { clearStudentTags, markSubscriberCurrent, moveStudentToContact, removeFromSubscribers } from "@/lib/desk-subscribers"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -180,6 +180,17 @@ export default function StudentProfilePage() {
           <p className="mt-1 text-sm text-orange-800 dark:text-orange-50/90 sepia:text-orange-950">
             {formatMoney(student.nextPaymentAmount)} due {formatDate(student.nextPaymentDate)}.
           </p>
+          <Button
+            type="button"
+            size="sm"
+            className="mt-3"
+            onClick={() => {
+              updateStudent(student.id, markSubscriberCurrent(student))
+              toast.success(`${student.firstName} is current again.`)
+            }}
+          >
+            Make current
+          </Button>
         </div>
       ) : null}
 
@@ -703,6 +714,10 @@ export default function StudentProfilePage() {
                   if (status === "cancelled") {
                     updateStudent(student.id, removeFromSubscribers(student))
                     toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
+                    return
+                  }
+                  if (status === "active") {
+                    updateStudent(student.id, markSubscriberCurrent(student))
                     return
                   }
                   updateStudent(student.id, {

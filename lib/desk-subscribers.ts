@@ -2,7 +2,7 @@ import { foldName, matchStudentByName } from "./match-name"
 import { newId } from "./format"
 import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-plans"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-current"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -169,7 +169,7 @@ function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
     enrollmentStatus:
       foldName(`${row.firstName} ${row.lastName}`) === "tanya papuga"
         ? "overdue"
-        : student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
+        : student.deskLocks?.status
           ? student.enrollmentStatus
           : "current",
     startDate: student.startDate || row.startDate,
@@ -254,6 +254,18 @@ export function moveStudentToContact(student: Student): Partial<Student> {
   }
 }
 
+export function markSubscriberCurrent(student: Student): Partial<Student> {
+  return {
+    enrollmentStatus: "current",
+    subscriptionStatus:
+      student.subscriptionStatus === "cancelled" || student.subscriptionStatus === "none"
+        ? "active"
+        : student.subscriptionStatus,
+    overdueSince: "",
+    deskLocks: { ...student.deskLocks, status: true, overdueSince: false, subscription: true },
+  }
+}
+
 export function clearStudentTags(student: Student): Partial<Student> {
   return {
     labels: [],
@@ -283,6 +295,13 @@ function applyNamedDeskFixes(students: Student[]) {
         nextPaymentAmount: null,
         startDate: student.startDate || "2026-04-01",
         deskLocks: { ...student.deskLocks, status: true, installments: true },
+      }
+    }
+    if (student.id === "1147" || name === "scarlett petroff") {
+      return {
+        ...student,
+        ...markSubscriberCurrent(student),
+        subscriptionPlan: student.subscriptionPlan === "none" ? "plus" : student.subscriptionPlan,
       }
     }
     return student

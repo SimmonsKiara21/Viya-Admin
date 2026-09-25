@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { DESK_SUB_STATUSES, SUB_LABELS } from "@/lib/constants"
-import { removeFromSubscribers } from "@/lib/desk-subscribers"
+import { markSubscriberCurrent, removeFromSubscribers } from "@/lib/desk-subscribers"
 import { overdueSincePatch } from "@/lib/alerts"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
@@ -54,12 +54,19 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
     }
     const value = amount.trim() === "" ? null : Number(amount)
     const nextAmount = value != null && Number.isFinite(value) ? value : null
+    const current = status === "active" && !since
     updateStudent(student.id, {
+      ...(current ? markSubscriberCurrent(student) : {}),
       subscriptionStatus: status,
       nextPaymentDate: due,
       nextPaymentAmount: nextAmount,
       ...overdueSincePatch(student, since),
-      deskLocks: { ...student.deskLocks, subscription: true, overdueSince: Boolean(since) },
+      deskLocks: {
+        ...student.deskLocks,
+        subscription: true,
+        overdueSince: Boolean(since),
+        status: current || student.deskLocks?.status,
+      },
     })
     if (paid) {
       const paidAmount = nextAmount ?? bill.amount ?? SUBSCRIPTION_ITEM.price ?? 51.49
@@ -146,6 +153,19 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
             </Field>
           </div>
           <DialogFooter>
+            {student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined" ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  updateStudent(student.id, markSubscriberCurrent(student))
+                  toast.success(`${student.firstName} is current again.`)
+                  setOpen(false)
+                }}
+              >
+                Make current
+              </Button>
+            ) : null}
             <Button
               type="button"
               variant="outline"

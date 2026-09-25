@@ -2,7 +2,7 @@ import type { ContactCategory, EnrollmentStatus, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
 import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, programDisplayLabel } from "./constants"
-import { isDeskSubscriber, removeFromSubscribers } from "./desk-subscribers"
+import { isDeskSubscriber, markSubscriberCurrent, removeFromSubscribers } from "./desk-subscribers"
 
 const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
@@ -110,6 +110,17 @@ export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): 
     patch.program = "academy"
     patch.track = student.track === "none" || !student.track ? "academy" : student.track
     if (student.paymentPlan === "none") patch.paymentPlan = "pp"
+  }
+
+  if (
+    status === "current" &&
+    (student.program === "subscriber" || student.paymentPlan === "subscription" || isActiveSubscriber(student))
+  ) {
+    return {
+      ...patch,
+      ...markSubscriberCurrent(student),
+      enrollmentStatus: "current",
+    }
   }
 
   const next = { ...student, ...patch }

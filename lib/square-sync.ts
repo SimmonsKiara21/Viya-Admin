@@ -1,7 +1,7 @@
 import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./types"
 import { isPaidInFull } from "./alerts"
 import { isDeskSubscriber } from "./desk-subscribers"
-import { subscriberBilling } from "./subscriber-billing"
+import { isSubscriberInvoice, subscriberBilling } from "./subscriber-billing"
 import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
 import { displayStudentId, newId, parseStudentId, todayISO } from "./format"
@@ -261,10 +261,12 @@ export function paymentIsMissed(payment: PaymentRecord, today = todayISO()) {
 export function markMissedPaymentOverdue(student: Student, payments: PaymentRecord[], today = todayISO()) {
   if (student.program === "prospect" || student.enrollmentStatus === "contact") return student
   if (PROTECTED_STATUS.has(student.enrollmentStatus)) return student
+  if (student.deskLocks?.status) return student
   const rows = payments.filter((p) => p.studentId === student.id && paymentIsMissed(p, today))
   if (!rows.length) return student
   const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
   if (subscriber) {
+    if (!rows.some((payment) => isSubscriberInvoice(payment))) return student
     student.enrollmentStatus = "overdue"
     return student
   }

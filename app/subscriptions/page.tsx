@@ -92,7 +92,7 @@ export default function SubscriptionsPage() {
       <PageHeader
         eyebrow="Members"
         title="Subscriptions"
-        description="Three Square plans: $51.49 with tax, OG $4.99, and the $100 plan (one subscriber)."
+        description="This desk list only. Square says who is current and who is overdue on the monthly invoice."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-3">

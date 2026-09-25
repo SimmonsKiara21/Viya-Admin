@@ -1,4 +1,5 @@
 import { deskOverdueSince } from "./alerts"
+import { isDeskSubscriber } from "./desk-subscribers"
 import { academyDateISO } from "./format"
 import type { PaymentRecord, Student } from "./types"
 
@@ -103,4 +104,10 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     amount: withSubscriptionTax(amount),
     overdueSince: lockedSince || overdueSince,
   }
+}
+
+export function subscriberIsOverdue(student: Student, payments: PaymentRecord[] = []) {
+  if (!isDeskSubscriber(student)) return false
+  if (student.subscriptionStatus === "paused" || student.subscriptionStatus === "cancelled") return false
+  return Boolean(subscriberBilling(student, payments).overdueSince)
 }

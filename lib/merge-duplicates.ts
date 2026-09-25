@@ -205,5 +205,9 @@ export function mergeDuplicateStudents(data: AppData): AppData {
       ...group,
       studentIds: [...new Set(group.studentIds.map((id) => remapId(id, aliases)))],
     })),
+    calendarEvents: (data.calendarEvents || []).map((event) => ({
+      ...event,
+      studentIds: [...new Set(event.studentIds.map((id) => remapId(id, aliases)))],
+    })),
   }
 }

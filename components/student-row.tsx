@@ -47,7 +47,15 @@ const NAME: Record<Exclude<HighlightTone, "none">, string> = {
 }
 
 function paymentsLine(student: Student, tone: HighlightTone, left: number | null, since: string) {
-  if (tone === "paused") return "Paused"
+  if (tone === "paused") {
+    const bits = ["Paused"]
+    if (student.startDate) bits.push(`started ${formatDate(student.startDate)}`)
+    if (student.nextPaymentDate) {
+      const due = `due ${formatDate(student.nextPaymentDate)}`
+      bits.push(student.nextPaymentAmount != null ? `${due} · ${formatMoney(student.nextPaymentAmount)}` : due)
+    }
+    return bits.join(" · ")
+  }
   const bits: string[] = []
   if (tone === "pending") {
     bits.push(student.startDate ? `start ${formatDate(student.startDate)}` : "start date not set")

@@ -1,0 +1,250 @@
+import { foldName, matchStudentByName } from "./match-name"
+import { newId } from "./format"
+import type { Student, SubscriptionStatus } from "./types"
+
+export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs"
+
+export type DeskSubscriberRow = {
+  firstName: string
+  lastName: string
+  nickname: string
+  email: string
+  phone: string
+  status: SubscriptionStatus
+  startDate: string
+  aliases: string[]
+}
+
+export const DESK_SUBSCRIBERS: DeskSubscriberRow[] = [
+  { firstName: "Lucas", lastName: "Sanders", nickname: "", email: "tmsanders0224@gmail.com", phone: "602-332-2545", status: "active", startDate: "", aliases: [] },
+  { firstName: "Ailen", lastName: "Gallegos", nickname: "", email: "rosaaliiciia42@gmail.com", phone: "480-648-1471", status: "active", startDate: "", aliases: [] },
+  { firstName: "Julie", lastName: "Gallegos", nickname: "", email: "rosaaliiciia42@gmail.com", phone: "480-648-1471", status: "active", startDate: "", aliases: [] },
+  { firstName: "Sadie", lastName: "Aschebrock", nickname: "", email: "sylph182@gmail.com", phone: "623-340-7140", status: "active", startDate: "", aliases: [] },
+  { firstName: "Tanya", lastName: "Papuga", nickname: "", email: "papugatanya@gmail.com", phone: "407-508-9650", status: "active", startDate: "", aliases: [] },
+  { firstName: "Karissa", lastName: "Sendlak", nickname: "", email: "sendlakkarissa@gmail.com", phone: "520-449-0232", status: "active", startDate: "", aliases: [] },
+  { firstName: "Crescent", lastName: "Brewer", nickname: "Angel", email: "angel.brewer445@gmail.com", phone: "480-740-3996", status: "active", startDate: "", aliases: ["angel brewer"] },
+  { firstName: "Justice", lastName: "Belcher", nickname: "", email: "belcheramber96@gmail.com", phone: "480-547-5297", status: "active", startDate: "", aliases: [] },
+  { firstName: "Jacob", lastName: "Lubin", nickname: "", email: "jlubin6000@gmail.com", phone: "703-509-8003", status: "active", startDate: "", aliases: [] },
+  { firstName: "Stacey", lastName: "Boucher", nickname: "", email: "staceyb60@gmail.com", phone: "347-585-2553", status: "active", startDate: "", aliases: [] },
+  { firstName: "Dianica", lastName: "Vargas", nickname: "", email: "dnh627@gmail.com", phone: "623-203-2868", status: "active", startDate: "", aliases: [] },
+  { firstName: "Adam", lastName: "Montoya", nickname: "", email: "carrie.montoya@icloud.com", phone: "623-205-4668", status: "active", startDate: "", aliases: [] },
+  { firstName: "Cheylo", lastName: "Rallis", nickname: "", email: "cherall@icloud.com", phone: "615-706-0552", status: "active", startDate: "", aliases: [] },
+  { firstName: "Patrick", lastName: "Montgomery", nickname: "", email: "katehmontgomery@cox.net", phone: "602-318-0515", status: "active", startDate: "", aliases: [] },
+  { firstName: "Michaela", lastName: "Smith", nickname: "", email: "michaelasmith122012@gmail.com", phone: "602-502-8086", status: "active", startDate: "", aliases: [] },
+  { firstName: "Larry", lastName: "Brown", nickname: "", email: "xhalekc@gmail.com", phone: "602-518-5470", status: "active", startDate: "", aliases: [] },
+  { firstName: "Kyngtavien", lastName: "Parker", nickname: "", email: "actkyngtavion@gmail.com", phone: "602-860-0201", status: "active", startDate: "", aliases: ["kyngtavion parker"] },
+  { firstName: "Haven", lastName: "Arney", nickname: "", email: "dawnymariearney@gmail.com", phone: "928-228-8707", status: "active", startDate: "", aliases: [] },
+  { firstName: "Nehemiah", lastName: "Chidester-Mendoza", nickname: "", email: "chidestermendoza@gmail.com", phone: "602-405-4325", status: "active", startDate: "", aliases: ["nehemiah chidester mendoza"] },
+  { firstName: "Emily", lastName: "Hernandez", nickname: "", email: "emilyh22404@gmail.com", phone: "520-392-0888", status: "active", startDate: "", aliases: [] },
+  { firstName: "Adana", lastName: "Venegas", nickname: "", email: "adanavenegas7@gmail.com", phone: "480-689-3554", status: "active", startDate: "", aliases: [] },
+  { firstName: "Faith", lastName: "OBrien", nickname: "", email: "June.e.obrien3.ctr@army.mill", phone: "218-591-3690", status: "active", startDate: "", aliases: ["faith o'brien", "faith obrien"] },
+  { firstName: "Liliana", lastName: "Aguilar", nickname: "", email: "meesha.aguilar@yahoo.com", phone: "901-337-0914", status: "active", startDate: "", aliases: [] },
+  { firstName: "Ariel", lastName: "Gonzalez", nickname: "", email: "aigonzalez5743@gmail.com", phone: "602-813-6065", status: "active", startDate: "", aliases: [] },
+  { firstName: "Grace", lastName: "Boening", nickname: "", email: "loloboening@gmail.com", phone: "517-204-6658", status: "active", startDate: "", aliases: [] },
+  { firstName: "Keyla", lastName: "Alvarado", nickname: "", email: "ornelascow@gmail.com", phone: "602-418-6422", status: "active", startDate: "", aliases: [] },
+  { firstName: "Delex", lastName: "Taghap", nickname: "", email: "delextaghap98@gmail.com", phone: "480-436-0271", status: "active", startDate: "", aliases: [] },
+  { firstName: "Noelle", lastName: "Shimmin", nickname: "", email: "majikellie@gmail.com", phone: "507-358-5094", status: "active", startDate: "", aliases: [] },
+  { firstName: "Joshua", lastName: "Breslin", nickname: "", email: "gbreslin623@gmail.com", phone: "623-252-7223", status: "active", startDate: "", aliases: [] },
+  { firstName: "Joanna", lastName: "Garcia", nickname: "", email: "joannagarcia1229@icloud.com", phone: "626-324-7704", status: "active", startDate: "", aliases: [] },
+  { firstName: "Nivine", lastName: "Sakkal", nickname: "", email: "nivinesakkal@hotmail.com", phone: "602-687-0744", status: "active", startDate: "", aliases: [] },
+  { firstName: "Kayliegh", lastName: "Mckenzie", nickname: "", email: "slumberkitty@icloud.com", phone: "480-469-6352", status: "active", startDate: "", aliases: ["kayleigh mckenzie"] },
+  { firstName: "Scarlett", lastName: "Petroff", nickname: "", email: "mark_petroff@hotmail.com", phone: "602-525-1903", status: "active", startDate: "", aliases: [] },
+  { firstName: "Karla", lastName: "De Guzman", nickname: "", email: "kcamisidrodg@gmail.com", phone: "808-232-3768", status: "active", startDate: "", aliases: ["karla deguzman"] },
+  { firstName: "Jaime", lastName: "Garcia", nickname: "", email: "surgarcia666@gmail.com", phone: "480-519-3387", status: "active", startDate: "", aliases: [] },
+  { firstName: "Aaliyah", lastName: "Moore", nickname: "", email: "aa.roman.2720@gmail.com", phone: "715-559-9839", status: "active", startDate: "", aliases: [] },
+  { firstName: "Catherine", lastName: "Conder", nickname: "", email: "catherine.conder@gmail.com", phone: "317-703-0705", status: "active", startDate: "", aliases: [] },
+  { firstName: "Brylee", lastName: "Sutton", nickname: "", email: "bryleesutton6@gmail.com", phone: "623-225-9303", status: "active", startDate: "", aliases: [] },
+  { firstName: "Melissa", lastName: "Flores", nickname: "", email: "assilemflores89@gmail.com", phone: "602-643-6495", status: "active", startDate: "", aliases: [] },
+  { firstName: "Tucker", lastName: "Fordyce", nickname: "", email: "andrewtuckerfordyce@gmail.com", phone: "480-678-5253", status: "active", startDate: "", aliases: [] },
+  { firstName: "Gabriel", lastName: "Pineira", nickname: "", email: "gabepine2006@gmail.com", phone: "602-578-3874", status: "active", startDate: "", aliases: ["gabriel piñeira", "gabriel pineira"] },
+  { firstName: "Elaine", lastName: "Medeins", nickname: "", email: "elaine@wherehopelives.org", phone: "602-810-2040", status: "active", startDate: "", aliases: [] },
+  { firstName: "Katherine", lastName: "Sanchez", nickname: "", email: "kathesanrodri99@gmail.com", phone: "480-812-5997", status: "active", startDate: "", aliases: [] },
+  { firstName: "Landon", lastName: "Flenniken", nickname: "", email: "flenniken.toni@gmail.com", phone: "714-916-4217", status: "active", startDate: "", aliases: [] },
+  { firstName: "Allyson", lastName: "Ceron", nickname: "", email: "allysonceronofficial@gmail.com", phone: "602-703-0835", status: "active", startDate: "", aliases: [] },
+  { firstName: "Natalie", lastName: "Vanderwerff", nickname: "", email: "natvanderwerff17@gmail.com", phone: "262-581-6745", status: "active", startDate: "", aliases: [] },
+  { firstName: "Mikayla", lastName: "Evans", nickname: "", email: "mikayla.evans68@gmail.com", phone: "928-322-3017", status: "active", startDate: "", aliases: [] },
+  { firstName: "Johnny", lastName: "Dang", nickname: "", email: "jdang7306@gmail.com", phone: "623-500-9190", status: "active", startDate: "", aliases: [] },
+  { firstName: "Sarah", lastName: "Herrera", nickname: "", email: "sarahelizaherre@gmail.com", phone: "602-774-6698", status: "active", startDate: "", aliases: [] },
+  { firstName: "Sophia", lastName: "Scott", nickname: "", email: "eniebla68@gmail.com", phone: "714-917-9190", status: "active", startDate: "", aliases: [] },
+  { firstName: "Kenna", lastName: "Jones", nickname: "", email: "kenna.jones04@gmail.com", phone: "602-814-2080", status: "active", startDate: "", aliases: [] },
+  { firstName: "Sarah", lastName: "Alley", nickname: "", email: "sarahnoella@yahoo.com", phone: "623-606-3841", status: "active", startDate: "", aliases: [] },
+  { firstName: "Rhiann", lastName: "Phillips", nickname: "", email: "rhiannleadawn@gmail.com", phone: "928-606-8386", status: "active", startDate: "", aliases: [] },
+  { firstName: "Malaika", lastName: "Jones", nickname: "", email: "jablkrose@gmail.com", phone: "520-701-2068", status: "active", startDate: "", aliases: [] },
+  { firstName: "Julissa", lastName: "Perez Baeza", nickname: "", email: "julissapb03@gmail.com", phone: "480-823-6407", status: "active", startDate: "", aliases: ["julissa perez", "julissa baeza"] },
+  { firstName: "Divine", lastName: "Kungwa", nickname: "", email: "kizengamuye7@gmail.com", phone: "480-803-8095", status: "active", startDate: "", aliases: [] },
+  { firstName: "Herberto", lastName: "Avila", nickname: "", email: "herbertoavila23@gmail.com", phone: "928-495-7605", status: "active", startDate: "", aliases: [] },
+  { firstName: "Tia", lastName: "Fed", nickname: "", email: "tiafed319@icloud.com", phone: "480-295-2760", status: "interested", startDate: "", aliases: [] },
+  { firstName: "Connor", lastName: "Williams", nickname: "", email: "hunternash1699@gmail.com", phone: "602-980-9942", status: "interested", startDate: "", aliases: [] },
+  { firstName: "Ellie", lastName: "Harris", nickname: "", email: "eharris1227@icloud.com", phone: "623-521-5578", status: "interested", startDate: "", aliases: ["harris ellie"] },
+  { firstName: "Abril", lastName: "Becerra", nickname: "", email: "becerraloulou@gmail.com", phone: "623-213-1611", status: "interested", startDate: "", aliases: [] },
+  { firstName: "Itati", lastName: "Alcantar", nickname: "", email: "itati.a@yahoo.com", phone: "520-280-3913", status: "interested", startDate: "", aliases: [] },
+  { firstName: "Jackson", lastName: "Hairston", nickname: "", email: "jacksonhairston@icloud.com", phone: "480-406-7345", status: "interested", startDate: "2026-06-10", aliases: [] },
+]
+
+function phoneKey(phone: string) {
+  const digits = (phone || "").replace(/\D/g, "")
+  return digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits.slice(-10)
+}
+
+function emailKey(email: string) {
+  return (email || "").trim().toLowerCase()
+}
+
+function rowNames(row: DeskSubscriberRow) {
+  return [
+    foldName(`${row.firstName} ${row.lastName}`),
+    row.nickname ? foldName(`${row.nickname} ${row.lastName}`) : "",
+    ...row.aliases.map(foldName),
+  ].filter(Boolean)
+}
+
+function studentNames(student: Pick<Student, "firstName" | "lastName" | "nickname">) {
+  return [
+    foldName(`${student.firstName} ${student.lastName}`),
+    student.nickname ? foldName(`${student.nickname} ${student.lastName}`) : "",
+    foldName(`${student.lastName} ${student.firstName}`),
+  ].filter(Boolean)
+}
+
+export function matchDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
+  const names = studentNames(student)
+  const email = emailKey(student.email)
+  const phone = phoneKey(student.phone)
+  return (
+    DESK_SUBSCRIBERS.find((row) => rowNames(row).some((name) => names.includes(name))) ||
+    DESK_SUBSCRIBERS.find((row) => email && emailKey(row.email) === email && foldName(row.lastName) === foldName(student.lastName)) ||
+    DESK_SUBSCRIBERS.find((row) => phone && phoneKey(row.phone) === phone && foldName(row.lastName) === foldName(student.lastName)) ||
+    undefined
+  )
+}
+
+export function isDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
+  return Boolean(matchDeskSubscriber(student))
+}
+
+function findStudentForRow(row: DeskSubscriberRow, students: Student[], taken: Set<string>) {
+  const names = rowNames(row)
+  const email = emailKey(row.email)
+  const phone = phoneKey(row.phone)
+  const unused = students.filter((student) => !taken.has(student.id))
+  const byName = unused.find((student) => studentNames(student).some((name) => names.includes(name)))
+  if (byName) return byName
+  const named = matchStudentByName(`${row.firstName} ${row.lastName}`, unused)
+  if (named) return named
+  if (row.nickname) {
+    const nick = matchStudentByName(`${row.nickname} ${row.lastName}`, unused)
+    if (nick) return nick
+  }
+  const byEmailLast = unused.find(
+    (student) => email && emailKey(student.email) === email && foldName(student.lastName) === foldName(row.lastName),
+  )
+  if (byEmailLast) return byEmailLast
+  const byPhoneLast = unused.find(
+    (student) => phone && phoneKey(student.phone) === phone && foldName(student.lastName) === foldName(row.lastName),
+  )
+  if (byPhoneLast) return byPhoneLast
+  return undefined
+}
+
+function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
+  const labels = [...new Set([...(student.labels || []).filter((label) => !/current student/i.test(label)), "Active Subscribers"])]
+  const removed = [...new Set([...(student.removedLabels || []), "Current Student"])]
+  return {
+    ...student,
+    email: student.email || row.email,
+    phone: student.phone || row.phone,
+    nickname: student.nickname || row.nickname,
+    program: "subscriber",
+    track: "none",
+    paymentPlan: "subscription",
+    enrollmentStatus: student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined" ? student.enrollmentStatus : "current",
+    startDate: student.startDate || row.startDate,
+    subscriptionStatus: student.deskLocks?.subscription ? student.subscriptionStatus : row.status,
+    contactCategory: "subscriber",
+    labels,
+    removedLabels: removed,
+  }
+}
+
+function subscriberFactory(row: DeskSubscriberRow): Student {
+  return {
+    id: newId("SUB"),
+    firstName: row.firstName,
+    lastName: row.lastName,
+    nickname: row.nickname,
+    email: row.email,
+    phone: row.phone,
+    age: null,
+    program: "subscriber",
+    track: "none",
+    paymentPlan: "subscription",
+    enrollmentStatus: "current",
+    startDate: row.startDate,
+    nextPaymentDate: "",
+    nextPaymentAmount: 51.49,
+    installmentsLeft: null,
+    overdueSince: "",
+    notes: "",
+    contactCategory: "subscriber",
+    subscriptionStatus: row.status,
+    subscriptionPlan: "none",
+    photoshootStatus: "none",
+    photoshootNotes: "",
+    measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
+    labels: ["Active Subscribers"],
+    removedLabels: ["Current Student"],
+    deskLocks: {},
+    classTime: "",
+    photoUrl: "",
+    docusignStatus: "none",
+    docusignUrl: "",
+    docusignEnvelopeId: "",
+    docusignDocument: "",
+    docusignSentAt: "",
+    docusignSignedAt: "",
+    docusignNotes: "",
+  }
+}
+
+function demoteExtraSubscriber(student: Student): Student {
+  const labels = (student.labels || []).filter((label) => !/active subscriber/i.test(label))
+  return {
+    ...student,
+    program: "prospect",
+    track: "none",
+    paymentPlan: "none",
+    enrollmentStatus: "contact",
+    subscriptionStatus: "none",
+    contactCategory: student.contactCategory === "subscriber" ? "" : student.contactCategory,
+    labels,
+  }
+}
+
+function looksLikeOldSubscriber(student: Student) {
+  if (student.program === "subscriber" || student.paymentPlan === "subscription") return true
+  return (student.labels || []).some((label) => /active subscriber/i.test(label))
+}
+
+export function applyDeskSubscriberRoster(students: Student[]) {
+  const next = students.map((student) => ({ ...student }))
+  const taken = new Set<string>()
+  const created: Student[] = []
+
+  for (const row of DESK_SUBSCRIBERS) {
+    const existing = findStudentForRow(row, next, taken)
+    if (existing) {
+      const index = next.findIndex((student) => student.id === existing.id)
+      next[index] = promoteSubscriber(existing, row)
+      taken.add(existing.id)
+      continue
+    }
+    const fresh = subscriberFactory(row)
+    created.push(fresh)
+    taken.add(fresh.id)
+  }
+
+  const merged = [...created, ...next].map((student) =>
+    taken.has(student.id) || !looksLikeOldSubscriber(student) ? student : demoteExtraSubscriber(student),
+  )
+  return { students: merged, added: created.length, kept: taken.size - created.length }
+}

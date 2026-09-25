@@ -176,6 +176,16 @@ export interface PhotoshootPlacement {
   status: Exclude<PhotoshootStatus, "none">
 }
 
+export interface CalendarEvent {
+  id: string
+  date: string
+  title: string
+  notes: string
+  studentIds: string[]
+  /** Show this event as a desk reminder on that date. */
+  remind: boolean
+}
+
 export interface AppData {
   students: Student[]
   attendance: AttendanceRecord[]
@@ -185,6 +195,7 @@ export interface AppData {
   groups: NotifyGroup[]
   photoshoots: Photoshoot[]
   photoshootPlacements: PhotoshootPlacement[]
+  calendarEvents: CalendarEvent[]
   /** Default month shoots staff deleted — merge will not put them back. */
   removedPhotoshootIds: string[]
 }

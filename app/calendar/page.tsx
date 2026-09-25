@@ -2,38 +2,89 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Pencil, Plus } from "lucide-react"
+import { CalendarEventEditor } from "@/components/calendar-event-editor"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { Button } from "@/components/ui/button"
 import { useStore } from "@/lib/store"
 import { calendarRuns, datesWithRuns, monthGrid, runsOnDate, shiftMonth } from "@/lib/calendar"
+import { datesWithEvents, eventsOnDate, reminderEventsOnDate } from "@/lib/calendar-events"
 import { formatDate, formatMoney, fullName, todayISO } from "@/lib/format"
+import type { CalendarEvent } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export default function CalendarPage() {
-  const { students, payments } = useStore()
+  const { students, payments, calendarEvents } = useStore()
   const today = todayISO()
   const [cursor, setCursor] = useState(today.slice(0, 7) + "-01")
   const [selected, setSelected] = useState(today)
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editing, setEditing] = useState<CalendarEvent | null>(null)
   const grid = monthGrid(cursor)
   const runs = useMemo(() => calendarRuns(students, payments), [students, payments])
-  const marked = useMemo(() => datesWithRuns(runs), [runs])
+  const marked = useMemo(() => {
+    const next = datesWithRuns(runs)
+    for (const date of datesWithEvents(calendarEvents)) next.add(date)
+    return next
+  }, [runs, calendarEvents])
+  const reminderDates = useMemo(
+    () => new Set(calendarEvents.filter((event) => event.remind).map((event) => event.date)),
+    [calendarEvents],
+  )
   const dayRuns = runsOnDate(runs, selected)
+  const dayEvents = eventsOnDate(calendarEvents, selected)
+  const todayReminders = reminderEventsOnDate(calendarEvents, today)
   const monthLabel = new Intl.DateTimeFormat("en-US", {
     month: "long",
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(Date.UTC(grid.year, grid.month - 1, 1)))
 
+  function openCreate() {
+    setEditing(null)
+    setEditorOpen(true)
+  }
+
+  function openEdit(event: CalendarEvent) {
+    setEditing(event)
+    setEditorOpen(true)
+  }
+
   return (
     <div>
       <PageHeader
         eyebrow="Schedule"
         title="Calendar"
-        description="Phoenix dates from Square invoices and desk rows you add on a talent file. Next dues are not filled in unless Square has that Friday."
+        description="Phoenix dates from Square, desk payment rows, and dates you create here. Reminders only go out for dates you mark."
+        actions={
+          <Button onClick={openCreate}>
+            <Plus className="size-4" />
+            Create date
+          </Button>
+        }
       />
+
+      {todayReminders.length ? (
+        <Panel className="mb-6 border-primary/40 bg-primary/8">
+          <p className="text-xs font-medium tracking-wide text-primary uppercase">Today’s reminders</p>
+          <ul className="mt-2 grid gap-2">
+            {todayReminders.map((event) => (
+              <li key={event.id} className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium">{event.title}</p>
+                  {event.notes ? <p className="text-sm text-muted-foreground">{event.notes}</p> : null}
+                </div>
+                <Button type="button" size="sm" variant="outline" onClick={() => openEdit(event)}>
+                  <Pencil className="size-3" />
+                  Edit
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
         <Panel>
@@ -71,6 +122,7 @@ export default function CalendarPage() {
               const active = cell.date === selected
               const isToday = cell.date === today
               const hasRun = marked.has(cell.date)
+              const hasReminder = reminderDates.has(cell.date)
               return (
                 <button
                   key={cell.date}
@@ -86,11 +138,11 @@ export default function CalendarPage() {
                   )}
                 >
                   <span className="font-medium tabular-nums">{cell.day}</span>
-                  {hasRun ? (
+                  {hasRun || hasReminder ? (
                     <span
                       className={cn(
                         "mt-1 size-1.5 rounded-full",
-                        active ? "bg-primary-foreground" : "bg-primary",
+                        hasReminder ? "bg-amber-400" : active ? "bg-primary-foreground" : "bg-primary",
                       )}
                     />
                   ) : null}
@@ -101,17 +153,47 @@ export default function CalendarPage() {
         </Panel>
 
         <Panel>
-          <h2 className="font-heading text-xl">{formatDate(selected)}</h2>
-          <p className="mb-4 text-sm text-muted-foreground">
-            {dayRuns.length === 0
-              ? "Nobody is scheduled to run."
-              : `${dayRuns.length} scheduled to run`}
-          </p>
-          {dayRuns.length === 0 ? (
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h2 className="font-heading text-xl">{formatDate(selected)}</h2>
+              <p className="text-sm text-muted-foreground">
+                {dayEvents.length + dayRuns.length === 0
+                  ? "Nothing on this date yet."
+                  : `${dayEvents.length + dayRuns.length} on this date`}
+              </p>
+            </div>
+            <Button type="button" size="sm" variant="outline" onClick={openCreate}>
+              <Plus className="size-3" />
+              Create
+            </Button>
+          </div>
+
+          {dayEvents.length ? (
+            <ul className="mb-4 divide-y divide-border">
+              {dayEvents.map((event) => (
+                <li key={event.id} className="flex items-start justify-between gap-3 py-2.5">
+                  <div>
+                    <p className="font-medium">{event.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {event.remind ? "Reminder on" : "No reminder"}
+                      {event.studentIds.length ? ` · ${event.studentIds.length} people` : " · desk date"}
+                    </p>
+                    {event.notes ? <p className="mt-1 text-sm text-muted-foreground">{event.notes}</p> : null}
+                  </div>
+                  <Button type="button" size="xs" variant="outline" onClick={() => openEdit(event)}>
+                    <Pencil className="size-3" />
+                    Edit
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          {dayRuns.length === 0 && dayEvents.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Open a talent file and add a payment date if they should appear here.
+              Create a date, or add a payment date on a talent file.
             </p>
-          ) : (
+          ) : dayRuns.length ? (
             <ul className="divide-y divide-border">
               {dayRuns.map((run) => (
                 <li key={`${run.student.id}-${run.date}-${run.label}`} className="py-2.5">
@@ -126,9 +208,19 @@ export default function CalendarPage() {
                 </li>
               ))}
             </ul>
-          )}
+          ) : null}
         </Panel>
       </div>
+
+      <CalendarEventEditor
+        open={editorOpen}
+        event={editing}
+        defaultDate={selected}
+        onClose={() => {
+          setEditorOpen(false)
+          setEditing(null)
+        }}
+      />
     </div>
   )
 }

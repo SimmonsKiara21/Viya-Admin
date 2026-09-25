@@ -21,6 +21,7 @@ import type {
   NotifyGroup,
   PaymentRecord,
   PaymentSource,
+  CalendarEvent,
   Photoshoot,
   PhotoshootStatus,
   SquareItemKind,
@@ -66,6 +67,8 @@ import {
 import { mergeDuplicateStudents } from "./merge-duplicates"
 import { applyDrivePhotos } from "./photos-overlay"
 import { foldName } from "./match-name"
+import { normalizeCalendarEvent } from "./calendar-events"
+import { applyDeskSubscriberRoster, SUBSCRIBER_ROSTER_ID } from "./desk-subscribers"
 
 const DROPPED_IDS = new Set(DROPPED_ROSTER_IDS)
 const DROPPED_NAMES = new Set(DROPPED_ROSTER_NAMES)
@@ -101,6 +104,10 @@ function remapStudentIds(data: AppData): AppData {
       ...group,
       studentIds: group.studentIds.map(map),
     })),
+    calendarEvents: (data.calendarEvents || []).map((event) => ({
+      ...event,
+      studentIds: event.studentIds.map(map),
+    })),
   }
 }
 
@@ -122,6 +129,10 @@ function reassignStudentId(data: AppData, fromId: string, toId: string): AppData
     groups: data.groups.map((group) => ({
       ...group,
       studentIds: group.studentIds.map(map),
+    })),
+    calendarEvents: (data.calendarEvents || []).map((event) => ({
+      ...event,
+      studentIds: event.studentIds.map(map),
     })),
   }
 }
@@ -152,6 +163,7 @@ const LEGACY_KEYS = [
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const SAVED_AT_KEY = "viya-academy-saved-at-v9"
 const ENROLLMENT_FREEZE_KEY = "viya-academy-enrollment-frozen-v1"
+const SUBSCRIBER_ROSTER_KEY = "viya-academy-subscribers-v1"
 export const DESK_SAVE_EVENT = "viya-desk-save"
 const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
@@ -360,6 +372,7 @@ function normalizeData(raw: Partial<AppData> | null | undefined): AppData | null
         groups: (raw.groups ?? []).filter((g) => g.kind === "custom"),
         photoshoots,
         photoshootPlacements: mergeLabelPlacements(basePlacements, students, removedPhotoshootIds),
+        calendarEvents: (raw.calendarEvents ?? []).map((event) => normalizeCalendarEvent(event)),
         removedPhotoshootIds,
       }),
     ),
@@ -391,6 +404,7 @@ function applyNativeEnrollmentFreeze(local: AppData): AppData {
         merged.students,
         local.removedPhotoshootIds,
       ),
+      calendarEvents: (local.calendarEvents ?? []).map((event) => normalizeCalendarEvent(event)),
       removedPhotoshootIds: local.removedPhotoshootIds || [],
     }),
   )
@@ -454,6 +468,9 @@ type StoreContextValue = AppData & {
   updatePhotoshoot: (id: string, patch: Partial<Pick<Photoshoot, "label" | "notes" | "archived">>) => void
   duplicatePhotoshoot: (id: string) => Photoshoot | null
   deletePhotoshoot: (id: string) => void
+  addCalendarEvent: (event: Omit<CalendarEvent, "id"> & { id?: string }) => CalendarEvent
+  updateCalendarEvent: (id: string, patch: Partial<CalendarEvent>) => void
+  deleteCalendarEvent: (id: string) => void
   resetRoster: () => void
 }
 
@@ -536,6 +553,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (!frozen) {
           next = applyNativeEnrollmentFreeze(next)
           localStorage.setItem(ENROLLMENT_FREEZE_KEY, ENROLLMENT_FREEZE_ID)
+        }
+        if (localStorage.getItem(SUBSCRIBER_ROSTER_KEY) !== SUBSCRIBER_ROSTER_ID) {
+          next = {
+            ...next,
+            students: applyDeskSubscriberRoster(next.students).students,
+          }
+          localStorage.setItem(SUBSCRIBER_ROSTER_KEY, SUBSCRIBER_ROSTER_ID)
         }
         setData(next)
         const savedAt = localStorage.getItem(SAVED_AT_KEY) || ""
@@ -1106,8 +1130,30 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           photoshootPlacements: prev.photoshootPlacements.filter((row) => row.shootId !== id),
           removedPhotoshootIds: [...new Set([...(prev.removedPhotoshootIds || []), id])],
         })),
+      addCalendarEvent: (event) => {
+        const next = normalizeCalendarEvent(event)
+        mutate((prev) => ({ ...prev, calendarEvents: [...(prev.calendarEvents || []), next] }))
+        return next
+      },
+      updateCalendarEvent: (id, patch) =>
+        mutate((prev) => ({
+          ...prev,
+          calendarEvents: (prev.calendarEvents || []).map((event) =>
+            event.id === id ? normalizeCalendarEvent({ ...event, ...patch, id }) : event,
+          ),
+        })),
+      deleteCalendarEvent: (id) =>
+        mutate((prev) => ({
+          ...prev,
+          calendarEvents: (prev.calendarEvents || []).filter((event) => event.id !== id),
+        })),
       resetRoster: () => {
-        const next = cloneSeed()
+        const seeded = cloneSeed()
+        const next = {
+          ...seeded,
+          students: applyDeskSubscriberRoster(seeded.students).students,
+        }
+        localStorage.setItem(SUBSCRIBER_ROSTER_KEY, SUBSCRIBER_ROSTER_ID)
         pastRef.current = []
         futureRef.current = []
         dataRef.current = next

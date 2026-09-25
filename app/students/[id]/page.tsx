@@ -207,6 +207,15 @@ export default function StudentProfilePage() {
           <p className="font-heading text-xl text-violet-900 dark:text-violet-100 sepia:text-violet-950">
             Paused
           </p>
+          <p className="mt-1 text-sm text-violet-800 dark:text-violet-50/90 sepia:text-violet-950">
+            {[
+              student.startDate ? `Started ${formatDate(student.startDate)}` : "No start date yet",
+              student.nextPaymentDate
+                ? `next payment due ${formatDate(student.nextPaymentDate)}${student.nextPaymentAmount != null ? ` · ${formatMoney(student.nextPaymentAmount)}` : ""}`
+                : "no next payment date",
+            ].join(" · ")}
+            .
+          </p>
         </div>
       ) : null}
 

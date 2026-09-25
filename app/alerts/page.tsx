@@ -13,11 +13,12 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
+import { subscriberIsOverdue } from "@/lib/subscriber-billing"
 import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
 
 export default function AlertsPage() {
-  const { students } = useStore()
+  const { students, payments } = useStore()
 
   const academyOverdue = useMemo(
     () =>
@@ -29,9 +30,9 @@ export default function AlertsPage() {
   const subscriberOverdue = useMemo(
     () =>
       students
-        .filter(isSubscriberOverdue)
+        .filter((student) => isSubscriberOverdue(student) || subscriberIsOverdue(student, payments))
         .sort((a, b) => (a.nextPaymentDate || "").localeCompare(b.nextPaymentDate || "")),
-    [students],
+    [students, payments],
   )
   const collections = useMemo(
     () => students.filter(isCollectionsStudent).sort((a, b) => a.lastName.localeCompare(b.lastName)),

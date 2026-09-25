@@ -1,7 +1,8 @@
 import type { ContactCategory, EnrollmentStatus, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
-import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, FORMER_STUDENT_SUBSCRIBER_IDS, programDisplayLabel } from "./constants"
+import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, programDisplayLabel } from "./constants"
+import { isDeskSubscriber } from "./desk-subscribers"
 
 const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
@@ -79,8 +80,6 @@ export function hasGoogleTag(labels: string[] | undefined, tag: string) {
   return (labels || []).some((label) => sameGoogleTag(label, tag))
 }
 
-const FORMER_SUBS = new Set(FORMER_STUDENT_SUBSCRIBER_IDS)
-
 /** Desk change of the enrollment tag — Pending to Current after a deposit, etc. */
 export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): Partial<Student> {
   const labels = [...(student.labels || [])]
@@ -118,11 +117,9 @@ export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): 
 }
 
 export function isActiveSubscriber(
-  student: Pick<Student, "id" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,
+  student: Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,
 ) {
-  if (student.program === "subscriber" || student.paymentPlan === "subscription") return true
-  if (student.id && FORMER_SUBS.has(student.id)) return true
-  return hasContactLabel(student as Student, /active subscriber/i)
+  return isDeskSubscriber(student)
 }
 
 function isCurrentStudentLabel(label: string) {
@@ -131,7 +128,7 @@ function isCurrentStudentLabel(label: string) {
 
 /** Subscribers are not current students — drop that Google list so they stay on Subscriptions. */
 export function withoutCurrentStudentIfSubscriber<
-  T extends Pick<Student, "id" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
+  T extends Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
 >(student: T): T {
   if (!isActiveSubscriber(student)) return student
   const labels = (student.labels || []).filter((label) => !isCurrentStudentLabel(label))

@@ -1,5 +1,7 @@
 import type { PaymentRecord, PaymentStatus, SquareItemKind, Student } from "./types"
 import { isPaidInFull } from "./alerts"
+import { isDeskSubscriber } from "./desk-subscribers"
+import { subscriberBilling } from "./subscriber-billing"
 import { SQUARE_ITEMS, displayPaymentNotes } from "./square"
 import { matchStudentByName } from "./match-name"
 import { displayStudentId, newId, parseStudentId, todayISO } from "./format"
@@ -233,6 +235,12 @@ function refreshStudentsFromPayments(
       }
     }
     markMissedPaymentOverdue(student, rows)
+    if (isDeskSubscriber(student) && !student.deskLocks?.subscription) {
+      const bill = subscriberBilling(student, rows)
+      if ((bill.lastPaidDate || bill.nextDue || bill.overdueSince) && (student.subscriptionStatus === "none" || student.subscriptionStatus === "interested")) {
+        student.subscriptionStatus = "active"
+      }
+    }
   }
 }
 

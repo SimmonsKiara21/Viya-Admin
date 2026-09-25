@@ -13,13 +13,18 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
+import { reminderEventsOnDate } from "@/lib/calendar-events"
+import { subscriberIsOverdue } from "@/lib/subscriber-billing"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export function StaffAlertBanner() {
-  const { students } = useStore()
+  const { students, payments, calendarEvents } = useStore()
   const academyOverdue = students.filter(isAcademyOverdue)
-  const subscriberOverdue = students.filter(isSubscriberOverdue)
+  const subscriberOverdue = students.filter(
+    (student) => isSubscriberOverdue(student) || subscriberIsOverdue(student, payments),
+  )
+  const todayReminders = reminderEventsOnDate(calendarEvents)
   const collections = students.filter(isCollectionsStudent)
   const paused = students.filter(isPausedStudent)
   const pending = students.filter(isPendingStudent)
@@ -30,7 +35,8 @@ export function StaffAlertBanner() {
     collections.length +
     paused.length +
     pending.length +
-    finishing.length
+    finishing.length +
+    todayReminders.length
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -72,6 +78,7 @@ export function StaffAlertBanner() {
     { count: paused.length, label: "paused", className: "text-violet-900 dark:text-violet-200" },
     { count: pending.length, label: "pending", className: "text-fuchsia-900 dark:text-fuchsia-200" },
     { count: finishing.length, label: "wrapping up", className: "text-lime-800 dark:text-lime-100" },
+    { count: todayReminders.length, label: "date reminders", className: "text-primary" },
   ].filter((bit) => bit.count > 0)
 
   return (
@@ -89,8 +96,11 @@ export function StaffAlertBanner() {
           ))}
         </span>
       </p>
-      <Link href="/alerts" className={cn(buttonVariants({ size: "sm" }), "shrink-0")}>
-        Open alerts
+      <Link
+        href={todayReminders.length && bits.every((bit) => bit.label === "date reminders") ? "/calendar" : "/alerts"}
+        className={cn(buttonVariants({ size: "sm" }), "shrink-0")}
+      >
+        {todayReminders.length && bits.every((bit) => bit.label === "date reminders") ? "Open calendar" : "Open alerts"}
       </Link>
     </div>
   )

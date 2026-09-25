@@ -16,6 +16,7 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
+import { subscriberIsOverdue } from "@/lib/subscriber-billing"
 import type { Student } from "@/lib/types"
 
 function sortByName(list: Student[]) {
@@ -23,7 +24,7 @@ function sortByName(list: Student[]) {
 }
 
 export default function HomePage() {
-  const { students, resetRoster } = useStore()
+  const { students, payments, resetRoster } = useStore()
   const [addOpen, setAddOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
 
@@ -36,10 +37,12 @@ export default function HomePage() {
     const current = sortByName(students.filter(isCurrentlyEnrolled))
     const overdue = sortByName(students.filter(isOverdueTalent))
     const collections = sortByName(students.filter(isCollectionsStudent))
-    const subscriberOverdue = sortByName(students.filter(isSubscriberOverdue))
+    const subscriberOverdue = sortByName(
+      students.filter((student) => isSubscriberOverdue(student) || subscriberIsOverdue(student, payments)),
+    )
     const pending = sortByName(students.filter(isPendingStudent))
     return { current, overdue, collections, subscriberOverdue, pending }
-  }, [students])
+  }, [students, payments])
 
   return (
     <div>

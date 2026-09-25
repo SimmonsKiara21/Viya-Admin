@@ -16,6 +16,8 @@ export function Toaster(props: ToasterProps) {
       className="toaster group"
       closeButton
       position="bottom-right"
+      offset={{ bottom: "4.75rem", right: "1rem" }}
+      mobileOffset={{ bottom: "4.75rem", right: "1rem" }}
       icons={{
         success: <CircleCheckIcon className="size-4" />,
         info: <InfoIcon className="size-4" />,

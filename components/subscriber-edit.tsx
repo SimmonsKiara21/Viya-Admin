@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { DESK_SUB_STATUSES, SUB_LABELS } from "@/lib/constants"
+import { removeFromSubscribers } from "@/lib/desk-subscribers"
 import { overdueSincePatch } from "@/lib/alerts"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
@@ -45,6 +46,12 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
   }
 
   function save() {
+    if (status === "cancelled") {
+      updateStudent(student.id, removeFromSubscribers(student))
+      toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
+      setOpen(false)
+      return
+    }
     const value = amount.trim() === "" ? null : Number(amount)
     const nextAmount = value != null && Number.isFinite(value) ? value : null
     updateStudent(student.id, {
@@ -139,6 +146,17 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
             </Field>
           </div>
           <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                updateStudent(student.id, removeFromSubscribers(student))
+                toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
+                setOpen(false)
+              }}
+            >
+              Remove from subscribers
+            </Button>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>

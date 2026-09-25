@@ -24,9 +24,11 @@ import { StudentIdField } from "@/components/student-id-field"
 import { StudentProfileEdit } from "@/components/student-profile-edit"
 import { OverdueSinceField } from "@/components/overdue-since-field"
 import { EmptyState, Field, NativeSelect, Panel } from "@/components/ui-helpers"
+import { HighlightPicker } from "@/components/highlight-picker"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { StudentPaymentsTab } from "@/components/student-payments-tab"
+import { clearStudentTags, moveStudentToContact, removeFromSubscribers } from "@/lib/desk-subscribers"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -256,7 +258,13 @@ export default function StudentProfilePage() {
             Paid in full
           </p>
           <p className="mt-1 text-sm text-emerald-800 dark:text-emerald-50/90 sepia:text-emerald-950">
-            No remaining tuition.
+            {[
+              "No remaining tuition",
+              student.startDate ? `started ${formatDate(student.startDate)}` : "",
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+            .
           </p>
         </div>
       ) : null}
@@ -339,6 +347,9 @@ export default function StudentProfilePage() {
               ))}
             </div>
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+              <Field label="Highlight">
+                <HighlightPicker student={student} />
+              </Field>
               <Field label="Status">
                 <NativeSelect
                   value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
@@ -456,6 +467,9 @@ export default function StudentProfilePage() {
               <h2 className="font-heading text-xl">{isContact(student) ? "Contact" : "Enrollment"}</h2>
               {isContact(student) ? null : (
                 <>
+                  <Field label="Highlight">
+                    <HighlightPicker student={student} />
+                  </Field>
                   <Field label="Status">
                     <NativeSelect
                       value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
@@ -552,8 +566,36 @@ export default function StudentProfilePage() {
                 <LabelsEditor
                   labels={student.labels || []}
                   onChange={(labels) => updateStudent(student.id, { labels })}
+                  onClear={() => updateStudent(student.id, clearStudentTags(student))}
                 />
               </Field>
+              <div className="flex flex-wrap gap-2">
+                {isSubscriberStudent(student) ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      updateStudent(student.id, removeFromSubscribers(student))
+                      toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
+                    }}
+                  >
+                    Remove from subscribers
+                  </Button>
+                ) : !isContact(student) ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      updateStudent(student.id, moveStudentToContact(student))
+                      toast.success(`${student.firstName} was moved to Contacts.`)
+                    }}
+                  >
+                    Move to Contacts
+                  </Button>
+                ) : null}
+              </div>
             </Panel>
             <Panel>
               <StaffNotesEditor student={student} />
@@ -656,12 +698,18 @@ export default function StudentProfilePage() {
             <Field label="Subscription status">
               <NativeSelect
                 value={student.subscriptionStatus}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const status = e.target.value as SubscriptionStatus
+                  if (status === "cancelled") {
+                    updateStudent(student.id, removeFromSubscribers(student))
+                    toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
+                    return
+                  }
                   updateStudent(student.id, {
-                    subscriptionStatus: e.target.value as SubscriptionStatus,
+                    subscriptionStatus: status,
                     deskLocks: { ...student.deskLocks, subscription: true },
                   })
-                }
+                }}
               >
                 {student.subscriptionStatus === "none" || student.subscriptionStatus === "cancelled" ? (
                   <option value={student.subscriptionStatus}>

@@ -10,9 +10,11 @@ import { cn } from "@/lib/utils"
 export function LabelsEditor({
   labels,
   onChange,
+  onClear,
 }: {
   labels: string[]
   onChange: (labels: string[]) => void
+  onClear?: () => void
 }) {
   const [draft, setDraft] = useState("")
   const current = labels.filter(Boolean)
@@ -59,6 +61,11 @@ export function LabelsEditor({
         <Button type="button" variant="outline" onClick={() => add(draft)} disabled={!draft.trim()}>
           Add
         </Button>
+        {current.length && onClear ? (
+          <Button type="button" variant="outline" onClick={onClear}>
+            Remove all tags
+          </Button>
+        ) : null}
       </div>
       {suggestions.length ? (
         <div className="flex flex-wrap gap-1.5">

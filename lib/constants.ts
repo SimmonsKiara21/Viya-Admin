@@ -55,6 +55,7 @@ export const FORMER_STUDENT_SUBSCRIBER_IDS = [
 export const STUDENT_ID_ALIASES: Record<string, string> = {
   "0830": "0839",
   "0412": "0381",
+  ENRscarlettpe: "1147",
 }
 /** Current enrollment PIF students whose lump sum is already in. Igrid and Thalia are pending, not this list. */
 export const PAID_PIF_IDS = [
@@ -78,8 +79,9 @@ export const PAID_PIF_IDS = [
   "0910",
   "0912",
   "0914",
+  "0627",
 ]
-export const PAID_PIF_NAMES = ["minh thu nguyen"]
+export const PAID_PIF_NAMES = ["minh thu nguyen", "sadie horsley"]
 /** Google Contacts export with Current Student / Active Subscribers / photoshoot labels. */
 export const CONTACTS_LABELS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHzEdPAxtZVLF_qOGBK8Kd42PXfCnQGy2pmFRrIuXuLVLbqMrt76UMwIPmban9L8g1o3B3RU7eHY_9/pub?output=csv"
@@ -113,6 +115,7 @@ export const DESK_STATUS_OPTIONS: EnrollmentStatus[] = [
   "collections",
   "cancelling",
   "pif",
+  "contact",
 ]
 
 export const SUGGESTED_LABELS = [
@@ -202,7 +205,7 @@ export const SUB_LABELS: Record<SubscriptionStatus, string> = {
 }
 
 /** Workbook statuses staff set on a talent file. */
-export const DESK_SUB_STATUSES: SubscriptionStatus[] = ["active", "interested", "paused"]
+export const DESK_SUB_STATUSES: SubscriptionStatus[] = ["active", "interested", "paused", "cancelled"]
 
 export const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   paid: "Paid",

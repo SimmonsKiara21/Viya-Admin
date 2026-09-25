@@ -218,6 +218,7 @@ export function isFinishingSoon(student: Student) {
 }
 
 export function highlightTone(student: Student): HighlightTone {
+  if (student.manualHighlight && student.manualHighlight !== "none") return student.manualHighlight
   if (isCollectionsStudent(student)) return "collections"
   if (isSubscriberOverdue(student)) return "subscriberOverdue"
   if (isAcademyOverdue(student)) return "overdue"

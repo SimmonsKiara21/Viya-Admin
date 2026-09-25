@@ -15,7 +15,7 @@ export const SUBSCRIPTION_PLANS: {
   label: string
 }[] = [
   { id: "standard", item: SUBSCRIPTION_ITEM, label: "Standard · $51.49" },
-  { id: "og", item: SUBSCRIPTION_OG_ITEM, label: "OG · $4.99" },
+  { id: "og", item: SUBSCRIPTION_OG_ITEM, label: "OG · $4.99 / $5.14" },
   { id: "plus", item: SUBSCRIPTION_PLUS_ITEM, label: "$100 plan" },
 ]
 

@@ -1,8 +1,8 @@
 import { foldName, matchStudentByName } from "./match-name"
 import { newId } from "./format"
-import type { Student, SubscriptionStatus } from "./types"
+import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-named"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-plans"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -13,18 +13,19 @@ export type DeskSubscriberRow = {
   status: SubscriptionStatus
   startDate: string
   aliases: string[]
+  plan?: SubscriptionPlan
 }
 
 export const DESK_SUBSCRIBERS: DeskSubscriberRow[] = [
-  { firstName: "Lucas", lastName: "Sanders", nickname: "", email: "tmsanders0224@gmail.com", phone: "602-332-2545", status: "active", startDate: "", aliases: [] },
-  { firstName: "Ailen", lastName: "Gallegos", nickname: "", email: "rosaaliiciia42@gmail.com", phone: "480-648-1471", status: "active", startDate: "", aliases: [] },
+  { firstName: "Lucas", lastName: "Sanders", nickname: "", email: "tmsanders0224@gmail.com", phone: "602-332-2545", status: "active", startDate: "", aliases: [], plan: "og" },
+  { firstName: "Ailen", lastName: "Gallegos", nickname: "", email: "rosaaliiciia42@gmail.com", phone: "480-648-1471", status: "active", startDate: "", aliases: [], plan: "og" },
   { firstName: "Julie", lastName: "Gallegos", nickname: "", email: "rosaaliiciia42@gmail.com", phone: "480-648-1471", status: "active", startDate: "", aliases: [] },
   { firstName: "Sadie", lastName: "Aschebrock", nickname: "", email: "sylph182@gmail.com", phone: "623-340-7140", status: "active", startDate: "", aliases: [] },
-  { firstName: "Tanya", lastName: "Papuga", nickname: "", email: "papugatanya@gmail.com", phone: "407-508-9650", status: "active", startDate: "", aliases: [] },
-  { firstName: "Karissa", lastName: "Sendlak", nickname: "", email: "sendlakkarissa@gmail.com", phone: "520-449-0232", status: "active", startDate: "", aliases: [] },
-  { firstName: "Crescent", lastName: "Brewer", nickname: "Angel", email: "angel.brewer445@gmail.com", phone: "480-740-3996", status: "active", startDate: "", aliases: ["angel brewer"] },
-  { firstName: "Justice", lastName: "Belcher", nickname: "", email: "belcheramber96@gmail.com", phone: "480-547-5297", status: "active", startDate: "", aliases: [] },
-  { firstName: "Jacob", lastName: "Lubin", nickname: "", email: "jlubin6000@gmail.com", phone: "703-509-8003", status: "active", startDate: "", aliases: [] },
+  { firstName: "Tanya", lastName: "Papuga", nickname: "", email: "papugatanya@gmail.com", phone: "407-508-9650", status: "active", startDate: "", aliases: [], plan: "standard" },
+  { firstName: "Karissa", lastName: "Sendlak", nickname: "", email: "sendlakkarissa@gmail.com", phone: "520-449-0232", status: "active", startDate: "", aliases: [], plan: "og" },
+  { firstName: "Crescent", lastName: "Brewer", nickname: "Angel", email: "angel.brewer445@gmail.com", phone: "480-740-3996", status: "active", startDate: "", aliases: ["angel brewer"], plan: "og" },
+  { firstName: "Justice", lastName: "Belcher", nickname: "", email: "belcheramber96@gmail.com", phone: "480-547-5297", status: "active", startDate: "", aliases: [], plan: "og" },
+  { firstName: "Jacob", lastName: "Lubin", nickname: "", email: "jlubin6000@gmail.com", phone: "703-509-8003", status: "active", startDate: "", aliases: [], plan: "og" },
   { firstName: "Stacey", lastName: "Boucher", nickname: "", email: "staceyb60@gmail.com", phone: "347-585-2553", status: "active", startDate: "", aliases: [] },
   { firstName: "Dianica", lastName: "Vargas", nickname: "", email: "dnh627@gmail.com", phone: "623-203-2868", status: "active", startDate: "", aliases: [] },
   { firstName: "Adam", lastName: "Montoya", nickname: "", email: "carrie.montoya@icloud.com", phone: "623-205-4668", status: "active", startDate: "", aliases: [] },
@@ -41,7 +42,6 @@ export const DESK_SUBSCRIBERS: DeskSubscriberRow[] = [
   { firstName: "Liliana", lastName: "Aguilar", nickname: "", email: "meesha.aguilar@yahoo.com", phone: "901-337-0914", status: "active", startDate: "", aliases: [] },
   { firstName: "Ariel", lastName: "Gonzalez", nickname: "", email: "aigonzalez5743@gmail.com", phone: "602-813-6065", status: "active", startDate: "", aliases: [] },
   { firstName: "Grace", lastName: "Boening", nickname: "", email: "loloboening@gmail.com", phone: "517-204-6658", status: "active", startDate: "", aliases: [] },
-  { firstName: "Keyla", lastName: "Alvarado", nickname: "", email: "ornelascow@gmail.com", phone: "602-418-6422", status: "active", startDate: "", aliases: [] },
   { firstName: "Delex", lastName: "Taghap", nickname: "", email: "delextaghap98@gmail.com", phone: "480-436-0271", status: "active", startDate: "", aliases: [] },
   { firstName: "Noelle", lastName: "Shimmin", nickname: "", email: "majikellie@gmail.com", phone: "507-358-5094", status: "active", startDate: "", aliases: [] },
   { firstName: "Joshua", lastName: "Breslin", nickname: "", email: "gbreslin623@gmail.com", phone: "623-252-7223", status: "active", startDate: "", aliases: [] },
@@ -49,7 +49,7 @@ export const DESK_SUBSCRIBERS: DeskSubscriberRow[] = [
   { firstName: "Nivine", lastName: "Sakkal", nickname: "", email: "nivinesakkal@hotmail.com", phone: "602-687-0744", status: "active", startDate: "", aliases: [] },
   { firstName: "Kayliegh", lastName: "Mckenzie", nickname: "", email: "slumberkitty@icloud.com", phone: "480-469-6352", status: "active", startDate: "", aliases: ["kayleigh mckenzie"] },
   { firstName: "Scarlett", lastName: "Petroff", nickname: "", email: "mark_petroff@hotmail.com", phone: "602-525-1903", status: "active", startDate: "", aliases: [] },
-  { firstName: "Karla", lastName: "De Guzman", nickname: "", email: "kcamisidrodg@gmail.com", phone: "808-232-3768", status: "active", startDate: "", aliases: ["karla deguzman"] },
+  { firstName: "Karla", lastName: "De Guzman", nickname: "", email: "kcamisidrodg@gmail.com", phone: "808-232-3768", status: "active", startDate: "", aliases: ["karla deguzman"], plan: "og" },
   { firstName: "Jaime", lastName: "Garcia", nickname: "", email: "surgarcia666@gmail.com", phone: "480-519-3387", status: "active", startDate: "", aliases: [] },
   { firstName: "Aaliyah", lastName: "Moore", nickname: "", email: "aa.roman.2720@gmail.com", phone: "715-559-9839", status: "active", startDate: "", aliases: [] },
   { firstName: "Catherine", lastName: "Conder", nickname: "", email: "catherine.conder@gmail.com", phone: "317-703-0705", status: "active", startDate: "", aliases: [] },
@@ -146,9 +146,18 @@ function findStudentForRow(row: DeskSubscriberRow, students: Student[], taken: S
   return undefined
 }
 
+function planAmount(plan: SubscriptionPlan | undefined) {
+  if (plan === "og") return 5.14
+  if (plan === "standard") return 51.49
+  if (plan === "plus") return 100
+  return null
+}
+
 function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
   const labels = [...new Set([...(student.labels || []).filter((label) => !/current student/i.test(label)), "Active Subscribers"])]
   const removed = [...new Set([...(student.removedLabels || []), "Current Student"])]
+  const plan = row.plan || student.subscriptionPlan
+  const amount = planAmount(plan)
   return {
     ...student,
     email: student.email || row.email,
@@ -157,9 +166,16 @@ function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
     program: "subscriber",
     track: "none",
     paymentPlan: "subscription",
-    enrollmentStatus: student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined" ? student.enrollmentStatus : "current",
+    enrollmentStatus:
+      foldName(`${row.firstName} ${row.lastName}`) === "tanya papuga"
+        ? "overdue"
+        : student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined"
+          ? student.enrollmentStatus
+          : "current",
     startDate: student.startDate || row.startDate,
     subscriptionStatus: student.deskLocks?.subscription ? student.subscriptionStatus : row.status,
+    subscriptionPlan: plan === "none" ? student.subscriptionPlan : plan,
+    nextPaymentAmount: amount ?? student.nextPaymentAmount,
     contactCategory: "subscriber",
     labels,
     removedLabels: removed,
@@ -181,13 +197,15 @@ function subscriberFactory(row: DeskSubscriberRow): Student {
     enrollmentStatus: "current",
     startDate: row.startDate,
     nextPaymentDate: "",
-    nextPaymentAmount: 51.49,
+    nextPaymentAmount: planAmount(row.plan) ?? 51.49,
     installmentsLeft: null,
     overdueSince: "",
     notes: "",
     contactCategory: "subscriber",
     subscriptionStatus: row.status,
-    subscriptionPlan: "none",
+    subscriptionPlan: row.plan || "none",
+    manualHighlight: "none",
+    subscriptionRunDate: "",
     photoshootStatus: "none",
     photoshootNotes: "",
     measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },
@@ -206,23 +224,69 @@ function subscriberFactory(row: DeskSubscriberRow): Student {
   }
 }
 
-function demoteExtraSubscriber(student: Student): Student {
+export function removeFromSubscribers(student: Student): Partial<Student> {
   const labels = (student.labels || []).filter((label) => !/active subscriber/i.test(label))
   return {
-    ...student,
     program: "prospect",
     track: "none",
     paymentPlan: "none",
     enrollmentStatus: "contact",
-    subscriptionStatus: "none",
-    contactCategory: student.contactCategory === "subscriber" ? "" : student.contactCategory,
+    subscriptionStatus: "cancelled",
+    subscriptionPlan: "none",
+    contactCategory: "",
     labels,
+    removedLabels: [...new Set([...(student.removedLabels || []), "Active Subscribers"])],
+    deskLocks: { ...student.deskLocks, status: true, subscription: true },
   }
+}
+
+export function moveStudentToContact(student: Student): Partial<Student> {
+  if (student.program === "subscriber" || student.paymentPlan === "subscription") {
+    return removeFromSubscribers(student)
+  }
+  return {
+    program: "prospect",
+    track: "none",
+    paymentPlan: "none",
+    enrollmentStatus: "contact",
+    contactCategory: "",
+    deskLocks: { ...student.deskLocks, status: true },
+  }
+}
+
+export function clearStudentTags(student: Student): Partial<Student> {
+  return {
+    labels: [],
+    removedLabels: [...new Set([...(student.removedLabels || []), ...(student.labels || [])])],
+  }
+}
+
+function demoteExtraSubscriber(student: Student): Student {
+  return { ...student, ...removeFromSubscribers(student), subscriptionStatus: "none" }
 }
 
 function looksLikeOldSubscriber(student: Student) {
   if (student.program === "subscriber" || student.paymentPlan === "subscription") return true
   return (student.labels || []).some((label) => /active subscriber/i.test(label))
+}
+
+function applyNamedDeskFixes(students: Student[]) {
+  return students.map((student) => {
+    const name = foldName(`${student.firstName} ${student.lastName}`)
+    if (student.id === "0627" || name === "sadie horsley") {
+      return {
+        ...student,
+        paymentPlan: "pif" as const,
+        enrollmentStatus: "pif" as const,
+        installmentsLeft: 0,
+        nextPaymentDate: "",
+        nextPaymentAmount: null,
+        startDate: student.startDate || "2026-04-01",
+        deskLocks: { ...student.deskLocks, status: true, installments: true },
+      }
+    }
+    return student
+  })
 }
 
 export function applyDeskSubscriberRoster(students: Student[]) {
@@ -234,6 +298,13 @@ export function applyDeskSubscriberRoster(students: Student[]) {
     const existing = findStudentForRow(row, next, taken)
     if (existing) {
       const index = next.findIndex((student) => student.id === existing.id)
+      if (
+        existing.deskLocks?.subscription &&
+        (existing.subscriptionStatus === "cancelled" || existing.enrollmentStatus === "contact")
+      ) {
+        taken.add(existing.id)
+        continue
+      }
       next[index] = promoteSubscriber(existing, row)
       taken.add(existing.id)
       continue
@@ -243,8 +314,10 @@ export function applyDeskSubscriberRoster(students: Student[]) {
     taken.add(fresh.id)
   }
 
-  const merged = [...created, ...next].map((student) =>
-    taken.has(student.id) || !looksLikeOldSubscriber(student) ? student : demoteExtraSubscriber(student),
+  const merged = applyNamedDeskFixes(
+    [...created, ...next].map((student) =>
+      taken.has(student.id) || !looksLikeOldSubscriber(student) ? student : demoteExtraSubscriber(student),
+    ),
   )
   return { students: merged, added: created.length, kept: taken.size - created.length }
 }

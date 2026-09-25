@@ -329,6 +329,17 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       s.subscriptionPlan === "standard" || s.subscriptionPlan === "og" || s.subscriptionPlan === "plus"
         ? s.subscriptionPlan
         : "none",
+    manualHighlight:
+      s.manualHighlight === "overdue" ||
+      s.manualHighlight === "subscriberOverdue" ||
+      s.manualHighlight === "collections" ||
+      s.manualHighlight === "paused" ||
+      s.manualHighlight === "pending" ||
+      s.manualHighlight === "finishing" ||
+      s.manualHighlight === "pif"
+        ? s.manualHighlight
+        : "none",
+    subscriptionRunDate: (s.subscriptionRunDate || "").slice(0, 10),
     photoshootStatus: s.photoshootStatus || "none",
     photoshootNotes: s.photoshootNotes || "",
     measurements: normalizeMeasurements(s.measurements),
@@ -340,6 +351,7 @@ function normalizeStudent(s: Partial<Student> & Pick<Student, "id" | "firstName"
       installments: Boolean(s.deskLocks?.installments),
       subscription: Boolean(s.deskLocks?.subscription),
       overdueSince: Boolean(s.deskLocks?.overdueSince),
+      highlight: Boolean(s.deskLocks?.highlight),
     },
     classTime: s.classTime || "",
     photoUrl: s.photoUrl || "",

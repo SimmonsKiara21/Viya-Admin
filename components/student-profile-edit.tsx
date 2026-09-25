@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { overdueSinceValue, showsOverdueSinceField } from "@/components/overdue-since-field"
+import { HighlightPicker } from "@/components/highlight-picker"
 import { DESK_STATUS_OPTIONS, ENROLLMENT_LABELS } from "@/lib/constants"
 import { enrollmentTagPatch } from "@/lib/contacts-labels"
 import { overdueSincePatch } from "@/lib/alerts"
@@ -156,14 +157,14 @@ export function StudentProfileEdit({ student }: { student: Student }) {
                 onChange={(e) => patch({ classTime: e.target.value })}
               />
             </Field>
+            <Field label="Highlight">
+              <HighlightPicker student={student} />
+            </Field>
             <Field label="Status">
               <NativeSelect
                 value={form.enrollmentStatus}
                 onChange={(e) => patch({ enrollmentStatus: e.target.value as EnrollmentStatus })}
               >
-                {form.enrollmentStatus === "contact" ? (
-                  <option value="contact">{ENROLLMENT_LABELS.contact}</option>
-                ) : null}
                 {DESK_STATUS_OPTIONS.map((status) => (
                   <option key={status} value={status}>
                     {ENROLLMENT_LABELS[status]}

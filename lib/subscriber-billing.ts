@@ -44,11 +44,42 @@ function monthDayToIso(value: string) {
 
 /** Square $49.99 plus tax — what actually charges on the standard plan. */
 export const STANDARD_SUB_WITH_TAX = 51.49
+/** Square $4.99 plus tax — same OG plan as $5.14. */
+export const OG_SUB_WITH_TAX = 5.14
+
+export function firstOfNextMonth(iso: string) {
+  const [year, month] = iso.slice(0, 10).split("-").map(Number)
+  if (!year || !month) return ""
+  let nextYear = year
+  let nextMonth = month + 1
+  if (nextMonth > 12) {
+    nextYear += 1
+    nextMonth = 1
+  }
+  return `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`
+}
 
 export function withSubscriptionTax(amount: number | null | undefined) {
   if (amount == null || !Number.isFinite(amount)) return null
   if (Math.abs(amount - 49.99) < 0.011 || Math.abs(amount - 49) < 0.011) return STANDARD_SUB_WITH_TAX
+  if (Math.abs(amount - 4.99) < 0.011 || Math.abs(amount - 5) < 0.011) return OG_SUB_WITH_TAX
   return amount
+}
+
+function amountForPlan(student: Student, amount: number | null) {
+  if (student.subscriptionPlan === "og") return OG_SUB_WITH_TAX
+  if (student.subscriptionPlan === "standard") return STANDARD_SUB_WITH_TAX
+  if (student.subscriptionPlan === "plus") return amount != null && amount >= 95 ? amount : 100
+  return withSubscriptionTax(amount)
+}
+
+function cycleDueAfter(student: Student, lastPaidDate: string, today: string) {
+  const custom = (student.subscriptionRunDate || student.startDate || "").slice(0, 10)
+  if (custom && custom > today && (!lastPaidDate || custom > lastPaidDate)) return custom
+  if (lastPaidDate) return firstOfNextMonth(lastPaidDate)
+  if (custom && custom > today) return custom
+  const thisFirst = `${today.slice(0, 7)}-01`
+  return thisFirst >= today ? thisFirst : firstOfNextMonth(today)
 }
 
 export type SubscriberBilling = {
@@ -74,11 +105,11 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
   let overdueSince = (missed[0]?.dueDate || "").slice(0, 10)
   const noteStart = dateFromNotes(student.notes || "")
   let nextDue = (upcoming?.dueDate || "").slice(0, 10)
-  if (!nextDue && !overdueSince && lastPaidDate) nextDue = addCalendarMonth(lastPaidDate)
+  if (!nextDue && !overdueSince) nextDue = cycleDueAfter(student, lastPaidDate, today)
   if (!nextDue && noteStart && noteStart > today) nextDue = noteStart
   if (!nextDue && overdueSince) nextDue = overdueSince
   if (!overdueSince && nextDue && nextDue <= today) overdueSince = nextDue
-  const amount =
+  const rawAmount =
     missed[0]?.balance ??
     missed[0]?.amount ??
     upcoming?.amount ??
@@ -86,14 +117,16 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
     (typeof student.nextPaymentAmount === "number" && student.nextPaymentAmount > 0 && student.nextPaymentAmount <= 120
       ? student.nextPaymentAmount
       : null)
+  const amount = amountForPlan(student, rawAmount)
   const lockedSince = deskOverdueSince(student)
   if (student.deskLocks?.subscription) {
     const due = (student.nextPaymentDate || nextDue || "").slice(0, 10)
     return {
       lastPaidDate,
       nextDue: due,
-      amount: withSubscriptionTax(
-        typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : amount,
+      amount: amountForPlan(
+        student,
+        typeof student.nextPaymentAmount === "number" ? student.nextPaymentAmount : rawAmount,
       ),
       overdueSince: lockedSince || (due && due <= today ? due : ""),
     }
@@ -101,13 +134,14 @@ export function subscriberBilling(student: Student, payments: PaymentRecord[] = 
   return {
     lastPaidDate,
     nextDue,
-    amount: withSubscriptionTax(amount),
+    amount,
     overdueSince: lockedSince || overdueSince,
   }
 }
 
 export function subscriberIsOverdue(student: Student, payments: PaymentRecord[] = []) {
   if (!isDeskSubscriber(student)) return false
+  if (student.program !== "subscriber" && student.paymentPlan !== "subscription") return false
   if (student.subscriptionStatus === "paused" || student.subscriptionStatus === "cancelled") return false
   return Boolean(subscriberBilling(student, payments).overdueSince)
 }

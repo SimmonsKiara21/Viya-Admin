@@ -33,6 +33,15 @@ export type PhotoshootStatus =
   | "received"
 export type SubscriptionStatus = "none" | "active" | "interested" | "paused" | "cancelled"
 export type SubscriptionPlan = "none" | "standard" | "og" | "plus"
+export type ManualHighlight =
+  | "none"
+  | "overdue"
+  | "subscriberOverdue"
+  | "collections"
+  | "paused"
+  | "pending"
+  | "finishing"
+  | "pif"
 export type PaymentStatus = "paid" | "due" | "overdue" | "declined" | "scheduled"
 export type PaymentSource = "square" | "workbook" | "manual"
 export type SquareItemKind = "subscriber" | "academy" | "event" | "fee"
@@ -71,6 +80,10 @@ export interface Student {
   labels: string[]
   /** Labels staff removed on the desk — contact sync will not put them back. */
   removedLabels: string[]
+  /** Staff-painted row color. Empty / none = use the automatic status highlight. */
+  manualHighlight: ManualHighlight
+  /** First custom subscriber bill date. After this date, bills land on the 1st. */
+  subscriptionRunDate: string
   /** Desk tag and notes edits that should not be overwritten by the workbook. */
   deskLocks: {
     status?: boolean
@@ -78,6 +91,7 @@ export interface Student {
     installments?: boolean
     subscription?: boolean
     overdueSince?: boolean
+    highlight?: boolean
   }
   classTime: string
   photoUrl: string

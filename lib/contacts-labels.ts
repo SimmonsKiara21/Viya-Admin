@@ -2,7 +2,7 @@ import type { ContactCategory, EnrollmentStatus, Student } from "./types"
 import { foldName } from "./match-name"
 import { phoneDigits } from "./jotform"
 import { CONTACTS_LABELS_URL, ENROLLMENT_LABELS, programDisplayLabel } from "./constants"
-import { isDeskSubscriber } from "./desk-subscribers"
+import { isDeskSubscriber, removeFromSubscribers } from "./desk-subscribers"
 
 const SKIP_LABELS = new Set(["* mycontacts", "mycontacts"])
 
@@ -93,6 +93,12 @@ export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): 
   }
 
   if (status === "contact") {
+    if (student.program === "subscriber" || student.paymentPlan === "subscription") {
+      return {
+        ...removeFromSubscribers(student),
+        deskLocks: { ...student.deskLocks, status: true, subscription: true },
+      }
+    }
     return {
       ...patch,
       program: "prospect",
@@ -119,6 +125,8 @@ export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): 
 export function isActiveSubscriber(
   student: Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,
 ) {
+  if (student.subscriptionStatus === "cancelled") return false
+  if (student.program !== "subscriber" && student.paymentPlan !== "subscription") return false
   return isDeskSubscriber(student)
 }
 
@@ -511,6 +519,8 @@ function contactFromRow(row: ContactLabelRow, used: Set<string>): Student {
     contactCategory: categoryFromLabels(labels),
     subscriptionStatus: "none",
     subscriptionPlan: "none",
+    manualHighlight: "none",
+    subscriptionRunDate: "",
     photoshootStatus: /photoshoot|model source/i.test(labels.join(" ")) ? "received" : "none",
     photoshootNotes: labels
       .filter((label) => /photoshoot|model source/i.test(label))

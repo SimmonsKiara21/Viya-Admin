@@ -76,6 +76,8 @@ export default function ContactsPage() {
       contactCategory: form.contactCategory,
       subscriptionStatus: "none",
       subscriptionPlan: "none",
+      manualHighlight: "none",
+      subscriptionRunDate: "",
       photoshootStatus: "none",
       photoshootNotes: "",
       measurements: { height: "", bust: "", waist: "", hips: "", dress: "", shoe: "" },

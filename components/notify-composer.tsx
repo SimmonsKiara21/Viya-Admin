@@ -49,7 +49,7 @@ export function NotifyComposer({
   const pickerList = useMemo(() => {
     const pool = query.trim() ? students.filter((s) => matchesQuery(s, query)) : students
     return [...pool]
-      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+      .sort((a, b) => a.firstName.localeCompare(b.firstName) || a.lastName.localeCompare(b.lastName))
       .slice(0, 120)
   }, [query, students])
 

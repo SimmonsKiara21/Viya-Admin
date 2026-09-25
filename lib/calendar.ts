@@ -68,7 +68,7 @@ export function calendarRuns(students: Student[], payments: PaymentRecord[]): Ca
     }
   }
 
-  return runs.sort((a, b) => a.date.localeCompare(b.date) || a.student.lastName.localeCompare(b.student.lastName))
+  return runs.sort((a, b) => a.date.localeCompare(b.date) || a.student.firstName.localeCompare(b.student.firstName) || a.student.lastName.localeCompare(b.student.lastName))
 }
 
 export function runsOnDate(runs: CalendarRun[], date: string) {

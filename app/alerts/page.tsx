@@ -14,6 +14,7 @@ import {
   isSubscriberOverdue,
 } from "@/lib/alerts"
 import { subscriberIsOverdue } from "@/lib/subscriber-billing"
+import { compareByFirstName } from "@/lib/roster-sort"
 import { cn } from "@/lib/utils"
 import type { Student } from "@/lib/types"
 
@@ -35,23 +36,23 @@ export default function AlertsPage() {
     [students, payments],
   )
   const collections = useMemo(
-    () => students.filter(isCollectionsStudent).sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    () => students.filter(isCollectionsStudent).sort(compareByFirstName),
     [students],
   )
   const paused = useMemo(
-    () => students.filter(isPausedStudent).sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    () => students.filter(isPausedStudent).sort(compareByFirstName),
     [students],
   )
   const pending = useMemo(
-    () => students.filter(isPendingStudent).sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    () => students.filter(isPendingStudent).sort(compareByFirstName),
     [students],
   )
   const finishing = useMemo(
-    () => students.filter(isFinishingSoon),
+    () => students.filter(isFinishingSoon).sort(compareByFirstName),
     [students],
   )
   const pif = useMemo(
-    () => students.filter(isPaidInFull).sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    () => students.filter(isPaidInFull).sort(compareByFirstName),
     [students],
   )
 

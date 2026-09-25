@@ -14,8 +14,8 @@ export function isRosterSort(value: string | null | undefined): value is RosterS
   return Boolean(value && (ROSTER_SORTS as readonly string[]).includes(value))
 }
 
-function nameCmp(a: Student, b: Student) {
-  return a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName)
+export function compareByFirstName(a: Student, b: Student) {
+  return a.firstName.localeCompare(b.firstName) || a.lastName.localeCompare(b.lastName)
 }
 
 export function sortStudents<T extends Student>(list: T[], sort: RosterSort): T[] {
@@ -23,14 +23,14 @@ export function sortStudents<T extends Student>(list: T[], sort: RosterSort): T[
     if (sort === "start-new" || sort === "start-old") {
       const aDate = a.startDate || ""
       const bDate = b.startDate || ""
-      if (!aDate && !bDate) return nameCmp(a, b)
+      if (!aDate && !bDate) return compareByFirstName(a, b)
       if (!aDate) return 1
       if (!bDate) return -1
       const cmp = aDate.localeCompare(bDate)
       if (cmp !== 0) return sort === "start-new" ? -cmp : cmp
-      return nameCmp(a, b)
+      return compareByFirstName(a, b)
     }
-    const cmp = nameCmp(a, b)
+    const cmp = compareByFirstName(a, b)
     return sort === "za" ? -cmp : cmp
   })
 }

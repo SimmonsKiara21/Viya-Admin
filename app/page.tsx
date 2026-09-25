@@ -20,7 +20,7 @@ import { subscriberIsOverdue } from "@/lib/subscriber-billing"
 import type { Student } from "@/lib/types"
 
 function sortByName(list: Student[]) {
-  return [...list].sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+  return [...list].sort((a, b) => a.firstName.localeCompare(b.firstName) || a.lastName.localeCompare(b.lastName))
 }
 
 export default function HomePage() {

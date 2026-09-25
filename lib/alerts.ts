@@ -142,7 +142,7 @@ export function hasOpenAcademyTuition(student: Student) {
 }
 
 export function isSubscriberOverdue(student: Student) {
-  return isOverdueFollowUp(student) && isSubscriberStudent(student)
+  return isSubscriberStudent(student) && (student.enrollmentStatus === "overdue" || student.enrollmentStatus === "declined")
 }
 
 export function isPausedStudent(student: Student) {

@@ -3,10 +3,10 @@
 import { memo } from "react"
 import Link from "next/link"
 import { StudentPhoto } from "@/components/student-photo"
-import { ContactLabelBadge, OverdueSinceBadge, PlanBadge } from "@/components/status-badge"
+import { ContactLabelBadge, OverdueSinceBadge, PlanBadge, SquareStandingBadge } from "@/components/status-badge"
 import { formatDate, formatMoney, formatPhone, formatStudentId, fullName } from "@/lib/format"
 import { toggleStudentList, uniqueContactLabels } from "@/lib/contacts-labels"
-import { subscriberBilling } from "@/lib/subscriber-billing"
+import { squareSubscriberStanding, subscriberBilling } from "@/lib/subscriber-billing"
 import { useStore } from "@/lib/store"
 import {
   highlightTone,
@@ -195,7 +195,11 @@ export const StudentRow = memo(function StudentRow({
           </span>
         ) : null}
         {showPlan ? <PlanBadge plan={student.paymentPlan} /> : null}
-        {since ? <OverdueSinceBadge date={since} /> : null}
+        {context === "subscribers" ? (
+          <SquareStandingBadge standing={squareSubscriberStanding(student, payments)} />
+        ) : since ? (
+          <OverdueSinceBadge date={since} />
+        ) : null}
       </div>
     </Link>
   )

@@ -15,6 +15,7 @@ import {
 } from "@/lib/square"
 import { formatMoney } from "@/lib/format"
 import { isSubscriberStudent } from "@/lib/alerts"
+import { squareSubscriberStanding } from "@/lib/subscriber-billing"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
 import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
@@ -87,12 +88,25 @@ export default function SubscriptionsPage() {
     return groups
   }, [list, payments])
 
+  const squareCounts = useMemo(() => {
+    let current = 0
+    let overdue = 0
+    let other = 0
+    for (const student of list) {
+      const standing = squareSubscriberStanding(student, payments)
+      if (standing === "current") current += 1
+      else if (standing === "overdue") overdue += 1
+      else other += 1
+    }
+    return { current, overdue, other }
+  }, [list, payments])
+
   return (
     <div>
       <PageHeader
         eyebrow="Members"
         title="Subscriptions"
-        description="This desk list only. Square says who is current and who is overdue on the monthly invoice."
+        description={`${list.length} people on this desk list only. Square: ${squareCounts.current} current, ${squareCounts.overdue} overdue${squareCounts.other ? `, ${squareCounts.other} with no open invoice yet` : ""}.`}
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-3">

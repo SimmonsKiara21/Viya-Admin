@@ -210,7 +210,7 @@ export function CalendarEventEditor({
               Cancel
             </Button>
             <Button type="button" onClick={save}>
-              {event ? "Save" : "Create"}
+              {event ? "Save date" : "Save date"}
             </Button>
           </div>
         </DialogFooter>

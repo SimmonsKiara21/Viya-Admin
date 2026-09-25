@@ -144,6 +144,32 @@ export function PhotoshootBadge({ status }: { status: PhotoshootStatus }) {
   )
 }
 
+const squareStandingClass: Record<string, string> = {
+  current: "border-emerald-500/30 bg-emerald-500/12 text-emerald-800 dark:text-emerald-200",
+  overdue: "border-orange-500/45 bg-orange-500/18 text-orange-900 dark:text-orange-100",
+  interested: "border-[oklch(0.78_0.08_85/0.4)] bg-[oklch(0.78_0.08_85/0.12)] text-[oklch(0.42_0.08_70)] dark:text-[oklch(0.9_0.06_85)]",
+  paused: "border-violet-500/40 bg-violet-500/12 text-violet-800 dark:text-violet-200",
+  cancelled: "border-zinc-500/35 bg-zinc-500/15 text-zinc-800 dark:text-zinc-300",
+  unknown: "border-border text-muted-foreground",
+}
+
+const SQUARE_STANDING_LABEL: Record<string, string> = {
+  current: "Current",
+  overdue: "Overdue",
+  interested: "Interested",
+  paused: "Paused",
+  cancelled: "Cancelled",
+  unknown: "No Square invoice",
+}
+
+export function SquareStandingBadge({ standing }: { standing: keyof typeof squareStandingClass | string }) {
+  return (
+    <Badge variant="outline" className={cn("font-medium", squareStandingClass[standing] || squareStandingClass.unknown)}>
+      {SQUARE_STANDING_LABEL[standing] || "No Square invoice"}
+    </Badge>
+  )
+}
+
 export function SubscriptionBadge({ status }: { status: SubscriptionStatus }) {
   if (status === "none") return null
   const cls =

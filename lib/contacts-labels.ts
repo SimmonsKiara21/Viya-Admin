@@ -340,7 +340,7 @@ export function withoutNewsletterLabels(labels: string[] | undefined) {
 
 /** Newsletter is the Active Subscribers list — same people, no leftover Newsletter tags. */
 export function isNewsletterRecipient(student: Student) {
-  return hasContactLabel(student, /active subscriber/i)
+  return isActiveSubscriber(student)
 }
 
 export function toggleStudentList(student: Student, tag: string): Partial<Student> {

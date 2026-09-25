@@ -2,7 +2,7 @@ import { foldName, matchStudentByName } from "./match-name"
 import { newId } from "./format"
 import type { Student, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-25-desk-subs-named"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -102,20 +102,31 @@ function studentNames(student: Pick<Student, "firstName" | "lastName" | "nicknam
   return [
     foldName(`${student.firstName} ${student.lastName}`),
     student.nickname ? foldName(`${student.nickname} ${student.lastName}`) : "",
-    foldName(`${student.lastName} ${student.firstName}`),
   ].filter(Boolean)
 }
 
-export function matchDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
+function firstKeys(row: DeskSubscriberRow) {
+  return [foldName(row.firstName), foldName(row.nickname)].filter(Boolean)
+}
+
+function sameFirstName(student: Pick<Student, "firstName" | "lastName" | "nickname">, row: DeskSubscriberRow) {
+  const theirs = [foldName(student.firstName), foldName(student.nickname)].filter(Boolean)
+  return firstKeys(row).some((name) => theirs.includes(name))
+}
+
+function samePerson(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">, row: DeskSubscriberRow) {
   const names = studentNames(student)
+  if (rowNames(row).some((name) => names.includes(name))) return true
+  if (!sameFirstName(student, row)) return false
   const email = emailKey(student.email)
   const phone = phoneKey(student.phone)
-  return (
-    DESK_SUBSCRIBERS.find((row) => rowNames(row).some((name) => names.includes(name))) ||
-    DESK_SUBSCRIBERS.find((row) => email && emailKey(row.email) === email && foldName(row.lastName) === foldName(student.lastName)) ||
-    DESK_SUBSCRIBERS.find((row) => phone && phoneKey(row.phone) === phone && foldName(row.lastName) === foldName(student.lastName)) ||
-    undefined
-  )
+  if (email && emailKey(row.email) === email) return true
+  if (phone && phone.length >= 10 && phoneKey(row.phone) === phone) return true
+  return false
+}
+
+export function matchDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
+  return DESK_SUBSCRIBERS.find((row) => samePerson(student, row))
 }
 
 export function isDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
@@ -123,26 +134,15 @@ export function isDeskSubscriber(student: Pick<Student, "firstName" | "lastName"
 }
 
 function findStudentForRow(row: DeskSubscriberRow, students: Student[], taken: Set<string>) {
-  const names = rowNames(row)
-  const email = emailKey(row.email)
-  const phone = phoneKey(row.phone)
   const unused = students.filter((student) => !taken.has(student.id))
-  const byName = unused.find((student) => studentNames(student).some((name) => names.includes(name)))
-  if (byName) return byName
+  const exact = unused.find((student) => samePerson(student, row))
+  if (exact) return exact
   const named = matchStudentByName(`${row.firstName} ${row.lastName}`, unused)
-  if (named) return named
+  if (named && sameFirstName(named, row)) return named
   if (row.nickname) {
     const nick = matchStudentByName(`${row.nickname} ${row.lastName}`, unused)
-    if (nick) return nick
+    if (nick && sameFirstName(nick, row)) return nick
   }
-  const byEmailLast = unused.find(
-    (student) => email && emailKey(student.email) === email && foldName(student.lastName) === foldName(row.lastName),
-  )
-  if (byEmailLast) return byEmailLast
-  const byPhoneLast = unused.find(
-    (student) => phone && phoneKey(student.phone) === phone && foldName(student.lastName) === foldName(row.lastName),
-  )
-  if (byPhoneLast) return byPhoneLast
   return undefined
 }
 

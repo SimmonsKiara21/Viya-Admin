@@ -111,3 +111,16 @@ export function subscriberIsOverdue(student: Student, payments: PaymentRecord[] 
   if (student.subscriptionStatus === "paused" || student.subscriptionStatus === "cancelled") return false
   return Boolean(subscriberBilling(student, payments).overdueSince)
 }
+
+export type SquareSubStanding = "current" | "overdue" | "interested" | "paused" | "cancelled" | "unknown"
+
+export function squareSubscriberStanding(student: Student, payments: PaymentRecord[] = []): SquareSubStanding {
+  if (student.subscriptionStatus === "paused") return "paused"
+  if (student.subscriptionStatus === "cancelled") return "cancelled"
+  const bill = subscriberBilling(student, payments)
+  if (bill.overdueSince) return "overdue"
+  if (bill.lastPaidDate || bill.nextDue) return "current"
+  if (student.subscriptionStatus === "interested") return "interested"
+  if (student.subscriptionStatus === "active") return "unknown"
+  return "unknown"
+}

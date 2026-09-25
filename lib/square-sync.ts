@@ -237,8 +237,12 @@ function refreshStudentsFromPayments(
     markMissedPaymentOverdue(student, rows)
     if (isDeskSubscriber(student) && !student.deskLocks?.subscription) {
       const bill = subscriberBilling(student, rows)
-      if ((bill.lastPaidDate || bill.nextDue || bill.overdueSince) && (student.subscriptionStatus === "none" || student.subscriptionStatus === "interested")) {
+      const hasSquare = Boolean(bill.lastPaidDate || bill.nextDue || bill.overdueSince)
+      if (hasSquare && (student.subscriptionStatus === "none" || student.subscriptionStatus === "interested")) {
         student.subscriptionStatus = "active"
+      }
+      if (hasSquare && !student.deskLocks?.status && !PROTECTED_STATUS.has(student.enrollmentStatus)) {
+        student.enrollmentStatus = bill.overdueSince ? "overdue" : "current"
       }
     }
   }

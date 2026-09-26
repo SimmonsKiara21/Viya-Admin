@@ -76,12 +76,13 @@ export function StaffNotesEditor({ student }: { student: Student }) {
         <Button
           type="button"
           size="sm"
-          onClick={() => {
+          onClick={async () => {
             commitToStore()
-            const ok = saveDesk()
+            const ok = await saveDesk()
             setJustSaved(true)
             window.setTimeout(() => setJustSaved(false), 2500)
-            if (ok) toast.success("Notes saved on this desk")
+            if (ok.shared) toast.success("Notes saved for every desk")
+            else if (ok.local) toast.success("Notes saved on this computer")
             else toast.error("Could not save notes in this browser")
           }}
         >

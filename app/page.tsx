@@ -24,7 +24,7 @@ function sortByName(list: Student[]) {
 }
 
 export default function HomePage() {
-  const { students, payments, resetRoster } = useStore()
+  const { students, payments, resetRoster, sharedSavedAt } = useStore()
   const [addOpen, setAddOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
 
@@ -49,7 +49,11 @@ export default function HomePage() {
       <PageHeader
         eyebrow="ViyaAdmin.com"
         title="Front desk"
-        description="A snapshot of the floor. Open a tab for the list — Alerts holds overdue, collections, and wrapping up."
+        description={
+          sharedSavedAt
+            ? "A snapshot of the floor. This list is the shared desk phones and other computers load."
+            : "A snapshot of the floor. Click Save updates on the computer that already looks right so phones stop showing the old 35 / 17 / 8 counts."
+        }
         actions={
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="size-4" />

@@ -15,6 +15,8 @@ Open [http://localhost:43147](http://localhost:43147).
 
 The live desk is **https://www.viyaadmin.com** (Vercel). The bare domain `viyaadmin.com` currently points at a different Bluehost WordPress page — phones should use the `www` address until that DNS is pointed at Vercel.
 
+**Phones and other computers** load the shared desk snapshot. On the computer that already has the correct Talent / Overdue / Collections counts, click **Save updates**. That writes `data/desk-shared.json` on GitHub so every device picks up the same list. Vercel needs `GITHUB_STORE_TOKEN` (a GitHub classic PAT with `repo`) for that save to publish.
+
 Photos, Jotform, and Square sync in the background. Enrollment is already on the website and is not re-pulled from Google. Uploaded photos are compressed and stored separately from the main desk save. Season 1–5 photoshoot folders are matched onto the roster by name; those portraits live in `public/photos` so they load on the desk without a Drive login. Only people already on the enrollment list get a portrait.
 
 ```bash

@@ -11,12 +11,13 @@ export function SaveDeskButton() {
   const { saveDesk, lastSavedAt, ready } = useStore()
 
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
+    const onKey = async (event: KeyboardEvent) => {
       if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "s") return
       if (event.defaultPrevented) return
       event.preventDefault()
-      const ok = saveDesk()
-      if (ok) toast.success("Updates saved on this desk")
+      const ok = await saveDesk()
+      if (ok.shared) toast.success("Saved for this computer, phones, and other desks")
+      else if (ok.local) toast.error("Saved on this computer only. Phones still have the old list.")
       else toast.error("Could not save in this browser")
     }
     window.addEventListener("keydown", onKey)
@@ -35,9 +36,10 @@ export function SaveDeskButton() {
         size="sm"
         variant="outline"
         disabled={!ready}
-        onClick={() => {
-          const ok = saveDesk()
-          if (ok) toast.success("Updates saved on this desk")
+        onClick={async () => {
+          const ok = await saveDesk()
+          if (ok.shared) toast.success("Saved for this computer, phones, and other desks")
+          else if (ok.local) toast.error("Saved on this computer only. Phones still have the old list.")
           else toast.error("Could not save in this browser")
         }}
       >

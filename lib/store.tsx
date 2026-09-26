@@ -39,6 +39,7 @@ import {
   type JotformCheckIn,
 } from "./jotform"
 import {
+  DESK_PASSWORD,
   DROPPED_ROSTER_IDS,
   DROPPED_ROSTER_NAMES,
   ENROLLMENT_FREEZE_ID,
@@ -69,6 +70,7 @@ import { applyDrivePhotos } from "./photos-overlay"
 import { foldName } from "./match-name"
 import { normalizeCalendarEvent } from "./calendar-events"
 import { applyDeskSubscriberRoster, SUBSCRIBER_ROSTER_ID } from "./desk-subscribers"
+import { shouldUseSharedSnapshot, type DeskSnapshot } from "./desk-sync"
 
 const DROPPED_IDS = new Set(DROPPED_ROSTER_IDS)
 const DROPPED_NAMES = new Set(DROPPED_ROSTER_NAMES)
@@ -451,11 +453,12 @@ function cloneDesk(data: AppData): AppData {
 type StoreContextValue = AppData & {
   ready: boolean
   lastSavedAt: string
+  sharedSavedAt: string
   canUndo: boolean
   canRedo: boolean
   groups: NotifyGroup[]
   customGroups: NotifyGroup[]
-  saveDesk: () => boolean
+  saveDesk: () => Promise<{ local: boolean; shared: boolean }>
   undoDesk: () => boolean
   redoDesk: () => boolean
   updateStudent: (id: string, patch: Partial<Student>) => void
@@ -512,6 +515,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(cloneSeed)
   const [ready, setReady] = useState(false)
   const [lastSavedAt, setLastSavedAt] = useState("")
+  const [sharedSavedAt, setSharedSavedAt] = useState("")
   const [jotform, setJotform] = useState<JotformMeta>(EMPTY_JOTFORM)
   const [square, setSquare] = useState<SyncContextValue["square"]>({
     fetchedAt: "",
@@ -586,6 +590,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    if (!ready) return
+    let cancelled = false
+    async function pullShared() {
+      try {
+        const res = await fetch("/api/desk", { cache: "no-store" })
+        const shared = (await res.json()) as DeskSnapshot
+        if (cancelled) return
+        const localAt = localStorage.getItem(SAVED_AT_KEY) || ""
+        if (!shouldUseSharedSnapshot(shared, localAt) || !shared.data) return
+        const parsed = normalizeData(shared.data)
+        if (!parsed) return
+        const next = withPhotos(parsed)
+        dataRef.current = next
+        setData(next)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(next)))
+        if (shared.savedAt) {
+          localStorage.setItem(SAVED_AT_KEY, shared.savedAt)
+          setLastSavedAt(shared.savedAt)
+          setSharedSavedAt(shared.savedAt)
+        }
+      } catch {
+        /* keep this browser's desk */
+      }
+    }
+    pullShared()
+    const timer = window.setInterval(pullShared, 60_000)
+    const onFocus = () => pullShared()
+    window.addEventListener("focus", onFocus)
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      window.removeEventListener("focus", onFocus)
+    }
+  }, [ready])
+
   const persistNow = useCallback((snapshot?: AppData) => {
     const next = snapshot ?? dataRef.current
     window.clearTimeout(persistTimer.current)
@@ -595,16 +635,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const at = new Date().toISOString()
       localStorage.setItem(SAVED_AT_KEY, at)
       setLastSavedAt(at)
-      return true
+      return at
+    } catch {
+      return ""
+    }
+  }, [])
+
+  const publishShared = useCallback(async (snapshot?: AppData, savedAt?: string) => {
+    const next = snapshot ?? dataRef.current
+    const at = savedAt || localStorage.getItem(SAVED_AT_KEY) || new Date().toISOString()
+    try {
+      const res = await fetch("/api/desk", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "staff",
+          savedAt: at,
+          password: DESK_PASSWORD,
+          data: persistable(next),
+        }),
+      })
+      const payload = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null
+      const ok = Boolean(res.ok && payload?.ok)
+      if (ok) setSharedSavedAt(at)
+      return ok
     } catch {
       return false
     }
   }, [])
 
-  const saveDesk = useCallback(() => {
+  const saveDesk = useCallback(async () => {
     window.dispatchEvent(new Event(DESK_SAVE_EVENT))
-    return persistNow()
-  }, [persistNow])
+    const at = persistNow()
+    if (!at) return { local: false, shared: false }
+    const shared = await publishShared(undefined, at)
+    return { local: true, shared }
+  }, [persistNow, publishShared])
 
   useEffect(() => {
     if (!ready) return
@@ -638,9 +704,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const timer = window.setInterval(() => {
       window.dispatchEvent(new Event(DESK_SAVE_EVENT))
       persistNow()
+      void publishShared()
     }, AUTO_SAVE_MS)
     return () => window.clearInterval(timer)
-  }, [ready, persistNow])
+  }, [ready, persistNow, publishShared])
 
   useEffect(() => {
     if (!ready) return
@@ -891,6 +958,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       customGroups,
       ready,
       lastSavedAt,
+      sharedSavedAt,
       canUndo,
       canRedo,
       saveDesk,
@@ -1187,7 +1255,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setLastSavedAt("")
       },
     }
-  }, [data, mutate, ready, groups, customGroups, lastSavedAt, saveDesk, canUndo, canRedo, undoDesk, redoDesk])
+  }, [data, mutate, ready, groups, customGroups, lastSavedAt, sharedSavedAt, saveDesk, canUndo, canRedo, undoDesk, redoDesk])
 
   const syncValue = useMemo<SyncContextValue>(
     () => ({ jotform, square, enrollment }),

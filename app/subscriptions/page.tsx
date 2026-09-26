@@ -62,7 +62,7 @@ function planIdForStudent(student: Student, payments: PaymentRecord[]) {
 export default function SubscriptionsPage() {
   const { students, payments } = useStore()
   const [query, setQuery] = useState("")
-  const [filter, setFilter] = useState<SubscriptionStatus | "all">("active")
+  const [filter, setFilter] = useState<SubscriptionStatus | "all" | "overdue">("active")
   const [sort, setSort] = useState<RosterSort>("az")
 
   const list = useMemo(() => {
@@ -70,10 +70,15 @@ export default function SubscriptionsPage() {
       if (!isSubscriberStudent(s)) return false
       if (!matchesQuery(s, query)) return false
       if (filter === "all") return true
+      const standing = squareSubscriberStanding(s, payments)
+      if (filter === "overdue") return standing === "overdue" || s.enrollmentStatus === "overdue"
+      if (filter === "active") {
+        return s.subscriptionStatus === "active" && standing !== "overdue" && s.enrollmentStatus !== "overdue"
+      }
       return s.subscriptionStatus === filter
     })
     return sortStudents(base, sort)
-  }, [students, query, filter, sort])
+  }, [students, payments, query, filter, sort])
 
   const byPlan = useMemo(() => {
     const groups: Record<string, Student[]> = {
@@ -131,9 +136,9 @@ export default function SubscriptionsPage() {
           className="h-11 max-w-xl rounded-full px-4"
         />
         <FilterGroup label="Status">
-          {(["all", "active", "interested", "paused", "cancelled"] as const).map((s) => (
+          {(["all", "active", "overdue", "interested", "paused", "cancelled"] as const).map((s) => (
             <FilterChip key={s} active={filter === s} onClick={() => setFilter(s)}>
-              {s === "all" ? "All with a sub" : SUB_LABELS[s]}
+              {s === "all" ? "All with a sub" : s === "overdue" ? "Overdue" : SUB_LABELS[s]}
             </FilterChip>
           ))}
         </FilterGroup>

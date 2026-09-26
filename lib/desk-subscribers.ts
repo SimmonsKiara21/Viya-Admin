@@ -2,7 +2,7 @@ import { foldName, matchStudentByName } from "./match-name"
 import { academyDateISO, newId } from "./format"
 import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-25-scarlett-oct1"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-26-active-filter"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -253,6 +253,10 @@ function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
     contactCategory: "subscriber",
     labels,
     removedLabels: removed,
+    deskLocks:
+      !student.deskLocks?.subscription && (row.status === "interested" || row.status === "paused")
+        ? { ...student.deskLocks, subscription: true }
+        : student.deskLocks,
   }
 }
 

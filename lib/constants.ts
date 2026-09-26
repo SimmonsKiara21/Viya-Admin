@@ -13,7 +13,7 @@ import type {
 export const ACADEMY_NAME = "Viya Academy"
 export const SITE_NAME = "ViyaAdmin.com"
 /** Bump this when we need phones and other browsers to drop a stale desk cache. */
-export const DESK_BUILD = "2026-09-26g"
+export const DESK_BUILD = "2026-09-26h"
 export const ACADEMY_PHONE = "(602) 342-2902"
 export const ACADEMY_EMAIL = "viyatalent@gmail.com"
 export const ACADEMY_ADDRESS = "2141 East Camelback Rd #222, Phoenix, AZ 85016"

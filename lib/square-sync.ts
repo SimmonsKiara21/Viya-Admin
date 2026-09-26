@@ -252,17 +252,35 @@ const PROTECTED_STATUS = new Set(["collections", "cancelling", "paused", "contac
 
 /** Unpaid Square/desk rows on or before today — including 09/17–09/19 — make the student overdue. */
 export function paymentIsMissed(payment: PaymentRecord, today = todayISO()) {
-  if (payment.status === "paid") return false
+  if (payment.status === "paid" || payment.status === "scheduled") return false
   if (payment.source === "workbook") return false
   const due = (payment.dueDate || "").slice(0, 10)
   return Boolean(due) && due <= today
+}
+
+function daysPastDue(dueDate: string, today: string) {
+  const due = (dueDate || "").slice(0, 10)
+  if (!due || due > today) return 0
+  const a = new Date(`${due}T00:00:00Z`).getTime()
+  const b = new Date(`${today}T00:00:00Z`).getTime()
+  return Math.floor((b - a) / 86_400_000)
 }
 
 export function markMissedPaymentOverdue(student: Student, payments: PaymentRecord[], today = todayISO()) {
   if (student.program === "prospect" || student.enrollmentStatus === "contact") return student
   if (PROTECTED_STATUS.has(student.enrollmentStatus)) return student
   if (student.deskLocks?.status) return student
-  const rows = payments.filter((p) => p.studentId === student.id && paymentIsMissed(p, today))
+  const rows = payments.filter((p) => {
+    if (!paymentIsMissed(p, today)) return false
+    // The current Friday invoice should not dump a current student onto Overdue overnight.
+    if (
+      (student.enrollmentStatus === "current" || student.enrollmentStatus === "pif") &&
+      daysPastDue(p.dueDate, today) < 2
+    ) {
+      return false
+    }
+    return true
+  })
   if (!rows.length) return student
   const subscriber = student.program === "subscriber" || student.paymentPlan === "subscription"
   if (subscriber) {

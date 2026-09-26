@@ -1,0 +1,27 @@
+name: Persist shared desk
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull the live desk drop
+        run: python3 scripts/persist-desk.py
+      - name: Commit if the shared desk changed
+        run: |
+          git config user.name "Viya Desk"
+          git config user.email "desk@viyaadmin.com"
+          git add data/desk-shared.json
+          if git diff --cached --quiet; then
+            echo "No desk change"
+            exit 0
+          fi
+          git commit -m "Save shared desk from the live drop"
+          git push

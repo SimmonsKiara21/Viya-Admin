@@ -8,7 +8,9 @@ import {
   parseDeskRequest,
   pickNewer,
   readGithubSnapshot,
+  readLiveDrop,
   writeGithubSnapshot,
+  writeLiveDrop,
 } from "@/lib/desk-github"
 import { DESK_SNAPSHOT_FILE, emptyDeskSnapshot, type DeskSnapshot } from "@/lib/desk-sync"
 
@@ -33,7 +35,8 @@ async function readLocalSnapshot(): Promise<DeskSnapshot> {
 export async function GET() {
   const local = await readLocalSnapshot()
   const remote = await readGithubSnapshot()
-  const snapshot = pickNewer(local, remote)
+  const live = await readLiveDrop()
+  const snapshot = pickNewer(pickNewer(local, remote), live)
   return NextResponse.json(
     {
       source: snapshot.source,
@@ -42,6 +45,7 @@ export async function GET() {
       data: snapshot.data,
       shared: snapshot.source === "staff",
       github: Boolean(remote?.data),
+      live: Boolean(live?.data),
     },
     { headers: noStore },
   )
@@ -62,8 +66,15 @@ export async function PUT(request: Request) {
     /* Vercel filesystem is read-only — GitHub is the real store */
   }
   const github = await writeGithubSnapshot(snapshot)
-  if (!github.ok) {
-    return NextResponse.json({ ok: false, error: github.error, savedAt: snapshot.savedAt }, { status: 503, headers: noStore })
+  const live = await writeLiveDrop(snapshot)
+  if (!github.ok && !live.ok) {
+    return NextResponse.json(
+      { ok: false, error: github.error || live.error, savedAt: snapshot.savedAt },
+      { status: 503, headers: noStore },
+    )
   }
-  return NextResponse.json({ ok: true, savedAt: snapshot.savedAt, shared: true }, { headers: noStore })
+  return NextResponse.json(
+    { ok: true, savedAt: snapshot.savedAt, shared: true, github: github.ok, live: live.ok },
+    { headers: noStore },
+  )
 }

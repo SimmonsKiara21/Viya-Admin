@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { useStore } from "@/lib/store"
 import { calendarRuns, datesWithRuns, monthGrid, runsOnDate, shiftMonth } from "@/lib/calendar"
 import { datesWithEvents, eventsOnDate, reminderEventsOnDate } from "@/lib/calendar-events"
-import { formatDate, formatMoney, fullName, todayISO } from "@/lib/format"
+import { Input } from "@/components/ui/input"
+import { formatDate, formatMoney, fullName, matchesQuery, todayISO } from "@/lib/format"
 import type { CalendarEvent } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -20,6 +21,7 @@ export default function CalendarPage() {
   const today = todayISO()
   const [cursor, setCursor] = useState(today.slice(0, 7) + "-01")
   const [selected, setSelected] = useState(today)
+  const [query, setQuery] = useState("")
   const [editorOpen, setEditorOpen] = useState(false)
   const [editing, setEditing] = useState<CalendarEvent | null>(null)
   const grid = monthGrid(cursor)
@@ -33,7 +35,11 @@ export default function CalendarPage() {
     () => new Set(calendarEvents.filter((event) => event.remind).map((event) => event.date)),
     [calendarEvents],
   )
-  const dayRuns = runsOnDate(runs, selected)
+  const dayRuns = runsOnDate(runs, selected).filter((run) => matchesQuery(run.student, query))
+  const foundRuns = useMemo(
+    () => (query.trim() ? runs.filter((run) => matchesQuery(run.student, query)) : []),
+    [query, runs],
+  )
   const dayEvents = eventsOnDate(calendarEvents, selected)
   const todayReminders = reminderEventsOnDate(calendarEvents, today)
   const monthLabel = new Intl.DateTimeFormat("en-US", {
@@ -65,6 +71,15 @@ export default function CalendarPage() {
           </Button>
         }
       />
+
+      <div className="mb-4">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search this tab by name, ID, phone, or email"
+          className="h-11 max-w-xl rounded-full px-4"
+        />
+      </div>
 
       {todayReminders.length ? (
         <Panel className="mb-6 border-primary/40 bg-primary/8">
@@ -189,9 +204,26 @@ export default function CalendarPage() {
             </ul>
           ) : null}
 
-          {dayRuns.length === 0 && dayEvents.length === 0 ? (
+          {query.trim() && foundRuns.length ? (
+            <ul className="mb-4 divide-y divide-border">
+              {foundRuns.map((run) => (
+                <li key={`${run.student.id}-${run.date}-${run.label}`} className="py-2.5">
+                  <button type="button" className="text-left" onClick={() => setSelected(run.date)}>
+                    <span className="font-medium">{fullName(run.student)}</span>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(run.date)}
+                      {run.amount != null ? ` · ${formatMoney(run.amount)}` : ""}
+                      {` · ${run.status}`}
+                    </p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : dayRuns.length === 0 && dayEvents.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Create a date, or add a payment date on a talent or subscriber file.
+              {query.trim()
+                ? "Nobody on this calendar matches that search."
+                : "Create a date, or add a payment date on a talent or subscriber file."}
             </p>
           ) : dayRuns.length ? (
             <ul className="divide-y divide-border">

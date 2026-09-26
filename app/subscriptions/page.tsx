@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { FilterChip, FilterGroup } from "@/components/filter-chip"
+import { Input } from "@/components/ui/input"
 import { StudentRow } from "@/components/student-row"
 import { SubscriberQuickEdit } from "@/components/subscriber-edit"
 import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
@@ -13,7 +14,7 @@ import {
   SUBSCRIPTION_OG_ITEM,
   SUBSCRIPTION_PLUS_ITEM,
 } from "@/lib/square"
-import { formatMoney } from "@/lib/format"
+import { formatMoney, matchesQuery } from "@/lib/format"
 import { isSubscriberStudent } from "@/lib/alerts"
 import { squareSubscriberStanding } from "@/lib/subscriber-billing"
 import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
@@ -60,20 +61,19 @@ function planIdForStudent(student: Student, payments: PaymentRecord[]) {
 
 export default function SubscriptionsPage() {
   const { students, payments } = useStore()
-  const [filter, setFilter] = useState<SubscriptionStatus | "all">("all")
+  const [query, setQuery] = useState("")
+  const [filter, setFilter] = useState<SubscriptionStatus | "all">("active")
   const [sort, setSort] = useState<RosterSort>("az")
 
   const list = useMemo(() => {
     const base = students.filter((s) => {
       if (!isSubscriberStudent(s)) return false
+      if (!matchesQuery(s, query)) return false
       if (filter === "all") return true
-      if (filter === "active") {
-        return s.subscriptionStatus !== "paused" && s.subscriptionStatus !== "cancelled"
-      }
       return s.subscriptionStatus === filter
     })
     return sortStudents(base, sort)
-  }, [students, filter, sort])
+  }, [students, query, filter, sort])
 
   const byPlan = useMemo(() => {
     const groups: Record<string, Student[]> = {
@@ -124,6 +124,12 @@ export default function SubscriptionsPage() {
       </div>
 
       <div className="mb-4 flex flex-col gap-3">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search this tab by name, ID, phone, or email"
+          className="h-11 max-w-xl rounded-full px-4"
+        />
         <FilterGroup label="Status">
           {(["all", "active", "interested", "paused", "cancelled"] as const).map((s) => (
             <FilterChip key={s} active={filter === s} onClick={() => setFilter(s)}>
@@ -143,7 +149,7 @@ export default function SubscriptionsPage() {
       {list.length === 0 ? (
         <EmptyState
           title="Nobody in this subscription view"
-          description="Mark Interested on a profile to add them here."
+          description="Clear the search, switch status, or set someone to Subscriber on their profile."
         />
       ) : (
         <div className="grid gap-6">

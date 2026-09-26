@@ -129,8 +129,82 @@ export function matchDeskSubscriber(student: Pick<Student, "firstName" | "lastNa
   return DESK_SUBSCRIBERS.find((row) => samePerson(student, row))
 }
 
-export function isDeskSubscriber(student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone">) {
-  return Boolean(matchDeskSubscriber(student))
+export function isDeskSubscriber(
+  student: Pick<Student, "firstName" | "lastName" | "nickname" | "email" | "phone"> &
+    Partial<Pick<Student, "program" | "paymentPlan" | "subscriptionStatus" | "deskLocks">>,
+) {
+  if (student.subscriptionStatus === "cancelled") return false
+  if (matchDeskSubscriber(student)) return true
+  return (
+    Boolean(student.deskLocks?.subscription) &&
+    (student.program === "subscriber" || student.paymentPlan === "subscription") &&
+    student.subscriptionStatus !== "none"
+  )
+}
+
+export function addToSubscribers(
+  student: Student,
+  status: SubscriptionStatus = student.subscriptionStatus === "none" || student.subscriptionStatus === "cancelled"
+    ? "active"
+    : student.subscriptionStatus,
+): Partial<Student> {
+  const nextStatus = status === "none" || status === "cancelled" ? "active" : status
+  const labels = [
+    ...new Set([
+      ...(student.labels || []).filter((label) => !/current student/i.test(label)),
+      "Active Subscribers",
+    ]),
+  ]
+  const removed = [...new Set([...(student.removedLabels || []), "Current Student"])].filter(
+    (label) => !/active subscriber/i.test(label),
+  )
+  const current = nextStatus === "active"
+  const fromContact = student.enrollmentStatus === "contact" || student.enrollmentStatus === "pending"
+  return {
+    program: "subscriber",
+    track: "none",
+    paymentPlan: "subscription",
+    enrollmentStatus: current || fromContact ? "current" : student.enrollmentStatus,
+    startDate: student.startDate || academyDateISO(),
+    nextPaymentDate: student.nextPaymentDate || nextFirstOfMonth(),
+    nextPaymentAmount: student.nextPaymentAmount ?? 51.49,
+    overdueSince: current ? "" : student.overdueSince,
+    subscriptionStatus: nextStatus,
+    contactCategory: "subscriber",
+    labels,
+    removedLabels: removed,
+    deskLocks: { ...student.deskLocks, subscription: true, status: true, overdueSince: current ? false : student.deskLocks?.overdueSince },
+  }
+}
+
+export function moveStudentToTalent(student: Student): Partial<Student> {
+  const labels = (student.labels || []).filter((label) => !/active subscriber/i.test(label))
+  if (!labels.some((label) => /current student/i.test(label))) labels.push("Current Student")
+  return {
+    program: "academy",
+    track: student.track === "none" ? "academy" : student.track,
+    paymentPlan: student.paymentPlan === "subscription" || student.paymentPlan === "none" ? "pp" : student.paymentPlan,
+    enrollmentStatus: student.enrollmentStatus === "contact" ? "current" : student.enrollmentStatus,
+    subscriptionStatus: "none",
+    contactCategory: "current-student",
+    labels,
+    removedLabels: [...new Set([...(student.removedLabels || []), "Active Subscribers"])],
+    deskLocks: { ...student.deskLocks, subscription: true, status: true },
+  }
+}
+
+export function deskListKind(student: Student): "talent" | "subscriber" | "contact" {
+  if (student.program === "subscriber" || student.paymentPlan === "subscription") {
+    return student.subscriptionStatus === "cancelled" ? "contact" : "subscriber"
+  }
+  if (student.program === "prospect" || student.enrollmentStatus === "contact") return "contact"
+  return "talent"
+}
+
+export function setDeskList(student: Student, list: "talent" | "subscriber" | "contact"): Partial<Student> {
+  if (list === "subscriber") return addToSubscribers(student)
+  if (list === "contact") return moveStudentToContact(student)
+  return moveStudentToTalent(student)
 }
 
 function findStudentForRow(row: DeskSubscriberRow, students: Student[], taken: Set<string>) {
@@ -331,7 +405,9 @@ export function applyDeskSubscriberRoster(students: Student[]) {
       const index = next.findIndex((student) => student.id === existing.id)
       if (
         existing.deskLocks?.subscription &&
-        (existing.subscriptionStatus === "cancelled" || existing.enrollmentStatus === "contact")
+        (existing.subscriptionStatus === "cancelled" ||
+          existing.enrollmentStatus === "contact" ||
+          (existing.program !== "subscriber" && existing.paymentPlan !== "subscription"))
       ) {
         taken.add(existing.id)
         continue
@@ -346,9 +422,15 @@ export function applyDeskSubscriberRoster(students: Student[]) {
   }
 
   const merged = applyNamedDeskFixes(
-    [...created, ...next].map((student) =>
-      taken.has(student.id) || !looksLikeOldSubscriber(student) ? student : demoteExtraSubscriber(student),
-    ),
+    [...created, ...next].map((student) => {
+      if (taken.has(student.id)) return student
+      const staffAdded =
+        Boolean(student.deskLocks?.subscription) &&
+        (student.program === "subscriber" || student.paymentPlan === "subscription") &&
+        student.subscriptionStatus !== "cancelled"
+      if (staffAdded || !looksLikeOldSubscriber(student)) return student
+      return demoteExtraSubscriber(student)
+    }),
   )
   return { students: merged, added: created.length, kept: taken.size - created.length }
 }

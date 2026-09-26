@@ -122,7 +122,7 @@ export default function AttendancePage() {
                 setQuery(e.target.value)
                 setPicked(null)
               }}
-              placeholder="Name, ID, or phone"
+              placeholder="Search this tab by name, ID, phone, or email"
               className="h-14 rounded-2xl pl-11 text-lg"
               autoFocus
             />

@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Field, NativeSelect } from "@/components/ui-helpers"
 import { DESK_SUB_STATUSES, SUB_LABELS } from "@/lib/constants"
-import { markSubscriberCurrent, removeFromSubscribers } from "@/lib/desk-subscribers"
+import { addToSubscribers, markSubscriberCurrent, removeFromSubscribers } from "@/lib/desk-subscribers"
 import { overdueSincePatch } from "@/lib/alerts"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
@@ -55,17 +55,20 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
     const value = amount.trim() === "" ? null : Number(amount)
     const nextAmount = value != null && Number.isFinite(value) ? value : null
     const current = status === "active" && !since
+    const added = addToSubscribers(student, status)
     updateStudent(student.id, {
-      ...(current ? markSubscriberCurrent(student) : {}),
+      ...added,
+      ...(current ? markSubscriberCurrent({ ...student, ...added } as Student) : {}),
       subscriptionStatus: status,
       nextPaymentDate: due,
       nextPaymentAmount: nextAmount,
       ...overdueSincePatch(student, since),
       deskLocks: {
         ...student.deskLocks,
+        ...added.deskLocks,
         subscription: true,
         overdueSince: Boolean(since),
-        status: current || student.deskLocks?.status,
+        status: current || Boolean(added.deskLocks?.status) || student.deskLocks?.status,
       },
     })
     if (paid) {

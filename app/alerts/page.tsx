@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import { Input } from "@/components/ui/input"
 import { PageHeader, Panel } from "@/components/ui-helpers"
 import { StudentRow } from "@/components/student-row"
 import { useStore } from "@/lib/store"
@@ -13,6 +14,7 @@ import {
   isPendingStudent,
   isSubscriberOverdue,
 } from "@/lib/alerts"
+import { matchesQuery } from "@/lib/format"
 import { subscriberIsOverdue } from "@/lib/subscriber-billing"
 import { compareByFirstName } from "@/lib/roster-sort"
 import { cn } from "@/lib/utils"
@@ -20,6 +22,7 @@ import type { Student } from "@/lib/types"
 
 export default function AlertsPage() {
   const { students, payments } = useStore()
+  const [query, setQuery] = useState("")
 
   const academyOverdue = useMemo(
     () =>
@@ -56,6 +59,10 @@ export default function AlertsPage() {
     [students],
   )
 
+  function onTab(list: Student[]) {
+    return list.filter((student) => matchesQuery(student, query))
+  }
+
   return (
     <div>
       <PageHeader
@@ -64,55 +71,57 @@ export default function AlertsPage() {
         description="Overdue is red. Collections is amber. Subscribers stay orange. Payment dates from a talent file show here when they are late."
       />
 
+      <div className="mb-4">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search this tab by name, ID, phone, or email"
+          className="h-11 max-w-xl rounded-full px-4"
+        />
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <AlertList
           title="Overdue"
-          count={academyOverdue.length}
           empty="Nobody is overdue."
           tone="overdue"
-          students={academyOverdue}
+          students={onTab(academyOverdue)}
         />
         <AlertList
           title="Sub overdue"
-          count={subscriberOverdue.length}
           empty="No subscribers are overdue."
           tone="subscriberOverdue"
-          students={subscriberOverdue}
+          students={onTab(subscriberOverdue)}
         />
         <AlertList
           title="Collections"
-          count={collections.length}
           empty="Nobody is in collections or cancelling."
           tone="collections"
-          students={collections}
+          students={onTab(collections)}
         />
         <AlertList
           title="Paused"
-          count={paused.length}
           empty="Nobody is paused."
           tone="paused"
-          students={paused}
+          students={onTab(paused)}
         />
         <AlertList
           title="Pending"
-          count={pending.length}
           empty="No pending starts."
           tone="pending"
-          students={pending}
+          students={onTab(pending)}
         />
         <AlertList
           title="Wrapping up"
-          count={finishing.length}
           empty="Nobody has fewer than 3 payments left."
           tone="finishing"
-          students={finishing}
+          students={onTab(finishing)}
         />
         <AlertList
           title="Paid in full"
-          count={pif.length}
           empty="Nobody is paid in full."
           tone="pif"
-          students={pif}
+          students={onTab(pif)}
         />
       </div>
     </div>
@@ -159,13 +168,11 @@ const TONE = {
 
 function AlertList({
   title,
-  count,
   empty,
   tone,
   students,
 }: {
   title: string
-  count: number
   empty: string
   tone: keyof typeof TONE
   students: Student[]
@@ -175,7 +182,7 @@ function AlertList({
     <Panel className={look.panel}>
       <div className="mb-3 flex items-center justify-between">
         <h2 className={cn("font-heading text-xl leading-tight", look.title)}>{title}</h2>
-        <span className="text-xs text-muted-foreground">{count}</span>
+        <span className="text-xs text-muted-foreground">{students.length}</span>
       </div>
       {students.length === 0 ? (
         <p className="text-sm text-muted-foreground">{empty}</p>

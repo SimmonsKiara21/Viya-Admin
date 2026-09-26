@@ -28,7 +28,15 @@ import { HighlightPicker } from "@/components/highlight-picker"
 import { LabelsEditor } from "@/components/labels-editor"
 import { NewsletterPanel, ProfileCategoryEditor } from "@/components/student-tag-editor"
 import { StudentPaymentsTab } from "@/components/student-payments-tab"
-import { clearStudentTags, markSubscriberCurrent, moveStudentToContact, removeFromSubscribers } from "@/lib/desk-subscribers"
+import {
+  addToSubscribers,
+  clearStudentTags,
+  deskListKind,
+  markSubscriberCurrent,
+  moveStudentToContact,
+  removeFromSubscribers,
+  setDeskList,
+} from "@/lib/desk-subscribers"
 import { countsFor, useStore } from "@/lib/store"
 import {
   formatDate,
@@ -360,6 +368,22 @@ export default function StudentProfilePage() {
             <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
               <Field label="Highlight">
                 <HighlightPicker student={student} />
+              </Field>
+              <Field label="List">
+                <NativeSelect
+                  value={deskListKind(student)}
+                  onChange={(e) => {
+                    const list = e.target.value as "talent" | "subscriber" | "contact"
+                    updateStudent(student.id, setDeskList(student, list))
+                    if (list === "subscriber") toast.success(`${student.firstName} is on Subscriptions.`)
+                    else if (list === "contact") toast.success(`${student.firstName} is in Contacts.`)
+                    else toast.success(`${student.firstName} is on Talent.`)
+                  }}
+                >
+                  <option value="talent">Talent</option>
+                  <option value="subscriber">Subscriber</option>
+                  <option value="contact">Contact</option>
+                </NativeSelect>
               </Field>
               <Field label="Status">
                 <NativeSelect
@@ -728,14 +752,14 @@ export default function StudentProfilePage() {
                     toast.success(`${student.firstName} is off Subscriptions and in Contacts.`)
                     return
                   }
-                  if (status === "active") {
-                    updateStudent(student.id, markSubscriberCurrent(student))
-                    return
-                  }
-                  updateStudent(student.id, {
-                    subscriptionStatus: status,
-                    deskLocks: { ...student.deskLocks, subscription: true },
-                  })
+                  const added = addToSubscribers(student, status)
+                  updateStudent(
+                    student.id,
+                    status === "active"
+                      ? { ...added, ...markSubscriberCurrent({ ...student, ...added } as Student) }
+                      : added,
+                  )
+                  toast.success(`${student.firstName} is on Subscriptions.`)
                 }}
               >
                 {student.subscriptionStatus === "none" || student.subscriptionStatus === "cancelled" ? (

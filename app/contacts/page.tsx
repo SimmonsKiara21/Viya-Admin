@@ -160,7 +160,7 @@ export default function ContactsPage() {
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Filter by name, phone, or email"
+          placeholder="Search this tab by name, ID, phone, or email"
           className="h-11 max-w-xl rounded-full px-4"
         />
         <FilterGroup label="List">

@@ -134,7 +134,7 @@ export function enrollmentTagPatch(student: Student, status: EnrollmentStatus): 
 }
 
 export function isActiveSubscriber(
-  student: Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels">,
+  student: Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "deskLocks">,
 ) {
   if (student.subscriptionStatus === "cancelled") return false
   if (student.program !== "subscriber" && student.paymentPlan !== "subscription") return false
@@ -147,7 +147,7 @@ function isCurrentStudentLabel(label: string) {
 
 /** Subscribers are not current students — drop that Google list so they stay on Subscriptions. */
 export function withoutCurrentStudentIfSubscriber<
-  T extends Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory">,
+  T extends Pick<Student, "id" | "firstName" | "lastName" | "nickname" | "email" | "phone" | "program" | "paymentPlan" | "subscriptionStatus" | "labels" | "removedLabels" | "contactCategory" | "deskLocks">,
 >(student: T): T {
   if (!isActiveSubscriber(student)) return student
   const labels = (student.labels || []).filter((label) => !isCurrentStudentLabel(label))

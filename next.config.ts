@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [{ source: "/classes", destination: "/calendar", permanent: false }]
   },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "public, max-age=0, must-revalidate" },
+        ],
+      },
+    ]
+  },
 };
 
 export default nextConfig;

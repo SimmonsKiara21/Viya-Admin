@@ -20,6 +20,7 @@ import { ColorKey } from "@/components/color-key"
 import { lockDesk } from "@/components/desk-gate"
 import { SaveDeskButton } from "@/components/save-desk-button"
 import { UndoRedoButtons } from "@/components/undo-redo-buttons"
+import { DESK_BUILD } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -86,6 +87,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <p className="px-2 text-[11px] leading-relaxed text-sidebar-foreground/65">
           Staff only · Phoenix
+          <br />
+          www.viyaadmin.com · {DESK_BUILD}
         </p>
         <button
           type="button"

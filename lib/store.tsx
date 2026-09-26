@@ -152,8 +152,9 @@ function withoutDroppedStudents(data: AppData): AppData {
   }
 }
 
-const STORAGE_KEY = "viya-academy-store-v9"
+const STORAGE_KEY = "viya-academy-store-v10"
 const LEGACY_KEYS = [
+  "viya-academy-store-v9",
   "viya-academy-store-v8",
   "viya-academy-store-v7",
   "viya-academy-store-v6",
@@ -161,7 +162,7 @@ const LEGACY_KEYS = [
   "viya-academy-store-v4",
 ]
 const PHOTOS_KEY = "viya-academy-photos-v1"
-const SAVED_AT_KEY = "viya-academy-saved-at-v9"
+const SAVED_AT_KEY = "viya-academy-saved-at-v10"
 const ENROLLMENT_FREEZE_KEY = "viya-academy-enrollment-frozen-v1"
 const SUBSCRIBER_ROSTER_KEY = "viya-academy-subscribers-v1"
 export const DESK_SAVE_EVENT = "viya-desk-save"

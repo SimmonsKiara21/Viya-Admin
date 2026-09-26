@@ -2,7 +2,7 @@ import { foldName, matchStudentByName } from "./match-name"
 import { academyDateISO, newId } from "./format"
 import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-26-active-filter"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-26-prod-sync"
 
 export type DeskSubscriberRow = {
   firstName: string

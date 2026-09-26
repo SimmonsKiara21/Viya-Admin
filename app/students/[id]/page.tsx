@@ -72,10 +72,10 @@ import {
 } from "@/lib/constants"
 import {
   catalogItemForStudent,
-  itemForSubscriptionPlan,
-  subscriptionPlanFromItem,
+  resolvedSubscriptionPlan,
   SUBSCRIPTION_ITEM,
   SUBSCRIPTION_PLANS,
+  subscriptionPlanPatch,
 } from "@/lib/square"
 import type {
   ClassType,
@@ -385,6 +385,28 @@ export default function StudentProfilePage() {
                   <option value="contact">Contact</option>
                 </NativeSelect>
               </Field>
+              {deskListKind(student) === "subscriber" ? (
+                <Field label="Sub plan">
+                  <NativeSelect
+                    value={resolvedSubscriptionPlan(student, payments)}
+                    onChange={(e) => {
+                      const plan = e.target.value as Exclude<SubscriptionPlan, "none">
+                      const next = SUBSCRIPTION_PLANS.find((item) => item.id === plan)
+                      updateStudent(student.id, {
+                        ...addToSubscribers(student),
+                        ...subscriptionPlanPatch(student, plan),
+                      })
+                      toast.success(`${student.firstName} moved to ${next?.label || "that plan"}.`)
+                    }}
+                  >
+                    {SUBSCRIPTION_PLANS.map((plan) => (
+                      <option key={plan.id} value={plan.id}>
+                        {plan.label}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </Field>
+              ) : null}
               <Field label="Status">
                 <NativeSelect
                   value={student.enrollmentStatus === "declined" ? "overdue" : student.enrollmentStatus}
@@ -777,19 +799,15 @@ export default function StudentProfilePage() {
             <OverdueSinceField student={student} />
             <Field label="Subscription plan">
               <NativeSelect
-                value={
-                  (student.subscriptionPlan !== "none"
-                    ? student.subscriptionPlan
-                    : subscriptionPlanFromItem(catalogItemForStudent(student, payments))) || "standard"
-                }
+                value={resolvedSubscriptionPlan(student, payments)}
                 onChange={(e) => {
-                  const plan = e.target.value as SubscriptionPlan
-                  const item = itemForSubscriptionPlan(plan)
+                  const plan = e.target.value as Exclude<SubscriptionPlan, "none">
+                  const next = SUBSCRIPTION_PLANS.find((item) => item.id === plan)
                   updateStudent(student.id, {
-                    subscriptionPlan: plan,
-                    nextPaymentAmount: item?.price ?? student.nextPaymentAmount,
-                    deskLocks: { ...student.deskLocks, subscription: true },
+                    ...addToSubscribers(student),
+                    ...subscriptionPlanPatch(student, plan),
                   })
+                  toast.success(`${student.firstName} moved to ${next?.label || "that plan"}.`)
                 }}
               >
                 {SUBSCRIPTION_PLANS.map((plan) => (

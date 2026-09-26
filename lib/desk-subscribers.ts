@@ -170,6 +170,7 @@ export function addToSubscribers(
     nextPaymentAmount: student.nextPaymentAmount ?? 51.49,
     overdueSince: current ? "" : student.overdueSince,
     subscriptionStatus: nextStatus,
+    subscriptionPlan: student.subscriptionPlan === "none" ? "standard" : student.subscriptionPlan,
     contactCategory: "subscriber",
     labels,
     removedLabels: removed,
@@ -248,8 +249,16 @@ function promoteSubscriber(student: Student, row: DeskSubscriberRow): Student {
           : "current",
     startDate: student.startDate || row.startDate,
     subscriptionStatus: student.deskLocks?.subscription ? student.subscriptionStatus : row.status,
-    subscriptionPlan: plan === "none" ? student.subscriptionPlan : plan,
-    nextPaymentAmount: amount ?? student.nextPaymentAmount,
+    subscriptionPlan:
+      student.deskLocks?.subscription && student.subscriptionPlan !== "none"
+        ? student.subscriptionPlan
+        : plan === "none"
+          ? student.subscriptionPlan
+          : plan,
+    nextPaymentAmount:
+      student.deskLocks?.subscription && student.subscriptionPlan !== "none"
+        ? student.nextPaymentAmount
+        : amount ?? student.nextPaymentAmount,
     contactCategory: "subscriber",
     labels,
     removedLabels: removed,
@@ -386,12 +395,13 @@ function applyNamedDeskFixes(students: Student[]) {
       }
     }
     if (student.id === "1147" || name === "scarlett petroff") {
+      const keepPlan = student.deskLocks?.subscription && student.subscriptionPlan !== "none" && student.subscriptionPlan !== "plus"
       return {
         ...student,
         ...markSubscriberCurrent(student),
-        nextPaymentDate: "2026-10-01",
-        nextPaymentAmount: 100,
-        subscriptionPlan: "plus" as const,
+        nextPaymentDate: student.nextPaymentDate || "2026-10-01",
+        nextPaymentAmount: keepPlan ? student.nextPaymentAmount : 100,
+        subscriptionPlan: keepPlan ? student.subscriptionPlan : "plus",
       }
     }
     return student

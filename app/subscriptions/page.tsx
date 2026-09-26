@@ -9,7 +9,7 @@ import { EmptyState, PageHeader, Panel } from "@/components/ui-helpers"
 import { useStore } from "@/lib/store"
 import { SUB_LABELS } from "@/lib/constants"
 import {
-  catalogItemForStudent,
+  planIdForStudent,
   SUBSCRIPTION_ITEM,
   SUBSCRIPTION_OG_ITEM,
   SUBSCRIPTION_PLUS_ITEM,
@@ -17,7 +17,7 @@ import {
 import { formatMoney, matchesQuery } from "@/lib/format"
 import { isSubscriberStudent } from "@/lib/alerts"
 import { squareSubscriberStanding } from "@/lib/subscriber-billing"
-import type { PaymentRecord, Student, SubscriptionStatus } from "@/lib/types"
+import type { Student, SubscriptionStatus } from "@/lib/types"
 import { ROSTER_SORT_LABELS, ROSTER_SORTS, sortStudents, type RosterSort } from "@/lib/roster-sort"
 
 const PLAN_COPY =
@@ -28,36 +28,6 @@ const PLANS = [
   { item: SUBSCRIPTION_OG_ITEM, blurb: "Grandfathered OG rate. Live Square invoices often show $5.14 with tax." },
   { item: SUBSCRIPTION_PLUS_ITEM, blurb: "Square $100 subscription. One person is on this plan." },
 ] as const
-
-function billedAmount(student: Student, payments: PaymentRecord[]) {
-  const item = catalogItemForStudent(student, payments)
-  const bill = payments
-    .filter((p) => p.studentId === student.id && p.itemKind === "subscriber")
-    .sort((a, b) => (b.dueDate || "").localeCompare(a.dueDate || ""))[0]
-  return bill?.amount ?? student.nextPaymentAmount ?? item.price
-}
-
-function isHundredDollarPlan(student: Student, payments: PaymentRecord[]) {
-  const item = catalogItemForStudent(student, payments)
-  if (item.id === SUBSCRIPTION_PLUS_ITEM.id) return true
-  const name = `${student.firstName} ${student.lastName}`.toLowerCase()
-  if (name.includes("scarlett") && name.includes("petroff")) return true
-  if (student.program !== "subscriber") return false
-  const amount = billedAmount(student, payments)
-  return amount != null && amount >= 95 && amount <= 105
-}
-
-function planIdForStudent(student: Student, payments: PaymentRecord[]) {
-  if (student.subscriptionPlan === "plus") return SUBSCRIPTION_PLUS_ITEM.id
-  if (student.subscriptionPlan === "og") return SUBSCRIPTION_OG_ITEM.id
-  if (student.subscriptionPlan === "standard") return SUBSCRIPTION_ITEM.id
-  if (isHundredDollarPlan(student, payments)) return SUBSCRIPTION_PLUS_ITEM.id
-  const item = catalogItemForStudent(student, payments)
-  if (item.id === SUBSCRIPTION_OG_ITEM.id) return SUBSCRIPTION_OG_ITEM.id
-  const amount = billedAmount(student, payments)
-  if (amount != null && amount <= 8) return SUBSCRIPTION_OG_ITEM.id
-  return SUBSCRIPTION_ITEM.id
-}
 
 export default function SubscriptionsPage() {
   const { students, payments } = useStore()

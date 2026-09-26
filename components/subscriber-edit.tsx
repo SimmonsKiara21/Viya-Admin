@@ -19,9 +19,15 @@ import { addToSubscribers, markSubscriberCurrent, removeFromSubscribers } from "
 import { overdueSincePatch } from "@/lib/alerts"
 import { fullName } from "@/lib/format"
 import { subscriberBilling } from "@/lib/subscriber-billing"
-import { SUBSCRIPTION_ITEM } from "@/lib/square"
+import {
+  resolvedSubscriptionPlan,
+  SUBSCRIPTION_ITEM,
+  SUBSCRIPTION_PLANS,
+  subscriptionPlanFromAmount,
+  subscriptionPlanPatch,
+} from "@/lib/square"
 import { useStore } from "@/lib/store"
-import type { Student, SubscriptionStatus } from "@/lib/types"
+import type { Student, SubscriptionPlan, SubscriptionStatus } from "@/lib/types"
 
 const DESK_SUB_PAID = "Desk subscription paid"
 
@@ -30,6 +36,7 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
   const [open, setOpen] = useState(false)
   const bill = subscriberBilling(student, payments)
   const [status, setStatus] = useState<SubscriptionStatus>(student.subscriptionStatus)
+  const [plan, setPlan] = useState<Exclude<SubscriptionPlan, "none">>(resolvedSubscriptionPlan(student, payments))
   const [paid, setPaid] = useState(bill.lastPaidDate)
   const [due, setDue] = useState(bill.nextDue)
   const [since, setSince] = useState(bill.overdueSince)
@@ -38,6 +45,7 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
   function openEditor() {
     const next = subscriberBilling(student, payments)
     setStatus(student.subscriptionStatus)
+    setPlan(resolvedSubscriptionPlan(student, payments))
     setPaid(next.lastPaidDate)
     setDue(next.nextDue)
     setSince(next.overdueSince)
@@ -56,12 +64,14 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
     const nextAmount = value != null && Number.isFinite(value) ? value : null
     const current = status === "active" && !since
     const added = addToSubscribers(student, status)
+    const planPatch = subscriptionPlanPatch({ ...student, ...added } as Student, plan)
     updateStudent(student.id, {
       ...added,
+      ...planPatch,
       ...(current ? markSubscriberCurrent({ ...student, ...added } as Student) : {}),
       subscriptionStatus: status,
       nextPaymentDate: due,
-      nextPaymentAmount: nextAmount,
+      nextPaymentAmount: nextAmount ?? planPatch.nextPaymentAmount,
       ...overdueSincePatch(student, since),
       deskLocks: {
         ...student.deskLocks,
@@ -85,8 +95,8 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
         status: "paid" as const,
         method: "other" as const,
         notes: DESK_SUB_PAID,
-        itemId: SUBSCRIPTION_ITEM.id,
-        itemName: SUBSCRIPTION_ITEM.name,
+        itemId: SUBSCRIPTION_PLANS.find((item) => item.id === plan)?.item.id || SUBSCRIPTION_ITEM.id,
+        itemName: SUBSCRIPTION_PLANS.find((item) => item.id === plan)?.item.name || SUBSCRIPTION_ITEM.name,
         itemDescription: "",
         itemKind: "subscriber" as const,
         source: "manual" as const,
@@ -122,6 +132,23 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-3">
+            <Field label="Plan">
+              <NativeSelect
+                value={plan}
+                onChange={(e) => {
+                  const next = e.target.value as Exclude<SubscriptionPlan, "none">
+                  setPlan(next)
+                  const price = SUBSCRIPTION_PLANS.find((item) => item.id === next)?.item.price
+                  if (price != null) setAmount(String(price))
+                }}
+              >
+                {SUBSCRIPTION_PLANS.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
+              </NativeSelect>
+            </Field>
             <Field label="Status">
               <NativeSelect value={status} onChange={(e) => setStatus(e.target.value as SubscriptionStatus)}>
                 {status === "none" || status === "cancelled" ? (
@@ -151,7 +178,11 @@ export function SubscriberQuickEdit({ student }: { student: Student }) {
                 min="0"
                 step="0.01"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  setAmount(e.target.value)
+                  const value = Number(e.target.value)
+                  if (Number.isFinite(value)) setPlan(subscriptionPlanFromAmount(value))
+                }}
               />
             </Field>
           </div>

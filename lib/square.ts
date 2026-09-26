@@ -34,6 +34,37 @@ export function subscriptionPlanFromItem(item: SquareCatalogItem | undefined): S
   return "none"
 }
 
+export function subscriptionPlanFromAmount(amount: number | null | undefined): Exclude<SubscriptionPlan, "none"> {
+  if (amount != null && Number.isFinite(amount) && amount >= 95) return "plus"
+  if (amount != null && Number.isFinite(amount) && amount <= 8) return "og"
+  return "standard"
+}
+
+export function subscriptionPlanPatch(
+  student: Student,
+  plan: Exclude<SubscriptionPlan, "none">,
+): Partial<Student> {
+  const item = itemForSubscriptionPlan(plan)
+  return {
+    subscriptionPlan: plan,
+    nextPaymentAmount: item?.price ?? student.nextPaymentAmount,
+    deskLocks: { ...student.deskLocks, subscription: true },
+  }
+}
+
+export function resolvedSubscriptionPlan(student: Student, payments: PaymentRecord[] = []): Exclude<SubscriptionPlan, "none"> {
+  if (student.subscriptionPlan === "plus" || student.subscriptionPlan === "og" || student.subscriptionPlan === "standard") {
+    return student.subscriptionPlan
+  }
+  const fromItem = subscriptionPlanFromItem(catalogItemForStudent(student, payments))
+  return fromItem === "none" ? subscriptionPlanFromAmount(student.nextPaymentAmount) : fromItem
+}
+
+export function planIdForStudent(student: Student, payments: PaymentRecord[]) {
+  const plan = resolvedSubscriptionPlan(student, payments)
+  return itemForSubscriptionPlan(plan)?.id || SUBSCRIPTION_ITEM.id
+}
+
 export function itemById(id: string | undefined): SquareCatalogItem | undefined {
   if (!id) return undefined
   return SQUARE_ITEMS.find((item) => item.id === id)

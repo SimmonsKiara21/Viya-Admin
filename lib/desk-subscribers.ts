@@ -2,7 +2,7 @@ import { foldName, matchStudentByName } from "./match-name"
 import { academyDateISO, newId } from "./format"
 import type { Student, SubscriptionPlan, SubscriptionStatus } from "./types"
 
-export const SUBSCRIBER_ROSTER_ID = "2026-09-26-prod-sync"
+export const SUBSCRIBER_ROSTER_ID = "2026-09-26-hennessy"
 
 export type DeskSubscriberRow = {
   firstName: string
@@ -79,6 +79,7 @@ export const DESK_SUBSCRIBERS: DeskSubscriberRow[] = [
   { firstName: "Abril", lastName: "Becerra", nickname: "", email: "becerraloulou@gmail.com", phone: "623-213-1611", status: "interested", startDate: "", aliases: [] },
   { firstName: "Itati", lastName: "Alcantar", nickname: "", email: "itati.a@yahoo.com", phone: "520-280-3913", status: "interested", startDate: "", aliases: [] },
   { firstName: "Jackson", lastName: "Hairston", nickname: "", email: "jacksonhairston@icloud.com", phone: "480-406-7345", status: "interested", startDate: "2026-06-10", aliases: [] },
+  { firstName: "Hennessy", lastName: "Pena", nickname: "", email: "hennypenny143@gmail.com", phone: "520-783-9499", status: "active", startDate: "", aliases: ["hennesy pena"], plan: "standard" },
 ]
 
 function phoneKey(phone: string) {

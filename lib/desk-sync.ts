@@ -43,16 +43,14 @@ export function isStaleDeskCache(currentTalentCount: number) {
 }
 
 /**
- * Shared staff snapshot wins on phones and any desk that already follows
- * the live copy. The computer that still has the unpublished correct roster
- * keeps it until Save publishes.
+ * Every domain loads the same staff snapshot. A browser only keeps its own
+ * copy if it just published something newer than the shared desk.
  */
 export function shouldUseSharedSnapshot(shared: DeskSnapshot | null, local: SharedPullDecision) {
   if (!shared || shared.source !== "staff" || !shared.data) return false
-  if (local.staleLocal) return true
-  if (local.followShared && shared.savedAt !== local.appliedAt) return true
-  if (local.publishedAt && shared.savedAt > local.publishedAt) return true
-  return false
+  if (local.publishedAt && shared.savedAt < local.publishedAt) return false
+  if (local.appliedAt && shared.savedAt === local.appliedAt) return false
+  return true
 }
 
 export async function encodeDeskPayload(value: unknown) {

@@ -13,7 +13,7 @@ import type {
 export const ACADEMY_NAME = "Viya Academy"
 export const SITE_NAME = "ViyaAdmin.com"
 /** Bump this when we need phones and other browsers to drop a stale desk cache. */
-export const DESK_BUILD = "2026-09-26h"
+export const DESK_BUILD = "2026-09-26i"
 export const ACADEMY_PHONE = "(602) 342-2902"
 export const ACADEMY_EMAIL = "viyatalent@gmail.com"
 export const ACADEMY_ADDRESS = "2141 East Camelback Rd #222, Phoenix, AZ 85016"
@@ -58,6 +58,7 @@ export const STUDENT_ID_ALIASES: Record<string, string> = {
   "0830": "0839",
   "0412": "0381",
   ENRscarlettpe: "1147",
+  GCHENNESSYPENA: "0928",
 }
 /** Current enrollment PIF students whose lump sum is already in. Igrid and Thalia are pending, not this list. */
 export const PAID_PIF_IDS = [

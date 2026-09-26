@@ -171,6 +171,8 @@ const FOLLOW_SHARED_KEY = "viya-academy-follow-shared-v1"
 const APPLIED_SHARED_KEY = "viya-academy-applied-shared-v1"
 const ENROLLMENT_FREEZE_KEY = "viya-academy-enrollment-frozen-v1"
 const SUBSCRIBER_ROSTER_KEY = "viya-academy-subscribers-v1"
+const DESK_SYNC_KEY = "viya-academy-desk-sync-v1"
+const DESK_SYNC_ID = "2026-09-26-one-desk"
 export const DESK_SAVE_EVENT = "viya-desk-save"
 const JOTFORM_MS = 15_000
 const SQUARE_MS = 60_000
@@ -561,7 +563,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           : LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
         const raw = fromCurrent ?? fromLegacy
         let next = cloneSeed()
-        let follow = localStorage.getItem(FOLLOW_SHARED_KEY) === "1"
+        let follow = true
+        if (localStorage.getItem(DESK_SYNC_KEY) !== DESK_SYNC_ID) {
+          localStorage.removeItem(APPLIED_SHARED_KEY)
+          localStorage.removeItem(PUBLISHED_AT_KEY)
+          localStorage.setItem(DESK_SYNC_KEY, DESK_SYNC_ID)
+        }
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) {

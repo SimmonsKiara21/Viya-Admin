@@ -16,8 +16,8 @@ export function SaveDeskButton() {
       if (event.defaultPrevented) return
       event.preventDefault()
       const ok = await saveDesk()
-      if (ok.shared) toast.success("Saved for this computer, phones, and other desks")
-      else if (ok.local) toast.error("Saved on this computer only. Phones still have the old list.")
+      if (ok.shared) toast.success("Saved on every phone, computer, and website")
+      else if (ok.local) toast.error("Saved here, but the shared desk did not update. Try Save updates again.")
       else toast.error("Could not save in this browser")
     }
     window.addEventListener("keydown", onKey)
@@ -38,8 +38,8 @@ export function SaveDeskButton() {
         disabled={!ready}
         onClick={async () => {
           const ok = await saveDesk()
-          if (ok.shared) toast.success("Saved for this computer, phones, and other desks")
-          else if (ok.local) toast.error("Saved on this computer only. Phones still have the old list.")
+          if (ok.shared) toast.success("Saved on every phone, computer, and website")
+          else if (ok.local) toast.error("Saved here, but the shared desk did not update. Try Save updates again.")
           else toast.error("Could not save in this browser")
         }}
       >

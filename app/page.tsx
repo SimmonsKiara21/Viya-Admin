@@ -51,8 +51,8 @@ export default function HomePage() {
         title="Front desk"
         description={
           sharedSavedAt
-            ? "A snapshot of the floor. This list is the shared desk phones and other computers load."
-            : "A snapshot of the floor. Click Save updates on the computer that already looks right so phones stop showing the old 35 / 17 / 8 counts."
+            ? "Every phone, computer, and ViyaAdmin domain loads this same desk. Save updates publishes a change to all of them."
+            : "Every phone, computer, and ViyaAdmin domain should show this same desk. Click Save updates on the computer that already looks right."
         }
         actions={
           <Button onClick={() => setAddOpen(true)}>
@@ -82,7 +82,7 @@ export default function HomePage() {
       </div>
 
       <p className="mt-10 text-center text-xs text-muted-foreground">
-        Saved in this browser.{" "}
+        One desk for www.viyaadmin.com and viyaadmin.vercel.app.{" "}
         <button
           type="button"
           className="underline hover:text-foreground"

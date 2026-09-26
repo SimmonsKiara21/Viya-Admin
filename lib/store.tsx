@@ -69,8 +69,9 @@ import { mergeDuplicateStudents } from "./merge-duplicates"
 import { applyDrivePhotos } from "./photos-overlay"
 import { foldName } from "./match-name"
 import { normalizeCalendarEvent } from "./calendar-events"
+import { isCurrentlyEnrolled } from "./alerts"
 import { applyDeskSubscriberRoster, SUBSCRIBER_ROSTER_ID } from "./desk-subscribers"
-import { shouldUseSharedSnapshot, type DeskSnapshot } from "./desk-sync"
+import { encodeDeskPayload, isStaleDeskCache, shouldUseSharedSnapshot, type DeskSnapshot } from "./desk-sync"
 
 const DROPPED_IDS = new Set(DROPPED_ROSTER_IDS)
 const DROPPED_NAMES = new Set(DROPPED_ROSTER_NAMES)
@@ -165,6 +166,9 @@ const LEGACY_KEYS = [
 ]
 const PHOTOS_KEY = "viya-academy-photos-v1"
 const SAVED_AT_KEY = "viya-academy-saved-at-v10"
+const PUBLISHED_AT_KEY = "viya-academy-published-at-v1"
+const FOLLOW_SHARED_KEY = "viya-academy-follow-shared-v1"
+const APPLIED_SHARED_KEY = "viya-academy-applied-shared-v1"
 const ENROLLMENT_FREEZE_KEY = "viya-academy-enrollment-frozen-v1"
 const SUBSCRIBER_ROSTER_KEY = "viya-academy-subscribers-v1"
 export const DESK_SAVE_EVENT = "viya-desk-save"
@@ -538,6 +542,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const enrollFp = useRef("")
   const labelsFp = useRef("")
   const persistTimer = useRef<number>(0)
+  const pulledRef = useRef(false)
+  const followSharedRef = useRef(false)
+  const pullSharedRef = useRef<() => Promise<void>>(async () => {})
 
   useEffect(() => {
     dataRef.current = data
@@ -554,18 +561,36 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           : LEGACY_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
         const raw = fromCurrent ?? fromLegacy
         let next = cloneSeed()
+        let follow = localStorage.getItem(FOLLOW_SHARED_KEY) === "1"
         if (raw) {
           const parsed = normalizeData(JSON.parse(raw) as AppData)
           if (parsed) {
-            next = fromLegacy
+            const loaded = fromLegacy
               ? {
                   ...parsed,
                   attendance: seedData.attendance,
                   photoshoots: mergePhotoshoots(parsed.photoshoots, parsed.removedPhotoshootIds),
                 }
               : parsed
-            next = withPhotos(next)
+            const stale = isStaleDeskCache(loaded.students.filter(isCurrentlyEnrolled).length)
+            if (stale) {
+              next = {
+                ...cloneSeed(),
+                students: applyDeskSubscriberRoster(cloneSeed().students).students,
+              }
+              follow = true
+            } else {
+              next = withPhotos(loaded)
+            }
+          } else {
+            follow = true
           }
+        } else {
+          next = {
+            ...next,
+            students: applyDeskSubscriberRoster(next.students).students,
+          }
+          follow = true
         }
         const frozen = localStorage.getItem(ENROLLMENT_FREEZE_KEY) === ENROLLMENT_FREEZE_ID
         if (!frozen) {
@@ -579,52 +604,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           }
           localStorage.setItem(SUBSCRIBER_ROSTER_KEY, SUBSCRIBER_ROSTER_ID)
         }
+        followSharedRef.current = follow
+        localStorage.setItem(FOLLOW_SHARED_KEY, follow ? "1" : "0")
         setData(next)
         const savedAt = localStorage.getItem(SAVED_AT_KEY) || ""
         if (savedAt) setLastSavedAt(savedAt)
+        const sharedAt = localStorage.getItem(APPLIED_SHARED_KEY) || ""
+        if (sharedAt) setSharedSavedAt(sharedAt)
       } catch {
-        /* keep seed */
+        followSharedRef.current = true
+        localStorage.setItem(FOLLOW_SHARED_KEY, "1")
       }
       setReady(true)
     }, 0)
     return () => window.clearTimeout(timer)
   }, [])
-
-  useEffect(() => {
-    if (!ready) return
-    let cancelled = false
-    async function pullShared() {
-      try {
-        const res = await fetch("/api/desk", { cache: "no-store" })
-        const shared = (await res.json()) as DeskSnapshot
-        if (cancelled) return
-        const localAt = localStorage.getItem(SAVED_AT_KEY) || ""
-        if (!shouldUseSharedSnapshot(shared, localAt) || !shared.data) return
-        const parsed = normalizeData(shared.data)
-        if (!parsed) return
-        const next = withPhotos(parsed)
-        dataRef.current = next
-        setData(next)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(next)))
-        if (shared.savedAt) {
-          localStorage.setItem(SAVED_AT_KEY, shared.savedAt)
-          setLastSavedAt(shared.savedAt)
-          setSharedSavedAt(shared.savedAt)
-        }
-      } catch {
-        /* keep this browser's desk */
-      }
-    }
-    pullShared()
-    const timer = window.setInterval(pullShared, 60_000)
-    const onFocus = () => pullShared()
-    window.addEventListener("focus", onFocus)
-    return () => {
-      cancelled = true
-      window.clearInterval(timer)
-      window.removeEventListener("focus", onFocus)
-    }
-  }, [ready])
 
   const persistNow = useCallback((snapshot?: AppData) => {
     const next = snapshot ?? dataRef.current
@@ -643,29 +637,98 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const publishShared = useCallback(async (snapshot?: AppData, savedAt?: string) => {
     const next = snapshot ?? dataRef.current
-    const at = savedAt || localStorage.getItem(SAVED_AT_KEY) || new Date().toISOString()
+    if (isStaleDeskCache(next.students.filter(isCurrentlyEnrolled).length)) return false
+    const at = savedAt || new Date().toISOString()
+    const packed = {
+      source: "staff" as const,
+      savedAt: at,
+      password: DESK_PASSWORD,
+      data: persistable(next),
+    }
     try {
+      const encoded = await encodeDeskPayload(packed)
       const res = await fetch("/api/desk", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: "staff",
-          savedAt: at,
-          password: DESK_PASSWORD,
-          data: persistable(next),
-        }),
+        body: JSON.stringify(
+          encoded && typeof encoded === "object" && "blob" in encoded
+            ? { ...encoded, password: DESK_PASSWORD, savedAt: at }
+            : packed,
+        ),
       })
       const payload = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null
       const ok = Boolean(res.ok && payload?.ok)
-      if (ok) setSharedSavedAt(at)
+      if (ok) {
+        followSharedRef.current = true
+        localStorage.setItem(FOLLOW_SHARED_KEY, "1")
+        localStorage.setItem(PUBLISHED_AT_KEY, at)
+        localStorage.setItem(APPLIED_SHARED_KEY, at)
+        setSharedSavedAt(at)
+      }
       return ok
     } catch {
       return false
     }
   }, [])
 
+  useEffect(() => {
+    if (!ready) return
+    let cancelled = false
+    async function pullShared() {
+      try {
+        const res = await fetch("/api/desk", { cache: "no-store" })
+        const shared = (await res.json()) as DeskSnapshot
+        if (cancelled) return
+        const stale = isStaleDeskCache(dataRef.current.students.filter(isCurrentlyEnrolled).length)
+        const useShared = shouldUseSharedSnapshot(shared, {
+          publishedAt: localStorage.getItem(PUBLISHED_AT_KEY) || "",
+          appliedAt: localStorage.getItem(APPLIED_SHARED_KEY) || "",
+          staleLocal: stale,
+          followShared: followSharedRef.current || localStorage.getItem(FOLLOW_SHARED_KEY) === "1",
+        })
+        if (shared.source === "staff" && shared.savedAt) setSharedSavedAt(shared.savedAt)
+        if (useShared && shared.data) {
+          const parsed = normalizeData(shared.data)
+          if (parsed) {
+            const next = withPhotos(parsed)
+            dataRef.current = next
+            setData(next)
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable(next)))
+            followSharedRef.current = true
+            localStorage.setItem(FOLLOW_SHARED_KEY, "1")
+            if (shared.savedAt) {
+              localStorage.setItem(APPLIED_SHARED_KEY, shared.savedAt)
+              localStorage.setItem(SAVED_AT_KEY, shared.savedAt)
+              setLastSavedAt(shared.savedAt)
+            }
+          }
+        }
+      } catch {
+        /* keep this browser's desk */
+      } finally {
+        pulledRef.current = true
+      }
+    }
+    pullSharedRef.current = pullShared
+    pullShared()
+    const timer = window.setInterval(pullShared, 15_000)
+    const onFocus = () => pullShared()
+    const onVisible = () => {
+      if (document.visibilityState === "visible") pullShared()
+    }
+    window.addEventListener("focus", onFocus)
+    document.addEventListener("visibilitychange", onVisible)
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      window.removeEventListener("focus", onFocus)
+      document.removeEventListener("visibilitychange", onVisible)
+    }
+  }, [ready])
+
   const saveDesk = useCallback(async () => {
     window.dispatchEvent(new Event(DESK_SAVE_EVENT))
+    if (!pulledRef.current) await pullSharedRef.current()
     const at = persistNow()
     if (!at) return { local: false, shared: false }
     const shared = await publishShared(undefined, at)
@@ -702,6 +765,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready) return
     const timer = window.setInterval(() => {
+      if (!pulledRef.current) return
       window.dispatchEvent(new Event(DESK_SAVE_EVENT))
       persistNow()
       void publishShared()
@@ -1251,8 +1315,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(PHOTOS_KEY)
         localStorage.removeItem(SAVED_AT_KEY)
+        localStorage.removeItem(PUBLISHED_AT_KEY)
+        localStorage.removeItem(FOLLOW_SHARED_KEY)
+        localStorage.removeItem(APPLIED_SHARED_KEY)
         localStorage.setItem(ENROLLMENT_FREEZE_KEY, ENROLLMENT_FREEZE_ID)
+        followSharedRef.current = true
+        localStorage.setItem(FOLLOW_SHARED_KEY, "1")
         setLastSavedAt("")
+        setSharedSavedAt("")
       },
     }
   }, [data, mutate, ready, groups, customGroups, lastSavedAt, sharedSavedAt, saveDesk, canUndo, canRedo, undoDesk, redoDesk])

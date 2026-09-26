@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["exceljs"],
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    proxyClientMaxBodySize: "8mb",
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
   },
   async redirects() {
     return [{ source: "/classes", destination: "/calendar", permanent: false }]
